@@ -1,0 +1,20 @@
+Package: arphit
+Type: Package
+Title: RBA-style R Plots
+Version: 0.0.1
+Author: Angus Moore
+Maintainer: Angus Moore <yourself@somewhere.net>
+Description: Easily create RBA-template graphs using R. Timeseries, stacked bar graphs and multipanel.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  stringr,
+  plyr,
+  devEMF
+Suggests:
+  testthat,
+    knitr,
+    rmarkdown
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr
