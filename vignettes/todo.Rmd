@@ -1,0 +1,26 @@
+---
+title: "Unsupported and to do list"
+author: "Angus Moore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This document outlines some of arphit's limitations with respect to many of the standard graphs used by the RBA. It also lists some of the planned improvements.
+
+# Limitations
+
+## Undated graphs
+
+Currently, only time series graphs are supported. `arphit` was built with the purpose of integrating into forecasting infrastructure, so focused on time series. Supporting undated graphs might be considered if there is sufficient demand.
+
+## Month or quarter x-ticks
+
+As above, `arphit` was built with forecasting in mind. High-frequency and short-sample time series are not an important use case and so are not supported.
+
+# Planned improvements
+
+Nothing currently.
