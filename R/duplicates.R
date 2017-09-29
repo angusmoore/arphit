@@ -41,7 +41,7 @@ duplicatedata <- function(dupmap, data) {
       newname <- paste(s, ".", p, sep = "")
       newdata <- data[, s]
       newcolnames <- c(colnames(data), newname)
-      data <- ts.union(data, newdata)
+      data <- stats::ts.union(data, newdata)
       colnames(data) <- newcolnames
     }
   }
