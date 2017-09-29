@@ -16,7 +16,7 @@ fillwith <- function(tofill, default) {
   return(out)
 }
 
-handleattribute <- function(series, duplicates, att, default) {
+handleattribute <- function(series, att, default) {
   if (is.null(att)) {
     return(fillwith(series, default))
   } else if (!is.list(att)) {
@@ -29,9 +29,6 @@ handleattribute <- function(series, duplicates, att, default) {
       if (s %in% names(att)) {
         # Has been suplied
         out[s] <- att[s]
-      } else if (s %in% names(duplicates) && duplicates[[s]] %in% names(att)) {
-        # Has been supplied, but with the non-duplicate name
-        out[s] <- att[duplicates[[s]]]
       } else {
         # Give it a default
         out[s] <- default[ct]
@@ -49,11 +46,11 @@ handleattribute <- function(series, duplicates, att, default) {
   }
 }
 
-handleattributes <- function(series, duplicates, colin, pchin, ltyin, lwdin, barcolin) {
-  col <- handleattribute(series, duplicates, colin, DEFAULTCOLORS)
-  pch <- handleattribute(series, duplicates, pchin, DEFAULTPCH)
-  lty <- handleattribute(series, duplicates, ltyin, DEFAULTLTY)
-  lwd <- handleattribute(series, duplicates, lwdin, DEFAULTLWD)
-  barcol <- handleattribute(series, duplicates, barcolin, DEFAULTBARCOL)
+handleattributes <- function(series, colin, pchin, ltyin, lwdin, barcolin) {
+  col <- handleattribute(series, colin, DEFAULTCOLORS)
+  pch <- handleattribute(series, pchin, DEFAULTPCH)
+  lty <- handleattribute(series, ltyin, DEFAULTLTY)
+  lwd <- handleattribute(series, lwdin, DEFAULTLWD)
+  barcol <- handleattribute(series, barcolin, DEFAULTBARCOL)
   return(list("col" = col, "pch" = pch, "lty" = lty, "lwd" = lwd, "barcol" = barcol))
 }

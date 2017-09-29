@@ -30,8 +30,6 @@ expect_that(handlepanels(list("1" = fakeseries1, "2" = fakeseries2), nobars, "2v
 shouldbe <- list(panels = list("1" = fakeseries1, "2" = fakeseries2, "3" = fakeseries3, "4" = fakeseries4), serieslist = list("a" = "1", "b" = "1", "c" = "2", "d" = "2", "e" = "3", "f" = "3", "g" = "4", "h" = "4"), duplicates = list(), bars = list())
 expect_that(handlepanels(list("1" = fakeseries1, "2" = fakeseries2, "3" = fakeseries3, "4" = fakeseries4), nobars, "2b2"), is_identical_to(shouldbe))
 
-context("Panel handling - Duplicate series")
-message("No duplicate series tests")
 
 context("Panel handling - Bars")
 shouldbe <- list(panels = list("1" = fakeseries1, "2" = NULL), serieslist = list("a" = "1", "b" = "1"), duplicates = list(), bars = list("a" = TRUE, "b" = TRUE))
