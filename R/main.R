@@ -50,11 +50,23 @@ arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filen
     series <- list("1" = colnames(data))
   }
 
+  # Handle duplicates
+  dups <- handleduplicates(data, series, bars, col, pch, lty, lwd, barcol)
+  data <- dups$data
+  series <- dups$series
+  bars <- dups$bars
+  col <- dups$col
+  pch <- dups$pch
+  lty <- dups$lty
+  lwd <- dups$lwd
+  barcol <- dups$barcol
+
   # Handle panels
   panels <- handlepanels(series, bars, layout)
 
+
   # handle series attributes
-  attributes <- handleattributes(panels$serieslist, panels$duplicates, col, pch, lty, lwd, barcol)
+  attributes <- handleattributes(panels$serieslist, col, pch, lty, lwd, barcol)
 
   # Units and scales
   scaleunits <- handleunits(panels, scaleunits, layout)

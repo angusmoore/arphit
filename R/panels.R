@@ -39,32 +39,9 @@ handlepanels <- function(series, bars, layout) {
     if (!is.null(series[[p]])) {
       panels[p] <- series[p]
       for (s in series[[p]]) {
-        if (s %in% names(serieslist)) {
-          # Already exists. First check if just a duplicate in this panel, if so ignore
-          if (serieslist[s] == p) {
-            message(paste("You duplicated series ", s, " in panel ", p, ". Ignoring the duplicate.", sep = ""))
-          } else {
-            # from another panel. Need to give each an identifier
-            # First replace the existing series and add it to the duplicate list
-            message("I need to remove and replace duplicates from the panel list too.")
-            serieslist[paste(s, serieslist[s], sep="")] <- serieslist[s]
-            if (s %in% bars || paste(s, serieslist[s], sep="") %in% bars) {
-              barlist[paste(s, serieslist[s], sep="")] <- TRUE
-            }
-            duplicates[paste(s, serieslist[s], sep="")] <- s
-
-            # Now add the current one
-            serieslist[paste(s, p, sep = "")] <- p
-            if (s %in% bars || paste(s, p, sep = "") %in% bars) {
-              barlist[paste(s, p, sep = "")] <- TRUE
-            }
-            duplicates[paste(s, p, sep = "")] <- s
-          }
-        } else {
-          serieslist[s] <- p
-          if (s %in% bars) {
-            barlist[s] <- TRUE
-          }
+        serieslist[s] <- p
+        if (s %in% bars) {
+          barlist[s] <- TRUE
         }
       }
     } else {
@@ -72,14 +49,8 @@ handlepanels <- function(series, bars, layout) {
     }
   }
 
-  # Now remove duplicates
-  for (d in unlist(duplicates,use.names=FALSE)) {
-    serieslist[d] <- NULL
-    barlist[d] <- NULL
-  }
-
   # And lastly, order the names
   serieslist <- serieslist[order(names(serieslist))]
 
-  return(list("panels" = panels, "serieslist" = serieslist, "duplicates" = duplicates, "bars" = barlist))
+  return(list("panels" = panels, "serieslist" = serieslist, "bars" = barlist))
 }
