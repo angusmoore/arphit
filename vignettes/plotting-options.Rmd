@@ -61,9 +61,9 @@ Plotting series `x1` and `x4` on a one panel:
 arphit.tsgraph(data, layout = "1", series = list("1" = c("x1","x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "1", series = list("1" = c("x1","x4")), filename = "images/layout_1.png")
+arphit.tsgraph(data, layout = "1", series = list("1" = c("x1","x4")), filename = "layout_1.png")
 ```
-<img src = "images/layout_1.png", width = "300">
+<img src = "layout_1.png", width = "300">
   
   Of course, the standard deviation of `x4` is much larger than `x1`, so this plot is not very easy to look
 at. Instead, we could plot `x1` on the left axis and `x4` on the right by doing:
@@ -71,9 +71,9 @@ at. Instead, we could plot `x1` on the left axis and `x4` on the right by doing:
 arphit.tsgraph(data, layout = "1", series = list("1" = c("x1"), "2" = c("x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "1", series = list("1" = c("x1"), "2" = c("x4")), filename = "images/layout_1_LR.png")
+arphit.tsgraph(data, layout = "1", series = list("1" = c("x1"), "2" = c("x4")), filename = "layout_1_LR.png")
 ```
-<img src = "images/layout_1_LR.png", width = "300"> 
+<img src = "layout_1_LR.png", width = "300"> 
 
   2. Two-panel vertical "2v". This layout has two panels, divided vertically. Panel "1" is the left panel,
 panel "2" the right. This example plots the series `x1` on the left panel and `x2` on the right.
@@ -81,9 +81,9 @@ panel "2" the right. This example plots the series `x1` on the left panel and `x
 arphit.tsgraph(data, layout = "2v", series = list("1" = c("x1"), "2" = c("x2")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2v", series = list("1" = c("x1"), "2" = c("x2")), filename = "images/layout_2v.png")
+arphit.tsgraph(data, layout = "2v", series = list("1" = c("x1"), "2" = c("x2")), filename = "layout_2v.png")
 ```
-<img src = "images/layout_2v.png", width = "300"> 
+<img src = "layout_2v.png", width = "300"> 
 
   3. Two-panel horizontal "2h". This layout has *four* panels. Panels "1" and "2" are the left and
 right axes of the top panel. "3" and "4" for the bottom. This example plots `x1` on panel the left axis of the top
@@ -92,9 +92,9 @@ panel and `x2` on the right, and likewise for `x3` and `x4` on the bottom.
 arphit.tsgraph(data, layout = "2h", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2h", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), filename = "images/layout_2h.png")
+arphit.tsgraph(data, layout = "2h", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), filename = "layout_2h.png")
 ```
-<img src = "images/layout_2h.png", width = "300">
+<img src = "layout_2h.png", width = "300">
   
   As with the one panel, there is no need to use the right axis if it is not required. This example plots `x1` and
 `x2` on the left axis of the top panel and `x3` and `x4` on the left axis of the bottom panel.
@@ -102,9 +102,9 @@ arphit.tsgraph(data, layout = "2h", series = list("1" = c("x1"), "2" = c("x2"), 
 arphit.tsgraph(data, layout = "2h", series = list("1" = c("x1","x2"), "3" = c("x3","x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2h", series = list("1" = c("x1","x2"), "3" = c("x3","x4")), filename = "images/layout_2h_L.png")
+arphit.tsgraph(data, layout = "2h", series = list("1" = c("x1","x2"), "3" = c("x3","x4")), filename = "layout_2h_L.png")
 ```
-<img src = "images/layout_2h_L.png", width = "300">
+<img src = "layout_2h_L.png", width = "300">
   
   4. Two-by-two "2b2". This layout is very similar to "2h", except the left and right panels are divided, rather
 than axes.
@@ -112,9 +112,9 @@ than axes.
 arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), filename = "images/layout_2b2.png")
+arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), filename = "layout_2b2.png")
 ```
-<img src = "images/layout_2b2.png", width = "300">
+<img src = "layout_2b2.png", width = "300">
 
 The `series` argument is actually optional. If not supplied, *all* series in `data` will be plotted on panel "1".
 This can be useful if you want a quick and dirty plot of just a few series.
@@ -123,9 +123,9 @@ This can be useful if you want a quick and dirty plot of just a few series.
 arphit.tsgraph(data)
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, filename = "images/layout_default.png")
+arphit.tsgraph(data, filename = "layout_default.png")
 ```
-<img src = "images/layout_default.png", width = "300">
+<img src = "layout_default.png", width = "300">
 
 ## Portrait size
 
@@ -134,9 +134,9 @@ If you want a larger, portrait size layout, simply pass in `portait = TRUE`. Thi
 arphit.tsgraph(data, portrait = TRUE)
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, portrait = TRUE, filename = "images/layout_portrait.png")
+arphit.tsgraph(data, portrait = TRUE, filename = "layout_portrait.png")
 ```
-<img src = "images/layout_portrait.png", width = "300">
+<img src = "layout_portrait.png", width = "300">
 
 # Bar graphs
 
@@ -150,9 +150,9 @@ This example plots `x1` as a line on the left axis, `x3` as a line on the right 
 arphit.tsgraph(data, series = list("1" = c("x1","x2"), "2" = c("x3")), bars = c("x2"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, series = list("1" = c("x1","x2"), "2" = c("x3")), bars = c("x2"), filename = "images/bars.png")
+arphit.tsgraph(data, series = list("1" = c("x1","x2"), "2" = c("x3")), bars = c("x2"), filename = "bars.png")
 ```
-<img src = "images/bars.png", width = "300">
+<img src = "bars.png", width = "300">
 
 If you have multiple bar series on one panel, they automatically be stacked. This example plots `x1` and `x2` as
 bars on the left axis.
@@ -160,9 +160,9 @@ bars on the left axis.
 arphit.tsgraph(data, series = list("1" = c("x1","x2")), bars = c("x1","x2"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, series = list("1" = c("x1","x2")), bars = c("x1","x2"), filename = "images/bars_stacked.png")
+arphit.tsgraph(data, series = list("1" = c("x1","x2")), bars = c("x1","x2"), filename = "bars_stacked.png")
 ```
-<img src = "images/bars_stacked.png", width = "300">
+<img src = "bars_stacked.png", width = "300">
 
 NB: The automatic y-axis scale will often be wrong with stacked bar charts. You may need to manually overrule it.
 See the section on axis limits below.
@@ -176,9 +176,9 @@ By default, `arphit` will stack the bars. If you want the bars to be beside inst
 arphit.tsgraph(data, bars = c("x1","x2"), bar.stacked = FALSE)
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, bars = c("x1","x2"), bar.stacked = FALSE, filename = "images/bar_beside.png")
+arphit.tsgraph(data, bars = c("x1","x2"), bar.stacked = FALSE, filename = "bar_beside.png")
 ```
-<img src = "images/bar_beside.png", width = "300">
+<img src = "bar_beside.png", width = "300">
 
 # Title and subtitle
 
@@ -188,9 +188,9 @@ and by default are blank (`= NULL`).
 arphit.tsgraph(data, title = "Here is a Title", subtitle = "And a subtitle")
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, title = "Here is a Title", subtitle = "And a subtitle", filename = "images/title.png")
+arphit.tsgraph(data, title = "Here is a Title", subtitle = "And a subtitle", filename = "title.png")
 ```
-<img src = "images/title.png", width = "300">
+<img src = "title.png", width = "300">
 
 `arphit` will attempt to insert line breaks as necessary, but may not be smart enough in all cases. You can
 insert linebreaks yourself as necessary by using "\\n".
@@ -203,9 +203,9 @@ of panel identifiers (e.g. "1") to strings. For example:
 arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), paneltitle = list("1" = "Panel 1", "2" = "Panel 2", "3" = "Panel 3", "4" = "Panel 4"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), paneltitle = list("1" = "Panel 1", "2" = "Panel 2", "3" = "Panel 3", "4" = "Panel 4"), filename = "images/paneltitle.png")
+arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), paneltitle = list("1" = "Panel 1", "2" = "Panel 2", "3" = "Panel 3", "4" = "Panel 4"), filename = "paneltitle.png")
 ```
-<img src = "images/paneltitle.png", width = "300">
+<img src = "paneltitle.png", width = "300">
 
 And likewise for panelsubtitle.
 
@@ -218,10 +218,10 @@ Footnotes are specified using the `footnote` argument and are passed as a vector
 arphit.tsgraph(data, footnote = c("Footnote 1", "Footnote 2", "etc, this can go on for a while"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, footnote = c("Footnote 1", "Footnote 2", "etc, this can go on for a while"), filename = "images/footnote.png")
+arphit.tsgraph(data, footnote = c("Footnote 1", "Footnote 2", "etc, this can go on for a while"), filename = "footnote.png")
 ```
 
-<img src = "images/footnote.png", width = "300">
+<img src = "footnote.png", width = "300">
 
 ## Sources
 
@@ -230,9 +230,9 @@ Sources are handled very similarly to foonotes, using the `sources` argument.
 arphit.tsgraph(data, sources = c("RBA", "ABS", "someone else"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, sources = c("RBA", "ABS", "someone else"), filename = "images/sources.png")
+arphit.tsgraph(data, sources = c("RBA", "ABS", "someone else"), filename = "sources.png")
 ```
-<img src = "images/sources.png", width = "300">
+<img src = "sources.png", width = "300">
 
 `arphit` will automatically pluralise if more than one source is given.
 
@@ -244,9 +244,9 @@ to strings (corresponding to the units). For instance:
 arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"), filename = "images/units.png")
+arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"), filename = "units.png")
 ```
-<img src = "images/units.png", width = "300">
+<img src = "units.png", width = "300">
 
 # Line, bar and marker options
 
@@ -264,9 +264,9 @@ series `x1` and `x3`.
 arphit.tsgraph(data, col = list("x2" = "pink", "x4" = "lightblue"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, col = list("x2" = "pink", "x4" = "lightblue"), filename = "images/setcolours.png")
+arphit.tsgraph(data, col = list("x2" = "pink", "x4" = "lightblue"), filename = "setcolours.png")
 ```
-<img src = "images/setcolours.png", width = "300">
+<img src = "setcolours.png", width = "300">
 
 Alternatively, if you want to apply an attribute to *all* series, you can skip the list and just pass in the value.
 For instance, this example sets all series to use `pch = 19`, which gives solid dots as markers.
@@ -274,9 +274,9 @@ For instance, this example sets all series to use `pch = 19`, which gives solid 
 arphit.tsgraph(data, pch = 19)
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, pch = 19, filename = "images/setattributeall.png")
+arphit.tsgraph(data, pch = 19, filename = "setattributeall.png")
 ```
-<img src = "images/setattributeall.png", width = "300">
+<img src = "setattributeall.png", width = "300">
 
 ## Line colour
 
@@ -314,18 +314,18 @@ Y-limits are controlled by three variables: a minimum, a maximum, and the number
 arphit.tsgraph(data, series = list("1" = c("x1"), "2" = c("x3")), ylim = list("1" = c(-10,10,5), "2" = c(-20,20,5))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, series = list("1" = c("x1"), "2" = c("x3")), ylim = list("1" = c(-10,10,5), "2" = c(-20,20,5)), filename = "images/y-individual.png")
+arphit.tsgraph(data, series = list("1" = c("x1"), "2" = c("x3")), ylim = list("1" = c(-10,10,5), "2" = c(-20,20,5)), filename = "y-individual.png")
 ```
-<img src = "images/y-individual.png", width = "300">
+<img src = "y-individual.png", width = "300">
 
 ### Example 2: Applying the same y axis to all panels
 ```
 arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), ylim = c(-10,10,5))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), ylim = c(-10,10,5), filename = "images/y-uniform.png")
+arphit.tsgraph(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), ylim = c(-10,10,5), filename = "y-uniform.png")
 ```
-<img src = "images/y-uniform.png", width = "300">
+<img src = "y-uniform.png", width = "300">
 
 ## X axis
 
@@ -343,17 +343,17 @@ You can shade the area between series by using the `shading` argument. This take
 arphit.tsgraph(data, shading = list(list(from = "x1," to = "x2", color= "red")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")), filename = "images/shading.png")
+arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")), filename = "shading.png")
 ```
-<img src = "images/shading.png", width = "300">
+<img src = "shading.png", width = "300">
 
 ```
 arphit.tsgraph(data, shading = list(list(from = "x1," to = "x2", color= "red")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")), filename = "images/shading-layered.png")
+arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")), filename = "shading-layered.png")
 ```
-<img src = "images/shading-layered.png", width = "300">
+<img src = "shading-layered.png", width = "300">
 
 # Plot annotations
 
@@ -367,9 +367,9 @@ Labels are specified as a list of lists. Each sub-list specifies a single text l
 arphit.tsgraph(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2004, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2002, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")), filename = "images/labels.png")
+arphit.tsgraph(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2002, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")), filename = "labels.png")
 ```
-<img src = "images/labels.png", width = "300">
+<img src = "labels.png", width = "300">
 
 Arrows are specified similarly. You pass in a list of lists specifying arrows to add to the plot Each sub-list specifies a single arrow. These must be of the form: `list(tail.x = 2000, tail.y = -1, head.x = 2001, head.y = 0, panel = 1, lwd = 1, color = "black")`. `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at, `head.x` and `head.y` where to finish it. panel specifies which panel to place the arrow on. `color` is self-explanatory. `lwd` is optional and specifies the linewidth of the arrow (default = 1).
 
@@ -377,9 +377,9 @@ Arrows are specified similarly. You pass in a list of lists specifying arrows to
 arphit.tsgraph(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)), filename = "images/arrows.png")
+arphit.tsgraph(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)), filename = "arrows.png")
 ```
-<img src = "images/arrows.png", width = "300">
+<img src = "arrows.png", width = "300">
 
 ## Adding horizonal and vertical lines
 
@@ -391,9 +391,9 @@ The following example draws a vertical line at 2001 using the default colour and
 arphit.tsgraph(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)), filename = "images/lines.png")
+arphit.tsgraph(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)), filename = "lines.png")
 ```
-<img src = "images/lines.png", width = "300">
+<img src = "lines.png", width = "300">
 
 If you want more control, you can specify the coordinates of the line segment instead of using `x` or `y`.  To do so use `list(x1 = 2000, y1 = -1, x2 = 2001, y2 = 0, panel = 1)` instead of x and y. All other options are the same. For example:
 
@@ -401,9 +401,9 @@ If you want more control, you can specify the coordinates of the line segment in
 arphit.tsgraph(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1)))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1)), filename = "images/specificlines.png")
+arphit.tsgraph(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1)), filename = "specificlines.png")
 ```
-<img src = "images/specificlines.png", width = "300">
+<img src = "specificlines.png", width = "300">
 
 Entering NA for any of `x1`, `y1`, `x2`, or `y2` will set that coordinate to the axis limit (with `x1` and `y1` going to the left and bottom axes and `x2` and `y2` to the right and top).
 
@@ -417,9 +417,9 @@ This example creates horizontal shading across the whole panel between -1 and 3 
 arphit.tsgraph(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1)))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1)), filename = "images/shading1.png")
+arphit.tsgraph(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1)), filename = "shading1.png")
 ```
-<img src = "images/shading1.png", width = "300">
+<img src = "shading1.png", width = "300">
 
 And this two panel example repeats the above example for panel 1, but puts light green shading between two dates on the bottom panel..
 
@@ -427,9 +427,9 @@ And this two panel example repeats the above example for panel 1, but puts light
 arphit.tsgraph(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit.tsgraph(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")), filename = "images/shading2.png")
+arphit.tsgraph(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")), filename = "shading2.png")
 ```
-<img src = "images/shading2.png", width = "300">
+<img src = "shading2.png", width = "300">
 
 # Saving your graph
 
