@@ -17,7 +17,7 @@ The very first step to using `arphit` is to import it into your workspace:
 library(arphit)
 ```
 
-If you get an error because you haven't yet installed `arphit`, see the 'Installation' section.
+If you get an error because you haven't yet installed `arphit`, see the 'Installation' section of the [README](https://github.com/angusmoore/arphit/blob/master/README.md).
 
 ## Data
 
@@ -28,7 +28,7 @@ by calling:
 ```
 foo_ts <- ts(foo, start = c(2000,1), frequency = 4)
 ```
-For more details on the `ts` package see [].
+For more details on the `ts` class see [https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ts.html].
 
 For the remainder of this vignette, we will use the following randomly constructed time
 series for the examples:
