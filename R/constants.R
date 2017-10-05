@@ -16,4 +16,5 @@ DEFAULTLWD <- 1
 EMPTYSCALE <- list("min" = -1, "max" = 2, "nsteps" = 4)
 DEFAULTTICKLENGTH <- 0.02
 DEFAULTBARCOL <- NA
+DEFAULTSHADINGCOLOR <- "lightgrey"
 PNGDPI <- 300
