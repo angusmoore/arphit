@@ -120,7 +120,9 @@ ylimconform <- function(panels, ylim, data, layout) {
     for (p in names(panels$panels)) {
       if (p %in% names(ylim)) {
         ylim_list[[p]] <- ylim[[p]]
-        message("Need a sanity check here,")
+        if (ylim[[p]][3] < 2) {
+          stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points.", sep = ""))
+        }
       } else {
         paneldf <- data[, panels$panels[[p]]]
         if (ncol(paneldf) > 0) {
