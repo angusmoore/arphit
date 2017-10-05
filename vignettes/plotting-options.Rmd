@@ -340,7 +340,7 @@ automatically.
 You can shade the area between series by using the `shading` argument. This takes a list of lists. Each of the sublists must have keys `from`, `to` and `color`, which speak for themselves. You can supply multiple sets of shading (hence the list of lists). They are drawn first to last, so if you want to shade over the top, supply bottom to top. All series are _always_ drawn on top of shading.
 
 ```
-arphit.tsgraph(data, shading = list(list(from = "x1," to = "x2", color= "red")))
+arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")))
 ```
 ```{r, echo = FALSE, results = "hide"}
 arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")), filename = "shading.png")
@@ -348,7 +348,7 @@ arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")),
 <img src = "shading.png", width = "300">
 
 ```
-arphit.tsgraph(data, shading = list(list(from = "x1," to = "x2", color= "red")))
+arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")))
 ```
 ```{r, echo = FALSE, results = "hide"}
 arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")), filename = "shading-layered.png")
