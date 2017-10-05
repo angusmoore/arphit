@@ -124,7 +124,7 @@ ylimconform <- function(panels, ylim, data, layout) {
           stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points.", sep = ""))
         }
       } else {
-        paneldf <- data[, panels$panels[[p]]]
+        paneldf <- data[, panels$panels[[p]], drop = FALSE]
         if (ncol(paneldf) > 0) {
           ylim_list[[p]] <- defaultscale(paneldf)
         } else {
