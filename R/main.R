@@ -70,7 +70,7 @@ arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filen
 
   # Units and scales
   scaleunits <- handleunits(panels, scaleunits, layout)
-  ylim <- ylimconform(panels, xlim, data, layout)
+  ylim <- ylimconform(panels, ylim, data, layout)
   ticks <- handleticks(data, panels, ylim)
   xlim <- xlimconform(panels, xlim, data)
   xlabels <- handlexlabels(panels, xlim)
