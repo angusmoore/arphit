@@ -109,7 +109,7 @@ ylimconform <- function(panels, ylim, data, layout) {
   ylim_list <- list()
   if (is.null(ylim)) {
     for (p in names(panels$panels)) {
-      paneldf <- data[, panels$panels[[p]]]
+      paneldf <- data[, panels$panels[[p]], drop = FALSE]
       if (any(!is.na(paneldf)) && is.finite(max(paneldf)) && is.finite(min(paneldf))) {
         ylim_list[[p]] <- defaultscale(paneldf)
       } else {
