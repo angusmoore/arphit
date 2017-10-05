@@ -171,7 +171,13 @@ handlexlabels <- function(panels, xlim) {
 }
 
 warnifxdiff <- function(panels, xlim) {
-  message("NOT IMPLEMENTED")
+  for (p in names(xlim)) {
+    for (q in names(xlim)) {
+      if (all(xlim[[p]] != xlim[[q]])) {
+        warning(paste("Panels ", p, " and ", q, " have differing x limits. This may lead to confusing graphs. Be careful!", sep = ""))
+      }
+    }
+  }
 }
 
 xlimconform <- function(panels, xlim, data) {
