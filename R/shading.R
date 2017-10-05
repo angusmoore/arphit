@@ -15,6 +15,7 @@ handleshading <- function(shading, panels) {
   }
 
   for (s in shading) {
+    shadingsanity(s$to, s$from, panels)
     p <- panels$serieslist[[s$to]]
     i <- length(out[[p]]) + 1
     out[[p]][[i]] <- s
