@@ -28,7 +28,7 @@
 #' @param lwd (optional) A list of string -> numeric pairs. The keys should be series names, and the values line width, relative to default, for each series. Defaults to 1. Can be supplied as list, or a single value (which will be applied to all series).
 #' @param barcol (optional) A list of string -> misc pairs.  The keys should be series names, and the values outline colours for each bar series (any colour accepted by R is fine.) You need not supply colours for all series. Bar series without assigned colours are given no outline by default. Alternatively, you can supply a single value to apply to all series.
 #' @param xlim (optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).
-#' @param ylim (optional) A list of string -> c(numeric, numeric, int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as c(minimum, maximum, number of steps). If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).
+#' @param ylim (optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).
 #' @param portrait (optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
 #' @param bar.stacked (optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).
 #'
