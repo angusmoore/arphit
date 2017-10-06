@@ -348,7 +348,7 @@ arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")),
 <img src = "shading.png", width = "300">
 
 ```
-arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red")))
+arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")))
 ```
 ```{r, echo = FALSE, results = "hide"}
 arphit.tsgraph(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")), filename = "shading-layered.png")
