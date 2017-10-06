@@ -122,6 +122,9 @@ ylimconform <- function(panels, ylim, data, layout) {
       if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
         stop("You must supply nsteps > 2 for the y limit.")
       }
+      if (is.null(ylim$min)) {
+        stop("You did not supply a min ylimit.")
+      }
       if (is.null(ylim$max)) {
         stop("You did not supply a max ylimit.")
       }
