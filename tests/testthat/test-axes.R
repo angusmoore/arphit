@@ -14,7 +14,20 @@ expect_that(ylimconform(onesided, list("1" = sublist), fakedata, "1"), equals(li
 
 ylim <- ylimconform(onesided, NULL, fakedata, "1")
 expect_that(handleticks(fakedata, onesided, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
+panel2b2 <- handlepanels(list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), NULL, "2b2")
 
+# Test for passing in a single ylim to apply to all axes
+sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
+largerdata <-  ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
+expect_that(ylimconform(panel2b2, sublist, largerdata, "2b2"), equals(list("1" = sublist, "2" = sublist, "3" = sublist, "4" = sublist)))
+
+# Check that sanity checks fail if pass in bad values
+expect_error(ylimconform(onesided, list("1" = list("min" = 1, "nsteps" = 3)), fakedata, "1"))
+expect_error(ylimconform(onesided, list("min" = 1, "nsteps" = 3), fakedata, "1"))
+expect_error(ylimconform(onesided, list("1" = list("max" = 1, "nsteps" = 3)), fakedata, "1"))
+expect_error(ylimconform(onesided, list("max" = 1, "nsteps" = 3), fakedata, "1"))
+expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 3)), fakedata, "1"))
+expect_error(ylimconform(onesided, list("min" = 1, "max" = 3), fakedata, "1"))
 expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 2, "nsteps" = 1)), fakedata, "1"))
 
 context("Default scale")
