@@ -117,18 +117,38 @@ ylimconform <- function(panels, ylim, data, layout) {
       }
     }
   } else {
-    for (p in names(panels$panels)) {
-      if (p %in% names(ylim)) {
-        ylim_list[[p]] <- ylim[[p]]
-        if (ylim[[p]][3] < 2) {
-          stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points.", sep = ""))
-        }
-      } else {
-        paneldf <- data[, panels$panels[[p]], drop = FALSE]
-        if (ncol(paneldf) > 0) {
-          ylim_list[[p]] <- defaultscale(paneldf)
+    if ("min" %in% names(ylim) || "max" %in% names(ylim) || "nsteps" %in% names(ylim)) {
+      # have supplied a single list to apply to all
+      if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
+        stop("You must supply nsteps > 2 for the y limit.")
+      }
+      if (is.null(ylim$max)) {
+        stop("You did not supply a max ylimit.")
+      }
+      for (p in names(panels$panels)) {
+        ylim_list[[p]] <- ylim
+      }
+    } else {
+      # have supplied lims for each
+      for (p in names(panels$panels)) {
+        if (p %in% names(ylim)) {
+          ylim_list[[p]] <- ylim[[p]]
+          if (is.null(ylim[[p]]) || ylim[[p]]$nsteps < 2) {
+            stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points (or you forgot to supply nsteps).", sep = ""))
+          }
+          if (is.null(ylim[[p]]$max)) {
+            stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
+          }
+          if (is.null(ylim[[p]]$min)) {
+            stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
+          }
         } else {
-          ylim_list[[p]] <- EMPTYSCALE
+          paneldf <- data[, panels$panels[[p]], drop = FALSE]
+          if (ncol(paneldf) > 0) {
+            ylim_list[[p]] <- defaultscale(paneldf)
+          } else {
+            ylim_list[[p]] <- EMPTYSCALE
+          }
         }
       }
     }
