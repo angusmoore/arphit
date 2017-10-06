@@ -34,7 +34,7 @@ countsrclines <- function(sources) {
   if (sources$text == "") {
     return(0)
   } else {
-    return(1.7 + 1.1*sum(stringr::str_count(sources, "\n")))
+    return(1.7 + 1.1*sum(stringr::str_count(sources$text, "\n")))
   }
 }
 
