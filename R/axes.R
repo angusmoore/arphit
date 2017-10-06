@@ -142,7 +142,6 @@ ylimconform <- function(panels, ylim, data, layout) {
           if (is.null(ylim[[p]]$min)) {
             stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
           }
-
         } else {
           paneldf <- data[, panels$panels[[p]], drop = FALSE]
           if (ncol(paneldf) > 0) {
