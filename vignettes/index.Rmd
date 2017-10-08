@@ -1,0 +1,25 @@
+---
+title: "Index"
+author: "Angus Moore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+[![Build Status](https://travis-ci.org/angusmoore/arphit.svg?branch=master)](https://travis-ci.org/angusmoore/arphit)
+[![Coverage Status](https://coveralls.io/repos/github/angusmoore/arphit/badge.svg?branch=master)](https://coveralls.io/github/angusmoore/arphit?branch=master)
+
+# arphit
+RBA-style plots in R.
+
+## Plotting options
+
+See the plotting options [vignette](plotting-options.html).
+
+## Planned features and to-do list
+
+A list of known drawbacks, planned features and other to-do tasks can be found [here](todo.html).
+

@@ -3,3 +3,7 @@
 
 # arphit
 RBA-style plots in R.
+
+# Documentation
+
+A list of plotting options can be found in the [vignettes](https://angusmoore.github.io/arphit/index.html).
