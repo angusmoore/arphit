@@ -7,6 +7,10 @@ GH_REPO="@github.com/angusmoore/arphit.git"
 
 FULL_REPO="https://$GH_TOKEN$GH_REPO"
 
+for files in '*.tar.gz'; do
+        tar xfz $files
+done
+
 cd out
 git init
 git config user.name "travis"
