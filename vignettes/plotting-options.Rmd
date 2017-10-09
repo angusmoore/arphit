@@ -63,7 +63,7 @@ arphit.tsgraph(data, layout = "1", series = list("1" = c("x1","x4")))
 ```{r, echo = FALSE, results = "hide"}
 arphit.tsgraph(data, layout = "1", series = list("1" = c("x1","x4")), filename = "layout_1.png")
 ```
-![](layout_1.png){width=400px}
+![](layout_1.png){ width=400px }
 
 Of course, the standard deviation of `x4` is much larger than `x1`, so this plot is not very easy to look
 at. Instead, we could plot `x1` on the left axis and `x4` on the right by doing:
