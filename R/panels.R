@@ -15,7 +15,7 @@ checklayout <- function(series, layout) {
   permittedpanels <- as.character(1:maxnp)
   for (i in names(series)) {
     if (!(i %in% permittedpanels)) {
-      stop(paste("Your chose layout (", layout, ") does not have a panel ", i, ".", sep = ""))
+      stop(paste("Your chosen layout (", layout, ") does not have a panel ", i, ".", sep = ""))
     }
   }
   return(permittedpanels)
