@@ -1,6 +1,3 @@
-# - get panel margins
-# - get sides
-# everything else can't be tested other than by looking at output
 context("Panel titles")
 fakeseries1 <- c("a", "b")
 fakeseries2 <- c("c", "d")
