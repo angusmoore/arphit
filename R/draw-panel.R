@@ -172,7 +172,7 @@ drawlines <- function(p, l, panels, data, attributes, xlim, ylim) {
     if (!s %in% names(panels$bars)) {
       graphics::par(mfg = l)
       shiftedxlim <- xlim[[p]] - 1.0/(2*stats::frequency(data))
-      graphics::plot(data[, s], type = "l", col = attributes$col[[s]], xlim = shiftedxlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
+      graphics::plot(data[, s], type = "o", col = attributes$col[[s]], xlim = shiftedxlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
     }
   }
 }
