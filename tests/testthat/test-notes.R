@@ -1,3 +1,6 @@
+# - get panel margins
+# - get sides
+# everything else can't be tested other than by looking at output
 context("Panel titles")
 fakeseries1 <- c("a", "b")
 fakeseries2 <- c("c", "d")
@@ -18,4 +21,6 @@ foo <- c("A footnote", "B footnote")
 expect_that(formatfn(foo), equals(foo))
 # This also checks split over lines
 foo <- c("A footnote", "A veeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines")
-expect_that(formatfn(foo)[2], equals("A veeeeeeeeeeeeery loooooooooooong foooooootnoooote\nthat should split over lines"))
+expect_that(stringr::str_count(formatfn(foo)[2], "\n"), equals(1))
+foo2 <- c("A footnote", "An already split\nveeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines")
+expect_that(stringr::str_count(formatfn(foo2)[2], "\n"), equals(2))
