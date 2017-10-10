@@ -54,6 +54,7 @@ getsides <- function(p, panels, layout) {
   } else  {
     stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
   }
+  return(side)
 }
 
 needxlabels <- function(p, layout) {
