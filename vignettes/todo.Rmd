@@ -11,7 +11,7 @@ vignette: >
 
 This document outlines some of arphit's limitations with respect to many of the standard graphs used by the RBA. It also lists some of the planned improvements.
 
-# Limitations
+# Known limitations
 
 ## Undated graphs
 
@@ -21,6 +21,16 @@ Currently, only time series graphs are supported. `arphit` was built with the pu
 
 As above, `arphit` was built with forecasting in mind. High-frequency and short-sample time series are not an important use case and so are not supported.
 
-# Planned improvements
+## Overlapping years
 
-Nothing currently.
+On 2-by-2 and 2-vertical graphs, the last x-tick of the left hand panel can overlap the first of the right-hand panel. There is currently no workaround, but one will be added.
+
+## Panel subtitles
+
+Panel subtitles will not be displayed correctly if the panel title is multi-line, or if there is no panel title. This will be addressed, but is low priority given that these cases don't come up frequently.
+
+# Planned feature improvements
+
+## Auto labeller
+
+Automatically place series labels on graphs (when needed) in available white space.
