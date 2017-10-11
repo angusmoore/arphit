@@ -24,6 +24,9 @@ cp ../vignettes/inst/doc/complex_example.png images/complex_example.png
 cp ../vignettes/inst/doc/nooptions.png images/nooptions.png
 cp ../vignettes/inst/doc/lotsofoptions.png images/lotsofoptions.png
 
+ls ../
+ls ../vignettes
+
 git add .
 git commit -m "Auto-deploy vignettes to github pages"
 git push --force --quiet $FULL_REPO master:gh-pages
