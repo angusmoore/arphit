@@ -92,7 +92,7 @@ knitr::include_graphics("lotsofoptions.png")
 
 A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](plotting-options.html). It is a good first place to start.
 
-Package documentation can be found [here](https://angusmoore.github.io/arphit/arphit.pdf). It is technical and in most cases will be useful than the plotting options vignette.
+Package documentation can be found [here](https://angusmoore.github.io/arphit/arphit.pdf). It is technical and in most cases will be less useful than the plotting options vignette.
 
 If these sources don't answer your problems, or you encounter a bug, please open an issue (see below).
 
