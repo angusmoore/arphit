@@ -11,6 +11,9 @@ for files in '*.tar.gz'; do
         tar xfz $files
 done
 
+R CMD INSTALL "$(find . -type f -iname 'arphit*.tar.gz' -print -quit)"
+Rscript ../build-readme-images.R
+
 cd out
 git init
 git config user.name "travis"
@@ -19,11 +22,6 @@ cp ../arphit/inst/doc/index.html index.html
 cp ../arphit/inst/doc/plotting-options.html plotting-options.html
 cp ../arphit/inst/doc/todo.html todo.html
 
-find . -type f -iname 'arphit*.tar.gz' -print -quit
-find . -type f -iname '*.tar.gz' -print -quit
-
-R CMD INSTALL "$(find . -type f -iname 'arphit*.tar.gz' -print -quit)"
-Rscript ../build-readme-images.R
 mkdir images
 cp ../simple_example.png images/simple_example.png
 cp ../complex_example.png images/complex_example.png
