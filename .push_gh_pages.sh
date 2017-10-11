@@ -19,7 +19,7 @@ cp ../arphit/inst/doc/index.html index.html
 cp ../arphit/inst/doc/plotting-options.html plotting-options.html
 cp ../arphit/inst/doc/todo.html todo.html
 
-R CMD INSTALL "$(find . -type f -iname 'arphit*.tar.gz')"
+R CMD INSTALL "$(find . -type f -iname 'arphit*.tar.gz' -print -quit)"
 Rscript ../build-readme-images.R
 mkdir images
 cp ../simple_example.png images/simple_example.png
