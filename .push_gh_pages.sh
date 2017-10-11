@@ -12,7 +12,7 @@ for files in '*.tar.gz'; do
 done
 
 R CMD INSTALL "$(find . -type f -iname 'arphit*.tar.gz' -print -quit)"
-Rscript ../build-readme-images.R
+Rscript ./build-readme-images.R
 
 cd out
 git init
