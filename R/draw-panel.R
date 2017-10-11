@@ -244,7 +244,7 @@ drawpanel <- function(p, panels, data, shading, bgshadings, margins, layout, por
   drawbars(p, l, panels, data, attributes, xlim, ylim, bar.stacked)
   
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
-  par(mfg = l)
+  graphics::par(mfg = l)
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
   drawshading(shading[[p]], data)
   drawlines(p, l, panels, data, attributes, xlim, ylim)
