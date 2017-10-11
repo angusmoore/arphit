@@ -19,13 +19,11 @@ cp ../arphit/inst/doc/index.html index.html
 cp ../arphit/inst/doc/plotting-options.html plotting-options.html
 cp ../arphit/inst/doc/todo.html todo.html
 mkdir images
-cp ../arphit/inst/doc/simple_example.png images/simple_example.png
-cp ../arphit/inst/doc/complex_example.png images/complex_example.png
-cp ../arphit/inst/doc/nooptions.png images/nooptions.png
-cp ../arphit/inst/doc/lotsofoptions.png images/lotsofoptions.png
-
-ls ../
+cp ../vignettes/simple_example.png images/simple_example.png
+cp ../vignettes/inst/doc/complex_example.png images/complex_example.png
+cp ../vignettes/inst/doc/nooptions.png images/nooptions.png
+cp ../vignettes/inst/doc/lotsofoptions.png images/lotsofoptions.png
 
 git add .
-git commit -m "Auto-deploye vignettes to github pages"
+git commit -m "Auto-deploy vignettes to github pages"
 git push --force --quiet $FULL_REPO master:gh-pages
