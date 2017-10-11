@@ -24,6 +24,8 @@ cp ../arphit/inst/doc/complex_example.png images/complex_example.png
 cp ../arphit/inst/doc/nooptions.png images/nooptions.png
 cp ../arphit/inst/doc/lotsofoptions.png images/lotsofoptions.png
 
+ls ../
+
 git add .
 git commit -m "Auto-deploye vignettes to github pages"
 git push --force --quiet $FULL_REPO master:gh-pages
