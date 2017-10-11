@@ -11,6 +11,9 @@ for files in '*.tar.gz'; do
         tar xfz $files
 done
 
+R CMD INSTALL "$(find . -type f -iname 'arphit*.tar.gz' -print -quit)"
+Rscript ./build-readme-images.R
+
 cd out
 git init
 git config user.name "travis"
@@ -19,6 +22,12 @@ cp ../arphit/inst/doc/index.html index.html
 cp ../arphit/inst/doc/plotting-options.html plotting-options.html
 cp ../arphit/inst/doc/todo.html todo.html
 
+mkdir images
+cp ../simple_example.png images/simple_example.png
+cp ../complex_example.png images/complex_example.png
+cp ../nooptions.png images/nooptions.png
+cp ../lotsofoptions.png images/lotsofoptions.png
+
 git add .
-git commit -m "Auto-deployed vignettes to github pages"
+git commit -m "Auto-deploy vignettes to github pages"
 git push --force --quiet $FULL_REPO master:gh-pages
