@@ -42,14 +42,18 @@ getsides <- function(p, panels, layout) {
   if (layout == "1" || layout == "2v") {
     if (p == "1") {
       side <- 2
-    } else {
+    } else if (p == "2") {
       side <- 4
+    } else {
+      stop(paste("Layout ", layout, " does not have panel ", p, sep = ""))
     }
   } else if (layout == "2h" || layout == "2b2") {
     if (p == "1" || p == "3") {
       side <- 2
-    } else {
+    } else if (p == "2" || p == "4") {
       side <- 4
+    } else {
+      stop(paste("Layout ", layout, " does not have panel ", p, sep = ""))
     }
   } else  {
     stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
