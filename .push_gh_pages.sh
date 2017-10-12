@@ -11,6 +11,8 @@ for files in '*.tar.gz'; do
         tar xfz $files
 done
 
+R -e "path <- './'; system(paste(shQuote(file.path(R.home('bin'), 'R')), 'CMD', 'Rd2pdf', shQuote(path)))"
+
 R CMD INSTALL "$(find . -type f -iname 'arphit*.tar.gz' -print -quit)"
 Rscript ./build-readme-images.R
 
@@ -21,6 +23,8 @@ git config user.email "travis"
 cp ../arphit/inst/doc/index.html index.html
 cp ../arphit/inst/doc/plotting-options.html plotting-options.html
 cp ../arphit/inst/doc/todo.html todo.html
+
+cp ../arphit.pdf arphit.pdf
 
 mkdir images
 cp ../simple_example.png images/simple_example.png
