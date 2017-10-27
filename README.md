@@ -75,11 +75,11 @@ arphit.tsgraph(data,
   <img src="https://angusmoore.github.io/arphit/images/lotsofoptions.png" width="400px" />
 </p>
 
-`arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](plotting-options.html).
+`arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](ttps://angusmoore.github.io/arphit/plotting-options.html).
 
 # Documentation
 
-A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](plotting-options.html). It is a good first place to start.
+A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](ttps://angusmoore.github.io/arphit/plotting-options.html). It is a good first place to start.
 
 Package documentation can be found [here](https://angusmoore.github.io/arphit/arphit.pdf). It is technical and in most cases will be less useful than the plotting options vignette.
 
@@ -87,6 +87,6 @@ If these sources don't answer your problems, or you encounter a bug, please open
 
 # Bugs and planned features
 
-A list of known drawbacks, planned features and other to-do tasks can be found [here](todo.html).
+A list of known drawbacks, planned features and other to-do tasks can be found [here](ttps://angusmoore.github.io/arphit/todo.html).
 
 Please report any bugs you find on the github [issue tracker](https://github.com/angusmoore/arphit/issues).
