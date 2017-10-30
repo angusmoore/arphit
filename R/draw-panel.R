@@ -134,7 +134,7 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
     labels_drop <- labels_drop[1:(length(labels_drop)-1)]
   }
 
-  graphics::axis(side, at = labels_drop, labels = labels_drop, tck = 0, cex.lab = 1)
+  graphics::axis(side, at = labels_drop, labels = labels_drop, tck = 0, cex.lab = 1, mgp = c(3, 0.2, 0))
   graphics::axis(side, c(ylim[[p]]$min, ylim[[p]]$max), labels = FALSE, tck = 0)
 
   # Add a line on the right. This is irrelevant/duplicate for some graphs, but for vertical multipanels it adds the divider
@@ -143,12 +143,12 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
   }
 
   # Add units
-  graphics::mtext(text = scaleunits[[p]], side = side, at = ylim[[p]]$max, line = 1, cex = 1)
+  graphics::mtext(text = scaleunits[[p]], side = side, at = ylim[[p]]$max, line = 0.2, cex = 1, padj = 1)
 
   if (xlab) {
     # Draw ticks and labels
     graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = DEFAULTTICKLENGTH, labels = FALSE)
-    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, at = xlabels[[p]]$at, labels = xlabels[[p]]$labels, cex.lab = 1)
+    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, at = xlabels[[p]]$at, labels = xlabels[[p]]$labels, cex.lab = 1, mgp = c(3, 0.6, 0))
   }
 
   # Draw top and bottom line, will often double up but better to overdo than under
@@ -242,7 +242,7 @@ drawpanel <- function(p, panels, data, shading, bgshadings, margins, layout, por
   gridsandborders(p, panels, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim)
 
   drawbars(p, l, panels, data, attributes, xlim, ylim, bar.stacked)
-  
+
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
   graphics::par(mfg = l)
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
