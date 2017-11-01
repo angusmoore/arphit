@@ -5,6 +5,9 @@ shadingsanity <- function(to, from, panels) {
   if (!(from %in% names(panels$serieslist))) {
     stop(paste("Series ", from, " from your shading options is not a recognised series. Perhaps it was a duplicate (which get renamed by arphit internally)?", sep = ""))
   }
+  if (panels$serieslist[[from]] != panels$serieslist[[to]]) {
+    stop(paste("Series are not in the same panel, cannot shade between them. ", from, " is in panel ", serieslist[[from]], ", ", to, " is in panel ", serieslist[[to]], sep = ""))
+  }
 }
 
 handleshading <- function(shading, panels) {
