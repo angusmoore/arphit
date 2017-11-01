@@ -6,7 +6,7 @@ finddevice <- function(filename) {
     if (filetype == "png" || filetype == "pdf" || filetype == "emf") {
       return(filetype)
     } else {
-      stop(paste("Unsupported file type ", filetype, ".", sep = 0))
+      stop(paste("Unsupported file type ", filetype, ".", sep = ""))
     }
   }
 }
