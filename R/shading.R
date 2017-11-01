@@ -7,6 +7,7 @@ shadingsanity <- function(to, from, panels) {
   }
   if (serieslist[[from]] != serieslist[[to]]) {
     stop(paste("Series are not in the same panel, cannot shade between them. ", from, " is in panel ", serieslist[[from]], ", ", to, " is in panel ", serieslist[[to]], sep = ""))
+  }
 }
 
 handleshading <- function(shading, panels) {
