@@ -374,6 +374,8 @@ part years if desired by adding decimal places (e.g. `2000.5`). As with the y-ax
 Fine-grained control of x-ticks is not currently possible; only the limits can be set, the ticks are determined
 automatically.
 
+By default, on "2b2" and "2v" layouts, the first tick of the right hand panel is not displayed. This prevents the last label of the left hand panel overlapping the first of the right hand panel. You can force the first tick to display by setting `dropxlabel = FALSE`.
+
 # Shading between series
 
 You can shade the area between series by using the `shading` argument. This takes a list of lists. Each of the sublists must have keys `from`, `to` and `color`, which speak for themselves. You can supply multiple sets of shading (hence the list of lists). They are drawn first to last, so if you want to shade over the top, supply bottom to top. All series are _always_ drawn on top of shading.

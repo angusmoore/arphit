@@ -31,6 +31,7 @@
 #' @param ylim (optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).
 #' @param portrait (optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
 #' @param bar.stacked (optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).
+#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options and how they affect the output.
@@ -44,7 +45,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), scaleunits = "index")
 #'
 #' @export
-arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, portrait = FALSE, bar.stacked = TRUE) {
+arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE) {
   if (is.null(series)) {
     # Plot all the series
     series <- list("1" = colnames(data))
@@ -99,7 +100,7 @@ arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filen
 
   # Plot each panel
   for (p in names(panels$panels)) {
-    drawpanel(p, panels, data, shading, bgshading, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitles, panelsubtitles, bar.stacked)
+    drawpanel(p, panels, data, shading, bgshading, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitles, panelsubtitles, bar.stacked, dropxlabel)
     drawannotationlines(lines, p , data)
     drawarrows(arrows, p, data)
     drawlabels(labels, p, data)
