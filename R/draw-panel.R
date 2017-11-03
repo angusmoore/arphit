@@ -61,6 +61,14 @@ getsides <- function(p, panels, layout) {
   return(side)
 }
 
+dropfirstxlabel <- function(p, layout, dropxlabel) {
+  if ((layout == "2v" && p == "2") || (layout == "2b2" && p == "4")) {
+    return(dropxlabel)
+  } else {
+    return(FALSE)
+   }
+}
+
 needxlabels <- function(p, layout) {
   if (layout == "1") {
     if (p == "1") {
@@ -121,7 +129,7 @@ needgrid <- function(p, layout) {
   }
 }
 
-gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim) {
+gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim, dropxlabel) {
   side <- getsides(p, panels, layout)
   xlab <- needxlabels(p, layout)
 
@@ -148,7 +156,14 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
   if (xlab) {
     # Draw ticks and labels
     graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = DEFAULTTICKLENGTH, labels = FALSE)
-    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, at = xlabels[[p]]$at, labels = xlabels[[p]]$labels, cex.lab = 1, mgp = c(3, 0.6, 0))
+    if (dropfirstxlabel(p, layout, dropxlabel)) {
+      at = xlabels[[p]]$at[2:length(xlabels[[p]]$at)]
+      labels = xlabels[[p]]$labels[2:length(xlabels[[p]]$labels)]
+    } else {
+      at = xlabels[[p]]$at
+      labels = xlabels[[p]]$labels
+    }
+    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 0.6, 0))
   }
 
   # Draw top and bottom line, will often double up but better to overdo than under
@@ -229,7 +244,7 @@ drawbars <- function(p, l, panels, data, attributes, xlim, ylim, bar.stacked) {
   }
 }
 
-drawpanel <- function(p, panels, data, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitles, panelsubtitles, bar.stacked) {
+drawpanel <- function(p, panels, data, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitles, panelsubtitles, bar.stacked, dropxlabel) {
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p ,layout)
 
@@ -239,7 +254,7 @@ drawpanel <- function(p, panels, data, shading, bgshadings, margins, layout, por
 
   drawbgshadings(bgshadings, p, data)
 
-  gridsandborders(p, panels, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim)
+  gridsandborders(p, panels, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim, dropxlabel)
 
   drawbars(p, l, panels, data, attributes, xlim, ylim, bar.stacked)
 
