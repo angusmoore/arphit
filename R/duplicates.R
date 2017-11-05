@@ -62,12 +62,14 @@ duplicatebars <- function(dupmap, bars) {
 }
 
 duplicateattribute <- function(dupmap, attribute) {
-  for (s in names(dupmap)) {
-    for (p in dupmap[[s]]) {
-      newname <- paste(s, ".", p, sep = "")
-      attribute[[newname]] <- attribute[[s]]
+  if (is.list(attribute)) {
+    for (s in names(dupmap)) {
+      for (p in dupmap[[s]]) {
+        newname <- paste(s, ".", p, sep = "")
+        attribute[[newname]] <- attribute[[s]]
+      }
+      attribute[[s]] <- NULL
     }
-    attribute[[s]] <- NULL
   }
   return(attribute)
 }
