@@ -10,7 +10,7 @@ arphit.tsgraph(data, series = NULL, layout = "1", bars = NULL,
   sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL,
   bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1,
   lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, portrait = FALSE,
-  bar.stacked = TRUE)
+  bar.stacked = TRUE, dropxlabel = TRUE)
 }
 \arguments{
 \item{data}{ts Object containing the series you want to plot.}
@@ -62,11 +62,13 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 
 \item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).}
 
-\item{ylim}{(optional) A list of string -> c(numeric, numeric, int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as c(minimum, maximum, number of steps). If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).}
+\item{ylim}{(optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).}
 
 \item{portrait}{(optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).}
 
 \item{bar.stacked}{(optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).}
+
+\item{dropxlabel}{(optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.}
 }
 \description{
 Creates a (potentially multipanel) time series graph from a ts objecct. Supports bar and line (and combinations of).
