@@ -8,7 +8,7 @@
 #'   You do not need to supply all panels. For instance, in a one-panel, there is no need to supply series for panel "2" if you want all series on the left hand side axis.
 #'   Alternatively if just a vector of string names is supplied, it will be assumed all series are being plotted in panel 1. Similarly, if series is not supplied at all, all series will be plotted in panel 1.
 #' @param layout (optional) A string indicating the layout of the chart. Valid options are "1" (single panel), "2v" (side-by-side two panel), "2h" (top and bottom two panel), and "2b2" two-by-two four panel chart. Defaults to single panel if not supplied.
-#' @param bars (optional) Vector of string names indicating which series should be bars, rather than lines.
+#' @param bars (optional) Vector of string names indicating which series should be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series will plot as bars.
 #' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
 #' @param shading (optional) List of shading between series. See the plotting options vignette for information on how to use.
 #' @param title (optional) A string indicating the title for the entire chart. Passing NULL (or omitting the argument) will suppress printing of title.
