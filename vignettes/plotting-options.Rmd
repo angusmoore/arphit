@@ -172,6 +172,8 @@ arphit.tsgraph(data, series = list("1" = c("x1","x2"), "2" = c("x3")), bars = c(
 knitr::include_graphics("bars.png")
 ```
 
+Alternatively, if you want all series to be bars, just set `bars = TRUE`. This is equivalent to passing in a vector with all series names.
+
 If you have multiple bar series on one panel, they automatically be stacked. This example plots `x1` and `x2` as
 bars on the left axis.
 ```

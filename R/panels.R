@@ -40,7 +40,7 @@ handlepanels <- function(series, bars, layout) {
       panels[p] <- series[p]
       for (s in series[[p]]) {
         serieslist[s] <- p
-        if (s %in% bars) {
+        if (s %in% bars || (is.logical(bars) && bars)) {
           barlist[s] <- TRUE
         }
       }
