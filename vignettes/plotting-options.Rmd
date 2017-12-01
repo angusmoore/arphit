@@ -318,9 +318,23 @@ knitr::include_graphics("setattributeall.png")
 ## Line colour
 
 `col` controls the colour of your series. If a colour is not specified for a series, `arphit` cycles through the
-default RBA colours. Any colour that R recognises can be given.
+default RBA colours.
 
-In future an RBA colour palette will be added to make it easy to use the RBA-approved colours by name.
+The RBA color palette can be accessed using `RBA["Green1"]` etc. For instance:
+
+```
+arphit.tsgraph(data, series = ("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]))
+```
+```{r, echo = FALSE, results = "hide"}
+arphit.tsgraph(data, series = ("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]), filename = "rbacolours.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("rbacolours.png")
+```
+
+To see the full list of availble colours type `vignette("rba-colours", package = "arphit")`.
+
+Alternatively, you can use any colour that R recognises.
 
 ## Line markers
 
