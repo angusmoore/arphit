@@ -701,6 +701,62 @@ agg_draw(p, filename = "arrow.png")
 knitr::include_graphics("arrow.png")
 ```
 
+## Automatic labels
+
+`arphit` has (experimental) functionality to _automatically_ add series labels for you. You can enable the auto labeller by setting `enable.autolabeller = TRUE`. If enabled, the auto labeller will run on panels with more than one series, and which do not already have text labels. If you manually set text labels for a panel, the auto labeller will skip that panel. It will also add arrows from the label to the series if necessary.
+
+### Series names
+
+The auto labeller will use whatever your series are called in the data `ts` object. You can see the names of your columns like so:
+```{r}
+colnames(data)
+```
+
+To set the first series name to something else try:
+```
+colnames(data)[1] <- "Series 1 name"
+```
+Or similarly for other series.
+
+### Enabling the auto labeller
+
+Call the auto labeller like so:
+```
+arphit.tsgraph(data, enable.autolabeller = TRUE)
+```
+```{r, echo = FALSE, message=FALSE, results = "hide"}
+arphit.tsgraph(data, enable.autolabeller = TRUE, filename = "autolabel.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("autolabel.png")
+```
+
+If you put text labels on panel 2, that disables the auto labeller for that panel:
+```
+arphit.tsgraph(data,
+               series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
+               layout = "2v",
+               labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+               enable.autolabeller = TRUE)
+```
+```{r, echo = FALSE, message=FALSE, results = "hide"}
+arphit.tsgraph(data,
+               series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
+               layout = "2v",
+               labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+               enable.autolabeller = TRUE,
+               filename = "autolabel-disableone.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("autolabel-disableone.png")
+```
+
+### Caveats for the auto labeller
+* The auto labeller can be _slow_, particularly if you have a lot of series. Be patient while it runs.
+* There are no guarantees the auto labeller will be able to find labels for all series, particularly if you have many series.
+* The auto labeller is random; each run will put the labels in a different location.
+* If labels are too far from their series, or if they do not have unobstructed line of sight, the auto labeller will automatically add an arrow.
+
 ## Adding horizonal and vertical lines
 
 Horizontal and vertical lines are added using `agg_abline`. Horizontal lines are drawn by specifying the `y` variable _only; vertical the `x` variable only. You can also control the color and line type. These are optional and default to a solid black line. You must also tell `arphit` which panel to put the line on.
