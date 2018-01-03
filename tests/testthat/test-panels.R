@@ -40,8 +40,8 @@ expect_that(handlepanels(list("1" = fakeseries1, "2" = fakeseries2), fakeseries1
 
 # Handle panels - errors
 context("Panel handling - errors")
-expect_error(handlepanels(list("1" = fakeseries1), "3" = fakeseries3), nobars, "1")
-expect_error(handlepanels(list("1" = fakeseries1), "3" = fakeseries3), nobars, "2v")
-expect_error(handlepanels(list("1" = fakeseries1), "5" = fakeseries3), nobars, "2h")
-expect_error(handlepanels(list("1" = fakeseries1), "5" = fakeseries3), nobars, "2b2")
-expect_error(handlepanels(list("1" = fakeseries1), "1" = fakeseries3), nobars, "foo")
+expect_error(handlepanels(list("1" = fakeseries1, "3" = fakeseries3), nobars, "1"))
+expect_error(handlepanels(list("1" = fakeseries1, "3" = fakeseries3), nobars, "2v"))
+expect_error(handlepanels(list("1" = fakeseries1, "5" = fakeseries3), nobars, "2h"))
+expect_error(handlepanels(list("1" = fakeseries1, "5" = fakeseries3), nobars, "2b2"))
+expect_error(handlepanels(list("1" = fakeseries1, "1" = fakeseries3), nobars, "foo"))
