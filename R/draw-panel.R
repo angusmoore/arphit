@@ -220,26 +220,26 @@ as.barplot.x <- function(bp.data, xlim, bar.stacked) {
 }
 
 drawbars <- function(p, l, panels, data, attributes, xlim, ylim, bar.stacked) {
-  barcols <- c()
+  barcolumns <- c()
   colors <- c()
   bordercol <- c()
 
   for (s in panels$panels[[p]]) {
     if (s %in% names(panels$bars)) {
-      barcols <- append(barcols, s)
+      barcolumns <- append(barcolumns, s)
       colors <- append(colors, attributes$col[[s]])
-      bordercol <- append(bordercol, attributes$bordercol[[s]])
+      bordercol <- append(bordercol, attributes$barcol[[s]])
     }
   }
-  if (length(barcols) > 0) {
-    bardata <- t(as.matrix(data[, barcols]))
+  if (length(barcolumns) > 0) {
+    bardata <- t(as.matrix(data[, barcolumns]))
     # Split into positive and negative (R doesn't stack well across axes)
     bardata_p <- bardata
     bardata_n <- bardata
     bardata_p[bardata[, ] > 0] <- 0
     bardata_n[bardata[, ] <= 0] <- 0
 
-    shiftedxlim <- as.barplot.x(data[, barcols], xlim[[p]] - 1.0/(2*stats::frequency(data)), bar.stacked)
+    shiftedxlim <- as.barplot.x(data[, barcolumns], xlim[[p]] - 1.0/(2*stats::frequency(data)), bar.stacked)
     graphics::par(mfg = l)
     graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = shiftedxlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked))
     graphics::par(mfg = l)
