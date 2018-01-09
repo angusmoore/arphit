@@ -66,6 +66,10 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
   bottom <- bottom*CSI
   left <- left*CSI
   right <- right*CSI
+  # Now apply the minimum left and right padding
+  left <- max(left, MINIMUMSIDEPADDING)
+  right <- max(right, MINIMUMSIDEPADDING)
+
   figwidth <- plotsize[2] + left + right
   figheight <- plotsize[1] + top + bottom
   return(list("height" = figheight, "width" = figwidth))
