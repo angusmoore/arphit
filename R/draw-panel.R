@@ -133,6 +133,7 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
   side <- getsides(p, panels, layout)
   xlab <- needxlabels(p, layout)
 
+  ## Draw the axis scale
   # Drop the first label
   labels_drop <- ticks[[p]]
 
@@ -141,18 +142,12 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
   } else {
     labels_drop <- labels_drop[1:(length(labels_drop)-1)]
   }
-
   graphics::axis(side, at = labels_drop, labels = labels_drop, tck = 0, cex.lab = 1, mgp = c(3, 0.2, 0))
-  graphics::axis(side, c(ylim[[p]]$min, ylim[[p]]$max), labels = FALSE, tck = 0)
-
-  # Add a line on the right. This is irrelevant/duplicate for some graphs, but for vertical multipanels it adds the divider
-  if (side == 2) {
-    graphics::axis(4, c(ylim[[p]]$min, ylim[[p]]$max), labels = FALSE, tck = 0)
-  }
 
   # Add units
   graphics::mtext(text = scaleunits[[p]], side = side, at = ylim[[p]]$max, line = 0.2, cex = 1, padj = 1)
 
+  ## Draw the x-axis
   if (xlab) {
     # Draw ticks and labels
     graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = DEFAULTTICKLENGTH, labels = FALSE)
@@ -163,20 +158,28 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
       at = xlabels[[p]]$at
       labels = xlabels[[p]]$labels
     }
-    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 0.6, 0))
+    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 1.2, 0))
+  }
+
+  ## Draw the grid
+  if (needgrid(p, layout)) {
+    graphics::grid(nx = FALSE, ny = (ylim[[p]]$nsteps - 1), col = "lightgray", lty = "solid", lwd = 1)
+    # Add a zero line if needed
+    if (0 %in% ticks[[p]]) {
+      graphics::axis(1, pos = 0, xlim[[p]][1]:xlim[[p]][2], labels = FALSE, tck = 0, lwd = 1)
+    }
+  }
+
+  ## Draw the outer bouding box
+  graphics::axis(side, c(ylim[[p]]$min, ylim[[p]]$max), labels = FALSE, tck = 0, lwd = 1)
+  # Add a line on the right. This is irrelevant/duplicate for some graphs, but for vertical multipanels it adds the divider
+  if (side == 2) {
+    graphics::axis(4, c(ylim[[p]]$min, ylim[[p]]$max), labels = FALSE, tck = 0, lwd = 1)
   }
 
   # Draw top and bottom line, will often double up but better to overdo than under
-  graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, labels = FALSE)
-  graphics::axis(3, xlim[[p]][1]:xlim[[p]][2], tck = 0, labels = FALSE)
-
-  if (needgrid(p, layout)) {
-    graphics::grid(nx = FALSE, ny = (ylim[[p]]$nsteps - 1), col = "lightgray", lty = "solid")
-    # Add a zero line if needed
-    if (0 %in% ticks[[p]]) {
-      graphics::axis(1, pos = 0, xlim[[p]][1]:xlim[[p]][2], labels = FALSE, tck = 0)
-    }
-  }
+  graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, labels = FALSE, lwd = 1)
+  graphics::axis(3, xlim[[p]][1]:xlim[[p]][2], tck = 0, labels = FALSE, lwd = 1)
 }
 
 drawshading <- function(shading, data) {
@@ -217,26 +220,26 @@ as.barplot.x <- function(bp.data, xlim, bar.stacked) {
 }
 
 drawbars <- function(p, l, panels, data, attributes, xlim, ylim, bar.stacked) {
-  barcols <- c()
+  barcolumns <- c()
   colors <- c()
   bordercol <- c()
 
   for (s in panels$panels[[p]]) {
     if (s %in% names(panels$bars)) {
-      barcols <- append(barcols, s)
+      barcolumns <- append(barcolumns, s)
       colors <- append(colors, attributes$col[[s]])
-      bordercol <- append(bordercol, attributes$bordercol[[s]])
+      bordercol <- append(bordercol, attributes$barcol[[s]])
     }
   }
-  if (length(barcols) > 0) {
-    bardata <- t(as.matrix(data[, barcols]))
+  if (length(barcolumns) > 0) {
+    bardata <- t(as.matrix(data[, barcolumns]))
     # Split into positive and negative (R doesn't stack well across axes)
     bardata_p <- bardata
     bardata_n <- bardata
     bardata_p[bardata[, ] > 0] <- 0
     bardata_n[bardata[, ] <= 0] <- 0
 
-    shiftedxlim <- as.barplot.x(data[, barcols], xlim[[p]] - 1.0/(2*stats::frequency(data)), bar.stacked)
+    shiftedxlim <- as.barplot.x(data[, barcolumns], xlim[[p]] - 1.0/(2*stats::frequency(data)), bar.stacked)
     graphics::par(mfg = l)
     graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = shiftedxlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked))
     graphics::par(mfg = l)
