@@ -1,8 +1,16 @@
 context("Draw figure")
 
+height <- 10 + (10 + 20)*CSI
+width <- 20 + (30 + 40)*CSI
+expect_that(getfigsize(c(10,20), 10, 20, 30, 40), equals(list(height = height, width = width)))
+
 height <- 10 + (1 + 2)*CSI
-width <- 20 + (3 + 4)*CSI
+width <- 20 + 2*MINIMUMSIDEPADDING
 expect_that(getfigsize(c(10,20), 1, 2, 3, 4), equals(list(height = height, width = width)))
+
+height <- 10 + (1 + 2)*CSI
+width <- 20 + MINIMUMSIDEPADDING + 6*CSI
+expect_that(getfigsize(c(10,20), 1, 2, 1, 6), equals(list(height = height, width = width)))
 
 expect_error(handlelayout("sdf"))
 
