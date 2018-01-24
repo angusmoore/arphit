@@ -4,7 +4,7 @@
 \name{RBA}
 \alias{RBA}
 \title{RBA colour palette}
-\format{An object of class \code{character} of length 107.}
+\format{An object of class \code{character} of length 108.}
 \usage{
 RBA
 }

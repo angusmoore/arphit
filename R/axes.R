@@ -109,8 +109,8 @@ ylimconform <- function(panels, ylim, data, layout) {
   ylim_list <- list()
   if (is.null(ylim)) {
     for (p in names(panels$panels)) {
-      paneldf <- data[, panels$panels[[p]], drop = FALSE]
-      if (any(!is.na(paneldf)) && is.finite(max(paneldf)) && is.finite(min(paneldf))) {
+      paneldf <- data[[p]][, panels$panels[[p]], drop = FALSE]
+      if (!is.null(paneldf) && any(!is.na(paneldf)) && is.finite(max(paneldf)) && is.finite(min(paneldf))) {
         ylim_list[[p]] <- defaultscale(paneldf)
       } else {
         ylim_list[[p]] <- EMPTYSCALE
@@ -146,8 +146,8 @@ ylimconform <- function(panels, ylim, data, layout) {
             stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
           }
         } else {
-          paneldf <- data[, panels$panels[[p]], drop = FALSE]
-          if (ncol(paneldf) > 0) {
+          paneldf <- data[[p]][, panels$panels[[p]], drop = FALSE]
+          if (!is.null(paneldf) && ncol(paneldf) > 0) {
             ylim_list[[p]] <- defaultscale(paneldf)
           } else {
             ylim_list[[p]] <- EMPTYSCALE
@@ -170,25 +170,47 @@ handleticks <- function(data, panels, ylim) {
   return(ticks)
 }
 
-xlabels <- function(xlim) {
-  # Ideally, every year, but no more than max-x-years (set in constants) labels because it gets too crowded
+xlabels.ts <- function(xlim) {
   startyear <- xlim[1]
   endyear <- xlim[2]
-  range <- endyear - startyear + 1
-
-  step <- ceiling(range/MAXXYEARS)
-
   # Create the sequence and offset the labels by half a year so that the labels are centered
-  labels <- seq(from = startyear, to = endyear, by = step)
+  labels <- seq(from = startyear, to = endyear, by = 1)
   # Now shift the at
   at <- labels + 0.5
-  return(list("at" = at, "labels" = labels))
+  ticks <- labels
+  return(list("at" = at, "labels" = labels, "ticks" = ticks))
 }
 
-handlexlabels <- function(panels, xlim) {
+xlabels.categorical <- function(xlim, xvar) {
+  start <- xlim[1]
+  end <- xlim[2] - 1
+  at <- seq(from = start, to = end, by = 1) + 0.5
+  labels <- xvar
+  return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = 1)))
+}
+
+xlabels.scatter <- function(xlim) {
+  scale <- defaultscale(xlim)
+  scale <- createscale (scale$min,scale$max,scale$nsteps)
+  return(list(at = scale, labels = scale, ticks = scale))
+}
+
+xlabels <- function(xlim, xvar, data) {
+  if (is.ts(data)) {
+    return(xlabels.ts(xlim))
+  } else if (is.scatter(xvar)) {
+    return(xlabels.scatter(xlim))
+  } else if (!is.null(xvar)) {
+    return(xlabels.categorical(xlim, xvar))
+  } else {
+    return(NULL)
+  }
+}
+
+handlexlabels <- function(panels, xlim, xvars, data) {
   out <- list()
   for (p in names(panels$panels)) {
-    out[[p]] <- xlabels(xlim[[p]])
+    out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]])
   }
   return(out)
 }
@@ -203,14 +225,34 @@ warnifxdiff <- function(panels, xlim) {
   }
 }
 
-xlimconform <- function(panels, xlim, data) {
-  # Only allows whole years at this stage
-  default <- c(floor(min(stats::time(data))), ceiling(max(stats::time(data))))
+is.scatter <- function(x) {
+  if (!is.null(x) && is.numeric(x)) {
+    return(!all(diff(x) == max(diff(x))))
+  } else {
+    return(FALSE)
+  }
+}
+
+defaultxscale <- function(xvars, xscales, data) {
+  if (!is.null(xvars)) {
+    if (is.numeric(xvars) && (is.ts(data) || is.scatter(xvars))) {
+      return( c(floor(min(xvars)), ceiling(max(xvars))) )
+    } else {
+      return (c(1, length(xvars)+1))
+    }
+  } else if (!is.null(xscales[["1"]])) {
+    return(xscales[["1"]])
+  } else {
+    return(EMPTYXSCALE)
+  }
+}
+
+xlimconform <- function(panels, xlim, xvars, data) {
   out <- list()
   if (!is.list(xlim)) {
     for (p in names(panels$panels)) {
       if (is.null(xlim)) {
-        out[[p]] <- default
+        out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]])
       } else {
         out[[p]] <- xlim
       }
@@ -220,7 +262,7 @@ xlimconform <- function(panels, xlim, data) {
       if (p %in% names(xlim)) {
         out[[p]] <- xlim[[p]]
       } else {
-        out[[p]] <- default
+        out[[p]] <- defaultxscale(xvars[[p]], out)
       }
     }
     # have a check for non-matching xlimits

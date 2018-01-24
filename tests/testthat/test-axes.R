@@ -3,7 +3,7 @@ fakeseries1 <- c("a","b")
 fakeseries2 <- c("c","d")
 onesided <- handlepanels(fakeseries1, NULL, "1")
 twosided <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), NULL, "1")
-fakedata <- as.ts(data.frame("a" = 1:10, "b" = 1:10))
+fakedata <- handledata(NULL, as.ts(data.frame("a" = 1:10, "b" = 1:10)), NULL)$data
 
 context("Y-axes scale")
 shouldbe <- list("1" = list("min" = 0, "max" = 12, "nsteps" = 5), "2" = list("min" = 0, "max" = 12, "nsteps" = 5))
@@ -47,18 +47,25 @@ for (i in 1:100) {
 }
 
 context("X-axes scale")
-for (i in 1:100) {
-  xlim <- sort(sample(1979:2017,2))
-  xlab <- xlabels(xlim)
-  expect_that(xlab$at[1], equals(min(xlim)+0.5))
-  expect_that(xlab$labels[1], equals(min(xlim)))
-  expect_that(length(xlab$labels), equals(length(xlab$at)))
-  expect_that(length(xlab$labels) <= MAXXYEARS, is_true())
-}
-
-expect_that(xlimconform(onesided, NULL, fakedata), equals(list("1" = c(1,10), "2" = c(1,10))))
-xlim <- xlimconform(onesided, NULL, fakedata)
-xlabels <- handlexlabels(onesided, xlim)
-test_that(xlabels, equals(1.5:10.5))
-
+# Check x lim conforming for time series data
+fakedata <- handledata(NULL, fakedata, NULL)$data
+xvars <- handlex(fakedata, NULL)
+expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(1,10), "2" = c(1,10))))
+xlim <- xlimconform(onesided, NULL, xvars, fakedata)
+x <- handlex(fakedata, NULL)
+xlabs <- handlexlabels(onesided, xlim, x, fakedata)
+test_that(xlabs, equals(list("1" = list(at = 1.5:10.5, labels = 1:10, ticks = 1:10))))
 expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)), fakedata))
+
+# Check x lim conforming for categorical data
+catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), "x")$data
+catpanels <- handlepanels(c("y"), NULL, "1")
+xvar <- handlex(catdata, "x")
+expect_that(xlimconform(catpanels, NULL, xvar, catdata), equals(list("1" = c(1, 6), "2" = c(1, 6))))
+
+# X lim conforming for scatter graph data
+scatter <- data.frame(x = runif(100), y = runif(100))
+scatter <- handledata(NULL, scatter, "x")$data
+xvar <- handlex(scatter, "x")
+scatterpanels <- handlepanels(c("y"), NULL, "1")
+expect_that(xlimconform(scatterpanels, NULL, xvar, scatter), equals(list("1" = c(0,1), "2" = c(0,1))))
