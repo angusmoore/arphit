@@ -323,10 +323,10 @@ default RBA colours.
 The RBA color palette can be accessed using `RBA["Green1"]` etc. For instance:
 
 ```
-arphit(data, series = ("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]))
+arphit(data, series = list("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit(data, series = ("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]), filename = "rbacolours.png")
+arphit(data, series = list("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]), filename = "rbacolours.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("rbacolours.png")
@@ -522,4 +522,3 @@ arphit(data, filename = "my_filename.png")
 arphit(data, filename = "my_filename.emf")
 arphit(data, filename = "my_filename.pdf")
 ```
-
