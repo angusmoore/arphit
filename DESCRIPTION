@@ -12,7 +12,8 @@ Imports:
   stringr,
   plyr,
   devEMF,
-  tibble
+  tibble,
+  lubridate
 Suggests:
   testthat,
     knitr,
