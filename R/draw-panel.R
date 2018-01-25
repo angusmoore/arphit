@@ -250,7 +250,7 @@ drawpanel <- function(p, panels, data, xvals, shading, bgshadings, margins, layo
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p ,layout)
 
-  if (is.ts(data)) {
+  if (stats::is.ts(data)) {
     x <- xvals + 1.0/(2*stats::frequency(data))
   } else if (is.numeric(xvals) && is.scatter(xvals)) {
     x <- xvals
