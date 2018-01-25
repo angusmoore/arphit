@@ -9,7 +9,7 @@ sanitycheckdata <- function(series, data) {
 }
 
 is.acceptable.data <- function(data) {
-  return(tibble::is_tibble(data) || is.data.frame(data) || is.ts(data))
+  return(tibble::is_tibble(data) || is.data.frame(data) || stats::is.ts(data))
 }
 
 handledata <- function(series, data, x) {
@@ -26,7 +26,7 @@ handledata <- function(series, data, x) {
         } else {
           if (!(x %in% out$series[["1"]])) {
             stop(paste("Your supplied x variable", x, "is not in your data"))
-          } else if (!is.ts(data)) {
+          } else if (!stats::is.ts(data)) {
             out$series[["1"]] <- out$series[["1"]][out$series[["1"]]!=x]
           }
         }
@@ -60,7 +60,7 @@ handledata <- function(series, data, x) {
       } else {
         out$series[[p]] <- series[[p]]
       }
-      if (!is.null(x[[p]]) && !is.ts(out$data[[p]])) {
+      if (!is.null(x[[p]]) && !stats::is.ts(out$data[[p]])) {
         out$series[[p]] <- out$series[[p]][out$series[[p]]!=x[[p]]]
       }
     }
