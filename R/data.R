@@ -32,10 +32,14 @@ handledata <- function(series, data, x) {
         }
       }
     } else {
-      out$series <- series
+      if (is.list(series)) {
+        out$series <- series
+      } else {
+        stop("The value you passed in for series is not a list and it needs to be.")
+      }
     }
 
-    # Now apply the parent data to all panels with non null series
+        # Now apply the parent data to all panels with non null series
     for (p in c("1", "2", "3", "4")) {
       if (!is.null(out$series[[p]])) {
         out$data[[p]] <- data
