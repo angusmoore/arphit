@@ -11,7 +11,7 @@ handlex <- function(data, x) {
   outx <- list()
   for (p in c("1", "2", "3", "4")) {
     if (!is.null(data[[p]])) {
-      if (is.ts(data[[p]])) {
+      if (stats::is.ts(data[[p]])) {
         outx[[p]] <- as.vector(stats::time(data[[p]]))
         if (!is.null(x[[p]])) {
           warning("Cannot supply x variable if your data are a time series. Ignoring x variable.")
