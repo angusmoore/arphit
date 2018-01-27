@@ -250,12 +250,12 @@ drawpanel <- function(p, panels, data, xvals, shading, bgshadings, margins, layo
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p ,layout)
 
-  if (stats::is.ts(data)) {
-    x <- xvals + 1.0/(2*stats::frequency(data))
-  } else if (is.numeric(xvals) && is.scatter(xvals)) {
+
+  if (is.numeric(xvals)) {
+    # time series or scatter
     x <- xvals
   } else if (!is.null(xvals)) {
-    # Categorical data
+    # Categorical data, offset by half
     x <- 1:length(xvals) + 0.5
   } else {
     # No data at all, empty plot

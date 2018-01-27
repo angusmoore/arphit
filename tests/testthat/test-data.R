@@ -1,3 +1,5 @@
+context("Data handling")
+
 ## Tests for types of data
 expect_that(is.acceptable.data(data.frame(x1 = rnorm(10))), is_true())
 expect_that(is.acceptable.data(tibble::tibble(x1 = rnorm(10))), is_true())
@@ -52,3 +54,14 @@ expect_error(handledata(error_series, list("1" = data, NULL)))
 expect_error(arphit.tsgraph(list("1" = data), series = error_series))
 expect_error(handledata(list("1" = "x5", "2" = "x5"), list("1" = data, "2" = data2), NULL))
 expect_error(handledata(list("1" = "x1", "2" = "x1"), list("1" = data, "2" = data2), NULL))
+
+# Passing multiple x variable for one dataset
+expect_error(handledata(NULL, data, list("1" = "x1", "2" = "x2")))
+
+# Request non existent x variable
+expect_error(handledata(NULL, data, "foo"))
+
+# not passing a list for the series list
+expect_error(handledata("foo", data, NULL))
+expect_error(handledata(("1" = "x1"), data, NULL))
+expect_error(arphit(data, series = ("1" = "x1")))

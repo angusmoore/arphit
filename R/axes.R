@@ -195,8 +195,8 @@ xlabels.scatter <- function(xlim) {
   return(list(at = scale, labels = scale, ticks = scale))
 }
 
-xlabels <- function(xlim, xvar, data) {
-  if (stats::is.ts(data)) {
+xlabels <- function(xlim, xvar, data, ists) {
+  if (stats::is.ts(data) || !is.null(ists)) {
     return(xlabels.ts(xlim))
   } else if (is.scatter(xvar)) {
     return(xlabels.scatter(xlim))
@@ -210,7 +210,8 @@ xlabels <- function(xlim, xvar, data) {
 handlexlabels <- function(panels, xlim, xvars, data) {
   out <- list()
   for (p in names(panels$panels)) {
-    out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]])
+    ists <- xvars[[paste(p,"ts",sep="")]]
+    out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists)
   }
   return(out)
 }
@@ -233,9 +234,9 @@ is.scatter <- function(x) {
   }
 }
 
-defaultxscale <- function(xvars, xscales, data) {
+defaultxscale <- function(xvars, xscales, data, ists) {
   if (!is.null(xvars)) {
-    if (is.numeric(xvars) && (stats::is.ts(data) || is.scatter(xvars))) {
+    if (is.numeric(xvars) && (stats::is.ts(data) || ists || is.scatter(xvars))) {
       return( c(floor(min(xvars)), ceiling(max(xvars))) )
     } else {
       return (c(1, length(xvars)+1))
@@ -252,7 +253,8 @@ xlimconform <- function(panels, xlim, xvars, data) {
   if (!is.list(xlim)) {
     for (p in names(panels$panels)) {
       if (is.null(xlim)) {
-        out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]])
+        ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
+        out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
       } else {
         out[[p]] <- xlim
       }
@@ -262,7 +264,8 @@ xlimconform <- function(panels, xlim, xvars, data) {
       if (p %in% names(xlim)) {
         out[[p]] <- xlim[[p]]
       } else {
-        out[[p]] <- defaultxscale(xvars[[p]], out)
+        ists <- xvars[[paste(p,"ts",sep="")]]
+        out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
       }
     }
     # have a check for non-matching xlimits

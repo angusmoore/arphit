@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This document outlines all of the plotting options in arphit and how to use them.
+This document outlines all of the plotting options in `arphit` and how to use them.
 Examples are included of output, along with explanations.
 
 The very first step to using `arphit` is to import it into your workspace:
@@ -19,37 +19,133 @@ library(arphit)
 
 If you get an error because you haven't yet installed `arphit`, see the 'Installation' section of the [README](https://github.com/angusmoore/arphit/blob/master/README.md).
 
-## Data
+# Data and types of graphs
 
-The most important input to `arphit` is data. Your data must be a `ts` object.
-You can convert a dataframe to a `ts` object very easily. For instance, suppose I have
-quarterly data that starts in 2000Q1 in a data.frame called `foo`. I can convert it a `ts`
-by calling:
-```
-foo_ts <- ts(foo, start = c(2000,1), frequency = 4)
-```
-For more details on the `ts` class see [https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ts.html].
+The most important input to `arphit` is data.
 
-For the remainder of this vignette, we will use the following randomly constructed time
-series for the examples:
+Data can be a `tibble`, a `data.frame` or a `ts`. (For more details on the `ts` class see [https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ts.html].)
+
+Please note, unless otherwise specified, the examples in this vignette use the following randomly constructed time
+series:
 ```{r}
 T <- 12
 data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
-
 ```
 
-## Panels, series and layouts
+## Specifying data
+
+The data is the first argument to an `arphit` call. (This means `arphit` is pipe friendly). Calling `arphit` is as simple as:
+```{r, eval = FALSE}
+arphit(data)
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(data, filename = "data_1.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("data_1.png")
+```
+
+## Types of graphs and data
+
+### Time series
+
+Giving `arphit` a `ts` object will automatically produce a time series plot:
+```{r, eval = FALSE}
+mytsdata <- ts(data.frame(x1 = rnorm(10)), frequency = 4, start = c(2000, 1))
+arphit(mytsdata)
+```
+```{r, echo = FALSE, results = "hide"}
+mytsdata <- ts(data.frame(x1 = rnorm(10)), frequency = 4, start = c(2000, 1))
+arphit(mytsdata, filename = "data_ts.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("data_ts.png")
+```
+
+Alternatively if you have a `data.frame` or `tibble` with a date column, specify that as the x-variable:
+```{r, eval = FALSE}
+mydataframe <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
+arphit(mydataframe, x = "date")
+```
+```{r, echo = FALSE, results = "hide"}
+mydataframe <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
+arphit(mydataframe, x = "date", filename = "data_df.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("data_df.png")
+```
+
+
+### Undated and scatter graphs
+
+Categorical data can be plotted by giving `arphit` the x variable that corresponds to the categories. For instance:
+```{r, eval = FALSE}
+categoricaldata <- data.frame(categoryname = letters[1:5], value = rnorm(5))
+arphit(categoricaldata, x = "categoryname")
+```
+```{r, echo = FALSE, results = "hide"}
+categoricaldata <- data.frame(categoryname = letters[1:5], value = rnorm(5))
+arphit(categoricaldata, x = "categoryname", filename = "data_categorical.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("data_categorical.png")
+```
+
+This also works if you have numerical categories (but they have to be evenly spaced, otherwise `arphit` will assume you want a scatter graph.
+
+Scatter plots work exactly the same. `arphit` will figure out if your x data are not categorical and plot a scatter graph instead:
+```{r, eval = FALSE}
+scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
+arphit(scatterdata, x = "x")
+```
+```{r, echo = FALSE, results = "hide"}
+scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
+arphit(scatterdata, x = "x", filename = "data_scatter.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("data_scatter.png")
+```
+
+Only simple scatter plots are supported. You can specify only one x variable (though you can have multiple y variables) per panel.
+
+### (Advanced) Different data and different x variables for different panels
+
+You can also specify different datasets for different panels using a list, with keys corresponding to panel names. For instance, if you have two datasets, `data1` and `data2`, you could give them to `arphit` to plot on panels 1 and 2 as follows:
+```{r, eval = FALSE}
+arphit(list("1" = data1, "2" = data2))
+```
+
+(See below for a discussion of layouts and panels.)
+
+It is also possible to specify different x variables for different panels (and, by extension, have different plot types in each panel). Simply specify your `x` as a list, with keys for each panel:
+```{r, eval = FALSE}
+data1 <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
+data2 <- data.frame(years = seq.Date(from = as.Date("2000-01-01"), length.out = 4, by = "year"), x2 = rnorm(4))
+arphit(data = list("1" = data1, "2" = data2), x = list("1" = "date", "2" = "years"), layout = "2v")
+```
+```{r, echo = FALSE, results = "hide"}
+data1 <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
+data2 <- data.frame(years = seq.Date(from = as.Date("2000-01-01"), length.out = 4, by = "year"), x2 = rnorm(4))
+arphit(data = list("1" = data1, "2" = data2), x = list("1" = "date", "2" = "years"), layout = "2v", filename = "multidata.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("multidata.png")
+```
+
+This only makes sense to do if you are passing in different datasets for each panel. It is an error to try to pass different x values for only one dataset.
+
+# Panels, series and layouts
 
 The `layout` options and the `series` options are closely related. `layout` determines the
 layout of panels in your graph. `series` tells arphit which series to put on which panel.
 
-ch layout has a number of panels where series can be placed. *Right hand side axes count as separate axes
+Each layout has a number of panels where series can be placed. *Right hand side axes count as separate axes
 in some layouts.* Panels are number from left to right, top to bottom.
 
 The `series` argument must be passed as a list, with keys (as strings) corresponding to panel numbers
 and values equal to vectors of series names. For instance, to plot series `x1` and `x2` from our example
 on panel 1 amd series `x3` and `x4` on panel 2, we would need to use a list as follows:
-```
+```{r, eval = FALSE}
 list("1" = c("x1","x2"), "2" = c("x3","x4"))
 ```
 
@@ -57,7 +153,7 @@ There are four supported layouts:
   1. One-panel "1". This is the default if you do not supply a value for `layout`. Despite its name this layout
 has *two* panels. Panel "1" corresponds to the left axis; panel "2" corresponds to the right axis.
 Plotting series `x1` and `x4` on a one panel:
-```
+```{r, eval = FALSE}
 arphit(data, layout = "1", series = list("1" = c("x1","x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -69,7 +165,7 @@ knitr::include_graphics("layout_1.png")
 
   Of course, the standard deviation of `x4` is much larger than `x1`, so this plot is not very easy to look
 at. Instead, we could plot `x1` on the left axis and `x4` on the right by doing:
-```
+```{r, eval = FALSE}
 arphit(data, layout = "1", series = list("1" = c("x1"), "2" = c("x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -81,7 +177,7 @@ knitr::include_graphics("layout_1_LR.png")
 
   2. Two-panel vertical "2v". This layout has two panels, divided vertically. Panel "1" is the left panel,
 panel "2" the right. This example plots the series `x1` on the left panel and `x2` on the right.
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2v", series = list("1" = c("x1"), "2" = c("x2")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -94,7 +190,7 @@ knitr::include_graphics("layout_2v.png")
   3. Two-panel horizontal "2h". This layout has *four* panels. Panels "1" and "2" are the left and
 right axes of the top panel. "3" and "4" for the bottom. This example plots `x1` on panel the left axis of the top
 panel and `x2` on the right, and likewise for `x3` and `x4` on the bottom.
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2h", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -106,7 +202,7 @@ knitr::include_graphics("layout_2h.png")
   
   As with the one panel, there is no need to use the right axis if it is not required. This example plots `x1` and
 `x2` on the left axis of the top panel and `x3` and `x4` on the left axis of the bottom panel.
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2h", series = list("1" = c("x1","x2"), "3" = c("x3","x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -118,7 +214,7 @@ knitr::include_graphics("layout_2h_L.png")
   
   4. Two-by-two "2b2". This layout is very similar to "2h", except the left and right panels are divided, rather
 than axes.
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -129,9 +225,9 @@ knitr::include_graphics("layout_2b2.png")
 ```
 
 The `series` argument is actually optional. If not supplied, *all* series in `data` will be plotted on panel "1".
-This can be useful if you want a quick and dirty plot of just a few series.
+This can be useful if you want a quick plot of just a few series.
 
-```
+```{r, eval = FALSE}
 arphit(data)
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -144,7 +240,7 @@ knitr::include_graphics("layout_default.png")
 ## Portrait size
 
 If you want a larger, portrait size layout, simply pass in `portait = TRUE`. This works with any of the layouts.
-```
+```{r, eval = FALSE}
 arphit(data, portrait = TRUE)
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -162,7 +258,7 @@ series will be plotted as series). Everything else is the same - i.e. which pane
 argument.
 
 This example plots `x1` as a line on the left axis, `x3` as a line on the right axis and `x2` as bars on the left axis:
-```
+```{r, eval = FALSE}
 arphit(data, series = list("1" = c("x1","x2"), "2" = c("x3")), bars = c("x2"))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -176,7 +272,7 @@ Alternatively, if you want all series to be bars, just set `bars = TRUE`. This i
 
 If you have multiple bar series on one panel, they automatically be stacked. This example plots `x1` and `x2` as
 bars on the left axis.
-```
+```{r, eval = FALSE}
 arphit(data, series = list("1" = c("x1","x2")), bars = c("x1","x2"))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -194,7 +290,7 @@ See the section on axis limits below.
 By default, `arphit` will stack the bars. If you want the bars to be beside instead, pass in `bar.stacked = FALSE`.
 (Since I'm not passing in the `series` argument, all series in `data` will be plotted on panel "1").
 
-```
+```{r, eval = FALSE}
 arphit(data, bars = c("x1","x2"), bar.stacked = FALSE)
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -208,7 +304,7 @@ knitr::include_graphics("bar_beside.png")
 
 The graph title and subtitle are set with the `title` and `subtitle` arguments respectively. These are optional,
 and by default are blank (`= NULL`).
-```
+```{r, eval = FALSE}
 arphit(data, title = "Here is a Title", subtitle = "And a subtitle")
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -225,7 +321,7 @@ insert linebreaks yourself as necessary by using "\\n".
 
 You can add titles and subtitles to panels using the `paneltitle` and `panelsubtitle` arguments. These are lists
 of panel identifiers (e.g. "1") to strings. For example:
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), paneltitle = list("1" = "Panel 1", "2" = "Panel 2", "3" = "Panel 3", "4" = "Panel 4"))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -242,7 +338,7 @@ And likewise for panelsubtitle.
 ## Footnotes
 
 Footnotes are specified using the `footnote` argument and are passed as a vector:
-```
+```{r, eval = FALSE}
 arphit(data, footnote = c("Footnote 1", "Footnote 2", "etc, this can go on for a while"))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -255,7 +351,7 @@ knitr::include_graphics("footnote.png")
 ## Sources
 
 Sources are handled very similarly to foonotes, using the `sources` argument. 
-```
+```{r, eval = FALSE}
 arphit(data, sources = c("RBA", "ABS", "someone else"))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -271,7 +367,7 @@ knitr::include_graphics("sources.png")
 
 By default, `arphit` sets the scale units to %. You can set your own by passing in a list of panel identifiers
 to strings (corresponding to the units). For instance:
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -293,7 +389,7 @@ attribute value is relevant. If a series is not included in the list, a sensible
 
 This example gives an explicit colour to series `x2` and `x4`, but lets `arphit` use default values for
 series `x1` and `x3`.
-```
+```{r, eval = FALSE}
 arphit(data, col = list("x2" = "pink", "x4" = "lightblue"))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -305,7 +401,7 @@ knitr::include_graphics("setcolours.png")
 
 Alternatively, if you want to apply an attribute to *all* series, you can skip the list and just pass in the value.
 For instance, this example sets all series to use `pch = 19`, which gives solid dots as markers.
-```
+```{r, eval = FALSE}
 arphit(data, pch = 19)
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -321,8 +417,7 @@ knitr::include_graphics("setattributeall.png")
 default RBA colours.
 
 The RBA color palette can be accessed using `RBA["Green1"]` etc. For instance:
-
-```
+```{r, eval = FALSE}
 arphit(data, series = list("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -361,7 +456,7 @@ Alternatively, you can use any colour that R recognises.
 Y-limits are controlled by three variables: a minimum, a maximum, and the number of steps to include. These are passed as a list with `min`, `max` and `nsteps` keys - e.g. `list(min = -10,max = 10, nsteps = 5)`. Y-limits can be set for each panel using a list with entries for each panel, or can be applied uniformly to all panels.
 
 ### Example 1: Manually setting left and right axes
-```
+```{r, eval = FALSE}
 arphit(data, series = list("1" = c("x1"), "2" = c("x3")), ylim = list("1" = list(min = -10, max = 10, nsteps = 5), "2" = list(min = -20, max = 20, nsteps = 5)))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -372,7 +467,7 @@ knitr::include_graphics("y-individual.png")
 ```
 
 ### Example 2: Applying the same y axis to all panels
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), ylim = list(min = -10, max = 10, nsteps = 5))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -395,8 +490,7 @@ By default, on "2b2" and "2v" layouts, the first tick of the right hand panel is
 # Shading between series
 
 You can shade the area between series by using the `shading` argument. This takes a list of lists. Each of the sublists must have keys `from`, `to` and `color`, which speak for themselves. You can supply multiple sets of shading (hence the list of lists). They are drawn first to last, so if you want to shade over the top, supply bottom to top. All series are _always_ drawn on top of shading.
-
-```
+```{r, eval = FALSE}
 arphit(data, shading = list(list(from = "x1", to = "x2", color= "red")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -406,7 +500,8 @@ arphit(data, shading = list(list(from = "x1", to = "x2", color= "red")), filenam
 knitr::include_graphics("shading.png")
 ```
 
-```
+If you want to have more than one set of shading, just have multiple elements in the shading list.
+```{r, eval = FALSE}
 arphit(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -423,8 +518,7 @@ knitr::include_graphics("shading-layered.png")
 You can add series labels, and arrow to aid those labels, using the `labels` and `arrows` arguments.
 
 Labels are specified as a list of lists. Each sub-list specifies a single text label. These must be of the form: `list(x = 2008, y = -1, text = "Label text", panel = 1, color = "black")`. Where `x` and `y` specify where (in the units on the plot) the centre of the label should be. `panel` specifies which panel to place the label on. `color` is self-explanatory. You can add line breaks in text using the `\n` character.
-
-```
+```{r, eval = FALSE}
 arphit(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2004, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -435,8 +529,7 @@ knitr::include_graphics("labels.png")
 ```
 
 Arrows are specified similarly. You pass in a list of lists specifying arrows to add to the plot Each sub-list specifies a single arrow. These must be of the form: `list(tail.x = 2000, tail.y = -1, head.x = 2001, head.y = 0, panel = 1, lwd = 1, color = "black")`. `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at, `head.x` and `head.y` where to finish it. panel specifies which panel to place the arrow on. `color` is self-explanatory. `lwd` is optional and specifies the linewidth of the arrow (default = 1).
-
-```
+```{r, eval = FALSE}
 arphit(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -451,8 +544,7 @@ knitr::include_graphics("arrows.png")
 A list of lists specifying line segments to add to the plot. Each of the sublists specifies a single line segment to add. These can be specified in three ways. The most common way is specifying either a horizontal or vertical line that stretches across the panel. Do this by having a sublist entry similar to `list(x = 2001, panel = 1, color = "green", lty = 1)`. `x` is where, on the x-axis, the line will be drawn. `panel` specifies which panel to draw on. `color` is self-explanatory and is optional (default black). `lty` specifies what line type to use (see R lty options) - it is optional and defaults to 1 (solid). To draw a horizontal line use use y instead of x.
 
 The following example draws a vertical line at 2001 using the default colour and solid line. It also draws a horizontal line at -1 colored darkred and dashed (`lty = 2`).
-
-```
+```{r, eval = FALSE}
 arphit(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -463,8 +555,7 @@ knitr::include_graphics("lines.png")
 ```
 
 If you want more control, you can specify the coordinates of the line segment instead of using `x` or `y`.  To do so use `list(x1 = 2000, y1 = -1, x2 = 2001, y2 = 0, panel = 1)` instead of x and y. All other options are the same. For example:
-
-```
+```{r, eval = FALSE}
 arphit(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1)))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -481,8 +572,7 @@ Entering NA for any of `x1`, `y1`, `x2`, or `y2` will set that coordinate to the
 Background shading can be added using the `bgshading` argument. This is a list of lists specifying background shading to add to the plot. Each of the sublists corresponds to a rectangle of background shading to draw. Each must be of the form: `list(x1 = NA, y1 = -1, x2 = NA, y2 = 1, panel = 1, color = "lightgrey")`. `x1` and `x2` correspond to the bottom left corner; `x2`, `y2` the top right. Passing NA will set that coordinate to the axis limit - this is useful for creating shading that stretches across a whole panel. `color` and `panel` are self-explanatory (color is optional and defaults to light grey).
 
 This example creates horizontal shading across the whole panel between -1 and 3 on the y axis.
-
-```
+```{r, eval = FALSE}
 arphit(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1)))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -493,8 +583,7 @@ knitr::include_graphics("shading1.png")
 ```
 
 And this two panel example repeats the above example for panel 1, but puts light green shading between two dates on the bottom panel..
-
-```
+```{r, eval = FALSE}
 arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")))
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -511,14 +600,15 @@ you'll probably want to include your graphs in word etc.
 
 You can export your files automatically by using the `filename` argument. This will draw your graph straight
 to that file *instead* of displaying it.
-```
+```{r, eval = FALSE}
 arphit(data, filename = "my_filename.png")
 ```
 
 There are three supported file extensions: PNG, EMF and PDF. Simply include the relevant extension (lower case only)
 in the filename and `arphit` will figure it out.
-```
+```{r, eval = FALSE}
 arphit(data, filename = "my_filename.png")
 arphit(data, filename = "my_filename.emf")
 arphit(data, filename = "my_filename.pdf")
 ```
+

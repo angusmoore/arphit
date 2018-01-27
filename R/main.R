@@ -55,6 +55,8 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   # Determine the x values for each panel
   xvars <- handlex(data, x)
 
+  # TODO add back duplicate handling
+
   # Handle panels
   panels <- handlepanels(series, bars, layout)
 

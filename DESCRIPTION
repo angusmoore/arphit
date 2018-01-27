@@ -9,11 +9,11 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+  lubridate,
+  tibble,
   stringr,
   plyr,
-  devEMF,
-  tibble,
-  lubridate
+  devEMF
 Suggests:
   testthat,
     knitr,

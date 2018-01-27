@@ -50,11 +50,11 @@ context("X-axes scale")
 # Check x lim conforming for time series data
 fakedata <- handledata(NULL, fakedata, NULL)$data
 xvars <- handlex(fakedata, NULL)
-expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(1,10), "2" = c(1,10))))
+expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(1,11), "2" = c(1,11))))
 xlim <- xlimconform(onesided, NULL, xvars, fakedata)
 x <- handlex(fakedata, NULL)
 xlabs <- handlexlabels(onesided, xlim, x, fakedata)
-test_that(xlabs, equals(list("1" = list(at = 1.5:10.5, labels = 1:10, ticks = 1:10))))
+expect_that(xlabs, equals(list("1" = list(at = 1.5:11.5, labels = 1:11, ticks = 1:11))))
 expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)), fakedata))
 
 # Check x lim conforming for categorical data
