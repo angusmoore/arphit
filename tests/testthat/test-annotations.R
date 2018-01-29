@@ -1,4 +1,4 @@
-
+context("Annotations")
 # Labels
 foo <- list(list(x = 10, y = -1, text = "Hi", panel = 1, color = "black"))
 foo2 <- list(list(x = 10, y = -1, text = "Hi", panel = 1, color = "black"), list(x = 15, y = 10, text = "Bye", panel = 1, color = "green"))

@@ -150,15 +150,15 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
   ## Draw the x-axis
   if (xlab) {
     # Draw ticks and labels
-    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = DEFAULTTICKLENGTH, labels = FALSE)
+    graphics::axis(1, xlabels[[p]]$ticks, tck = DEFAULTTICKLENGTH, labels = FALSE)
     if (dropfirstxlabel(p, layout, dropxlabel)) {
-      at = xlabels[[p]]$at[2:length(xlabels[[p]]$at)]
-      labels = xlabels[[p]]$labels[2:length(xlabels[[p]]$labels)]
+      at <- xlabels[[p]]$at[2:length(xlabels[[p]]$at)]
+      labels <- xlabels[[p]]$labels[2:length(xlabels[[p]]$labels)]
     } else {
-      at = xlabels[[p]]$at
-      labels = xlabels[[p]]$labels
+      at <- xlabels[[p]]$at
+      labels <- xlabels[[p]]$labels
     }
-    graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 1.2, 0))
+    graphics::axis(1, xlim[1]:xlim[2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 1.2, 0))
   }
 
   ## Draw the grid
@@ -166,7 +166,7 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
     graphics::grid(nx = FALSE, ny = (ylim[[p]]$nsteps - 1), col = "lightgray", lty = "solid", lwd = 1)
     # Add a zero line if needed
     if (0 %in% ticks[[p]]) {
-      graphics::axis(1, pos = 0, xlim[[p]][1]:xlim[[p]][2], labels = FALSE, tck = 0, lwd = 1)
+      graphics::axis(1, pos = 0, xlim[1]:xlim[2], labels = FALSE, tck = 0, lwd = 1)
     }
   }
 
@@ -178,28 +178,31 @@ gridsandborders <- function(p, panels, layout, portrait, scaleunits, ticks, xlab
   }
 
   # Draw top and bottom line, will often double up but better to overdo than under
-  graphics::axis(1, xlim[[p]][1]:xlim[[p]][2], tck = 0, labels = FALSE, lwd = 1)
-  graphics::axis(3, xlim[[p]][1]:xlim[[p]][2], tck = 0, labels = FALSE, lwd = 1)
+  graphics::axis(1, xlim[1]:xlim[2], tck = 0, labels = FALSE, lwd = 1)
+  graphics::axis(3, xlim[1]:xlim[2], tck = 0, labels = FALSE, lwd = 1)
 }
 
-drawshading <- function(shading, data) {
-  x <- stats::time(data) + 1.0/(2*stats::frequency(data))
+drawshading <- function(shading, data, x) {
   for (s in shading) {
     graphics::polygon(c(x,rev(x)),c(data[, s$to],rev(data[, s$from])),col = s$color, border = NA)
   }
 }
 
-drawlines <- function(p, l, panels, data, attributes, xlim, ylim) {
+drawlines <- function(p, l, panels, data, x, attributes, xlim, ylim) {
   for (s in panels$panels[[p]]) {
     if (!s %in% names(panels$bars)) {
       graphics::par(mfg = l)
-      shiftedxlim <- xlim[[p]] - 1.0/(2*stats::frequency(data))
-      graphics::plot(data[, s], type = "o", col = attributes$col[[s]], xlim = shiftedxlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
+      if (stats::is.ts(data)) {
+        y <- as.vector(data[, s])
+      } else {
+        y <- data[[s]]
+      }
+      graphics::plot(x, y, type = "o", col = attributes$col[[s]], xlim = xlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
     }
   }
 }
 
-as.barplot.x <- function(bp.data, xlim, bar.stacked) {
+as.barplot.x <- function(bp.data, x, xlim, bar.stacked) {
   bp <- graphics::barplot(t(as.matrix(bp.data)), plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
   if (!bar.stacked) {
     # We get a matrix, with rows for each data series. Need to collapse
@@ -210,7 +213,7 @@ as.barplot.x <- function(bp.data, xlim, bar.stacked) {
     # only one series in the TS, which mean nrow doesn't work
     last <- length(bp.data)
   }
-  points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(stats::time(bp.data)[1], stats::time(bp.data)[last]))
+  points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(x[1], x[last]))
   fit <- stats::lm(as.x ~ time, data = points)
 
   x1 <- stats::predict(fit, data.frame(time = c(xlim[1])))
@@ -219,7 +222,7 @@ as.barplot.x <- function(bp.data, xlim, bar.stacked) {
   return(c(x1,x2))
 }
 
-drawbars <- function(p, l, panels, data, attributes, xlim, ylim, bar.stacked) {
+drawbars <- function(p, l, panels, data, x, attributes, xlim, ylim, bar.stacked) {
   barcolumns <- c()
   colors <- c()
   bordercol <- c()
@@ -239,34 +242,46 @@ drawbars <- function(p, l, panels, data, attributes, xlim, ylim, bar.stacked) {
     bardata_p[bardata[, ] > 0] <- 0
     bardata_n[bardata[, ] <= 0] <- 0
 
-    shiftedxlim <- as.barplot.x(data[, barcolumns], xlim[[p]] - 1.0/(2*stats::frequency(data)), bar.stacked)
+    xlim <- as.barplot.x(data[, barcolumns], x, xlim, bar.stacked)
     graphics::par(mfg = l)
-    graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = shiftedxlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked))
+    graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = xlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked))
     graphics::par(mfg = l)
-    graphics::barplot(bardata_n, col = colors, border = bordercol, xlim = shiftedxlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked))
+    graphics::barplot(bardata_n, col = colors, border = bordercol, xlim = xlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked))
   }
 }
 
-drawpanel <- function(p, panels, data, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitles, panelsubtitles, bar.stacked, dropxlabel) {
+drawpanel <- function(p, panels, data, xvals, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, dataontick) {
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p ,layout)
 
+
+  if (is.numeric(xvals)) {
+    # time series or scatter
+    x <- xvals
+  } else if (!is.null(xvals)) {
+    # Categorical data, offset by half
+    x <- 1:length(xvals) + 0.5
+  } else {
+    # No data at all, empty plot
+    x <- xvals
+  }
+
   # Start the plot with a blank plot, used for panels with no series
   graphics::par(mfg = l)
-  graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
+  graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max))
 
-  drawbgshadings(bgshadings, p, data)
+  drawbgshadings(bgshadings, p)
 
   gridsandborders(p, panels, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim, dropxlabel)
 
-  drawbars(p, l, panels, data, attributes, xlim, ylim, bar.stacked)
+  drawbars(p, l, panels, data, x, attributes, xlim, ylim, bar.stacked)
 
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
   graphics::par(mfg = l)
-  graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
-  drawshading(shading[[p]], data)
-  drawlines(p, l, panels, data, attributes, xlim, ylim)
+  graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max))
+  drawshading(shading[[p]], data, x)
+  drawlines(p, l, panels, data, x, attributes, xlim, ylim)
 
 
-  drawpaneltitle(paneltitles[[p]], panelsubtitles[[p]])
+  drawpaneltitle(paneltitle, panelsubtitle)
 }

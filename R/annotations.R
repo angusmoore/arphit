@@ -134,7 +134,7 @@ sanitychecklines <- function(linelist) {
   return(linelist)
 }
 
-drawbgshading <- function(shading, shift) {
+drawbgshading <- function(shading) {
   # if any are NA, give them the ends of the plot
   if (is.na(shading$x1)) {
     shading$x1 <- graphics::par("usr")[1]
@@ -151,16 +151,15 @@ drawbgshading <- function(shading, shift) {
   graphics::rect(shading$x1, shading$y1, shading$x2, shading$y2, col = shading$color, lty = 0)
 }
 
-drawbgshadings <- function(shadings, p, data) {
-  shift <- 1.0 / (2*stats::frequency(data))
+drawbgshadings <- function(shadings, p) {
   for (shading in shadings) {
     if (shading$panel == p) {
-      drawbgshading(shading, shift)
+      drawbgshading(shading)
     }
   }
 }
 
-drawannotationline <- function(line, shift) {
+drawannotationline <- function(line) {
   # if any are NA, give them the ends of the plot
   if (is.na(line$x1)) {
     line$x1 <- graphics::par("usr")[1]
@@ -174,40 +173,37 @@ drawannotationline <- function(line, shift) {
   if (is.na(line$y2)) {
     line$y2 <- graphics::par("usr")[4]
   }
-  graphics::segments(line$x1-shift, line$y1, line$x2-shift, line$y2, col = line$color, lty = line$lty)
+  graphics::segments(line$x1, line$y1, line$x2, line$y2, col = line$color, lty = line$lty)
 }
 
-drawannotationlines <- function(lines, p, data) {
-  shift <- 1.0 / (2*stats::frequency(data))
+drawannotationlines <- function(lines, p) {
   for (line in lines) {
     if (line$panel == p) {
-      drawannotationline(line, shift)
+      drawannotationline(line)
     }
   }
 }
 
-drawlabel <- function(label, shift) {
-  graphics::text(label$text, x = label$x-shift, y = label$y, adj = c(0.5, 0.5), col = label$color)
+drawlabel <- function(label) {
+  graphics::text(label$text, x = label$x, y = label$y, adj = c(0.5, 0.5), col = label$color)
 }
 
-drawlabels <- function(labels, p, data) {
-  shift <- 1.0/(2*stats::frequency(data))
+drawlabels <- function(labels, p) {
   for (label in labels) {
     if (label$panel == p) {
-      drawlabel(label, shift)
+      drawlabel(label)
     }
   }
 }
 
-drawarrow <- function(arrow, shift) {
-  graphics::arrows(arrow$tail.x-shift, arrow$tail.y, arrow$head.x-shift, arrow$head.y, col = arrow$color, lwd = arrow$lwd, length = 0.1)
+drawarrow <- function(arrow) {
+  graphics::arrows(arrow$tail.x, arrow$tail.y, arrow$head.x, arrow$head.y, col = arrow$color, lwd = arrow$lwd, length = 0.1)
 }
 
-drawarrows <- function(arrows, p, data) {
-  shift <- 1.0/(2*stats::frequency(data))
+drawarrows <- function(arrows, p) {
   for (arrow in arrows) {
     if (arrow$panel == p) {
-      drawarrow(arrow, shift)
+      drawarrow(arrow)
     }
   }
 }

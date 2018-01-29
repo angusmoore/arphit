@@ -3,7 +3,10 @@ fakeseries1 <- c("a","b")
 fakeseries2 <- c("c","d")
 onesided <- handlepanels(fakeseries1, NULL, "1")
 twosided <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), NULL, "1")
-fakedata <- as.ts(data.frame("a" = 1:10, "b" = 1:10))
+twosided_oneeach <- handlepanels(list("1" = "a", "2" = "b"), NULL, "1")
+fakedata <- handledata(NULL, as.ts(data.frame("a" = 1:10, "b" = 1:10)), NULL)$data
+twosideddata <- handledata(list("1" = fakeseries1, "2" = fakeseries2), as.ts(data.frame("a" = 1:10, "b" = 1:10, "c" = 1:10, "d" = 1:10)), NULL)$data
+twosided_oneeachdata <- handledata(list("1" = "a", "2" = "b"), as.ts(data.frame("a" = 1:10, "b" = 1:10)), NULL)$data
 
 context("Y-axes scale")
 shouldbe <- list("1" = list("min" = 0, "max" = 12, "nsteps" = 5), "2" = list("min" = 0, "max" = 12, "nsteps" = 5))
@@ -11,6 +14,8 @@ expect_that(ylimconform(onesided, NULL, fakedata, "1"), equals(shouldbe))
 
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
 expect_that(ylimconform(onesided, list("1" = sublist), fakedata, "1"), equals(list("1" = sublist, "2" = sublist)))
+
+ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, "1")
 
 ylim <- ylimconform(onesided, NULL, fakedata, "1")
 expect_that(handleticks(fakedata, onesided, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
@@ -47,18 +52,36 @@ for (i in 1:100) {
 }
 
 context("X-axes scale")
-for (i in 1:100) {
-  xlim <- sort(sample(1979:2017,2))
-  xlab <- xlabels(xlim)
-  expect_that(xlab$at[1], equals(min(xlim)+0.5))
-  expect_that(xlab$labels[1], equals(min(xlim)))
-  expect_that(length(xlab$labels), equals(length(xlab$at)))
-  expect_that(length(xlab$labels) <= MAXXYEARS, is_true())
-}
+# Check x lim conforming for time series data
+fakedata <- handledata(NULL, fakedata, NULL)$data
+xvars <- handlex(fakedata, NULL)
+expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(1,11), "2" = c(1,11))))
+xlim <- xlimconform(onesided, NULL, xvars, fakedata)
+x <- handlex(fakedata, NULL)
+xlabs <- handlexlabels(onesided, xlim, x, fakedata)
+expect_that(xlabs, equals(list("1" = list(at = 1.5:11.5, labels = 1:11, ticks = 1:11))))
+expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)), twosideddata))
 
-expect_that(xlimconform(onesided, NULL, fakedata), equals(list("1" = c(1,10), "2" = c(1,10))))
-xlim <- xlimconform(onesided, NULL, fakedata)
-xlabels <- handlexlabels(onesided, xlim)
-test_that(xlabels, equals(1.5:10.5))
+# Check x lim conforming for categorical data
+catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), "x")$data
+catpanels <- handlepanels(c("y"), NULL, "1")
+xvar <- handlex(catdata, "x")
+expect_that(xlimconform(catpanels, NULL, xvar, catdata), equals(list("1" = c(1, 6), "2" = c(1, 6))))
 
-expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)), fakedata))
+# X lim conforming for scatter graph data
+scatter <- data.frame(x = runif(100), y = runif(100))
+scatter <- handledata(NULL, scatter, "x")$data
+xvar <- handlex(scatter, "x")
+scatterpanels <- handlepanels(c("y"), NULL, "1")
+expect_that(xlimconform(scatterpanels, NULL, xvar, scatter), equals(list("1" = c(0,1), "2" = c(0,1))))
+
+
+
+
+context("Unit handling")
+expect_that(handleunits(onesided, NULL, "1"), equals(list("1" = "%", "2" = "%")))
+expect_that(handleunits(onesided, "foo", "1"), equals(list("1" = "foo", "2" = "foo")))
+expect_that(handleunits(onesided, list("1" = "foo", "2" = "bar"), "1"), equals(list("1" = "foo", "2" = "foo"))) # because it's only got series on one side overwrite the option
+expect_that(handleunits(twosided, list("1" = "foo", "2" = "bar"), "1"), equals(list("1" = "foo", "2" = "bar")))
+expect_that(handleunits(onesided, list("1" = "foo"), "1"), equals(list("1" = "foo", "2" = "foo"))) # Duplicate across the first axis
+expect_that(handleunits(twosided, list("1" = "foo"), "1"), equals(list("1" = "foo", "2" = "%"))) # Series on RHS, so should get the default
