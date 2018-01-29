@@ -5,9 +5,9 @@ T <- 48
 data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5), x5 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 12)
 
 
-arphit.tsgraph(data, series = list("1" = "x1"), filename = "simple_example.png")
+arphit(data, series = list("1" = "x1"), filename = "simple_example.png")
 
-arphit.tsgraph(data,
+arphit(data,
                layout = "2b2",
                series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3", "x4"), "4" = c("x5")),
                bars = c("x1"),
@@ -22,9 +22,9 @@ arphit.tsgraph(data,
 T <- 12
 data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
 
-arphit.tsgraph(data, filename = "nooptions.png")
+arphit(data, filename = "nooptions.png")
 
-arphit.tsgraph(data,
+arphit(data,
                series = list("1" = "x1", "2" = "x2", "3" = "x3", "4" = "x4"),
                layout = "2b2",
                title = "A Randomly Created Chart",

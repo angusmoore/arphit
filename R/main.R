@@ -1,12 +1,13 @@
 #' RBA-style time series graphs in R
 #'
-#' Creates a (potentially multipanel) time series graph from a ts objecct. Supports bar and line (and combinations of).
+#' Creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
 #'
-#' @param data ts Object containing the series you want to plot.
+#' @param data Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.
 #' @param series (optional) A list of vectors of string names of the series from data you wish to plot. The keys in the list must be "1", "2", etc to indicate which panel the series should be plotted on.
 #'   Panel numbers are sequential left-to-right, top-to-bottom. For one-panel and top-and-bottom two panel, the right axis is counted as a separate panel. Thus, for a top-and-bottom, panels "1" and "2" are the top panel, left and right respectively; likewise "3" and "4" for the bottom panel.
 #'   You do not need to supply all panels. For instance, in a one-panel, there is no need to supply series for panel "2" if you want all series on the left hand side axis.
 #'   Alternatively if just a vector of string names is supplied, it will be assumed all series are being plotted in panel 1. Similarly, if series is not supplied at all, all series will be plotted in panel 1.
+#' @param x (optional) A list specifying x variables for each of your panels. ts objects passed in as data will automatically use dates.
 #' @param layout (optional) A string indicating the layout of the chart. Valid options are "1" (single panel), "2v" (side-by-side two panel), "2h" (top and bottom two panel), and "2b2" two-by-two four panel chart. Defaults to single panel if not supplied.
 #' @param bars (optional) Vector of string names indicating which series should be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series will plot as bars.
 #' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
@@ -40,16 +41,19 @@
 #' T <- 24
 #' randomdata <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10),
 #'   x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
-#' arphit.tsgraph(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
+#' arphit(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
 #'   bars = c("x3","x4"), layout = "2v", title = "A Title", subtitle = "A subtitle",
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), scaleunits = "index")
 #'
 #' @export
-arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE) {
-  if (is.null(series)) {
-    # Plot all the series
-    series <- list("1" = colnames(data))
-  }
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE) {
+
+  out <- handledata(series, data, x)
+  data <- out$data
+  series <- out$series
+
+  # Determine the x values for each panel
+  xvars <- handlex(data, x)
 
   # Handle duplicates
   dups <- handleduplicates(data, series, bars, col, pch, lty, lwd, barcol)
@@ -65,7 +69,6 @@ arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filen
   # Handle panels
   panels <- handlepanels(series, bars, layout)
 
-
   # handle series attributes
   attributes <- handleattributes(panels$serieslist, col, pch, lty, lwd, barcol)
 
@@ -73,8 +76,8 @@ arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filen
   scaleunits <- handleunits(panels, scaleunits, layout)
   ylim <- ylimconform(panels, ylim, data, layout)
   ticks <- handleticks(data, panels, ylim)
-  xlim <- xlimconform(panels, xlim, data)
-  xlabels <- handlexlabels(panels, xlim)
+  xlim <- xlimconform(panels, xlim, xvars, data)
+  xlabels <- handlexlabels(panels, xlim, xvars, data)
 
   # Handle shading
   shading <- handleshading(shading, panels)
@@ -88,6 +91,7 @@ arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filen
   # Format footnotes and sources
   footnotes <- formatfn(footnotes)
   sources <- formatsrcs(sources)
+  # TODO split titles if they're too long
 
   # Conform panel titles
   paneltitles <- conformpaneltitles(panels, paneltitles)
@@ -100,15 +104,23 @@ arphit.tsgraph <- function(data, series = NULL, layout = "1", bars = NULL, filen
 
   # Plot each panel
   for (p in names(panels$panels)) {
-    drawpanel(p, panels, data, shading, bgshading, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitles, panelsubtitles, bar.stacked, dropxlabel)
-    drawannotationlines(lines, p , data)
-    drawarrows(arrows, p, data)
-    drawlabels(labels, p, data)
+    drawpanel(p, panels, data[[p]], xvars[[p]], shading, bgshading, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel)
   }
 
-  # Finally, draw outer material
+  # Draw outer material
   drawtitle(title, subtitle)
   drawnotes(footnotes, sources)
+
+  for (p in names(panels$panels)) {
+    # Finally, draw all the annotations draw all
+    l <- getlocation(p ,layout)
+    graphics::par(mfg = l)
+    graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
+    drawannotationlines(lines, p)
+    drawarrows(arrows, p)
+    drawlabels(labels, p)
+  }
+
   if (!is.null(device)) {
     grDevices::dev.off() # Close files, but not if we're using default device.
   }
