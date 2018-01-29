@@ -192,7 +192,11 @@ drawlines <- function(p, l, panels, data, x, attributes, xlim, ylim) {
   for (s in panels$panels[[p]]) {
     if (!s %in% names(panels$bars)) {
       graphics::par(mfg = l)
-      y <- as.vector(data[, s])
+      if (stats::is.ts(data)) {
+        y <- as.vector(data[, s])
+      } else {
+        y <- data[[s]]
+      }
       graphics::plot(x, y, type = "o", col = attributes$col[[s]], xlim = xlim, ylim = c(ylim[[p]]$min, ylim[[p]]$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
     }
   }

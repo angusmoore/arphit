@@ -4,6 +4,22 @@ data <- ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x
 
 # These are just all the examples from the vignette, which should cover all the plotting options
 
+# Data section (covers categorical data)
+mytsdata <- ts(data.frame(x1 = rnorm(10)), frequency = 4, start = c(2000, 1))
+mydataframe <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
+mytibble <- tibble::as_tibble(data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10)))
+categoricaldata <- data.frame(categoryname = letters[1:5], value = rnorm(5))
+scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
+data1 <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
+data2 <- data.frame(years = seq.Date(from = as.Date("2000-01-01"), length.out = 4, by = "year"), x2 = rnorm(4))
+
+expect_error(arphit(mytsdata), NA)
+expect_error(arphit(mydataframe, x = "date"), NA)
+expect_error(arphit(mytibble, x = "date"), NA)
+expect_error(arphit(categoricaldata, x = "categoryname"), NA)
+expect_error(arphit(scatterdata, x = "x"), NA)
+expect_error(arphit(data = list("1" = data1, "2" = data2), x = list("1" = "date", "2" = "years"), layout = "2v"), NA)
+
 # Panels and layouts section
 expect_error(arphit(data, layout = "1", series = list("1" = c("x1","x4"))), NA)
 expect_error(arphit(data, layout = "1", series = list("1" = c("x1"), "2" = c("x4"))), NA)

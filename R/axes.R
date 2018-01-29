@@ -90,14 +90,14 @@ handleunits <- function(panels, scaleunits, layout) {
   out <- list()
   if(!is.list(scaleunits)) {
     for (p in plist) {
-      out[p] <- scaleunits
+      out[[p]] <- scaleunits
     }
   } else {
     for (p in plist) {
       if (p %in% names(scaleunits)) {
-        out[p] <- scaleunits[[p]]
+        out[[p]] <- scaleunits[[p]]
       } else {
-        out[p] <- DEFAULTSCALEUNITS
+        out[[p]] <- DEFAULTSCALEUNITS
       }
     }
   }

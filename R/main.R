@@ -55,7 +55,16 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   # Determine the x values for each panel
   xvars <- handlex(data, x)
 
-  # TODO add back duplicate handling
+  # Handle duplicates
+  dups <- handleduplicates(data, series, bars, col, pch, lty, lwd, barcol)
+  data <- dups$data
+  series <- dups$series
+  bars <- dups$bars
+  col <- dups$col
+  pch <- dups$pch
+  lty <- dups$lty
+  lwd <- dups$lwd
+  barcol <- dups$barcol
 
   # Handle panels
   panels <- handlepanels(series, bars, layout)
@@ -82,6 +91,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   # Format footnotes and sources
   footnotes <- formatfn(footnotes)
   sources <- formatsrcs(sources)
+  # TODO split titles if they're too long
 
   # Conform panel titles
   paneltitles <- conformpaneltitles(panels, paneltitles)

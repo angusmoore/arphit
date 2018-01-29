@@ -316,6 +316,15 @@ knitr::include_graphics("title.png")
 
 `arphit` will attempt to insert line breaks as necessary, but may not be smart enough in all cases. You can
 insert linebreaks yourself as necessary by using "\\n".
+```{r, eval = FALSE}
+arphit(data, title = "Here is a very very very long title that arphit will automatically put a breka in", subtitle = "And a subtitle\nwith a break too")
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(data, title = "Here is a very very very long title that arphit will automatically put a breka in", subtitle = "And a subtitle\nwith a break too", filename = "longtitle.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("longtitle.png")
+```
 
 # Panel titles and subtitles
 
@@ -332,6 +341,11 @@ knitr::include_graphics("paneltitle.png")
 ```
 
 And likewise for panelsubtitle.
+
+`arphit` will attempt to insert line breaks as necessary, but may not be smart enough in all cases. You can
+insert linebreaks yourself as necessary by using "\\n".
+
+
 
 # Footnotes and sources
 
