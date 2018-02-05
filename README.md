@@ -47,7 +47,7 @@ The very first step to using arphit is to import it into your workspace:
 library(arphit)
 ```
 
-The second step is to get some data. Your data must be a `ts` object. For these simple examples, we'll randomly construct three years worth of quarterly time series data, starting from Q1 2000:
+The second step is to get some data. The easiest way to plot is to have your data as `ts` object. (However, `tibble`s and `data.frame`s are also supported, and you can plot non-time-series graphs too). For these simple examples, we'll randomly construct three years worth of quarterly time series data, starting from Q1 2000:
 ```
 T <- 12
 data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
