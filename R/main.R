@@ -55,22 +55,12 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   # Determine the x values for each panel
   xvars <- handlex(data, x)
 
-  # Handle duplicates
-  dups <- handleduplicates(data, series, bars, col, pch, lty, lwd, barcol)
-  data <- dups$data
-  series <- dups$series
-  bars <- dups$bars
-  col <- dups$col
-  pch <- dups$pch
-  lty <- dups$lty
-  lwd <- dups$lwd
-  barcol <- dups$barcol
-
   # Handle panels
-  panels <- handlepanels(series, bars, layout)
+  panels <- handlepanels(series, layout)
+  bars <- handlebars(panels, bars)
 
   # handle series attributes
-  attributes <- handleattributes(panels$serieslist, col, pch, lty, lwd, barcol)
+  attributes <- handleattributes(panels, col, pch, lty, lwd, barcol)
 
   # Units and scales
   scaleunits <- handleunits(panels, scaleunits, layout)
@@ -103,15 +93,15 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   handlelayout(layout)
 
   # Plot each panel
-  for (p in names(panels$panels)) {
-    drawpanel(p, panels, data[[p]], xvars[[p]], shading, bgshading, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel)
+  for (p in names(panels)) {
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], shading, bgshading, margins, layout, portrait, attributes[[p]], scaleunits, ticks, xlabels, ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel)
   }
 
   # Draw outer material
   drawtitle(title, subtitle)
   drawnotes(footnotes, sources)
 
-  for (p in names(panels$panels)) {
+  for (p in names(panels)) {
     # Finally, draw all the annotations draw all
     l <- getlocation(p ,layout)
     graphics::par(mfg = l)

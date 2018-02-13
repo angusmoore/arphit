@@ -1,8 +1,8 @@
 context("Panel titles")
 fakeseries1 <- c("a", "b")
 fakeseries2 <- c("c", "d")
-panels1 <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), NULL, "1")
-panels2h <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), NULL, "2h")
+panels1 <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "1")
+panels2h <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "2h")
 
 expect_that(conformpaneltitles(panels2h, list("1" = "Foo", "3" = "Bar")), equals(list("1" = "Foo", "2" = NULL, "3" = "Bar", "4" = NULL)))
 expect_that(conformpaneltitles(panels1, list("1" = "Foo")), equals(list("1" = "Foo", "2" = NULL)))
