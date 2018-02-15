@@ -18,7 +18,7 @@ is.even <- function(x) {
 leftrightpadding <- function(ticks, scaleunits, panels) {
   R <- 0
   L <- 0
-  for (p in names(panels$panels)) {
+  for (p in names(panels)) {
     nc <- max(graphics::strwidth(ticks[[p]], units = "inches"))
     nc <- max(nc, graphics::strwidth(scaleunits[[p]], units = "inches"))
     if (is.even(p)) {
