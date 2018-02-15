@@ -72,7 +72,7 @@ handleattributes <- function(panels, colin, pchin, ltyin, lwdin, barcolin) {
   	pch <- handleattribute(panels[[p]], pchin[[p]], DEFAULTPCH)
   	lty <- handleattribute(panels[[p]], ltyin[[p]], DEFAULTLTY)
   	lwd <- handleattribute(panels[[p]], lwdin[[p]], DEFAULTLWD)
-  	barcol <- handleattribute(panels[[p]], barcolin, DEFAULTBARCOL)
+  	barcol <- handleattribute(panels[[p]], barcolin[[p]], DEFAULTBARCOL)
   	attributes[[p]] <- list(col = col, pch = pch, lty = lty, lwd = lwd, barcol = barcol)
   }
   return(attributes)
