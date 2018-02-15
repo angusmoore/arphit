@@ -27,7 +27,7 @@ findpanel <- function(panels, name) {
 handleshading <- function(shading, panels) {
 
   out <- list()
-  for (p in names(panels$panels)) {
+  for (p in names(panels)) {
     out[[p]] <- list()
   }
 
