@@ -43,6 +43,26 @@ expect_that(handleattributes(onesided, list(x1 = "red", x2 = "green"), list(x1 =
 # With panel annotations
 expect_that(handleattributes(onesided, list("1" = list(x1 = "red", x2 = "green")), list("1" = list(x1 = 1, x2 = 2)), list("1" = list(x1 = 3, x2 = 4)), list("1" = list(x1 = 5, x2 = 6)), list("1" = list(x1 = 7, x2 = 8))), equals(shouldbe))
 
+# Set only one series attributes
+shouldbe <- list("1" = list(col = list(x1 = "red",
+                                       x2 = unname(RBA["Aqua8"])),
+                            pch = list(x1 = 100,
+                                       x2 = NA),
+                            lty = list(x1 = 200,
+                                       x2 = 1),
+                            lwd = list(x1 = 300,
+                                       x2 = 1),
+                            barcol = list(x1 = 400,
+                                          x2 = NA)),
+
+                "2" = list(col = list(),
+                          pch = list(),
+                          lty = list(),
+                          lwd = list(),
+                          barcol = list()))
+expect_that(handleattributes(onesided, list("x1" = "red"), list(x1 = 100), list("x1" = 200), list(x1 = 300), list(x1 = 400)), equals(shouldbe))
+expect_that(handleattributes(onesided, list("1" = list("x1" = "red")), list("1" = list(x1 = 100)), list("1" = list("x1" = 200)), list("1" = list(x1 = 300)), list("1" = list(x1 = 400))), equals(shouldbe))
+
 ## Two sided
 shouldbe <- list("1" = list(col = list("x1" = "red"),
                             pch = list("x1" = 1),
