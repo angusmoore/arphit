@@ -34,7 +34,7 @@ handlepanels <- function(series, layout) {
     if (!is.null(series[[p]])) {
       panels[p] <- series[p]
   	  if (any(duplicated(series[[p]]))) {
-  		  stop(paste("Duplicate series identifiers in panel ", p, " (", paste(duplicated(series[[p]]), sep = "", collapse = ", "), ")", sep = ""))
+  		  stop(paste("Duplicate series identifiers in panel ", p, " (", paste(series[[p]][duplicated(series[[p]])], sep = "", collapse = ", "), ")", sep = ""))
   	  }
     } else {
       panels[p] <- list(NULL)
