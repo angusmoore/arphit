@@ -13,6 +13,7 @@ expect_error(handlepanels(list("3" = "a"), "1"))
 
 # Duplicate
 expect_that(handlepanels(list("1" = "x", "2" = "x"), "1"), equals(list("1" = "x", "2" = "x")))
+expect_error(handlepanels(list("1" = c("x1", "x2", "x2")), "1"))
 
 # Error if invalid layout
 expect_error(handlepanels("x", "foo"))
