@@ -1,47 +1,28 @@
-# Set up
-fakeseries1 <- c("a", "b")
-fakeseries2 <- c("c", "d")
-fakeseries3 <- c("e", "f")
-fakeseries4 <- c("g", "h")
-nobars <- NULL
-overlapseries1 <- c("a", "e")
-
 context("Panel handling")
-# Not supplying a list, defaulting
-shouldbe <- list(panels = list("1" = fakeseries1, "2" = NULL), serieslist = list("a" = "1", "b" = "1"), bars = list())
-expect_that(handlepanels(fakeseries1, nobars, "1"), is_identical_to(shouldbe))
 
-# Same, but supplying just the LHS
-expect_that(handlepanels(list("1" = fakeseries1, "2" = NULL), nobars, "1"), is_identical_to(shouldbe))
+# Basic panel handling - not providing panel ids
+expect_that(handlepanels(c("x","y","z"), "1"), equals(list("1" = c("x", "y", "z"), "2" = NULL)))
+expect_that(handlepanels(c("x","y","z"), "2h"), equals(list("1" = c("x", "y", "z"), "2" = NULL, "3" = NULL, "4" = NULL)))
 
-# One panel, both sides
-shouldbe <- list(panels = list("1" = fakeseries1, "2" = fakeseries2), serieslist = list("a" = "1", "b" = "1", "c" = "2", "d" = "2"), bars = list())
-expect_that(handlepanels(list("1" = fakeseries1, "2" = fakeseries2), nobars, "1"), is_identical_to(shouldbe))
+# Provide panel ids
+expect_that(handlepanels(list("1" = c("x","y","z")), "1"), equals(list("1" = c("x", "y", "z"), "2" = NULL)))
+expect_that(handlepanels(list("1" = c("x","y"), "2" = "z"), "1"), equals(list("1" = c("x", "y"), "2" = "z")))
 
-# Two panel horizontal
-shouldbe <- list(panels = list("1" = fakeseries1, "2" = NULL, "3" = fakeseries2, "4" = NULL), serieslist = list("a" = "1", "b" = "1", "c" = "3", "d" = "3"), bars = list())
-expect_that(handlepanels(list("1" = fakeseries1, "3" = fakeseries2), nobars, "2h"), is_identical_to(shouldbe))
+# Error if provide panel id not in layout
+expect_error(handlepanels(list("3" = "a"), "1"))
 
-# Two panel vertical
-shouldbe <- list(panels = list("1" = fakeseries1, "2" = fakeseries2), serieslist = list("a" = "1", "b" = "1", "c" = "2", "d" = "2"), bars = list())
-expect_that(handlepanels(list("1" = fakeseries1, "2" = fakeseries2), nobars, "2v"), is_identical_to(shouldbe))
+# Duplicate
+expect_that(handlepanels(list("1" = "x", "2" = "x"), "1"), equals(list("1" = "x", "2" = "x")))
+expect_error(handlepanels(list("1" = c("x1", "x2", "x2")), "1"))
 
-# 2b2
-shouldbe <- list(panels = list("1" = fakeseries1, "2" = fakeseries2, "3" = fakeseries3, "4" = fakeseries4), serieslist = list("a" = "1", "b" = "1", "c" = "2", "d" = "2", "e" = "3", "f" = "3", "g" = "4", "h" = "4"), bars = list())
-expect_that(handlepanels(list("1" = fakeseries1, "2" = fakeseries2, "3" = fakeseries3, "4" = fakeseries4), nobars, "2b2"), is_identical_to(shouldbe))
+# Error if invalid layout
+expect_error(handlepanels("x", "foo"))
 
+context("Bar handling")
 
-context("Panel handling - Bars")
-shouldbe <- list(panels = list("1" = fakeseries1, "2" = NULL), serieslist = list("a" = "1", "b" = "1"), bars = list("a" = TRUE, "b" = TRUE))
-expect_that(handlepanels(fakeseries1, fakeseries1, "1"), is_identical_to(shouldbe))
-
-shouldbe <- list(panels = list("1" = fakeseries1, "2" = fakeseries2), serieslist = list("a" = "1", "b" = "1", "c" = "2", "d" = "2"), bars = list("a" = TRUE, "b" = TRUE))
-expect_that(handlepanels(list("1" = fakeseries1, "2" = fakeseries2), fakeseries1, "1"), is_identical_to(shouldbe))
-
-# Handle panels - errors
-context("Panel handling - errors")
-expect_error(handlepanels(list("1" = fakeseries1, "3" = fakeseries3), nobars, "1"))
-expect_error(handlepanels(list("1" = fakeseries1, "3" = fakeseries3), nobars, "2v"))
-expect_error(handlepanels(list("1" = fakeseries1, "5" = fakeseries3), nobars, "2h"))
-expect_error(handlepanels(list("1" = fakeseries1, "5" = fakeseries3), nobars, "2b2"))
-expect_error(handlepanels(list("1" = fakeseries1, "1" = fakeseries3), nobars, "foo"))
+panels <- handlepanels(list("1" = c("x","y"), "2" = c("x","z")), "1")
+expect_that(handlebars(panels, TRUE), equals(list("1" = c("x","y"), "2" = c("x","z"))))
+expect_that(handlebars(panels, "z"), equals(list("2" = "z")))
+expect_that(handlebars(panels, "x"), equals(list("1" = "x", "2" = "x")))
+expect_that(handlebars(panels, c("x","z")), equals(list("1"="x","2"=c("x","z"))))
+expect_that(handlebars(panels, list("2" = c("x","z"))), equals(list("2"=c("x","z"))))

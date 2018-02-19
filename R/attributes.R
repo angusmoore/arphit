@@ -1,7 +1,7 @@
 fillwith <- function(tofill, default) {
   out <- list()
   ct <- 1
-  for (s in names(tofill)) {
+  for (s in tofill) {
     # Give it a default
     out[s] <- default[ct]
     ct <- ct + 1
@@ -25,9 +25,9 @@ handleattribute <- function(series, att, default) {
     # Have supplied a list
     out <- list()
     ct <- 1
-    for (s in names(series)) {
+    for (s in series) {
       if (s %in% names(att)) {
-        # Has been suplied
+        # Has been supplied
         out[s] <- att[s]
       } else {
         # Give it a default
@@ -46,11 +46,34 @@ handleattribute <- function(series, att, default) {
   }
 }
 
-handleattributes <- function(series, colin, pchin, ltyin, lwdin, barcolin) {
-  col <- handleattribute(series, colin, DEFAULTCOLORS)
-  pch <- handleattribute(series, pchin, DEFAULTPCH)
-  lty <- handleattribute(series, ltyin, DEFAULTLTY)
-  lwd <- handleattribute(series, lwdin, DEFAULTLWD)
-  barcol <- handleattribute(series, barcolin, DEFAULTBARCOL)
-  return(list("col" = col, "pch" = pch, "lty" = lty, "lwd" = lwd, "barcol" = barcol))
+convert2perpanel <- function(values) {
+  if (!is.null(values) && !("1" %in% names(values) || "2"  %in% names(values) || "3" %in% names(values) || "4" %in% names(values))) {
+    # Must be a non-nested list
+	out <- list()
+    for (p in c("1", "2", "3", "4")) {
+      out[[p]] <- values
+    }
+    return(out)
+  } else {
+	  return(values)
+  }
+}
+
+handleattributes <- function(panels, colin, pchin, ltyin, lwdin, barcolin) {
+  colin <- convert2perpanel(colin)
+  pchin <- convert2perpanel(pchin)
+  ltyin <- convert2perpanel(ltyin)
+  lwdin <- convert2perpanel(lwdin)
+  barcolin <- convert2perpanel(barcolin)
+
+  attributes <- list()
+  for (p in names(panels)) {
+    col <- handleattribute(panels[[p]], colin[[p]], DEFAULTCOLORS)
+  	pch <- handleattribute(panels[[p]], pchin[[p]], DEFAULTPCH)
+  	lty <- handleattribute(panels[[p]], ltyin[[p]], DEFAULTLTY)
+  	lwd <- handleattribute(panels[[p]], lwdin[[p]], DEFAULTLWD)
+  	barcol <- handleattribute(panels[[p]], barcolin[[p]], DEFAULTBARCOL)
+  	attributes[[p]] <- list(col = col, pch = pch, lty = lty, lwd = lwd, barcol = barcol)
+  }
+  return(attributes)
 }
