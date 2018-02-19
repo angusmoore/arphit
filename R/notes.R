@@ -1,7 +1,7 @@
 conformpaneltitles <- function(panels, paneltitles) {
   out <- list()
   if (!is.list(paneltitles)) {
-    for (p in names(panels$panels)) {
+    for (p in names(panels)) {
       if (!is.null(paneltitles)) {
         out[[p]] <- paneltitles
       } else {
@@ -9,7 +9,7 @@ conformpaneltitles <- function(panels, paneltitles) {
       }
     }
   } else {
-    for (p in names(panels$panels)) {
+    for (p in names(panels)) {
       if (p %in% names(paneltitles)) {
         out[[p]] <- paneltitles[[p]]
       } else {

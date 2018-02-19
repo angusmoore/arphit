@@ -64,17 +64,17 @@ createscale <- function(minscale,maxscale,nsteps,sigdig=2) {
 }
 
 duplicateaxes <- function(toduplicate, panels, layout) {
-  if (is.null(panels$panels[["1"]])) {
+  if (is.null(panels[["1"]])) {
     toduplicate[["1"]] <- toduplicate[["2"]]
   }
-  if (is.null(panels$panels[["2"]])) {
+  if (is.null(panels[["2"]])) {
     toduplicate[["2"]] <- toduplicate[["1"]]
   }
   if (layout == "2b2" || layout == "2h") {
-    if (is.null(panels$panels[["3"]])) {
+    if (is.null(panels[["3"]])) {
       toduplicate[["3"]] <- toduplicate[["4"]]
     }
-    if (is.null(panels$panels[["4"]])) {
+    if (is.null(panels[["4"]])) {
       toduplicate[["4"]] <- toduplicate[["3"]]
     }
   }
@@ -82,7 +82,7 @@ duplicateaxes <- function(toduplicate, panels, layout) {
 }
 
 handleunits <- function(panels, scaleunits, layout) {
-  plist <- names(panels$panels)
+  plist <- names(panels)
   if (is.null(scaleunits)) {
     scaleunits <- DEFAULTSCALEUNITS
   }
@@ -108,8 +108,8 @@ handleunits <- function(panels, scaleunits, layout) {
 ylimconform <- function(panels, ylim, data, layout) {
   ylim_list <- list()
   if (is.null(ylim)) {
-    for (p in names(panels$panels)) {
-      paneldf <- data[[p]][, panels$panels[[p]], drop = FALSE]
+    for (p in names(panels)) {
+      paneldf <- data[[p]][, panels[[p]], drop = FALSE]
       if (!is.null(paneldf) && any(!is.na(paneldf)) && is.finite(max(paneldf)) && is.finite(min(paneldf))) {
         ylim_list[[p]] <- defaultscale(paneldf)
       } else {
@@ -128,12 +128,12 @@ ylimconform <- function(panels, ylim, data, layout) {
       if (is.null(ylim$max)) {
         stop("You did not supply a max ylimit.")
       }
-      for (p in names(panels$panels)) {
+      for (p in names(panels)) {
         ylim_list[[p]] <- ylim
       }
     } else {
       # have supplied lims for each
-      for (p in names(panels$panels)) {
+      for (p in names(panels)) {
         if (p %in% names(ylim)) {
           ylim_list[[p]] <- ylim[[p]]
           if (is.null(ylim[[p]]) || ylim[[p]]$nsteps < 2) {
@@ -146,7 +146,7 @@ ylimconform <- function(panels, ylim, data, layout) {
             stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
           }
         } else {
-          paneldf <- data[[p]][, panels$panels[[p]], drop = FALSE]
+          paneldf <- data[[p]][, panels[[p]], drop = FALSE]
           if (!is.null(paneldf) && ncol(paneldf) > 0) {
             ylim_list[[p]] <- defaultscale(paneldf)
           } else {
@@ -162,7 +162,7 @@ ylimconform <- function(panels, ylim, data, layout) {
 
 handleticks <- function(data, panels, ylim) {
   ticks <- list()
-  for (p in names(panels$panels)) {
+  for (p in names(panels)) {
     if (!is.null(ylim[[p]])) {
       ticks[[p]] <- createscale(ylim[[p]]$min, ylim[[p]]$max, ylim[[p]]$nsteps)
     }
@@ -209,7 +209,7 @@ xlabels <- function(xlim, xvar, data, ists) {
 
 handlexlabels <- function(panels, xlim, xvars, data) {
   out <- list()
-  for (p in names(panels$panels)) {
+  for (p in names(panels)) {
     ists <- xvars[[paste(p,"ts",sep="")]]
     out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists)
   }
@@ -251,7 +251,7 @@ defaultxscale <- function(xvars, xscales, data, ists) {
 xlimconform <- function(panels, xlim, xvars, data) {
   out <- list()
   if (!is.list(xlim)) {
-    for (p in names(panels$panels)) {
+    for (p in names(panels)) {
       if (is.null(xlim)) {
         ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
         out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
@@ -260,7 +260,7 @@ xlimconform <- function(panels, xlim, xvars, data) {
       }
     }
   } else {
-    for (p in names(panels$panels)) {
+    for (p in names(panels)) {
       if (p %in% names(xlim)) {
         out[[p]] <- xlim[[p]]
       } else {

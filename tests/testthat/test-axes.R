@@ -1,9 +1,9 @@
 # needed set up
 fakeseries1 <- c("a","b")
 fakeseries2 <- c("c","d")
-onesided <- handlepanels(fakeseries1, NULL, "1")
-twosided <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), NULL, "1")
-twosided_oneeach <- handlepanels(list("1" = "a", "2" = "b"), NULL, "1")
+onesided <- handlepanels(fakeseries1, "1")
+twosided <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "1")
+twosided_oneeach <- handlepanels(list("1" = "a", "2" = "b"), "1")
 fakedata <- handledata(NULL, as.ts(data.frame("a" = 1:10, "b" = 1:10)), NULL)$data
 twosideddata <- handledata(list("1" = fakeseries1, "2" = fakeseries2), as.ts(data.frame("a" = 1:10, "b" = 1:10, "c" = 1:10, "d" = 1:10)), NULL)$data
 twosided_oneeachdata <- handledata(list("1" = "a", "2" = "b"), as.ts(data.frame("a" = 1:10, "b" = 1:10)), NULL)$data
@@ -19,7 +19,7 @@ ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, "1")
 
 ylim <- ylimconform(onesided, NULL, fakedata, "1")
 expect_that(handleticks(fakedata, onesided, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
-panel2b2 <- handlepanels(list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), NULL, "2b2")
+panel2b2 <- handlepanels(list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), "2b2")
 
 # Test for passing in a single ylim to apply to all axes
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
@@ -64,7 +64,7 @@ expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)
 
 # Check x lim conforming for categorical data
 catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), "x")$data
-catpanels <- handlepanels(c("y"), NULL, "1")
+catpanels <- handlepanels(c("y"), "1")
 xvar <- handlex(catdata, "x")
 expect_that(xlimconform(catpanels, NULL, xvar, catdata), equals(list("1" = c(1, 6), "2" = c(1, 6))))
 
@@ -72,11 +72,8 @@ expect_that(xlimconform(catpanels, NULL, xvar, catdata), equals(list("1" = c(1, 
 scatter <- data.frame(x = runif(100), y = runif(100))
 scatter <- handledata(NULL, scatter, "x")$data
 xvar <- handlex(scatter, "x")
-scatterpanels <- handlepanels(c("y"), NULL, "1")
+scatterpanels <- handlepanels(c("y"), "1")
 expect_that(xlimconform(scatterpanels, NULL, xvar, scatter), equals(list("1" = c(0,1), "2" = c(0,1))))
-
-
-
 
 context("Unit handling")
 expect_that(handleunits(onesided, NULL, "1"), equals(list("1" = "%", "2" = "%")))
