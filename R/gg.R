@@ -1,6 +1,19 @@
 ## Constructors
 
-# Annotations
+#' Add a title or panel title
+#'
+#' @param text A string for the title.
+#' @param panel (optional) Specify a panel identifier to add a panel title instead of an overall graph title.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' arphitgg(data) + agg_title("Graph Title")
+#' arphitgg(data) + agg_title("Panel title", panel = "1")
+#'
+#' @export
 agg_title <- function(text, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
@@ -8,6 +21,20 @@ agg_title <- function(text, panel = NULL) {
   return(list(type = "title", text = text, panel = panel))
 }
 
+#' Add a subtitle or panel subtitle
+#'
+#' @param text A string for the subtitle.
+#' @param panel (optional) Specify a panel identifier to add a panel subtitle instead of an overall graph subtitle.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' arphitgg(data) + agg_subtitle("Graph Subtitle")
+#' arphitgg(data) + agg_subtitle("Panel subtitle", panel = "1")
+#'
+#' @export
 agg_subtitle <- function(text, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
@@ -15,6 +42,20 @@ agg_subtitle <- function(text, panel = NULL) {
   return(list(type = "subtitle", text = text, panel = panel))
 }
 
+#' Add units
+#'
+#' @param text A string specifying the units.
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' arphitgg(data) + agg_units("index")
+#' arphitgg(data) + agg_units("ppt", panel = "1")
+#'
+#' @export
 agg_units <- function(units, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
@@ -22,15 +63,55 @@ agg_units <- function(units, panel = NULL) {
   return(list(type = "units", units = units, panel = panel))
 }
 
+#' Add a source (or many sources)
+#'
+#' @param source A string, or vector of strings, to be added as sources
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' arphitgg(data) + agg_footnote("Source 1")
+#' arphitgg(data) + agg_footnote(c("Source 1", "Source 2"))
+#'
+#' @export
 agg_source <- function(source) {
   return(list(type = "source", source = source))
 }
 
+#' Add a footnote (or many footnotes)
+#'
+#' @param footnote A string, or vector of strings, to be added as footnotes.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' arphitgg(data) + agg_footnote("Here is a footnote")
+#' arphitgg(data) + agg_footnote(c("Here is a footnote", "And a second one"))
+#'
+#' @export
 agg_footnote <- function(footnote) {
   return(list(type = "footnote", footnote = footnote))
 }
 
-# Series
+#' Add a line layer to an arphit plot.
+#'
+#' @param data The data to be used. Will inherit from parent if missing.
+#' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
+#' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
+#' @param panel (default = "1") Which panel of the graph to place this layer on.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
+#'
+#' @export
 agg_line <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
   if (is.list(data) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_line rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
@@ -38,29 +119,72 @@ agg_line <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
   return(list(type = "line", data = data, aes = aes, color = color, panel = as.character(panel)))
 }
 
-agg_bar <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked = FALSE) {
+#' Add a bar layer to an arphit plot.
+#'
+#' @param data The data to be used. Will inherit from parent if missing.
+#' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
+#' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
+#' @param panel (default = "1") Which panel of the graph to place this layer on.
+#' @param stacked (default = true) Stack the bars, or group them?
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
+#'
+#' @export
+agg_col <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked = FALSE) {
   if (is.list(data) && data$type == "aes") {
-    stop("You passed aes as the first argument to agg_bar rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
+    stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
   return(list(type = "bar", data = data, aes = aes, color = color, panel = as.character(panel), stacked = stacked))
 }
 
+
+#' Define an aesthetic for a graph, or a graph layer.
+#'
+#' If specified as part of a agg_line or agg_bar, fields left blank will be inherited from the parent.
+#'
+#' @param x Which series is the x variable.
+#' @param y Which series are you plotting on the y axis.
+#' @param group If your data are in long form, which variable defines the groups.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @export
 agg_aes <- function(x, y, group = NULL) {
   x <- as.character(deparse(substitute(x)))
   y <- as.character(deparse(substitute(y)))
   group <- as.character(deparse(substitute(group)))
-  if (x == "NULL") {
+  if (x == "NULL" || x == "") {
     x <- NULL
   }
-  if (y == "NULL") {
+  if (y == "NULL" || y == "") {
     y <- NULL
   }
-  if (group == "NULL") {
+  if (group == "NULL" || group == "") {
     group <- NULL
   }
   return(list(type = "aes", x = x, y = y, group = group))
 }
 
+#' Add a bar layer to an arphit plot.
+#'
+#' If specified as part of a agg_line or agg_bar, fields left blank will be inherited from the parent.
+#'
+#' @param data (Optional) Data to be used for the plot. Can be left blank, but must then be supplied for each layer.
+#' @param aes (Optional) The aesthetic that defines your graph. Can be left blank, but must then be supplied for each layer. Layers that don't specify aesthetics will inherit missing parts of aesthetic from here.
+#' @param layout (default = "1")
+#' @param portrait (default = false) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
+#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @export
 arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = TRUE) {
   gg <- list(data = list(parent = data),
              aes = aes,
@@ -68,7 +192,6 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              series = list(),
              layout = as.character(layout),
              bars = list(),
-             shading = NULL,
              title = NULL,
              subtitle = NULL,
              paneltitles = list(),
@@ -76,17 +199,7 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              footnotes = c(),
              sources = c(),
              scaleunits = NULL,
-             labels = NULL,
-             arrows = NULL,
-             bgshading = NULL,
-             lines = NULL,
              col = list(),
-             pch = NULL,
-             lty = 1,
-             lwd = 2,
-             barcol = NA,
-             xlim = NULL,
-             ylim = NULL,
              portrait = portrait,
              dropxlabel = dropxlabel,
              stacked = TRUE)
@@ -131,6 +244,9 @@ unrename <- function(data) {
 
 applycolours <- function(gg, panel, newseriesnames, colour) {
   i <- 1
+  if (is.null(gg$col[[panel]])) {
+    gg$col[[panel]] <- list()
+  }
   for (name in newseriesnames) {
     gg$col[[panel]][[name]] <- colour[i]
     i <- i %% length(colour) + 1
@@ -142,6 +258,16 @@ addnewseries <- function(gg, new, panel) {
   # if aes is new, inherit from parent
   if (is.null(new$aes)) {
     new$aes <- gg$aes
+  }
+  # Check all the parts
+  if (is.null(new$aes$x) && !is.null(gg$aes$x)) {
+    new$aes$x <- gg$aes$x
+  }
+  if (is.null(new$aes$y) && !is.null(gg$aes$y)) {
+    new$aes$x <- gg$aes$y
+  }
+  if (is.null(new$aes$group) && !is.null(gg$aes$group)) {
+    new$aes$x <- gg$aes$group
   }
 
   # if data is null, inherit from parent
@@ -156,7 +282,7 @@ addnewseries <- function(gg, new, panel) {
   if (!is.null(gg$x[[panel]])) {
     # Have previously set an x variable. Check is the same.
     if (gg$x[[panel]] != new$aes$x) {
-      stop(paste("You cannot add a series to panel ", p, " with x variable ", new$aes$x, " because you have already added a series to that panel with x variable ", gg$x[[panel]], sep = ""))
+      stop(paste("You cannot add a series to panel ", panel, " with x variable ", new$aes$x, " because you have already added a series to that panel with x variable ", gg$x[[panel]], sep = ""))
     }
   } else {
     gg$x[[panel]] <- new$aes$x
@@ -194,7 +320,6 @@ addbarseries <- function(gg, newbar) {
   out <- addnewseries(gg, newbar, panel)
   gg <- out$gg
   newbarnames <- out$newseriesnames
-  print(newbarnames)
 
   if (!is.null(gg$bars[[panel]])) {
     gg$bars[[panel]] <- append(gg$bars, newbarnames)
@@ -245,20 +370,28 @@ addsource <- function(gg, source) {
 }
 
 addfootnote <- function(gg, footnote) {
-  gg$footnotes <- append(gg$footnotes, footnote)
+  gg$footnotes <- append(gg$footnotes, footnote$footnote)
   return(gg)
 }
 
 ## Wrap up
 
-arphit.ggdraw <- function(gg, filename = NULL) {
+#' Draw a defined graph
+#'
+#' @param gg An arphitgg biult graph.
+#' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @export
+agg_draw <- function(gg, filename = NULL) {
   # Here we call the arphit drawing function
   gg$data[["parent"]] <- NULL
   arphit(data = gg$data,
           x = gg$x,
           layout = gg$layout,
           bars = gg$bars,
-          shading = NULL,
           title = gg$title,
           subtitle = gg$subtitle,
           paneltitles = gg$paneltitles,
@@ -266,17 +399,7 @@ arphit.ggdraw <- function(gg, filename = NULL) {
           footnotes = gg$footnotes,
           sources = gg$sources,
           scaleunits = gg$scaleunits,
-          labels = NULL,
-          arrows = NULL,
-          bgshading = NULL,
-          lines = NULL,
           col = gg$col,
-          pch = gg$pch,
-          lty = gg$lty,
-          lwd = gg$lwd,
-          barcol = NA,
-          xlim = gg$xlim,
-          ylim = gg$ylim,
           portrait = gg$portrait,
           dropxlabel = gg$dropxlabel,
           bar.stacked = gg$stacked,
