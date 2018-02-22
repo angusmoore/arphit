@@ -21,7 +21,7 @@ expect_that(colnames(foo$data[["1"]]), equals(c("date", "A", "B", "C", "D")))
 expect_that(foo$x[["1"]], equals("date"))
 
 # Add bar
-foo <- arphitgg(data) + agg_bar(aes = agg_aes(x = date, y = unemployment))
+foo <- arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment))
 expect_that(nrow(foo$data[["1"]]), equals(20))
 expect_that(ncol(foo$data[["1"]]), equals(2))
 expect_that(colnames(foo$data[["1"]]), equals(c("date", "unemployment")))
@@ -29,7 +29,7 @@ expect_that(foo$x[["1"]], equals("date"))
 expect_that(foo$bars, equals(list("1" = "unemployment")))
 
 # Bar - Grouped
-foo <- arphitgg(data) + agg_bar(aes = agg_aes(x = date, y = unemployment, group = state))
+foo <- arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state))
 expect_that(nrow(foo$data[["1"]]), equals(10))
 expect_that(ncol(foo$data[["1"]]), equals(5))
 expect_that(colnames(foo$data[["1"]]), equals(c("date", "A", "B", "C", "D")))
@@ -37,7 +37,7 @@ expect_that(foo$x[["1"]], equals("date"))
 expect_that(foo$bars, equals(list("1" = c("A", "B", "C", "D"))))
 
 # Bar - Grouped duplicates
-foo <- arphitgg(data) + agg_bar(aes = agg_aes(x = date, y = unemployment, group = state)) + agg_line(aes = agg_aes(x = date, y = employment, group = state))
+foo <- arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state)) + agg_line(aes = agg_aes(x = date, y = employment, group = state))
 expect_that(nrow(foo$data[["1"]]), equals(10))
 expect_that(ncol(foo$data[["1"]]), equals(9))
 expect_that(colnames(foo$data[["1"]]), equals(c("date", "A", "B", "C", "D", "A.y", "B.y", "C.y", "D.y")))
@@ -68,7 +68,7 @@ expect_that(bar$col, equals(list("1" = list("A" = "red", "B" = "green", "C" = "r
 expect_that(foo2$col, equals(list("2" = list("A" = "red", "B" = "green", "C" = "red", "D" = "green"))))
 
 # Colours with duplicates
-foo <- arphitgg(data) + agg_bar(aes = agg_aes(x = date, y = unemployment, group = state), color = "green") + agg_line(aes = agg_aes(x = date, y = employment, group = state), color = "red")
+foo <- arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), color = "green") + agg_line(aes = agg_aes(x = date, y = employment, group = state), color = "red")
 expect_that(foo$col[["1"]], equals(list("A" = "green", "B" = "green", "C" = "green", "D" = "green", "A.y" = "red", "B.y" = "red", "C.y" = "red", "D.y" = "red")))
 
 # Title
