@@ -44,7 +44,7 @@ agg_subtitle <- function(text, panel = NULL) {
 
 #' Add units
 #'
-#' @param text A string specifying the units.
+#' @param units A string specifying the units.
 #' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
@@ -119,7 +119,7 @@ agg_line <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
   return(list(type = "line", data = data, aes = aes, color = color, panel = as.character(panel)))
 }
 
-#' Add a bar layer to an arphit plot.
+#' Add a col layer to an arphit plot.
 #'
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
@@ -139,13 +139,13 @@ agg_col <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked 
   if (is.list(data) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
-  return(list(type = "bar", data = data, aes = aes, color = color, panel = as.character(panel), stacked = stacked))
+  return(list(type = "col", data = data, aes = aes, color = color, panel = as.character(panel), stacked = stacked))
 }
 
 
 #' Define an aesthetic for a graph, or a graph layer.
 #'
-#' If specified as part of a agg_line or agg_bar, fields left blank will be inherited from the parent.
+#' If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.
 #'
 #' @param x Which series is the x variable.
 #' @param y Which series are you plotting on the y axis.
@@ -171,9 +171,9 @@ agg_aes <- function(x, y, group = NULL) {
   return(list(type = "aes", x = x, y = y, group = group))
 }
 
-#' Add a bar layer to an arphit plot.
+#' Add a col layer to an arphit plot.
 #'
-#' If specified as part of a agg_line or agg_bar, fields left blank will be inherited from the parent.
+#' If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.
 #'
 #' @param data (Optional) Data to be used for the plot. Can be left blank, but must then be supplied for each layer.
 #' @param aes (Optional) The aesthetic that defines your graph. Can be left blank, but must then be supplied for each layer. Layers that don't specify aesthetics will inherit missing parts of aesthetic from here.
@@ -315,20 +315,20 @@ addlineseries <- function(gg, newline) {
   return(out$gg)
 }
 
-addbarseries <- function(gg, newbar) {
-  panel <- newbar$panel
-  out <- addnewseries(gg, newbar, panel)
+addcolseries <- function(gg, newcol) {
+  panel <- newcol$panel
+  out <- addnewseries(gg, newcol, panel)
   gg <- out$gg
-  newbarnames <- out$newseriesnames
+  newcolnames <- out$newseriesnames
 
   if (!is.null(gg$bars[[panel]])) {
-    gg$bars[[panel]] <- append(gg$bars, newbarnames)
+    gg$bars[[panel]] <- append(gg$bars, newcolnames)
   } else {
-    gg$bars[[panel]] <- newbarnames
+    gg$bars[[panel]] <- newcolnames
   }
 
-  if (!is.null(newbar$stacked)) {
-    gg$stacked <- newbar$stacked
+  if (!is.null(newcol$stacked)) {
+    gg$stacked <- newcol$stacked
   }
 
   return(gg)
@@ -378,7 +378,7 @@ addfootnote <- function(gg, footnote) {
 
 #' Draw a defined graph
 #'
-#' @param gg An arphitgg biult graph.
+#' @param gg An arphitgg built graph.
 #' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
@@ -406,15 +406,31 @@ agg_draw <- function(gg, filename = NULL) {
           filename = filename)
 }
 
-print.arphit.gg <- function(gg) {
-  arphit.ggdraw(gg)
+#' Draw a defined graph
+#'
+#' @param gg An arphitgg built graph.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @export
+print.arphit.gg <- function(gg, ...) {
+  agg_draw(gg)
 }
 
-
+#' Add a layer or element to an arphitgg graph.
+#'
+#' @param gg An arphitgg built graph.
+#' @param element The element to add to the graph.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @export
 "+.arphit.gg" <- function(gg, element) {
   gg = switch(element$type,
          "line" = addlineseries(gg, element),
-         "bar" = addbarseries(gg, element),
+         "col" = addcolseries(gg, element),
          "title" = addtitle(gg, element),
          "subtitle" = addsubtitle(gg, element),
          "units" = addunits(gg, element),
