@@ -113,7 +113,7 @@ agg_footnote <- function(footnote) {
 #'
 #' @export
 agg_line <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
-  if (is.list(data) && data$type == "aes") {
+  if (is.list(data) && !is.null(data$type) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_line rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
   return(list(type = "line", data = data, aes = aes, color = color, panel = as.character(panel)))
@@ -125,7 +125,7 @@ agg_line <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
-#' @param stacked (default = true) Stack the bars, or group them?
+#' @param stacked (default = TRUE) Stack the bars, or group them?
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
 #' how to use the ggplot-like interface.
@@ -135,8 +135,8 @@ agg_line <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
 #' arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_col <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked = FALSE) {
-  if (is.list(data) && data$type == "aes") {
+agg_col <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked = TRUE) {
+  if (is.list(data) && !is.null(data$type) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
   return(list(type = "col", data = data, aes = aes, color = color, panel = as.character(panel), stacked = stacked))
@@ -264,10 +264,10 @@ addnewseries <- function(gg, new, panel) {
     new$aes$x <- gg$aes$x
   }
   if (is.null(new$aes$y) && !is.null(gg$aes$y)) {
-    new$aes$x <- gg$aes$y
+    new$aes$y <- gg$aes$y
   }
   if (is.null(new$aes$group) && !is.null(gg$aes$group)) {
-    new$aes$x <- gg$aes$group
+    new$aes$group <- gg$aes$group
   }
 
   # if data is null, inherit from parent
