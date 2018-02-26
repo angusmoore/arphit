@@ -23,6 +23,8 @@ git config user.email "travis"
 cp ../arphit/inst/doc/index.html index.html
 cp ../arphit/inst/doc/plotting-options.html plotting-options.html
 cp ../arphit/inst/doc/todo.html todo.html
+cp ../arphit/inst/doc/rba-colours.html rba-colours.html
+cp ../arphit/inst/doc/gg-interface.html gg-interface.html
 
 cp ../arphit.pdf arphit.pdf
 
