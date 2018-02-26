@@ -1,8 +1,12 @@
 context("Integration tests")
 
 data <- ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
+simple_data <- data.frame(date = seq.Date(from = as.Date("2017-01-10"), length.out = 5, by = "quarter"), y1 = rnorm(5))
+long_data <- data.frame(date = rep(seq.Date(from = as.Date("2017-01-10"), length.out = 5, by = "quarter"), 2), y1 = rnorm(10), y2 = rnorm(10), group_var = c(rep("A", 5), rep("B", 5)))
 
 # These are just all the examples from the vignette, which should cover all the plotting options
+
+## Plotting options vignette
 
 # Data section (covers categorical data)
 mytsdata <- ts(data.frame(x1 = rnorm(10)), frequency = 4, start = c(2000, 1))
@@ -71,3 +75,58 @@ expect_error(arphit(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 
 expect_error(arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen"))), NA)
 
 graphics.off()
+
+## gg-interface vignette
+
+p <- arphitgg(layout = "1")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() +
+  agg_line(data = simple_data, aes = agg_aes(x = date, y = y1))
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() +
+  agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var))
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg(layout = "2h") +
+  agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), panel = "1") +
+  agg_col(data = long_data, aes = agg_aes(x = date, y = y2, group = group_var), panel = "3")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg(long_data, aes = agg_aes(x = date, group = group_var), layout = "2h") +
+  agg_line(aes = agg_aes(y = y1), panel = "1") +
+  agg_col(aes = agg_aes(y = y2), panel = "3")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() +
+  agg_line(data = simple_data, aes = agg_aes(x = date, y = y1), color = RBA["Red1"])
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() +
+  agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), color = RBA["Red1"])
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() +
+  agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), color = c(RBA["Red1"], RBA["Blue4"]))
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() + agg_title("Graph Title Goes Here") + agg_subtitle("Or a subtitle, if you like")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() + agg_title("Graph Title Goes Here") + agg_subtitle("Or a subtitle, if you like") +
+  agg_title("And here is panel title", panel = "1") + agg_subtitle("Panel subtitle too if needed", panel = "1")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() + agg_units("index")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() + agg_units("index", panel = "1") + agg_units("ppt", panel = "2")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg() + agg_source("Source 1") + agg_source(c("Source 2 (as a vector)", "Source 3 (vectors are easy!")) +
+  agg_footnote("This is my first footnoote") + agg_footnote("This is a second footnote")
+expect_error(agg_draw(p), NA)
+
+p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1))
+expect_error(agg_draw(p, filename = "my-graph.png"), NA)

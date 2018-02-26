@@ -13,6 +13,8 @@ Imports:
   tibble,
   stringr,
   plyr,
+  dplyr,
+  tidyr,
   devEMF
 Suggests:
   testthat,
