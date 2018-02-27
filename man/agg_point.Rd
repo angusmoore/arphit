@@ -19,7 +19,7 @@ agg_point(data = NULL, aes = NULL, color = NULL, panel = "1")
 Add a scatter layer to an arphit plot.
 }
 \examples{
-data  <- data.frame(x = rnrorm(10), y = rnorm(10))
+data  <- data.frame(x = rnorm(10), y = rnorm(10))
 arphitgg(data) + agg_point(aes = agg_aes(x = x, y = y), panel = "1")
 
 }
