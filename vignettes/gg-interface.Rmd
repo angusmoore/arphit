@@ -101,7 +101,7 @@ knitr::include_graphics("inherit.png")
 
 NB: column layers have an additional optional argument `stacked`, which determines whether the bars should be stacked or not.
 
-# Series colours
+# Series colours and other attributes
 
 Specifying colours for series is done when creating a layer. For instance:
 ```{r, results = "hide"}
@@ -134,6 +134,10 @@ knitr::include_graphics("group-multi-color.png")
 ```
 
 (NB: `arphit` will cycle through the supplied vector colours if there aren't enough in the vector to cover the number of series in the layer.)
+
+## Other attributes
+
+For line layers you can also specify `pch`, `lty` and `lwd`. These function identically to specifying colours (i.e. supplying one will apply it to the whole layer; specifying a vector will loop through it). the plotting options vignette explains what these three options do.
 
 # Titles
 
