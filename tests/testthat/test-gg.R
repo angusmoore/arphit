@@ -61,11 +61,60 @@ expect_that(bar$x[["1"]], equals("date"))
 # Set colours
 foo <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), color = "red")
 bar <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), color = c("red", "green"))
-baz <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) + agg_line(aes = agg_aes(x = date, y = employment, group = state), color = c("red", "green"))
-foo2 <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) + agg_line(aes = agg_aes(x = date, y = employment, group = state), color = c("red", "green"), panel = "2")
+baz <- arphitgg(data) +
+  agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), color = c("red", "green"))
+foo2 <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), color = c("red", "green"), panel = "2")
+
 expect_that(foo$col, equals(list("1" = list("A" = "red", "B" = "red", "C" = "red", "D" = "red"))))
 expect_that(bar$col, equals(list("1" = list("A" = "red", "B" = "green", "C" = "red", "D" = "green"))))
+expect_that(baz$col, equals(list("1" = list("A.y" = "red", "B.y" = "green", "C.y"= "red", "D.y" = "green"))))
 expect_that(foo2$col, equals(list("2" = list("A" = "red", "B" = "green", "C" = "red", "D" = "green"))))
+
+# Set pch
+foo <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), pch = 10)
+bar <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), pch = c(20, 30))
+baz <- arphitgg(data) +
+  agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), pch = c(40, 50))
+foo2 <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), pch = c(10, 20), panel = "2")
+
+expect_that(foo$pch, equals(list("1" = list("A" = 10, "B" = 10, "C" = 10, "D" = 10))))
+expect_that(bar$pch, equals(list("1" = list("A" = 20, "B" = 30, "C" = 20, "D" = 30))))
+expect_that(baz$pch, equals(list("1" = list("A.y" = 40, "B.y" = 50, "C.y"= 40, "D.y" = 50))))
+expect_that(foo2$pch, equals(list("2" = list("A" = 10, "B" = 20, "C" = 10, "D" = 20))))
+
+
+# Set lty
+foo <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), lty = 10)
+bar <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), lty = c(20, 30))
+baz <- arphitgg(data) +
+  agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), lty = c(40, 50))
+foo2 <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), lty = c(10, 20), panel = "2")
+
+expect_that(foo$lty, equals(list("1" = list("A" = 10, "B" = 10, "C" = 10, "D" = 10))))
+expect_that(bar$lty, equals(list("1" = list("A" = 20, "B" = 30, "C" = 20, "D" = 30))))
+expect_that(baz$lty, equals(list("1" = list("A.y" = 40, "B.y" = 50, "C.y"= 40, "D.y" = 50))))
+expect_that(foo2$lty, equals(list("2" = list("A" = 10, "B" = 20, "C" = 10, "D" = 20))))
+
+# Set lwd
+foo <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), lwd = 10)
+bar <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), lwd = c(20, 30))
+baz <- arphitgg(data) +
+  agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), lwd = c(40, 50))
+foo2 <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state)) +
+  agg_line(aes = agg_aes(x = date, y = employment, group = state), lwd = c(10, 20), panel = "2")
+
+expect_that(foo$lwd, equals(list("1" = list("A" = 10, "B" = 10, "C" = 10, "D" = 10))))
+expect_that(bar$lwd, equals(list("1" = list("A" = 20, "B" = 30, "C" = 20, "D" = 30))))
+expect_that(baz$lwd, equals(list("1" = list("A.y" = 40, "B.y" = 50, "C.y"= 40, "D.y" = 50))))
+expect_that(foo2$lwd, equals(list("2" = list("A" = 10, "B" = 20, "C" = 10, "D" = 20))))
+
 
 # Colours with duplicates
 foo <- arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), color = "green") + agg_line(aes = agg_aes(x = date, y = employment, group = state), color = "red")
