@@ -145,6 +145,27 @@ agg_col <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked 
   return(list(type = "col", data = data, aes = aes, color = color, panel = as.character(panel), stacked = stacked))
 }
 
+#' Add a scatter layer to an arphit plot.
+#'
+#' @param data The data to be used. Will inherit from parent if missing.
+#' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
+#' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
+#' @param panel (default = "1") Which panel of the graph to place this layer on.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data  <- data.frame(x = rnorm(10), y = rnorm(10))
+#' arphitgg(data) + agg_point(aes = agg_aes(x = x, y = y), panel = "1")
+#'
+#' @export
+agg_point <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
+  if (is.list(data) && !is.null(data$type) && data$type == "aes") {
+    stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
+  }
+  return(list(type = "point", data = data, aes = aes, color = color, panel = as.character(panel)))
+}
 
 #' Define an aesthetic for a graph, or a graph layer.
 #'
@@ -331,6 +352,13 @@ addlineseries <- function(gg, newline) {
   return(gg)
 }
 
+addpointseries <- function(gg, newpoint) {
+  # Just create a line series with PCH and LTY set
+  newpoint$pch <- 16
+  newpoint$lty <- 0
+  return(addlineseries(gg, newpoint))
+}
+
 addcolseries <- function(gg, newcol) {
   panel <- newcol$panel
   out <- addnewseries(gg, newcol, panel)
@@ -450,6 +478,7 @@ print.arphit.gg <- function(gg, ...) {
   gg = switch(element$type,
          "line" = addlineseries(gg, element),
          "col" = addcolseries(gg, element),
+         "point" = addpointseries(gg, element),
          "title" = addtitle(gg, element),
          "subtitle" = addsubtitle(gg, element),
          "units" = addunits(gg, element),
