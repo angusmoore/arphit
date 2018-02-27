@@ -102,6 +102,9 @@ agg_footnote <- function(footnote) {
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
+#' @param pch A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.
+#' @param lty A line type to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.
+#' @param lwd A line width to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
@@ -112,11 +115,11 @@ agg_footnote <- function(footnote) {
 #' arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_line <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
+agg_line <- function(data = NULL, aes = NULL, color = NULL, pch = NULL, lty = NULL, lwd = NULL, panel = "1") {
   if (is.list(data) && !is.null(data$type) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_line rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
-  return(list(type = "line", data = data, aes = aes, color = color, panel = as.character(panel)))
+  return(list(type = "line", data = data, aes = aes, color = color, pch = pch, lty = lty, lwd = lwd, panel = as.character(panel)))
 }
 
 #' Add a col layer to an arphit plot.
@@ -171,9 +174,7 @@ agg_aes <- function(x, y, group = NULL) {
   return(list(type = "aes", x = x, y = y, group = group))
 }
 
-#' Add a col layer to an arphit plot.
-#'
-#' If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.
+#' Create an arphit graph to be built using the ggplot-like interface.
 #'
 #' @param data (Optional) Data to be used for the plot. Can be left blank, but must then be supplied for each layer.
 #' @param aes (Optional) The aesthetic that defines your graph. Can be left blank, but must then be supplied for each layer. Layers that don't specify aesthetics will inherit missing parts of aesthetic from here.
@@ -200,6 +201,9 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              sources = c(),
              scaleunits = NULL,
              col = list(),
+             pch = list(),
+             lty = list(),
+             lwd = list(),
              portrait = portrait,
              dropxlabel = dropxlabel,
              stacked = TRUE)
@@ -242,14 +246,14 @@ unrename <- function(data) {
   return(data)
 }
 
-applycolours <- function(gg, panel, newseriesnames, colour) {
+applyattribute <- function(gg, attributename, panel, newseriesnames, attributevalues) {
   i <- 1
-  if (is.null(gg$col[[panel]])) {
-    gg$col[[panel]] <- list()
+  if (is.null(gg[[attributename]][[panel]])) {
+    gg[[attributename]][[panel]] <- list()
   }
   for (name in newseriesnames) {
-    gg$col[[panel]][[name]] <- colour[i]
-    i <- i %% length(colour) + 1
+    gg[[attributename]][[panel]][[name]] <- attributevalues[i]
+    i <- i %% length(attributevalues) + 1
   }
   return(gg)
 }
@@ -303,8 +307,9 @@ addnewseries <- function(gg, new, panel) {
   }
 
   if (!is.null(new$color)) {
-    gg <- applycolours(gg, panel, newseriesnames, new$color)
+    gg <- applyattribute(gg, "col", panel, newseriesnames, new$color)
   }
+
 
   return(list(gg = gg, newseriesnames = newseriesnames))
 }
@@ -312,7 +317,18 @@ addnewseries <- function(gg, new, panel) {
 addlineseries <- function(gg, newline) {
   panel <- newline$panel
   out <- addnewseries(gg, newline, panel)
-  return(out$gg)
+  gg <- out$gg
+  newseriesnames <- out$newseriesnames
+  if (!is.null(newline$pch)) {
+    gg <- applyattribute(gg, "pch", panel, newseriesnames, newline$pch)
+  }
+  if (!is.null(newline$lty)) {
+    gg <- applyattribute(gg, "lty", panel, newseriesnames, newline$lty)
+  }
+  if (!is.null(newline$lwd)) {
+    gg <- applyattribute(gg, "lwd", panel, newseriesnames, newline$lwd)
+  }
+  return(gg)
 }
 
 addcolseries <- function(gg, newcol) {
@@ -389,21 +405,24 @@ agg_draw <- function(gg, filename = NULL) {
   # Here we call the arphit drawing function
   gg$data[["parent"]] <- NULL
   arphit(data = gg$data,
-          x = gg$x,
-          layout = gg$layout,
-          bars = gg$bars,
-          title = gg$title,
-          subtitle = gg$subtitle,
-          paneltitles = gg$paneltitles,
-          panelsubtitles = gg$panelsubtitles,
-          footnotes = gg$footnotes,
-          sources = gg$sources,
-          scaleunits = gg$scaleunits,
-          col = gg$col,
-          portrait = gg$portrait,
-          dropxlabel = gg$dropxlabel,
-          bar.stacked = gg$stacked,
-          filename = filename)
+         x = gg$x,
+         layout = gg$layout,
+         bars = gg$bars,
+         title = gg$title,
+         subtitle = gg$subtitle,
+         paneltitles = gg$paneltitles,
+         panelsubtitles = gg$panelsubtitles,
+         footnotes = gg$footnotes,
+         sources = gg$sources,
+         scaleunits = gg$scaleunits,
+         col = gg$col,
+         pch = gg$pch,
+         lty = gg$lty,
+         lwd = gg$lwd,
+         portrait = gg$portrait,
+         dropxlabel = gg$dropxlabel,
+         bar.stacked = gg$stacked,
+         filename = filename)
 }
 
 #' Draw a defined graph
