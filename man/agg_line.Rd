@@ -4,7 +4,8 @@
 \alias{agg_line}
 \title{Add a line layer to an arphit plot.}
 \usage{
-agg_line(data = NULL, aes = NULL, color = NULL, panel = "1")
+agg_line(data = NULL, aes = NULL, color = NULL, pch = NULL,
+  lty = NULL, lwd = NULL, panel = "1")
 }
 \arguments{
 \item{data}{The data to be used. Will inherit from parent if missing.}
@@ -12,6 +13,12 @@ agg_line(data = NULL, aes = NULL, color = NULL, panel = "1")
 \item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
 
 \item{color}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
+
+\item{pch}{A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.}
+
+\item{lty}{A line type to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.}
+
+\item{lwd}{A line width to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.}
 
 \item{panel}{(default = "1") Which panel of the graph to place this layer on.}
 }

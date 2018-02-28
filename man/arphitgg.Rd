@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg.R
 \name{arphitgg}
 \alias{arphitgg}
-\title{Add a col layer to an arphit plot.}
+\title{Create an arphit graph to be built using the ggplot-like interface.}
 \usage{
 arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
   dropxlabel = TRUE)
@@ -19,7 +19,7 @@ arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
 \item{dropxlabel}{(optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.}
 }
 \description{
-If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.
+Create an arphit graph to be built using the ggplot-like interface.
 }
 \seealso{
 \code{vignette("gg-interface", package = "arphit")} for a detailed description of

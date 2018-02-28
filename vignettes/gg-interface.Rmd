@@ -77,7 +77,7 @@ Layers take four arguments:
   3. Panel (defaults to "1" if not supplied)
   4. Colour (optional, and discussed below)
 
-There are two types of layers, `agg_line` and `agg_col`. These are used nearly identically to produce line and column graphs respectively:
+There are three types of layers, `agg_line`, `agg_point` and `agg_col`. These are used nearly identically to produce line, scatter and column graphs respectively:
 ```{r, results = "hide"}
 p <- arphitgg(layout = "2h") + 
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), panel = "1") + 
@@ -86,6 +86,15 @@ agg_draw(p, filename = "layers.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("layers.png")
+```
+
+```{r, results = "hide"}
+p <- arphitgg(layout = "1") + 
+  agg_point(data = data.frame(x = rnorm(10), y = rnorm(10)), aes = agg_aes(x = x, y = y), panel = "1")
+agg_draw(p, filename = "scatter.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("scatter.png")
 ```
 
 Layers will inherit data and aesthetic (or parts of the aesthetic) if these are left null in the layer specification. This is handy to save you from having to repeat yourself:

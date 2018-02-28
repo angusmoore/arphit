@@ -44,6 +44,11 @@ expect_that(colnames(foo$data[["1"]]), equals(c("date", "A", "B", "C", "D", "A.y
 expect_that(foo$x[["1"]], equals("date"))
 expect_that(foo$bars, equals(list("1" = c("A", "B", "C", "D"))))
 
+# Point
+foo <- arphitgg(data) + agg_point(aes = agg_aes(x = date, y = unemployment, group = state))
+expect_that(foo$pch[["1"]], equals(list("A" = 16, "B" = 16, "C" = 16, "D" = 16)))
+expect_that(foo$lty[["1"]], equals(list("A" = 0, "B" = 0, "C" = 0, "D" = 0)))
+
 # Inherited aesthetic
 foo <- arphitgg(data, agg_aes(x = date, y = unemployment, group = state)) + agg_line()
 bar <- arphitgg(data, agg_aes(x = date)) + agg_line(aes = agg_aes(y = unemployment, group = state))
