@@ -30,11 +30,15 @@ getlocation <- function(p, layout) {
 
 drawpaneltitle <- function(paneltitle, panelsubtitle) {
   if (!is.null(paneltitle)) {
-    graphics::mtext(paneltitle, line = -1.6)
+    graphics::mtext(paneltitle, line = -0.6, padj = 1)
   }
   if (!is.null(panelsubtitle)) {
-    message("I'm not adjusting for multi-line panel titles")
-    graphics::mtext(panelsubtitle, line = -2.8, cex = (18/20))
+    if (!is.null(paneltitle)) {
+      extra_lines <- stringr::str_count(paneltitle, "\n")
+    } else {
+      extra_lines <- 0
+    }
+    graphics::mtext(panelsubtitle, line = (-(2.2+1.5*extra_lines)), cex = (18/20), padj = 1)
   }
 }
 

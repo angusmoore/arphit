@@ -1,3 +1,10 @@
+frequencyof <- function(dates) {
+  smallestdiff <- min(diff(dates))
+  options <- c(1, 1/4, 1/12, 1/365)
+  bestchoice <- (abs(log(smallestdiff)-log(options)) == min(abs(log(smallestdiff) -log(options))))
+  return(options[bestchoice])
+}
+
 handlex <- function(data, x) {
   if (is.character(x)) {
     # Just have one for all panels, apply
@@ -25,7 +32,7 @@ handlex <- function(data, x) {
             if (lubridate::is.Date(outx[[p]])) {
               outx[[p]] <- lubridate::decimal_date(outx[[p]])
               # shift by half, so that we're between ticks
-              outx[[p]] <- outx[[p]] + 1/2*mean(diff(outx[[p]]))
+              outx[[p]] <- outx[[p]] + 1/2*frequencyof(outx[[p]])
               # Add a little helper to tell other functions we have time series data
               outx[[paste(p,"ts",sep = "")]] <- TRUE
             }
