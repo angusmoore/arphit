@@ -1,84 +1,54 @@
-# needed set up
-fakeseries1 <- c("a","b")
-fakeseries2 <- c("c","d")
-onesided <- handlepanels(fakeseries1, "1")
-twosided <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "1")
-twosided_oneeach <- handlepanels(list("1" = "a", "2" = "b"), "1")
-fakedata <- handledata(NULL, as.ts(data.frame("a" = 1:10, "b" = 1:10)), NULL)$data
-twosideddata <- handledata(list("1" = fakeseries1, "2" = fakeseries2), as.ts(data.frame("a" = 1:10, "b" = 1:10, "c" = 1:10, "d" = 1:10)), NULL)$data
-twosided_oneeachdata <- handledata(list("1" = "a", "2" = "b"), as.ts(data.frame("a" = 1:10, "b" = 1:10)), NULL)$data
+context("X vars")
 
-context("Y-axes scale")
-shouldbe <- list("1" = list("min" = 0, "max" = 12, "nsteps" = 5), "2" = list("min" = 0, "max" = 12, "nsteps" = 5))
-expect_that(ylimconform(onesided, NULL, fakedata, "1"), equals(shouldbe))
+dfdata <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"), x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5))
+tsdata <- ts(dfdata, start = c(2000,1), frequency = 4)
+tibbledata <- tibble::as_tibble(dfdata)
 
-sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
-expect_that(ylimconform(onesided, list("1" = sublist), fakedata, "1"), equals(list("1" = sublist, "2" = sublist)))
 
-ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, "1")
+dfdata <- handledata(NULL, dfdata, NULL)$data
+tsdata <- handledata(NULL, tsdata, NULL)$data
+tibbledata <- handledata(NULL, tibbledata, NULL)$data
 
-ylim <- ylimconform(onesided, NULL, fakedata, "1")
-expect_that(handleticks(fakedata, onesided, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
-panel2b2 <- handlepanels(list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), "2b2")
+# Default handle ts data
+tsoffsetdates <- as.vector(stats::time(tsdata[["1"]]) + 1/(2*stats::frequency(tsdata[["1"]])))
+expect_that(handlex(tsdata, NULL), equals(list("1" = tsoffsetdates, "1ts" = TRUE)))
 
-# Test for passing in a single ylim to apply to all axes
-sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
-largerdata <-  ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
-expect_that(ylimconform(panel2b2, sublist, largerdata, "2b2"), equals(list("1" = sublist, "2" = sublist, "3" = sublist, "4" = sublist)))
+# Throw error if no x supplied for df or tibble
+expect_error(handlex(dfdata, NULL))
+expect_error(handlex(tibbledata, NULL))
+# Throw error if supply non existent x variable
+expect_error(handlex(tibbledata, list("1" = "foo")))
+expect_error(handlex(tibbledata, "foo"))
 
-# Check that sanity checks fail if pass in bad values
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "nsteps" = 3)), fakedata, "1"))
-expect_error(ylimconform(onesided, list("min" = 1, "nsteps" = 3), fakedata, "1"))
-expect_error(ylimconform(onesided, list("1" = list("max" = 1, "nsteps" = 3)), fakedata, "1"))
-expect_error(ylimconform(onesided, list("max" = 1, "nsteps" = 3), fakedata, "1"))
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 3)), fakedata, "1"))
-expect_error(ylimconform(onesided, list("min" = 1, "max" = 3), fakedata, "1"))
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 2, "nsteps" = 1)), fakedata, "1"))
+# Supply x value for each panel
+offsetdates <- lubridate::decimal_date(dfdata[["1"]][, "date"]) + mean(diff(lubridate::decimal_date(dfdata[["1"]][, "date"])))/2
+expect_that(handlex(dfdata, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE)))
+expect_that(handlex(tibbledata, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE)))
 
-context("Default scale")
-# Test that scale create the right thing
-expect_that(createscale(0,3,4), equals(0:3))
-expect_that(createscale(0,4,3), equals(c(0,2,4)))
+# Supply an x for all panels
+expect_that(handlex(dfdata, x = "date"), equals(list("1" = offsetdates, "1ts" = TRUE)))
+expect_that(handlex(tibbledata, x = "date"), equals(list("1" = offsetdates, "1ts" = TRUE)))
 
-# Test that default scales are sensible
-for (i in 1:100) {
-  # Just do this 100 times to get lots of different scales and check they are all fine
-  data <- rnorm(10)
-  scale <- defaultscale(data)
-  expect_that(scale$min <= min(data),is_true())
-  expect_that(scale$max >= max(data),is_true())
-  expect_that(scale$nsteps <= max(PERMITTEDSTEPS),is_true())
-  expect_that(scale$nsteps >= min(PERMITTEDSTEPS),is_true())
-}
+# supply multiple datasets and multiple x variables
+offsetdates <- lubridate::decimal_date(seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter")) + 1/2*mean(diff(lubridate::decimal_date(seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"))))
+dfdata <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"), x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5))
+dfdata2 <- data.frame(date2 = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"), x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5))
 
-context("X-axes scale")
-# Check x lim conforming for time series data
-fakedata <- handledata(NULL, fakedata, NULL)$data
-xvars <- handlex(fakedata, NULL)
-expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(1,11), "2" = c(1,11))))
-xlim <- xlimconform(onesided, NULL, xvars, fakedata)
-x <- handlex(fakedata, NULL)
-xlabs <- handlexlabels(onesided, xlim, x, fakedata)
-expect_that(xlabs, equals(list("1" = list(at = 1.5:11.5, labels = 1:11, ticks = 1:11))))
-expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)), twosideddata))
+multidata <- handledata(NULL, list("1" = dfdata, "2" = dfdata2), NULL)$data
+expect_that(handlex(multidata, x = list("1" = "date", "2" = "date2")), equals(list("1" = offsetdates, "1ts" = TRUE, "2" = offsetdates, "2ts" = TRUE)))
 
-# Check x lim conforming for categorical data
-catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), "x")$data
-catpanels <- handlepanels(c("y"), "1")
-xvar <- handlex(catdata, "x")
-expect_that(xlimconform(catpanels, NULL, xvar, catdata), equals(list("1" = c(1, 6), "2" = c(1, 6))))
+tsdata <- ts(dfdata, start = c(2000,1), frequency = 4)
+multidata2 <- handledata(NULL, list("1" = dfdata, "2" = tsdata), NULL)$data
+expect_that(handlex(multidata2, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE, "2" = tsoffsetdates, "2ts" = TRUE)))
 
-# X lim conforming for scatter graph data
-scatter <- data.frame(x = runif(100), y = runif(100))
-scatter <- handledata(NULL, scatter, "x")$data
-xvar <- handlex(scatter, "x")
-scatterpanels <- handlepanels(c("y"), "1")
-expect_that(xlimconform(scatterpanels, NULL, xvar, scatter), equals(list("1" = c(0,1), "2" = c(0,1))))
+# Error if supply multiple datasets but one x variable
+data1 <- data.frame(x1 = rnorm(10), x2 = rnorm(10))
+data2 <- data.frame(x1 = rnorm(10), x4 = rnorm(10))
+expect_error(arphit(data = list("1" = data1, "2" = data2), x = "x1"), NA)
 
-context("Unit handling")
-expect_that(handleunits(onesided, NULL, "1"), equals(list("1" = "%", "2" = "%")))
-expect_that(handleunits(onesided, "foo", "1"), equals(list("1" = "foo", "2" = "foo")))
-expect_that(handleunits(onesided, list("1" = "foo", "2" = "bar"), "1"), equals(list("1" = "foo", "2" = "foo"))) # because it's only got series on one side overwrite the option
-expect_that(handleunits(twosided, list("1" = "foo", "2" = "bar"), "1"), equals(list("1" = "foo", "2" = "bar")))
-expect_that(handleunits(onesided, list("1" = "foo"), "1"), equals(list("1" = "foo", "2" = "foo"))) # Duplicate across the first axis
-expect_that(handleunits(twosided, list("1" = "foo"), "1"), equals(list("1" = "foo", "2" = "%"))) # Series on RHS, so should get the default
+# categorical x data
+catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), NULL)$data
+expect_that(handlex(catdata, "x"), equals(list("1" = letters[1:5])))
+
+# Warn if supply timeseries data and an x variable
+expect_warning(handlex(handledata(NULL, tsdata, NULL)$data, "x"))
