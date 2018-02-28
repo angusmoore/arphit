@@ -55,13 +55,19 @@ handledata <- function(series, data, x) {
     }
     out$data <- data
     for (p in c("1", "2", "3", "4")) {
+      if (is.list(x)) {
+        tmpx <- x[[p]]
+      } else {
+        tmpx <- x
+      }
+
       if (is.null(series[[p]])) {
         out$series[[p]] <- colnames(out$data[[p]])
       } else {
         out$series[[p]] <- series[[p]]
       }
-      if (!is.null(x[[p]]) && !stats::is.ts(out$data[[p]])) {
-        out$series[[p]] <- out$series[[p]][out$series[[p]]!=x[[p]]]
+      if (!is.null(tmpx) && !stats::is.ts(out$data[[p]])) {
+        out$series[[p]] <- out$series[[p]][out$series[[p]]!=tmpx]
       }
     }
   } else {
