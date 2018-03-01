@@ -146,7 +146,7 @@ knitr::include_graphics("group-multi-color.png")
 
 ## Other attributes
 
-For line layers you can also specify `pch`, `lty` and `lwd`. These function identically to specifying colours (i.e. supplying one will apply it to the whole layer; specifying a vector will loop through it). the plotting options vignette explains what these three options do.
+For line layers you can also specify `pch`, `lty` and `lwd`. These function identically to specifying colours (i.e. supplying one will apply it to the whole layer; specifying a vector will loop through it). The plotting options vignette explains what these three options do.
 
 # Titles
 
