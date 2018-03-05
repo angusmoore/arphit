@@ -9,9 +9,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-[![Build Status](https://travis-ci.org/angusmoore/arphit.svg?branch=master)](https://travis-ci.org/angusmoore/arphit)
-[![Coverage Status](https://coveralls.io/repos/github/angusmoore/arphit/badge.svg?branch=master)](https://coveralls.io/github/angusmoore/arphit?branch=master)
-
 # arphit
 
 `arphit` is an R package to make it easy to quickly create RBA-style time series plots. Once you have your data, creating a plot is as simple as:
@@ -46,10 +43,19 @@ knitr::include_graphics("complex_example.png")
 Install the package using the R `devtools` package:
 ```
 library(devtools)
-install_github("angusmoore/arphit")
+install_github("angusmoore/arphit", build_vignettes = TRUE)
 ```
 
 You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
+
+Installing may fail if `devtools` cannot correctly determine your proxy server. If so, you'll get the following error message when you try to install:
+```
+Installation failed: Timeout was reached: Connection timed out after 10000 milliseconds
+```
+If you get this message, try setting your proxy server with the following command, and then running the install again:
+```
+httr::set_config(httr::use_proxy(curl::ie_get_proxy_for_url("http://www.google.com")))
+```
 
 ## Getting started
 
