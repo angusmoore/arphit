@@ -33,6 +33,7 @@ cp ../simple_example.png images/simple_example.png
 cp ../complex_example.png images/complex_example.png
 cp ../nooptions.png images/nooptions.png
 cp ../lotsofoptions.png images/lotsofoptions.png
+cp ../ggplot.png images/ggplot.png
 
 git add .
 git commit -m "Auto-deploy vignettes to github pages"
