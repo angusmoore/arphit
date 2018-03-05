@@ -94,7 +94,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], shading, bgshading, margins, layout, portrait, attributes[[p]], scaleunits, ticks, xlabels, ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste(p,"ts",sep="")]]), shading, bgshading, margins, layout, portrait, attributes[[p]], scaleunits, ticks, xlabels, ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel)
   }
 
   # Draw outer material

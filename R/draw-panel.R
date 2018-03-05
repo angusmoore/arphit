@@ -254,11 +254,11 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, dataontick) {
+drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, dataontick) {
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
 
-  if (is.numeric(xvals)) {
+  if (stats::is.ts(data) || ists || is.scatter(xvals)) {
     # time series or scatter
     x <- xvals
   } else if (!is.null(xvals)) {
