@@ -461,8 +461,8 @@ agg_draw <- function(gg, filename = NULL) {
 #' how to use the ggplot-like interface.
 #'
 #' @export
-print.arphit.gg <- function(gg, ...) {
-  agg_draw(gg)
+print.arphit.gg <- function(x, ...) {
+  agg_draw(x)
 }
 
 #' Add a layer or element to an arphitgg graph.
