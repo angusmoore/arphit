@@ -455,7 +455,8 @@ agg_draw <- function(gg, filename = NULL) {
 
 #' Draw a defined graph
 #'
-#' @param gg An arphitgg built graph.
+#' @param x An arphitgg built graph.
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
 #' how to use the ggplot-like interface.
