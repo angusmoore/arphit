@@ -65,3 +65,11 @@ expect_error(handledata(NULL, data, "foo"))
 expect_error(handledata("foo", data, NULL))
 expect_error(handledata(("1" = "x1"), data, NULL))
 expect_error(arphit(data, series = ("1" = "x1")))
+
+# Passing in non-finite values
+infinitedata <- data.frame(cat = letters[1:5], x1 = rnorm(10), x2 = rnorm(10))
+infinitedata[4, "x1"] <- Inf
+expect_error(arphit(infinitedata, x = "cat"), "Series x1 in panel 1 contains non-finite values")
+infinitets <- ts(data.frame(x1 = rnorm(10), x2 = rnorm(10)), start = c(2000,1), frequency = 4)
+infinitets[4, "x2"] <- Inf
+expect_error(arphit(infinitets), "Series x2 in panel 1 contains non-finite values")
