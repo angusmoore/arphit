@@ -9,21 +9,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This document outlines some of arphit's limitations with respect to many of the standard graphs used by the RBA. It also lists some of the planned improvements.
+This document outlines some of arphit's limitations.
 
-# Known limitations
+You should consult the issues list (https://github.com/angusmoore/arphit/issues) for a list of known bugs and planned feature improvements. If you find a bug or have a feature to suggest, please report it there.
 
-## Undated graphs
-
-Currently, only time series graphs are supported. `arphit` was built with the purpose of integrating into forecasting infrastructure, so focused on time series. Supporting undated graphs might be considered if there is sufficient demand.
+# Limitations
 
 ## Month or quarter x-ticks
 
-As above, `arphit` was built with forecasting in mind. High-frequency and short-sample time series are not an important use case and so are not supported.
+`arphit` can only do yearly labels for time series data. If you have a short, high frequency time series, it will not show monthly or quarterly time series.
 
-## Panel subtitles
+## Limited graphs
 
-Panel subtitles will not be displayed correctly if the panel title is multi-line, or if there is no panel title. This will be addressed, but is low priority given that these cases don't come up frequently.
+Only line, bar and scatter graphs are supported.
 
 # Planned feature improvements
 
