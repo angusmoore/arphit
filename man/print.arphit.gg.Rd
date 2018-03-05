@@ -4,7 +4,7 @@
 \alias{print.arphit.gg}
 \title{Draw a defined graph}
 \usage{
-\method{print}{arphit.gg}(gg, ...)
+\method{print}{arphit.gg}(x, ...)
 }
 \arguments{
 \item{gg}{An arphitgg built graph.}

@@ -4,12 +4,12 @@
 \alias{agg_point}
 \title{Add a scatter layer to an arphit plot.}
 \usage{
-agg_point(data = NULL, aes = NULL, color = NULL, panel = "1")
+agg_point(aes = NULL, data = NULL, color = NULL, panel = "1")
 }
 \arguments{
-\item{data}{The data to be used. Will inherit from parent if missing.}
-
 \item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
+
+\item{data}{The data to be used. Will inherit from parent if missing.}
 
 \item{color}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
 
