@@ -115,7 +115,7 @@ agg_footnote <- function(footnote) {
 #' arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_line <- function(data = NULL, aes = NULL, color = NULL, pch = NULL, lty = NULL, lwd = NULL, panel = "1") {
+agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NULL, lwd = NULL, panel = "1") {
   if (is.list(data) && !is.null(data$type) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_line rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
@@ -138,7 +138,7 @@ agg_line <- function(data = NULL, aes = NULL, color = NULL, pch = NULL, lty = NU
 #' arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_col <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked = TRUE) {
+agg_col <- function(aes = NULL, data = NULL, color = NULL, panel = "1", stacked = TRUE) {
   if (is.list(data) && !is.null(data$type) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
@@ -160,7 +160,7 @@ agg_col <- function(data = NULL, aes = NULL, color = NULL, panel = "1", stacked 
 #' arphitgg(data) + agg_point(aes = agg_aes(x = x, y = y), panel = "1")
 #'
 #' @export
-agg_point <- function(data = NULL, aes = NULL, color = NULL, panel = "1") {
+agg_point <- function(aes = NULL, data = NULL, color = NULL, panel = "1") {
   if (is.list(data) && !is.null(data$type) && data$type == "aes") {
     stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
   }
