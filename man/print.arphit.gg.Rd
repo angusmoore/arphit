@@ -7,7 +7,9 @@
 \method{print}{arphit.gg}(x, ...)
 }
 \arguments{
-\item{gg}{An arphitgg built graph.}
+\item{x}{An arphitgg built graph.}
+
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Draw a defined graph
