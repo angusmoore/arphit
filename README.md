@@ -86,6 +86,21 @@ arphit.tsgraph(data,
 
 `arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](https://angusmoore.github.io/arphit/plotting-options.html).
 
+## ``ggplot2``-like interface
+
+`arphit` also has an alternative, `ggplot2`-like way of creating graphs. This may be useful for those more familiar with that style of plotting. For instance:
+```
+data <- tibble(dates = seq.Date(from = as.Date("2000-01-01"), length.out = 20, by = "quarter"), y = rnorm(20))
+data %>% 
+  arphitgg(agg_aes(x = dates, y = y)) + agg_line()
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("ggplot.png")
+```
+The interface supports groups, so that you can easily plot 'long' data. It can plot scatter, line and bar graphs. 
+
+See the [gg-interface vignette](https://angusmoore.github.io/arphit/gg-interface.html) for more information.
+
 # Documentation
 
 A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](https://angusmoore.github.io/arphit/plotting-options.html). It is a good first place to start.
