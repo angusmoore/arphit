@@ -35,7 +35,7 @@ arphit.tsgraph(data,
 Install the package using the R `devtools` package:
 ```
 library(devtools)
-install_github("angusmoore/arphit")
+install_github("angusmoore/arphit", build_vignettes = TRUE)
 ```
 
 You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
