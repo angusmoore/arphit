@@ -33,3 +33,8 @@ arphit(data,
                paneltitles = list("1" = "Series 1", "2" = "Series 2", "3" = "Series 3", "4" = "Series 4"),
                sources = c("Randomly generated data"),
                filename = "lotsofoptions.png")
+
+data <- tibble(dates = seq.Date(from = as.Date("2000-01-01"), length.out = 20, by = "quarter"), y = rnorm(20))
+p <- data %>%
+  arphitgg(agg_aes(x = dates, y = y)) + agg_line()
+agg_draw(p, filename = "ggplot.png")
