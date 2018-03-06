@@ -262,8 +262,13 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
     # time series or scatter
     x <- xvals
   } else if (!is.null(xvals)) {
-    # Categorical data, offset by half
-    x <- 1:length(xvals) + 0.5
+    if (is.numeric(xvals)) {
+      x <- xvals + 0.5*min(diff(xvals))
+    } else {
+      # Categorical data, offset by half
+      x <- 1:length(xvals) + 0.5
+    }
+
   } else {
     # No data at all, empty plot
     x <- xvals

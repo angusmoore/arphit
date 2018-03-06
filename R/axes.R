@@ -189,6 +189,15 @@ xlabels.categorical <- function(xlim, xvar) {
   return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = 1)))
 }
 
+xlabels.numericcategorical <- function(xlim, xvar) {
+  step <- min(diff(xvar))
+  start <- xlim[1]
+  end <- xlim[2] - 1
+  at <- seq(from = start, to = end, by = step) + 0.5*step
+  labels <- xvar
+  return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = step)))
+}
+
 xlabels.scatter <- function(xlim) {
   scale <- defaultscale(xlim)
   scale <- createscale (scale$min,scale$max,scale$nsteps)
@@ -201,7 +210,11 @@ xlabels <- function(xlim, xvar, data, ists) {
   } else if (is.scatter(xvar)) {
     return(xlabels.scatter(xlim))
   } else if (!is.null(xvar)) {
-    return(xlabels.categorical(xlim, xvar))
+    if (is.numeric(xvar)) {
+      return(xlabels.numericcategorical(xlim, xvar))
+    } else {
+      return(xlabels.categorical(xlim, xvar))
+    }
   } else {
     return(NULL)
   }
@@ -239,7 +252,12 @@ defaultxscale <- function(xvars, xscales, data, ists) {
     if (is.numeric(xvars) && (stats::is.ts(data) || ists || is.scatter(xvars))) {
       return( c(floor(min(xvars)), ceiling(max(xvars))) )
     } else {
-      return (c(1, length(xvars)+1))
+      # Handle numerical categories
+      if (is.numeric(xvars)) {
+        return(c(xvars[1], xvars[length(xvars)]+min(diff(xvars))))
+      } else {
+        return (c(1, length(xvars)+1))
+      }
     }
   } else if (!is.null(xscales[["1"]])) {
     return(xscales[["1"]])
