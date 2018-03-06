@@ -239,7 +239,12 @@ defaultxscale <- function(xvars, xscales, data, ists) {
     if (is.numeric(xvars) && (stats::is.ts(data) || ists || is.scatter(xvars))) {
       return( c(floor(min(xvars)), ceiling(max(xvars))) )
     } else {
-      return (c(1, length(xvars)+1))
+      # Handle numerical categories
+      if (is.numeric(xvars)) {
+        return(c(xvars[1], xvars[length(xvars)]+min(diff(xvars))))
+      } else {
+        return (c(1, length(xvars)+1))
+      }
     }
   } else if (!is.null(xscales[["1"]])) {
     return(xscales[["1"]])
