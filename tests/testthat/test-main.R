@@ -74,10 +74,17 @@ expect_error(arphit(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 =
 expect_error(arphit(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1))), NA)
 expect_error(arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen"))), NA)
 
+## EXTRA integration tests
+# Numeric categorical labels
+catdata1 <- data.frame(x = 2001:2005, y = 1:5)
+expect_error(arphit(catadata1, x = "x"), NA)
+# Non-one spaced numerical categorical labels
+expect_error(arphit(catadata2, x = "x"), NA)
+catdata2 <- data.frame(x = c(2,4,6,8,10), y = 1:5)
+
 graphics.off()
 
 ## gg-interface vignette
-
 p <- arphitgg(layout = "1")
 expect_error(agg_draw(p), NA)
 
