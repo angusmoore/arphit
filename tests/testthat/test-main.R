@@ -79,8 +79,8 @@ expect_error(arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), 
 catdata1 <- data.frame(x = 2001:2005, y = 1:5)
 expect_error(arphit(catdata1, x = "x"), NA)
 # Non-one spaced numerical categorical labels
-expect_error(arphit(catdata2, x = "x"), NA)
 catdata2 <- data.frame(x = c(2,4,6,8,10), y = 1:5)
+expect_error(arphit(catdata2, x = "x"), NA)
 
 graphics.off()
 
