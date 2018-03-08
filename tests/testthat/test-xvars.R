@@ -67,3 +67,8 @@ expect_that(frequencyof(years), equals(1))
 data <- data.frame(year = c(1991, 2001, 2006, 2011, 2016), y = rnorm(5))
 data$year <- as.Date(paste0(data$year, "-01-01"))
 expect_that(handlex(handledata(NULL, data, "year")$data, "year")[["1"]], equals(c(1991.5, 2001.5, 2006.5, 2011.5, 2016.5)))
+
+# Test #37
+# Error if x variable has NA values
+data <- data.frame(x = c(1,2,3,NA,4),y = c(4,3,7,1,2))
+expect_error(arphit(data, x="x"), NA)
