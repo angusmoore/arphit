@@ -20,7 +20,6 @@ testscaleoptions <- function(significand, minval, maxval, permittedsteps) {
 }
 
 defaultscale <- function(data,permittedsteps=PERMITTEDSTEPS) {
-
   maxval <- max(data,na.rm=TRUE)
   minval <- min(data,na.rm=TRUE)
   span <- maxval-minval
@@ -254,7 +253,7 @@ is.scatter <- function(x) {
 defaultxscale <- function(xvars, xscales, data, ists) {
   if (!is.null(xvars)) {
     if (is.numeric(xvars) && (stats::is.ts(data) || ists || is.scatter(xvars))) {
-      return( c(floor(min(xvars)), ceiling(max(xvars))) )
+      return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
     } else {
       # Handle numerical categories
       if (is.numeric(xvars)) {
