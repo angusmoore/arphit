@@ -241,7 +241,11 @@ warnifxdiff <- function(panels, xlim) {
 
 is.scatter <- function(x) {
   if (!is.null(x) && is.numeric(x)) {
-    return(!all(diff(x) == max(diff(x))))
+    if (any(is.na(x)) {
+      return(TRUE) # Assume is a scatter if NA in x value
+    } else {
+      return(!all(diff(x) == max(diff(x))))
+    }
   } else {
     return(FALSE)
   }
