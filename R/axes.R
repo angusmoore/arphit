@@ -53,11 +53,11 @@ defaultscale <- function(data,permittedsteps=PERMITTEDSTEPS) {
   return(list("min" = minscale, "max" = maxscale, "nsteps" = nsteps))
 }
 
-createscale <- function(minscale,maxscale,nsteps,sigdig=2) {
+createscale <- function(minscale,maxscale,nsteps) {
   scale <- rep(NA,nsteps)
   stepsize <- (maxscale-minscale)/(nsteps-1)
   for (i in 1:nsteps) {
-    scale[i] <- signif(minscale + (i-1)*stepsize,sigdig)
+    scale[i] <- minscale + (i-1)*stepsize
   }
   return(scale)
 }
@@ -109,7 +109,7 @@ ylimconform <- function(panels, ylim, data, layout) {
   if (is.null(ylim)) {
     for (p in names(panels)) {
       paneldf <- data[[p]][, panels[[p]], drop = FALSE]
-      if (!is.null(paneldf) && any(!is.na(paneldf)) && is.finite(max(paneldf)) && is.finite(min(paneldf))) {
+      if (!is.null(paneldf) && any(!is.na(paneldf)) && is.finite(max(paneldf, na.rm = TRUE)) && is.finite(min(paneldf, na.rm = TRUE))) {
         ylim_list[[p]] <- defaultscale(paneldf)
       } else {
         ylim_list[[p]] <- EMPTYSCALE
