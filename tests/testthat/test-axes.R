@@ -15,7 +15,8 @@ expect_that(ylimconform(onesided, NULL, fakedata, "1"), equals(shouldbe))
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
 expect_that(ylimconform(onesided, list("1" = sublist), fakedata, "1"), equals(list("1" = sublist, "2" = sublist)))
 
-ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, "1")
+should_be <- list("1" = sublist, "2" = list(min = 0, max = 12, nsteps = 5))
+expect_that(ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, "1"), equals(should_be))
 
 ylim <- ylimconform(onesided, NULL, fakedata, "1")
 expect_that(handleticks(fakedata, onesided, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
@@ -101,3 +102,13 @@ expect_that(handleunits(onesided, list("1" = "foo", "2" = "bar"), "1"), equals(l
 expect_that(handleunits(twosided, list("1" = "foo", "2" = "bar"), "1"), equals(list("1" = "foo", "2" = "bar")))
 expect_that(handleunits(onesided, list("1" = "foo"), "1"), equals(list("1" = "foo", "2" = "foo"))) # Duplicate across the first axis
 expect_that(handleunits(twosided, list("1" = "foo"), "1"), equals(list("1" = "foo", "2" = "%"))) # Series on RHS, so should get the default
+
+# Ensure y-scale creator works even if NAs in data (#39)
+data <- data.frame(x = rnorm(10), y = 100*rnorm(10))
+data[4, "y"] <- NA
+nadata <- handledata(NULL, data, NULL)$data
+napanels <- handlepanels("y", "1")
+expect_false(isTRUE(all.equal(ylimconform(napanels, NULL, nadata, "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
+
+# Correct placement of y labels when ticks lead to more decimal places (#44)
+expect_equal(createscale(0.15, 0.25, 5), c(0.15, 0.175, 0.2, 0.225, 0.25))
