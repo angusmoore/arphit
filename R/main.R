@@ -69,7 +69,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   ylim <- ylimconform(panels, ylim, data, layout)
   ticks <- handleticks(data, panels, ylim)
   xlim <- xlimconform(panels, xlim, xvars, data)
-  xlabels <- handlexlabels(panels, xlim, xvars, data)
+  xlabels <- handlexlabels(panels, xlim, xvars, data, layout)
 
   # Handle shading
   shading <- handleshading(shading, panels)
