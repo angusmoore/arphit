@@ -72,10 +72,10 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
 
   figwidth <- plotsize[2] + left + right
   figheight <- plotsize[1] + top + bottom
-  return(list("height" = figheight, "width" = figwidth))
+  return(list(height = figheight, width = figwidth, top = top, bottom = bottom, left = left, right = right))
 }
 
-figuresetup <- function(filename, device, panels, ticks, scaleunits, title, subtitle, footnotes, sources, portrait) {
+figuresetup <- function(filename, device, panels, ticks, scaleunits, title, subtitle, footnotes, sources, plotsize, portrait) {
   # Figure out margins
   LRpadding <- leftrightpadding(ticks, scaleunits, panels)
   left <- 2 + 1.2*LRpadding$left
@@ -85,13 +85,12 @@ figuresetup <- function(filename, device, panels, ticks, scaleunits, title, subt
   top <- counttitlelines(title, subtitle)
 
   if (portrait) {
+    # Override whatever is set as plotsize
     plotsize <- PORTRAITSIZE
-  } else {
-    plotsize <- LANDSCAPESIZE
   }
 
   fig <- getfigsize(plotsize, top, bottom, left, right)
-  createfigure(filename, device, fig, plotsize, top, bottom, left, right)
+  createfigure(filename, device, fig, plotsize)
 
   return(list("top" = top, "bottom" = bottom, "left" = left, "right" = right))
 }
@@ -137,12 +136,12 @@ createfigure <- function(filename, device, figsize, plotsize, top, bottom, left,
     message("Needed figure height exceeds that which the display device could provide. Chart will not display correctly.")
   }
 
-  graphics::par(mar= c(bottom, left, top, right))
+  graphics::par(mai = c(figsize$bottom, figsize$left, figsize$top, figsize$right))
 
-  plotcorners <- c((left*CSI)/figsize$height, 1-(right*CSI)/figsize$height, (bottom*CSI)/figsize$height, 1-(top*CSI)/figsize$height)
+  plotcorners <- c((figsize$left)/figsize$height, 1-(figsize$right)/figsize$height, (figsize$bottom)/figsize$height, 1-(figsize$top)/figsize$height)
   graphics::par(pin = plotsize, plt = plotcorners)
 
   # Misc display things
   graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
-  graphics::par(oma = c(bottom, left, top, right))
+  graphics::par(omi = c(figsize$bottom, figsize$left, figsize$top, figsize$right))
 }
