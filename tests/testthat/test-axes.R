@@ -59,9 +59,11 @@ xvars <- handlex(fakedata, NULL)
 expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(1,11), "2" = c(1,11))))
 xlim <- xlimconform(onesided, NULL, xvars, fakedata)
 x <- handlex(fakedata, NULL)
-xlabs <- handlexlabels(onesided, xlim, x, fakedata)
-expect_that(xlabs, equals(list("1" = list(at = 1.5:11.5, labels = 1:11, ticks = 1:11))))
+xlabs <- handlexlabels(onesided, xlim, x, fakedata, "1")
+expect_equal(xlabs, list("1" = list(at = c(2.5,4.5,6.5,8.5,10.5), labels = c(2,4,6,8,10), ticks = 1:10)))
 expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)), twosideddata))
+
+# TODO tests for restrictlabels and labelstep
 
 # Check x lim conforming for categorical data
 catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), "x")$data
