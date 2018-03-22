@@ -607,6 +607,37 @@ arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = l
 knitr::include_graphics("shading2.png")
 ```
 
+# Joining and missing values
+
+The `joined` argument controls how your graph behaves with missing values. When `joined = TRUE` (which is the default) the series will ignore the missing value and connect to the next non-missing value. When `joined = FALSE` the series will break.
+
+For instance, let's use this series, with the middle observation missing:
+```{r}
+joining_data <- ts(data.frame(y = c(1,2,NA,3,4)), start = 2000, frequency = 1)
+```
+
+With `joined = TRUE`, the series continues straight across the missing value for 2002.
+```{r, eval = FALSE}
+arphit(joining_data, joined = TRUE)
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(joining_data, joined = TRUE, filename = "joined.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("joined.png")
+```
+
+But when we set `joined = FALSE`, the series does not connect over the missing observation:
+```{r, eval = FALSE}
+arphit(joining_data, joined = FALSE)
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(joining_data, joined = FALSE, filename = "unjoined.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("unjoined.png")
+```
+
 # Saving your graph
 
 By default, arphit uses R's default graphics device (`dev.new()`). This is only marginally useful, because
@@ -625,4 +656,3 @@ arphit(data, filename = "my_filename.png")
 arphit(data, filename = "my_filename.emf")
 arphit(data, filename = "my_filename.pdf")
 ```
-
