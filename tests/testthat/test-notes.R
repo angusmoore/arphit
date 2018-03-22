@@ -4,9 +4,9 @@ fakeseries2 <- c("c", "d")
 panels1 <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "1")
 panels2h <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "2h")
 
-expect_that(conformpaneltitles(panels2h, list("1" = "Foo", "3" = "Bar")), equals(list("1" = "Foo", "2" = NULL, "3" = "Bar", "4" = NULL)))
-expect_that(conformpaneltitles(panels1, list("1" = "Foo")), equals(list("1" = "Foo", "2" = NULL)))
-expect_that(conformpaneltitles(panels1, "Baz"), equals(list("1" = "Baz", "2" = "Baz")))
+expect_equal(conformpaneltitles(panels2h, list("1" = "Foo", "3" = "Bar"), "1", LINELENGTHPANELTITLE), list("1" = "Foo", "2" = NULL, "3" = "Bar", "4" = NULL))
+expect_equal(conformpaneltitles(panels1, list("1" = "Foo"), "1", LINELENGTHPANELTITLE), list("1" = "Foo", "2" = NULL))
+expect_equal(conformpaneltitles(panels1, "Baz", "1", LINELENGTHPANELTITLE), list("1" = "Baz", "2" = "Baz"))
 
 context("Format sources")
 expect_that(formatsrcs("ABS"), equals(list(text = "ABS", plural = FALSE)))

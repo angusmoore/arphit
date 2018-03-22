@@ -1,9 +1,15 @@
-conformpaneltitles <- function(panels, paneltitles) {
+conformpaneltitles <- function(panels, paneltitles, layout, maxchars) {
+  if (layout == "2v" || layout == "2b2") {
+    maxchars <- floor(1/2 * maxchars)
+  } else {
+    maxchars <- maxchars
+  }
+
   out <- list()
   if (!is.list(paneltitles)) {
     for (p in names(panels)) {
       if (!is.null(paneltitles)) {
-        out[[p]] <- paneltitles
+        out[[p]] <- splitoverlines(paneltitles, maxchars)
       } else {
         out[p] <- list(NULL)
       }
@@ -11,7 +17,7 @@ conformpaneltitles <- function(panels, paneltitles) {
   } else {
     for (p in names(panels)) {
       if (p %in% names(paneltitles)) {
-        out[[p]] <- paneltitles[[p]]
+        out[[p]] <- splitoverlines(paneltitles[[p]], maxchars)
       } else {
         out[p] <- list(NULL)
       }
