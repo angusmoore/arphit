@@ -124,7 +124,7 @@ startdevice <- function(filename, device, figsize) {
   }
 }
 
-createfigure <- function(filename, device, figsize, plotsize, top, bottom, left, right) {
+createfigure <- function(filename, device, figsize, plotsize) {
   # Set  up the figure and plot
   startdevice(filename, device, figsize)
 
