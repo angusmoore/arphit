@@ -192,7 +192,7 @@ drawshading <- function(shading, data, x) {
   }
 }
 
-drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim) {
+drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined) {
   for (s in series) {
     if (!(s %in% bars)) {
       graphics::par(mfg = l)
@@ -200,6 +200,11 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim) {
         y <- as.vector(data[, s])
       } else {
         y <- data[[s]]
+      }
+      if (joined) {
+        nas <- is.na(x) | is.na(y)
+        x <- x[!nas]
+        y <- y[!nas]
       }
       graphics::plot(x, y, type = "o", col = attributes$col[[s]], xlim = xlim, ylim = c(ylim$min, ylim$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
     }
@@ -254,7 +259,7 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, dataontick) {
+drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, joined) {
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
 
@@ -288,7 +293,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   graphics::par(mfg = l)
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim, ylim = c(ylim$min, ylim$max))
   drawshading(shading[[p]], data, x)
-  drawlines(l, series, bars, data, x, attributes, xlim, ylim)
+  drawlines(l, series, bars, data, x, attributes, xlim, ylim, joined)
 
   drawpaneltitle(paneltitle, panelsubtitle)
 }
