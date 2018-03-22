@@ -83,7 +83,12 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   # Format footnotes and sources
   footnotes <- formatfn(footnotes)
   sources <- formatsrcs(sources)
-  # TODO split titles if they're too long
+  if (!is.null(title)) {
+    title <- splitoverlines(title, LINELENGTHTITLE)
+  }
+  if (!is.null(subtitle)) {
+    subtitle <- splitoverlines(subtitle, LINELENGTHSUBTITLE)
+  }
 
   # Conform panel titles
   paneltitles <- conformpaneltitles(panels, paneltitles)
