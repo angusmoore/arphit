@@ -34,6 +34,7 @@
 #' @param portrait (optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
 #' @param bar.stacked (optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).
 #' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.
+#' @param joined (optiona) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE). TRUE by default.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options and how they affect the output.
@@ -47,7 +48,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), scaleunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE) {
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE, joined = TRUE) {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -95,7 +96,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste(p,"ts",sep="")]]), shading, bgshading, margins, layout, portrait, attributes[[p]], scaleunits, ticks, xlabels, ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste(p,"ts",sep="")]]), shading, bgshading, margins, layout, portrait, attributes[[p]], scaleunits, ticks, xlabels, ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel, joined)
   }
 
   # Draw outer material
