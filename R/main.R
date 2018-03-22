@@ -80,14 +80,19 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   bgshading <- sanitycheckbgshading(bgshading)
   lines <- sanitychecklines(lines)
 
-  # Format footnotes and sources
+  # Format titles, footnotes and sources
   footnotes <- formatfn(footnotes)
   sources <- formatsrcs(sources)
-  # TODO split titles if they're too long
+  if (!is.null(title)) {
+    title <- splitoverlines(title, LINELENGTHTITLE)
+  }
+  if (!is.null(subtitle)) {
+    subtitle <- splitoverlines(subtitle, LINELENGTHTITLE)
+  }
 
   # Conform panel titles
-  paneltitles <- conformpaneltitles(panels, paneltitles)
-  panelsubtitles <- conformpaneltitles(panels, panelsubtitles)
+  paneltitles <- conformpaneltitles(panels, paneltitles, layout, LINELENGTHPANELTITLE)
+  panelsubtitles <- conformpaneltitles(panels, panelsubtitles, layout, LINELENGTHPANELSUBTITLE)
 
   # Now need to start the canvas
   device <- finddevice(filename)
