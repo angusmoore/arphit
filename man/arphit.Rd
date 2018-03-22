@@ -9,8 +9,9 @@ arphit(data, series = NULL, x = NULL, layout = "1", bars = NULL,
   paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL,
   sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL,
   bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1,
-  lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, portrait = FALSE,
-  bar.stacked = TRUE, dropxlabel = TRUE)
+  lwd = 2, barcol = NA, xlim = NULL, ylim = NULL,
+  plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE,
+  dropxlabel = TRUE)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
@@ -65,6 +66,8 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 \item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).}
 
 \item{ylim}{(optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).}
+
+\item{plotsize}{(optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE}
 
 \item{portrait}{(optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).}
 
