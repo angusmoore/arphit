@@ -5,7 +5,7 @@
 
 `arphit` is an R package to make it easy to quickly create RBA-style time series plots. Once you have your data, creating a plot is as simple as:
 ```
-arphit.tsgraph(data)
+arphit(data)
 ```
 <p align="center">
   <img src="https://angusmoore.github.io/arphit/images/simple_example.png" width="400px" />
@@ -13,7 +13,7 @@ arphit.tsgraph(data)
 
 `arphit` is also extremely customisable. You can create complex charts, with multiple panels, bars, titles, annotations, shading, sources and footnotes:
 ```
-arphit.tsgraph(data,
+arphit(data,
                layout = "2b2",
                series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3", "x4"), "4" = c("x5")),
                bars = c("x1"),
@@ -64,7 +64,7 @@ data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 =
 
 To make the simplest plot, all you need to do is call:
 ```
-arphit.tsgraph(data)
+arphit(data)
 ```
 <p align="center">
   <img src="https://angusmoore.github.io/arphit/images/nooptions.png" width="400px" />
@@ -72,7 +72,7 @@ arphit.tsgraph(data)
 
 That chart is serviceable, but not very well labelled. Let's make it a bit nicer, by putting each of the four series into its own panel, and giving the chart and panels titles, and assign a source.
 ```
-arphit.tsgraph(data,
+arphit(data,
                series = list("1" = "x1", "2" = "x2", "3" = "x3", "4" = "x4"),
                title = "A Randomly Created Chart",
                subtitle = "A short example",
