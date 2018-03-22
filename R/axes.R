@@ -181,7 +181,7 @@ restrictlabels <- function(ticks, layout_factor) {
   end <- ticks[length(ticks)]
   start <- ticks[1]
   step <- findlabelstep(start, end, layout_factor)
-  n <- floor((end - start) / i) + 1
+  n <- floor((end - start) / step) + 1
   return(seq(to = end, length.out = n, by = step))
 }
 
