@@ -186,7 +186,7 @@ restrictlabels <- function(ticks, layout_factor) {
 }
 
 xlabels.ts <- function(xlim, layout) {
-  if (layout == "2v" || "2b2") {
+  if (layout == "2v" || layout == "2b2") {
     layout_factor <- 1/2
   } else {
     layout_factor <- 1
