@@ -169,14 +169,34 @@ handleticks <- function(data, panels, ylim) {
   return(ticks)
 }
 
-xlabels.ts <- function(xlim) {
+findlabelstep <- function(start, end, layout_factor) {
+  for (i in c(1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50)) {
+    if ((floor((end - start) / i) + 1) < round(MAXXLABELS*layout_factor)) {
+      return(i)
+    }
+  }
+}
+
+restrictlabels <- function(ticks, layout_factor) {
+  end <- ticks[length(ticks)]
+  start <- ticks[1]
+  step <- findlabelstep(start, end, layout_factor)
+  n <- floor((end - start) / i) + 1
+  return(seq(to = end, length.out = n, by = step))
+}
+
+xlabels.ts <- function(xlim, layout) {
+  if (layout == "2v" || "2b2") {
+    layout_factor <- 1/2
+  } else {
+    layout_factor <- 1
+  }
   startyear <- xlim[1]
   endyear <- xlim[2]
   # Create the sequence and offset the labels by half a year so that the labels are centered
-  labels <- seq(from = startyear, to = endyear, by = 1)
-  # Now shift the at
+  ticks <- seq(from = startyear, to = (endyear-1), by = 1)
+  labels <- restrictlabels(ticks, layout_factor)
   at <- labels + 0.5
-  ticks <- labels
   return(list("at" = at, "labels" = labels, "ticks" = ticks))
 }
 
@@ -203,9 +223,9 @@ xlabels.scatter <- function(xlim) {
   return(list(at = scale, labels = scale, ticks = scale))
 }
 
-xlabels <- function(xlim, xvar, data, ists) {
+xlabels <- function(xlim, xvar, data, ists, layout) {
   if (stats::is.ts(data) || !is.null(ists)) {
-    return(xlabels.ts(xlim))
+    return(xlabels.ts(xlim, layout))
   } else if (is.scatter(xvar)) {
     return(xlabels.scatter(xlim))
   } else if (!is.null(xvar)) {
@@ -219,11 +239,11 @@ xlabels <- function(xlim, xvar, data, ists) {
   }
 }
 
-handlexlabels <- function(panels, xlim, xvars, data) {
+handlexlabels <- function(panels, xlim, xvars, data, layout) {
   out <- list()
   for (p in names(panels)) {
     ists <- xvars[[paste(p,"ts",sep="")]]
-    out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists)
+    out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout)
   }
   return(out)
 }
