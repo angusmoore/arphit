@@ -40,7 +40,7 @@ sanitycheckarrows <- function(arrows) {
         stop(paste("Arrow ", i, " is missing panel identifier.", sep = ""))
       }
       if (is.null(arrows[[i]]$lwd)) {
-        arrows[[i]]$lwd <- DEFAULTLWD
+        arrows[[i]]$lwd <- DEFAULTARROWLWD
       }
       if (is.null(arrows[[i]]$color)) {
         arrows[[i]]$color <- "black"
