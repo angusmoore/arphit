@@ -294,7 +294,7 @@ xlimconform <- function(panels, xlim, xvars, data) {
   if (!is.list(xlim)) {
     for (p in names(panels)) {
       if (is.null(xlim)) {
-        ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
+        ists <- !is.null(xvars[[paste0(p, "ts")]])
         out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
       } else {
         out[[p]] <- xlim
@@ -305,7 +305,7 @@ xlimconform <- function(panels, xlim, xvars, data) {
       if (p %in% names(xlim)) {
         out[[p]] <- xlim[[p]]
       } else {
-        ists <- xvars[[paste(p,"ts",sep="")]]
+        ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
         out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
       }
     }
