@@ -9,6 +9,8 @@ agg_arrow(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1)
 \arguments{
 \item{tail.x}{The x coordinate of the arrow tail}
 
+\item{tail.y}{The y coordinate of the arrow tail}
+
 \item{head.x}{The x coordinate of the arrow head}
 
 \item{head.y}{The y coordinate of the arrow head}
@@ -18,8 +20,6 @@ agg_arrow(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1)
 \item{panel}{Which panel should the arrow be placed on?}
 
 \item{lwd}{(Optional, default 1) The linewidth of the arrow}
-
-\item{taiil.y}{The y coordinate of the arrow tail}
 }
 \description{
 Add an arrow

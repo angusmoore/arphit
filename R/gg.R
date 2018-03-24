@@ -114,7 +114,7 @@ agg_label <- function(text, color, x, y, panel) {
 #' Add an arrow
 #'
 #' @param tail.x The x coordinate of the arrow tail
-#' @param taiil.y The y coordinate of the arrow tail
+#' @param tail.y The y coordinate of the arrow tail
 #' @param head.x The x coordinate of the arrow head
 #' @param head.y The y coordinate of the arrow head
 #' @param color The color of the arrow
