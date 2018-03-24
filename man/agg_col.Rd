@@ -4,8 +4,8 @@
 \alias{agg_col}
 \title{Add a col layer to an arphit plot.}
 \usage{
-agg_col(aes = NULL, data = NULL, color = NULL, panel = "1",
-  stacked = TRUE)
+agg_col(aes = NULL, data = NULL, color = NULL, barcol = NULL,
+  panel = "1", stacked = TRUE)
 }
 \arguments{
 \item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
@@ -13,6 +13,8 @@ agg_col(aes = NULL, data = NULL, color = NULL, panel = "1",
 \item{data}{The data to be used. Will inherit from parent if missing.}
 
 \item{color}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
+
+\item{barcol}{(optional) Outline colours for each bar series}
 
 \item{panel}{(default = "1") Which panel of the graph to place this layer on.}
 
@@ -22,7 +24,8 @@ agg_col(aes = NULL, data = NULL, color = NULL, panel = "1",
 Add a col layer to an arphit plot.
 }
 \examples{
-data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)),
+  date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 
 }

@@ -9,7 +9,6 @@
 #' how to use the ggplot-like interface.
 #'
 #' @examples
-#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 #' arphitgg(data) + agg_title("Graph Title")
 #' arphitgg(data) + agg_title("Panel title", panel = "1")
 #'
@@ -30,7 +29,6 @@ agg_title <- function(text, panel = NULL) {
 #' how to use the ggplot-like interface.
 #'
 #' @examples
-#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 #' arphitgg(data) + agg_subtitle("Graph Subtitle")
 #' arphitgg(data) + agg_subtitle("Panel subtitle", panel = "1")
 #'
@@ -51,7 +49,6 @@ agg_subtitle <- function(text, panel = NULL) {
 #' how to use the ggplot-like interface.
 #'
 #' @examples
-#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 #' arphitgg(data) + agg_units("index")
 #' arphitgg(data) + agg_units("ppt", panel = "1")
 #'
@@ -71,9 +68,8 @@ agg_units <- function(units, panel = NULL) {
 #' how to use the ggplot-like interface.
 #'
 #' @examples
-#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
-#' arphitgg(data) + agg_footnote("Source 1")
-#' arphitgg(data) + agg_footnote(c("Source 1", "Source 2"))
+#' arphitgg(data) + agg_source("Source 1")
+#' arphitgg(data) + agg_source(c("Source 1", "Source 2"))
 #'
 #' @export
 agg_source <- function(source) {
@@ -88,13 +84,167 @@ agg_source <- function(source) {
 #' how to use the ggplot-like interface.
 #'
 #' @examples
-#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 #' arphitgg(data) + agg_footnote("Here is a footnote")
 #' arphitgg(data) + agg_footnote(c("Here is a footnote", "And a second one"))
 #'
 #' @export
 agg_footnote <- function(footnote) {
   return(list(type = "footnote", footnote = footnote))
+}
+
+#' Add a label
+#'
+#' @param text The text to display on your plot
+#' @param color The color of your text
+#' @param x The x coordinate of the center of your label
+#' @param y The y coordinate of the center of your label
+#' @param panel Which panel should the label be placed on?
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_label("Here is a footnote", RBA["Red3"], 2003, 0.2, "1")
+#'
+#' @export
+agg_label <- function(text, color, x, y, panel) {
+  return(list(type = "label", text = text, color = color, x = x, y = y, panel = panel))
+}
+
+#' Add an arrow
+#'
+#' @param tail.x The x coordinate of the arrow tail
+#' @param tail.y The y coordinate of the arrow tail
+#' @param head.x The x coordinate of the arrow head
+#' @param head.y The y coordinate of the arrow head
+#' @param color The color of the arrow
+#' @param panel Which panel should the arrow be placed on?
+#' @param lwd (Optional, default 1) The linewidth of the arrow
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_arrow(tail.x = 2002, tail.y = 0, head.x = 2003, head.y = 1, color = RBA["Blue1"], panel = "1")
+#'
+#' @export
+agg_arrow <- function(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1) {
+  return(list(type = "arrow", tail.x = tail.x, tail.y = tail.y, head.x = head.x,
+              head.y = head.y, color = color, panel = panel, lwd = lwd))
+}
+
+#' Add an AB line to your graph
+#'
+#' You need specify only one of x, or y, or x1,x2,y1,y2
+#'
+#' @param x Draw a vertical line at x (omit to draw a specific AB line)
+#' @param y Draw a horizontal at y omit to draw a specific AB line)
+#' @param x1 For specific AB lines: the first x coordinate
+#' @param y1 For specific AB lines: the first y coordinate
+#' @param x2 For specific AB lines: the second x coordinate
+#' @param y2 For specific AB lines: the second y coordinate
+#' @param color (optional) The color of the AB line (default black)
+#' @param panel Which panel should the line be placed on?
+#' @param lwd (Optional, default 1) The linewidth
+#' @param lty (Optional, default 1) The line type
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_abline(x = 2001, color = RBA["Blue1"], panel = "1") +
+#'   agg_abline(y = -0.5, color = RBA["Red1"], panel = "1")
+#'
+#' arphitgg(data) + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, color = RBA["Blue1"], panel = "1")
+#'
+#' @export
+agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, color = NULL, panel, lwd = 1, lty = 1) {
+  return(list(type = "abline", x = x, y = y, x1 = x1, y1 = y1, x2 = x2, y2 = y2,
+              color = color, panel = panel, lwd = lwd, lty = lty))
+}
+
+#' Add background shading
+#'
+#' @param x1 The bottom left x coordinate (omit to have the shading automatically snap to the edge of the panel)
+#' @param y1 The bottom left y coordinate (omit to have the shading automatically snap to the edge of the panel)
+#' @param x2 The top right x coordinate (omit to have the shading automatically snap to the edge of the panel)
+#' @param y2 The top right y coordinate (omit to have the shading automatically snap to the edge of the panel)
+#' @param color (optional) The color of the AB line (default grey)
+#' @param panel Which panel should the background shading be placed on?
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_bgshading(x1 = 2001, x2 = 2002, panel = "1")
+#' arphitgg(data) + agg_bgshading(y1 = 0.5, y2 = -0.5, panel = "1")
+#'
+#' @export
+agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = NULL, panel) {
+  return(list(type = "bgshading", x1 = x1, y1 = y1, x2 = x2, y2 = y2, color = color, panel = panel))
+}
+
+
+
+#' Add shading between series
+#'
+#' @param from The series name to shade from (if you have no group aesthetic, it will be the name of the y variable); if you have groups, it will (usually) be the group identifier. This can get more complicated if you have duplicate group names. If so, arphit appends .y to the group names, so try that.)
+#' @param to The name of the series to shade to
+#' @param color (optional) The color to shade between the series (default grey)
+#' @param panel (optional) Which panel are the relevant series in? (arphit will try to find them if you don't specify)
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data <- data.frame(date = seq.Date(from = as.Date("2000-03-10"), length.out = 12, by = "month"),
+#'                    x1 = rnorm(12), x2 = rnorm(12))
+#' arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), color = RBA["Blue2"]) +
+#'    agg_line(agg_aes(y = x2), color = RBA["Red4"]) +
+#'    agg_shading(from = x1, to = x2)
+#'
+#' @export
+agg_shading <- function(from, to, panel = NULL, color = NULL) {
+  from <- as.character(deparse(substitute(from)))
+  to <- as.character(deparse(substitute(to)))
+  return(list(type = "shading", from = from, to = to, panel = panel, color = color))
+}
+
+#' Specify the y scale for a graph
+#'
+#' @param min The minimum for the y-axis
+#' @param max The maximum
+#' @param nsteps The number of steps (includes the minimum and maximum)
+#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5)
+#' arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5, panel = "1")
+#'
+#' @export
+agg_ylim <- function(min, max, nsteps, panel = NULL) {
+  return(list(type = "ylim", min = min, max = max, nsteps = nsteps, panel = panel))
+}
+
+#' Specify the x limits for a graph
+#'
+#' @param min The minimum for the x-axis
+#' @param max The maximum
+#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_xlim(min = -10, max = 10)
+#' arphitgg(data) + agg_xlim(min = -10, max = 10, panel = "1")
+#'
+#' @export
+agg_xlim <- function(min, max, panel = NULL) {
+  return(list(type = "xlim", min = min, max = max, panel = panel))
 }
 
 #' Add a line layer to an arphit plot.
@@ -111,14 +261,12 @@ agg_footnote <- function(footnote) {
 #' how to use the ggplot-like interface.
 #'
 #' @examples
-#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)),
+#'   date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 #' arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
 agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NULL, lwd = NULL, panel = "1") {
-  if (is.list(data) && !is.null(data$type) && data$type == "aes") {
-    stop("You passed aes as the first argument to agg_line rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
-  }
   return(list(type = "line", data = data, aes = aes, color = color, pch = pch, lty = lty, lwd = lwd, panel = as.character(panel)))
 }
 
@@ -127,6 +275,7 @@ agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NU
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
+#' @param barcol (optional) Outline colours for each bar series
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #' @param stacked (default = TRUE) Stack the bars, or group them?
 #'
@@ -134,15 +283,13 @@ agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NU
 #' how to use the ggplot-like interface.
 #'
 #' @examples
-#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
+#' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)),
+#'   date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 #' arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_col <- function(aes = NULL, data = NULL, color = NULL, panel = "1", stacked = TRUE) {
-  if (is.list(data) && !is.null(data$type) && data$type == "aes") {
-    stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
-  }
-  return(list(type = "col", data = data, aes = aes, color = color, panel = as.character(panel), stacked = stacked))
+agg_col <- function(aes = NULL, data = NULL, color = NULL, barcol = NULL, panel = "1", stacked = TRUE) {
+  return(list(type = "col", data = data, aes = aes, color = color, barcol = barcol, panel = as.character(panel), stacked = stacked))
 }
 
 #' Add a scatter layer to an arphit plot.
@@ -161,9 +308,6 @@ agg_col <- function(aes = NULL, data = NULL, color = NULL, panel = "1", stacked 
 #'
 #' @export
 agg_point <- function(aes = NULL, data = NULL, color = NULL, panel = "1") {
-  if (is.list(data) && !is.null(data$type) && data$type == "aes") {
-    stop("You passed aes as the first argument to agg_col rather than data. Did you forget to name the aes argument? (aes = agg_aes(...))")
-  }
   return(list(type = "point", data = data, aes = aes, color = color, panel = as.character(panel)))
 }
 
@@ -221,10 +365,18 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              footnotes = c(),
              sources = c(),
              scaleunits = NULL,
+             ylim = list(),
+             xlim = list(),
              col = list(),
              pch = list(),
              lty = list(),
              lwd = list(),
+             barcol = list(),
+             labels = list(),
+             arrows = list(),
+             lines = list(),
+             bgshading = list(),
+             shading = list(),
              portrait = portrait,
              dropxlabel = dropxlabel,
              stacked = TRUE)
@@ -232,7 +384,6 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
   class(gg) <- "arphit.gg"
   return(gg)
 }
-
 
 ## Combining
 
@@ -374,6 +525,9 @@ addcolseries <- function(gg, newcol) {
   if (!is.null(newcol$stacked)) {
     gg$stacked <- newcol$stacked
   }
+  if (!is.null(newcol$barcol)) {
+    gg <- applyattribute(gg, "barcol", panel, newcolnames, newcol$barcol)
+  }
 
   return(gg)
 }
@@ -418,6 +572,51 @@ addfootnote <- function(gg, footnote) {
   return(gg)
 }
 
+addannotation <- function(gg, annotation, element) {
+  type <- annotation$type
+  annotation$type <- NULL
+  gg[[element]] <- append(gg[[element]], list(annotation))
+  return(gg)
+}
+
+addshading <- function(gg, shading) {
+  shading$type <- NULL
+  if (is.null(shading$panel)) {
+    shading$panel <- NULL
+  }
+  if (is.null(shading$color)) {
+    shading$color <- NULL
+  }
+  gg$shading <- append(gg$shading, list(shading))
+  return(gg)
+}
+
+addylim <- function(gg, ylim) {
+  ylim$type <- NULL
+  if (is.null(ylim$panel)) {
+    ylim$panel <- NULL
+    gg$ylim <- ylim
+  } else {
+    p <- ylim$panel
+    ylim$panel <- NULL
+    gg$ylim[[p]] <- ylim
+  }
+  return(gg)
+}
+
+addxlim <- function(gg, xlim) {
+  xlim$type <- NULL
+  if (is.null(xlim$panel)) {
+    xlim$panel <- NULL
+    gg$xlim <- c(xlim$min, xlim$max)
+  } else {
+    p <- xlim$panel
+    xlim$panel <- NULL
+    gg$xlim[[p]] <- c(xlim$min, xlim$max)
+  }
+  return(gg)
+}
+
 ## Wrap up
 
 #' Draw a defined graph
@@ -443,10 +642,18 @@ agg_draw <- function(gg, filename = NULL) {
          footnotes = gg$footnotes,
          sources = gg$sources,
          scaleunits = gg$scaleunits,
+         ylim = gg$ylim,
+         xlim = gg$xlim,
          col = gg$col,
          pch = gg$pch,
          lty = gg$lty,
          lwd = gg$lwd,
+         barcol = gg$barcol,
+         labels = gg$labels,
+         arrows = gg$arrows,
+         lines = gg$lines,
+         bgshading = gg$bgshading,
+         shading = gg$shading,
          portrait = gg$portrait,
          dropxlabel = gg$dropxlabel,
          bar.stacked = gg$stacked,
@@ -485,6 +692,13 @@ print.arphit.gg <- function(x, ...) {
          "units" = addunits(gg, element),
          "source" = addsource(gg, element),
          "footnote" = addfootnote(gg, element),
+         "label" = addannotation(gg, element, "labels"),
+         "arrow" = addannotation(gg, element, "arrows"),
+         "abline" = addannotation(gg, element, "lines"),
+         "bgshading" = addannotation(gg, element, "bgshading"),
+         "shading" = addshading(gg, element),
+         "ylim" = addylim(gg, element),
+         "xlim" = addxlim(gg, element),
          stop("Unknown element type for arphit.gg"))
   return(gg)
 }
