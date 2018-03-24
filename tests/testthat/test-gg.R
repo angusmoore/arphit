@@ -120,6 +120,19 @@ expect_that(bar$lwd, equals(list("1" = list("A" = 20, "B" = 30, "C" = 20, "D" = 
 expect_that(baz$lwd, equals(list("1" = list("A.y" = 40, "B.y" = 50, "C.y"= 40, "D.y" = 50))))
 expect_that(foo2$lwd, equals(list("2" = list("A" = 10, "B" = 20, "C" = 10, "D" = 20))))
 
+# Set barcol
+foo <- arphitgg(data) + agg_col(agg_aes(x = date, y = unemployment, group = state), barcol = "red")
+bar <- arphitgg(data) + agg_col(agg_aes(x = date, y = unemployment, group = state), barcol = c("blue", "green"))
+baz <- arphitgg(data) +
+  agg_col(agg_aes(x = date, y = unemployment, group = state)) +
+  agg_col(agg_aes(x = date, y = employment, group = state), barcol = c("red", "green"))
+foo2 <- arphitgg(data) + agg_col(agg_aes(x = date, y = unemployment, group = state)) +
+  agg_col(agg_aes(x = date, y = employment, group = state), barcol = c("pink", "blue"), panel = "2")
+
+expect_that(foo$barcol, equals(list("1" = list("A" = "red", "B" = "red", "C" = "red", "D" = "red"))))
+expect_that(bar$barcol, equals(list("1" = list("A" = "blue", "B" = "green", "C" = "blue", "D" = "green"))))
+expect_that(baz$barcol, equals(list("1" = list("A.y" = "red", "B.y" = "green", "C.y"= "red", "D.y" = "green"))))
+expect_that(foo2$barcol, equals(list("2" = list("A" = "pink", "B" = "blue", "C" = "pink", "D" = "blue"))))
 
 # Colours with duplicates
 foo <- arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), color = "green") + agg_line(aes = agg_aes(x = date, y = employment, group = state), color = "red")
@@ -162,3 +175,66 @@ baz <- arphitgg(data) + agg_source("One source") + agg_source("Three source")
 expect_that(foo$sources, equals("One source"))
 expect_that(bar$sources, equals(c("One source", "Two source")))
 expect_that(baz$sources, equals(c("One source", "Three source")))
+
+# Labels
+foo <- arphitgg(data) + agg_label("Text", "red", 2002, 0.2, "1")
+bar <- arphitgg(data) + agg_label("Text", "red", 2002, 0.2, "1") + agg_label("Second label", "green", 2003, -0.2, "1")
+
+expect_equal(foo$labels, list(list(text = "Text", color = "red", x = 2002, y = 0.2, panel = "1")))
+expect_equal(bar$labels, list(list(text = "Text", color = "red", x = 2002, y = 0.2, panel = "1"),
+                              list(text = "Second label", color = "green", x = 2003, y = -0.2, panel = "1")))
+
+# Arrows
+foo <- arphitgg(data) + agg_arrow(2000, 0, 2001, 2, "red", "1")
+bar <- arphitgg(data) + agg_arrow(2000, 0, 2001, 2, "red", "1") + agg_arrow(2001, 0, 2002, 2, "green", "1", 2)
+
+expect_equal(foo$arrows, list(list(tail.x = 2000, tail.y = 0, head.x = 2001, head.y = 2, color = "red", panel = "1", lwd = 1)))
+expect_equal(bar$arrows, list(list(tail.x = 2000, tail.y = 0, head.x = 2001, head.y = 2, color = "red", panel = "1", lwd = 1),
+     list(tail.x = 2001, tail.y = 0, head.x = 2002, head.y = 2, color = "green", panel = "1", lwd = 2)))
+
+# AB lines
+foo <- arphitgg(data) + agg_abline(x = 2001, color = RBA["Blue1"], panel = "1")
+bar <- arphitgg(data) + agg_abline(y = -0.5, color = RBA["Red1"], panel = "1") +
+  agg_abline(x = 2001, color = RBA["Blue1"], panel = "1")
+baz <- arphitgg(data) + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, panel = "1")
+
+expect_equal(foo$lines, list(list(x = 2001, y = NULL, x1 = NULL, y1 = NULL,
+                                  x2 = NULL, y2 = NULL, color = RBA["Blue1"], panel = "1", lwd = 1, lty = 1)))
+expect_equal(bar$lines, list(list(x = NULL, y = -0.5, x1 = NULL, y1 = NULL,
+                                  x2 = NULL, y2 = NULL, color = RBA["Red1"], panel = "1", lwd = 1, lty = 1),
+                             list(x = 2001, y = NULL, x1 = NULL, y1 = NULL,
+                                  x2 = NULL, y2 = NULL, color = RBA["Blue1"], panel = "1", lwd = 1, lty = 1)))
+
+
+expect_equal(baz$lines, list(list(x = NULL, y = NULL, x1 = 2000, y1 = -0.1,
+                                  x2 = 2002, y2 = 0.5, color = NULL, panel = "1", lwd = 1, lty = 1)))
+
+# background shading
+foo <- arphitgg(data) + agg_bgshading(x1 = 2001, x2 = 2002, panel = "1")
+bar <- arphitgg(data) + agg_bgshading(y1 = 0.5, y2 = -0.5, panel = "1")
+
+expect_equal(foo$bgshading, list(list(x1 = 2001, y1 = NA, x2 = 2002, y2 = NA, color = NULL, panel = "1")))
+expect_equal(bar$bgshading, list(list(x1 = NA, y1 = 0.5, x2 = NA, y2 = -0.5, color = NULL, panel = "1")))
+
+# ylim
+foo <- arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5)
+bar <- arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5, panel = "1")
+
+expect_equal(foo$ylim, list(min = -10, max = 10, nsteps = 5))
+expect_equal(bar$ylim, list("1" = list(min = -10, max = 10, nsteps = 5)))
+
+# xlim
+foo <- arphitgg(data) + agg_xlim(min = -10, max = 10)
+bar <- arphitgg(data) + agg_xlim(min = -10, max = 10, panel = "1")
+
+expect_equal(foo$xlim, c(-10,10))
+expect_equal(bar$xlim, list("1" = c(-10,10)))
+
+# shading between series
+data <- data.frame(date = seq.Date(from = as.Date("2000-03-10"), length.out = 12, by = "month"),
+                                   x1 = rnorm(12), x2 = rnorm(12))
+foo <- arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), color = RBA["Blue2"]) +
+  agg_line(agg_aes(y = x2), color = RBA["Red4"]) +
+  agg_shading(from = x1, to = x2)
+
+expect_equal(foo$shading, list(list(from = "x1", to = "x2")))

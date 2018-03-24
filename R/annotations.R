@@ -1,5 +1,5 @@
 sanitychecklabels <- function(labels) {
-  if (!is.null(labels)) {
+  if (!is.null(labels) && length(labels) > 0) {
     for (i in 1:length(labels)) {
       if (is.null(labels[[i]]$x)) {
         stop(paste("Label ", i, " is missing x coordinate.", sep = ""))
@@ -22,7 +22,7 @@ sanitychecklabels <- function(labels) {
 }
 
 sanitycheckarrows <- function(arrows) {
-  if (!is.null(arrows)) {
+  if (!is.null(arrows) && length(arrows) > 0) {
     for (i in 1:length(arrows)) {
       if (is.null(arrows[[i]]$tail.x)) {
         stop(paste("Arrow ", i, " is missing tail.x coordinate.", sep = ""))
@@ -40,7 +40,7 @@ sanitycheckarrows <- function(arrows) {
         stop(paste("Arrow ", i, " is missing panel identifier.", sep = ""))
       }
       if (is.null(arrows[[i]]$lwd)) {
-        arrows[[i]]$lwd <- DEFAULTLWD
+        arrows[[i]]$lwd <- DEFAULTARROWLWD
       }
       if (is.null(arrows[[i]]$color)) {
         arrows[[i]]$color <- "black"
@@ -51,7 +51,7 @@ sanitycheckarrows <- function(arrows) {
 }
 
 sanitycheckbgshading <- function(shading) {
-  if (!is.null(shading)) {
+  if (!is.null(shading) && length(shading) > 0) {
     for (i in 1:length(shading)) {
       if (is.null(shading[[i]]$x1)) {
         shading[[i]]$x1 <- NA
@@ -109,7 +109,7 @@ sanitycheck.vhline <- function(line, i) {
 }
 
 sanitychecklines <- function(linelist) {
-  if (!is.null(linelist)) {
+  if (!is.null(linelist) && length(linelist) > 0) {
     for (i in 1:length(linelist)) {
       line <- linelist[[i]]
       # can't use null checking, because x1 partial matches x
