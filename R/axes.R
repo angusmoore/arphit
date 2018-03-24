@@ -63,17 +63,17 @@ createscale <- function(minscale,maxscale,nsteps) {
 }
 
 duplicateaxes <- function(toduplicate, panels, layout) {
-  if (is.null(panels[["1"]])) {
+  if (is.null(panels[["1"]]) && !is.null(panels[["2"]])) {
     toduplicate[["1"]] <- toduplicate[["2"]]
   }
-  if (is.null(panels[["2"]])) {
+  if (is.null(panels[["2"]]) && !is.null(panels[["1"]])) {
     toduplicate[["2"]] <- toduplicate[["1"]]
   }
   if (layout == "2b2" || layout == "2h") {
-    if (is.null(panels[["3"]])) {
+    if (is.null(panels[["3"]]) && !is.null(panels[["4"]])) {
       toduplicate[["3"]] <- toduplicate[["4"]]
     }
-    if (is.null(panels[["4"]])) {
+    if (is.null(panels[["4"]]) && !is.null(panels[["3"]])) {
       toduplicate[["4"]] <- toduplicate[["3"]]
     }
   }

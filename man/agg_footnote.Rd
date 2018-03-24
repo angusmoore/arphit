@@ -13,7 +13,6 @@ agg_footnote(footnote)
 Add a footnote (or many footnotes)
 }
 \examples{
-data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 arphitgg(data) + agg_footnote("Here is a footnote")
 arphitgg(data) + agg_footnote(c("Here is a footnote", "And a second one"))
 

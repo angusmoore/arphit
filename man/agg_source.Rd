@@ -13,9 +13,8 @@ agg_source(source)
 Add a source (or many sources)
 }
 \examples{
-data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
-arphitgg(data) + agg_footnote("Source 1")
-arphitgg(data) + agg_footnote(c("Source 1", "Source 2"))
+arphitgg(data) + agg_source("Source 1")
+arphitgg(data) + agg_source(c("Source 1", "Source 2"))
 
 }
 \seealso{

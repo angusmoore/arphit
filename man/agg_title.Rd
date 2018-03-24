@@ -15,7 +15,6 @@ agg_title(text, panel = NULL)
 Add a title or panel title
 }
 \examples{
-data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 arphitgg(data) + agg_title("Graph Title")
 arphitgg(data) + agg_title("Panel title", panel = "1")
 
