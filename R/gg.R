@@ -201,13 +201,13 @@ agg_aes <- function(x, y, group = NULL) {
 #' @param aes (Optional) The aesthetic that defines your graph. Can be left blank, but must then be supplied for each layer. Layers that don't specify aesthetics will inherit missing parts of aesthetic from here.
 #' @param layout (default = "1")
 #' @param portrait (default = false) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
-#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.
+#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
 #' how to use the ggplot-like interface.
 #'
 #' @export
-arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = TRUE) {
+arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE) {
   gg <- list(data = list(parent = data),
              aes = aes,
              x = list(),

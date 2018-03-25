@@ -34,7 +34,7 @@
 #' @param plotsize (optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE
 #' @param portrait (optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
 #' @param bar.stacked (optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).
-#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.
+#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.
 #' @param joined (optiona) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE). TRUE by default.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -49,7 +49,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE, joined = TRUE) {
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
 
   out <- handledata(series, data, x)
   data <- out$data
