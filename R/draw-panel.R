@@ -133,13 +133,13 @@ needgrid <- function(p, layout) {
   }
 }
 
-gridsandborders <- function(p, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim, dropxlabel) {
+gridsandborders <- function(p, layout, portrait, yunits, yticks, xlabels, ylim, xlim, dropxlabel) {
   side <- getsides(p, layout)
   xlab <- needxlabels(p, layout)
 
   ## Draw the axis scale
   # Drop the first label
-  labels_drop <- ticks[[p]]
+  labels_drop <- yticks
 
   if (dropbottomlabel(p, layout)) {
     labels_drop <- labels_drop[2:(length(labels_drop)-1)]
@@ -149,18 +149,18 @@ gridsandborders <- function(p, layout, portrait, scaleunits, ticks, xlabels, yli
   graphics::axis(side, at = labels_drop, labels = labels_drop, tck = 0, cex.lab = 1, mgp = c(3, 0.2, 0))
 
   # Add units
-  graphics::mtext(text = scaleunits[[p]], side = side, at = ylim$max, line = 0.2, cex = 1, padj = 1)
+  graphics::mtext(text = yunits, side = side, at = ylim$max, line = 0.2, cex = 1, padj = 1)
 
   ## Draw the x-axis
   if (xlab) {
-    # Draw ticks and labels
-    graphics::axis(1, xlabels[[p]]$ticks, tck = DEFAULTTICKLENGTH, labels = FALSE)
+    # Draw x ticks and labels
+    graphics::axis(1, xlabels$ticks, tck = DEFAULTTICKLENGTH, labels = FALSE)
     if (dropfirstxlabel(p, layout, dropxlabel)) {
-      at <- xlabels[[p]]$at[2:length(xlabels[[p]]$at)]
-      labels <- xlabels[[p]]$labels[2:length(xlabels[[p]]$labels)]
+      at <- xlabels$at[2:length(xlabels$at)]
+      labels <- xlabels$labels[2:length(xlabels$labels)]
     } else {
-      at <- xlabels[[p]]$at
-      labels <- xlabels[[p]]$labels
+      at <- xlabels$at
+      labels <- xlabels$labels
     }
     graphics::axis(1, xlim[1]:xlim[2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 1.2, 0))
   }
@@ -169,7 +169,7 @@ gridsandborders <- function(p, layout, portrait, scaleunits, ticks, xlabels, yli
   if (needgrid(p, layout)) {
     graphics::grid(nx = FALSE, ny = (ylim$nsteps - 1), col = "lightgray", lty = "solid", lwd = 1)
     # Add a zero line if needed
-    if (0 %in% ticks[[p]]) {
+    if (0 %in% yticks) {
       graphics::axis(1, pos = 0, xlim[1]:xlim[2], labels = FALSE, tck = 0, lwd = 1)
     }
   }
@@ -259,7 +259,7 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, scaleunits, ticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, joined) {
+drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, joined) {
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
 
@@ -285,14 +285,14 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
 
   drawbgshadings(bgshadings, p)
 
-  gridsandborders(p, layout, portrait, scaleunits, ticks, xlabels, ylim, xlim, dropxlabel)
+  gridsandborders(p, layout, portrait, yunits, yticks, xlabels, ylim, xlim, dropxlabel)
 
   drawbars(l, series, bars, data, x, attributes, xlim, ylim, bar.stacked)
 
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
   graphics::par(mfg = l)
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim, ylim = c(ylim$min, ylim$max))
-  drawshading(shading[[p]], data, x)
+  drawshading(shading, data, x)
   drawlines(l, series, bars, data, x, attributes, xlim, ylim, joined)
 
   drawpaneltitle(paneltitle, panelsubtitle)

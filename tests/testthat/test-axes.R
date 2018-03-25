@@ -121,3 +121,12 @@ expect_false(isTRUE(all.equal(ylimconform(napanels, NULL, nadata, "1")[["1"]], l
 
 # Correct placement of y labels when ticks lead to more decimal places (#44)
 expect_equal(createscale(0.15, 0.25, 5), c(0.15, 0.175, 0.2, 0.225, 0.25))
+
+# X axis unit handling
+context("x axis units")
+expect_equal(handlexunits(onesided, NULL), list("1" = "%", "2" = "%"))
+expect_equal(handlexunits(onesided, list("1" = "index")), list("1" = "index", "2" = "%"))
+expect_equal(handlexunits(onesided, "index"), list("1" = "index", "2" = "index"))
+panels2b2 <- handlepanels(fakeseries1, "2b2")
+expect_equal(handlexunits(panels2b2, "index"), list("1" = "index", "2" = "index", "3" = "index", "4" = "index"))
+

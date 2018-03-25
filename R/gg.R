@@ -220,7 +220,7 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              panelsubtitles = list(),
              footnotes = c(),
              sources = c(),
-             scaleunits = NULL,
+             yunits = NULL,
              col = list(),
              pch = list(),
              lty = list(),
@@ -398,12 +398,12 @@ addsubtitle <- function(gg, subtitle) {
 
 addunits <- function(gg, units) {
   if (is.null(units$panel)) {
-    gg$scaleunits <- units$units
+    gg$yunits <- units$units
   } else {
-    if (is.null(gg$scaleunits)) {
-      gg$scaleunits <- list()
+    if (is.null(gg$yunits)) {
+      gg$yunits <- list()
     }
-    gg$scaleunits[[units$panel]] <- units$units
+    gg$yunits[[units$panel]] <- units$units
   }
   return(gg)
 }
@@ -442,7 +442,7 @@ agg_draw <- function(gg, filename = NULL) {
          panelsubtitles = gg$panelsubtitles,
          footnotes = gg$footnotes,
          sources = gg$sources,
-         scaleunits = gg$scaleunits,
+         yunits = gg$yunits,
          col = gg$col,
          pch = gg$pch,
          lty = gg$lty,

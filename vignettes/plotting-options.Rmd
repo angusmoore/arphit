@@ -382,13 +382,29 @@ knitr::include_graphics("sources.png")
 By default, `arphit` sets the scale units to %. You can set your own by passing in a list of panel identifiers
 to strings (corresponding to the units). For instance:
 ```{r, eval = FALSE}
-arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"), filename = "units.png")
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"), filename = "units.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("units.png")
+```
+
+## x-axis units
+
+You can also add units for the x-axis in much the same way. These are ignored for anything other than scatter graphs.
+
+```{r, eval = FALSE}
+scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
+arphit(scatterdata, x = "x", xunits = "ppt")
+```
+```{r, echo = FALSE, results = "hide"}
+scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
+arphit(scatterdata, x = "x", filename = "x-units.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("x-units.png")
 ```
 
 # Line, bar and marker options

@@ -80,19 +80,18 @@ duplicateaxes <- function(toduplicate, panels, layout) {
   return(toduplicate)
 }
 
-handleunits <- function(panels, scaleunits, layout) {
-  plist <- names(panels)
+conformscale <- function(panels, scaleunits) {
   if (is.null(scaleunits)) {
     scaleunits <- DEFAULTSCALEUNITS
   }
 
   out <- list()
   if(!is.list(scaleunits)) {
-    for (p in plist) {
+    for (p in names(panels)) {
       out[[p]] <- scaleunits
     }
   } else {
-    for (p in plist) {
+    for (p in names(panels)) {
       if (p %in% names(scaleunits)) {
         out[[p]] <- scaleunits[[p]]
       } else {
@@ -100,8 +99,17 @@ handleunits <- function(panels, scaleunits, layout) {
       }
     }
   }
+  return(out)
+}
+
+handleunits <- function(panels, scaleunits, layout) {
+  out <- conformscale(panels, scaleunits)
   out <- duplicateaxes(out, panels, layout)
   return(out)
+}
+
+handlexunits <- function(panels, xunits) {
+  conformscale(panels, xunits)
 }
 
 ylimconform <- function(panels, ylim, data, layout) {
@@ -217,8 +225,8 @@ xlabels.numericcategorical <- function(xlim, xvar) {
   return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = step)))
 }
 
-xlabels.scatter <- function(xlim) {
-  scale <- defaultscale(xlim)
+xlabels.scatter <- function(xvalues) {
+  scale <- defaultscale(xvalues)
   scale <- createscale (scale$min,scale$max,scale$nsteps)
   return(list(at = scale, labels = scale, ticks = scale))
 }
@@ -227,7 +235,7 @@ xlabels <- function(xlim, xvar, data, ists, layout) {
   if (stats::is.ts(data) || !is.null(ists)) {
     return(xlabels.ts(xlim, layout))
   } else if (is.scatter(xvar)) {
-    return(xlabels.scatter(xlim))
+    return(xlabels.scatter(xvar))
   } else if (!is.null(xvar)) {
     if (is.numeric(xvar)) {
       return(xlabels.numericcategorical(xlim, xvar))
@@ -272,8 +280,11 @@ is.scatter <- function(x) {
 
 defaultxscale <- function(xvars, xscales, data, ists) {
   if (!is.null(xvars)) {
-    if (is.numeric(xvars) && (stats::is.ts(data) || ists || is.scatter(xvars))) {
+    if (is.numeric(xvars) && (stats::is.ts(data) || ists)) {
       return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
+    } else if (is.scatter(xvars)) {
+      scale <- defaultscale(xvars)
+      return(c(scale$min,scale$max))
     } else {
       # Handle numerical categories
       if (is.numeric(xvars)) {

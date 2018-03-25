@@ -141,10 +141,10 @@ expect_that(foo$panelsubtitles[["3"]], equals("Test 3"))
 
 # Units
 foo <- arphitgg(data) + agg_units("index")
-expect_that(foo$scaleunits, equals("index"))
+expect_that(foo$yunits, equals("index"))
 foo <- arphitgg(data) + agg_units("index", panel = "1") + agg_units("bar", panel = "4")
-expect_that(foo$scaleunits[["1"]], equals("index"))
-expect_that(foo$scaleunits[["4"]], equals("bar"))
+expect_that(foo$yunits[["1"]], equals("index"))
+expect_that(foo$yunits[["4"]], equals("bar"))
 
 # Footnotes
 foo <- arphitgg(data) + agg_footnote("This is a footnote") + agg_footnote("second footnote")

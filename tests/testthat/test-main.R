@@ -52,7 +52,7 @@ expect_error(arphit(data, footnote = c("Footnote 1", "Footnote 2", "etc, this ca
 expect_error(arphit(data, sources = c("RBA", "ABS", "someone else")), NA)
 
 # Scale units
-expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s")), NA)
+expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s")), NA)
 
 # Line, bar and marker options
 expect_error(arphit(data, col = list("x2" = "pink", "x4" = "lightblue")), NA)

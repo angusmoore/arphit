@@ -7,11 +7,11 @@
 arphit(data, series = NULL, x = NULL, layout = "1", bars = NULL,
   filename = NULL, shading = NULL, title = NULL, subtitle = NULL,
   paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL,
-  sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL,
-  bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1,
-  lwd = 2, barcol = NA, xlim = NULL, ylim = NULL,
-  plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE,
-  dropxlabel = TRUE, joined = TRUE)
+  sources = NULL, yunits = NULL, xunits = NULL, labels = NULL,
+  arrows = NULL, bgshading = NULL, lines = NULL, col = NULL,
+  pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL,
+  ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE,
+  bar.stacked = TRUE, dropxlabel = TRUE, joined = TRUE)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
@@ -43,7 +43,9 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 
 \item{sources}{(optional) A vector of strings, one entry for each source.}
 
-\item{scaleunits}{(optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.}
+\item{yunits}{(optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.}
+
+\item{xunits}{(optionaL) The x scale units to add. Specify as with y units. Only for scatter plots.}
 
 \item{labels}{(optional) A list of lists specifying series labels to add to the plot. Each sub-list specifies a single text label. These must be of the form: list(x = 2008, y = -1, text = "Label text", panel = 1, color = "black"). Where x and y specify where (in the units on the plot) the centre of the label should be. panel specifies which panel to place the label on.}
 
@@ -86,7 +88,7 @@ randomdata <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10)
   x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
 arphit(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
   bars = c("x3","x4"), layout = "2v", title = "A Title", subtitle = "A subtitle",
-  footnotes = c("a","B"), sources = c("A Source", "Another source"), scaleunits = "index")
+  footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 
 }
 \seealso{

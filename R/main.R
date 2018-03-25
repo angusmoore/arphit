@@ -18,7 +18,8 @@
 #' @param panelsubtitles (optional) A list string -> string pairs indicating panel titles. See paneltitles.
 #' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
-#' @param scaleunits (optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.
+#' @param yunits (optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.
+#' @param xunits (optionaL) The x scale units to add. Specify as with y units. Only for scatter plots.
 #' @param labels (optional) A list of lists specifying series labels to add to the plot. Each sub-list specifies a single text label. These must be of the form: list(x = 2008, y = -1, text = "Label text", panel = 1, color = "black"). Where x and y specify where (in the units on the plot) the centre of the label should be. panel specifies which panel to place the label on.
 #' @param arrows (optional) A list of lists specifying arrows to add to the plot. Each sub-list specifies a single arrow. These must be of the form: list(tail.x = 2000, tail.y = -1, head.x = 2001, head.y = 0, panel = 1, lwd = 1, color = "black"). tail.x and tail.y specify the coordinates (in the units on the plot) of where to start the arrow at, head.x and head.y where to finish it. panel specifies which panel to place the arrow on. lwd is optional and specifies the linewidth of the arrow (default = 1).
 #' @param bgshading (optional) A list of lists specifying background shading to add to the plot. Each of the sublists corresponds to a rectangle of background shading to draw. Each must be specified list(x1 = NA, y1 = -1, x2 = NA, y2 = 1, panel = 1, color = "lightgrey"). x1 and x2 correspond to the bottom left corner; x2, y2 the top right. Passing NA will set that coordinate to the axis limit - this is useful for creating shading that stretches across a whole panel. color and panel are self-explanatory (color is optional and defaults to light grey).
@@ -45,10 +46,10 @@
 #'   x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
 #' arphit(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
 #'   bars = c("x3","x4"), layout = "2v", title = "A Title", subtitle = "A subtitle",
-#'   footnotes = c("a","B"), sources = c("A Source", "Another source"), scaleunits = "index")
+#'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, scaleunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE, joined = TRUE) {
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = TRUE, joined = TRUE) {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -65,9 +66,10 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   attributes <- handleattributes(panels, col, pch, lty, lwd, barcol)
 
   # Units and scales
-  scaleunits <- handleunits(panels, scaleunits, layout)
+  yunits <- handleunits(panels, yunits, layout)
+  xunits <- handlexunits(panels, xunits)
   ylim <- ylimconform(panels, ylim, data, layout)
-  ticks <- handleticks(data, panels, ylim)
+  yticks <- handleticks(data, panels, ylim)
   xlim <- xlimconform(panels, xlim, xvars, data)
   xlabels <- handlexlabels(panels, xlim, xvars, data, layout)
 
@@ -96,12 +98,12 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, panels, ticks, scaleunits, title, subtitle, footnotes, sources, plotsize, portrait)
+  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, plotsize, portrait)
   handlelayout(layout)
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste(p,"ts",sep="")]]), shading, bgshading, margins, layout, portrait, attributes[[p]], scaleunits, ticks, xlabels, ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel, joined)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, portrait, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel, joined)
   }
 
   # Draw outer material
