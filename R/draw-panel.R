@@ -133,7 +133,7 @@ needgrid <- function(p, layout) {
   }
 }
 
-gridsandborders <- function(p, layout, portrait, yunits, yticks, xlabels, ylim, xlim, dropxlabel) {
+gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel) {
   side <- getsides(p, layout)
   xlab <- needxlabels(p, layout)
 
@@ -161,6 +161,11 @@ gridsandborders <- function(p, layout, portrait, yunits, yticks, xlabels, ylim, 
     } else {
       at <- xlabels$at
       labels <- xlabels$labels
+    }
+    if (!is.null(xunits)) {
+      at <- xlabels$at[1:(length(xlabels$at)-1)]
+      labels <- xlabels$labels[1:(length(xlabels$labels)-1)]
+      graphics::mtext(text = xunits, side = 1, at = xlim[2], line = 0, cex = 1, padj = 1)
     }
     graphics::axis(1, xlim[1]:xlim[2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 1.2, 0))
   }
@@ -260,9 +265,11 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
 }
 
 drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, joined) {
+  # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
 
+  # Handling the x variables
   if (stats::is.ts(data) || ists || is.scatter(xvals)) {
     # time series or scatter
     x <- xvals
@@ -273,10 +280,14 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
       # Categorical data, offset by half
       x <- 1:length(xvals) + 0.5
     }
-
   } else {
     # No data at all, empty plot
     x <- xvals
+  }
+
+  # Do we need an x unit
+  if (!is.scatter(xvals)) {
+    xunits <- NULL
   }
 
   # Start the plot with a blank plot, used for panels with no series
@@ -285,7 +296,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
 
   drawbgshadings(bgshadings, p)
 
-  gridsandborders(p, layout, portrait, yunits, yticks, xlabels, ylim, xlim, dropxlabel)
+  gridsandborders(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel)
 
   drawbars(l, series, bars, data, x, attributes, xlim, ylim, bar.stacked)
 
