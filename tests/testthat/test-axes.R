@@ -57,6 +57,9 @@ context("X-axes scale")
 fakedata <- handledata(NULL, fakedata, NULL)$data
 xvars <- handlex(fakedata, NULL)
 expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(1,11), "2" = c(1,11))))
+
+expect_equal(xlimconform(onesided, c(-10,0), xvars, fakedata), list("1" = c(-10,0), "2" = c(-10,0)))
+
 xlim <- xlimconform(onesided, NULL, xvars, fakedata)
 x <- handlex(fakedata, NULL)
 xlabs <- handlexlabels(onesided, xlim, x, fakedata, "1")

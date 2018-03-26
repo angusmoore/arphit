@@ -9,7 +9,7 @@ arphit(data, series = NULL, x = NULL, layout = "1", bars = NULL,
   paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL,
   sources = NULL, yunits = NULL, xunits = NULL, labels = NULL,
   arrows = NULL, bgshading = NULL, lines = NULL, col = NULL,
-  pch = NULL, lty = 1, lwd = 2, barcol = NA, xlim = NULL,
+  pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL,
   ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE,
   bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE)
 }

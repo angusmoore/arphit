@@ -15,7 +15,6 @@ agg_units(units, panel = NULL)
 Add units (for the y axis)
 }
 \examples{
-data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 arphitgg(data) + agg_units("index")
 arphitgg(data) + agg_units("ppt", panel = "1")
 

@@ -63,17 +63,17 @@ createscale <- function(minscale,maxscale,nsteps) {
 }
 
 duplicateaxes <- function(toduplicate, panels, layout) {
-  if (is.null(panels[["1"]])) {
+  if (is.null(panels[["1"]]) && !is.null(panels[["2"]])) {
     toduplicate[["1"]] <- toduplicate[["2"]]
   }
-  if (is.null(panels[["2"]])) {
+  if (is.null(panels[["2"]]) && !is.null(panels[["1"]])) {
     toduplicate[["2"]] <- toduplicate[["1"]]
   }
   if (layout == "2b2" || layout == "2h") {
-    if (is.null(panels[["3"]])) {
+    if (is.null(panels[["3"]]) && !is.null(panels[["4"]])) {
       toduplicate[["3"]] <- toduplicate[["4"]]
     }
-    if (is.null(panels[["4"]])) {
+    if (is.null(panels[["4"]]) && !is.null(panels[["3"]])) {
       toduplicate[["4"]] <- toduplicate[["3"]]
     }
   }
@@ -305,7 +305,7 @@ xlimconform <- function(panels, xlim, xvars, data) {
   if (!is.list(xlim)) {
     for (p in names(panels)) {
       if (is.null(xlim)) {
-        ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
+        ists <- !is.null(xvars[[paste0(p, "ts")]])
         out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
       } else {
         out[[p]] <- xlim
@@ -316,7 +316,7 @@ xlimconform <- function(panels, xlim, xvars, data) {
       if (p %in% names(xlim)) {
         out[[p]] <- xlim[[p]]
       } else {
-        ists <- xvars[[paste(p,"ts",sep="")]]
+        ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
         out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
       }
     }

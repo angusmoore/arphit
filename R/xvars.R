@@ -34,7 +34,7 @@ handlex <- function(data, x) {
               # shift by half, so that we're between ticks
               outx[[p]] <- outx[[p]] + 1/2*frequencyof(outx[[p]])
               # Add a little helper to tell other functions we have time series data
-              outx[[paste(p,"ts",sep = "")]] <- TRUE
+              outx[[paste0(p, "ts")]] <- TRUE
             }
           } else {
             stop(paste("The x variable you supplied for panel ", p, " (" , x[[p]], ") is not a variable in the data you supplied.", sep = ""))

@@ -15,7 +15,6 @@ agg_subtitle(text, panel = NULL)
 Add a subtitle or panel subtitle
 }
 \examples{
-data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 arphitgg(data) + agg_subtitle("Graph Subtitle")
 arphitgg(data) + agg_subtitle("Panel subtitle", panel = "1")
 
