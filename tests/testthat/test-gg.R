@@ -162,3 +162,9 @@ baz <- arphitgg(data) + agg_source("One source") + agg_source("Three source")
 expect_that(foo$sources, equals("One source"))
 expect_that(bar$sources, equals(c("One source", "Two source")))
 expect_that(baz$sources, equals(c("One source", "Three source")))
+
+# X units
+foo <- arphitgg(data) + agg_xunits("foo")
+bar <- arphitgg(data) + agg_xunits("bar", panel = "2")
+expect_equal(foo$xunits, "foo")
+expect_equal(foo$xunits, list("2" = "bar"))

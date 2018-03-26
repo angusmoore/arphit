@@ -42,7 +42,7 @@ agg_subtitle <- function(text, panel = NULL) {
   return(list(type = "subtitle", text = text, panel = panel))
 }
 
-#' Add units
+#' Add units (for the y axis)
 #'
 #' @param units A string specifying the units.
 #' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
@@ -61,6 +61,25 @@ agg_units <- function(units, panel = NULL) {
     panel <- as.character(panel)
   }
   return(list(type = "units", units = units, panel = panel))
+}
+
+#' Add units to the x axis (only works for scatter graphs)
+#'
+#' @param units A string specifying the units.
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_xunits("index")
+#'
+#' @export
+agg_xunits <- function(units, panel = NULL) {
+  if (!is.null(panel)) {
+    panel <- as.character(panel)
+  }
+  return(list(type = "xunits", units = units, panel = panel))
 }
 
 #' Add a source (or many sources)
@@ -221,6 +240,7 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              footnotes = c(),
              sources = c(),
              yunits = NULL,
+             xunits = NULL,
              col = list(),
              pch = list(),
              lty = list(),
@@ -408,6 +428,18 @@ addunits <- function(gg, units) {
   return(gg)
 }
 
+addxunits <- function(gg, units) {
+  if (is.null(units$panel)) {
+    gg$xunits <- units$units
+  } else {
+    if (is.null(gg$xunits)) {
+      gg$xunits <- list()
+    }
+    gg$xunits[[units$panel]] <- units$units
+  }
+  return(gg)
+}
+
 addsource <- function(gg, source) {
   gg$sources <- append(gg$sources, source$source)
   return(gg)
@@ -483,6 +515,7 @@ print.arphit.gg <- function(x, ...) {
          "title" = addtitle(gg, element),
          "subtitle" = addsubtitle(gg, element),
          "units" = addunits(gg, element),
+         "xunits" = addxunits(gg, element),
          "source" = addsource(gg, element),
          "footnote" = addfootnote(gg, element),
          stop("Unknown element type for arphit.gg"))
