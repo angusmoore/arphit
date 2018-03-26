@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg.R
 \name{agg_units}
 \alias{agg_units}
-\title{Add units}
+\title{Add units (for the y axis)}
 \usage{
 agg_units(units, panel = NULL)
 }
@@ -12,7 +12,7 @@ agg_units(units, panel = NULL)
 \item{panel}{(optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.}
 }
 \description{
-Add units
+Add units (for the y axis)
 }
 \examples{
 data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
