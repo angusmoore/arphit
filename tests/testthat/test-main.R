@@ -53,7 +53,6 @@ expect_error(arphit(data, sources = c("RBA", "ABS", "someone else")), NA)
 
 # Y units
 expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s")), NA)
-arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = "000s"
 
 # Line, bar and marker options
 expect_error(arphit(data, col = list("x2" = "pink", "x4" = "lightblue")), NA)
