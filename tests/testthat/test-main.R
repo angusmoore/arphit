@@ -51,8 +51,8 @@ expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("
 expect_error(arphit(data, footnote = c("Footnote 1", "Footnote 2", "etc, this can go on for a while")), NA)
 expect_error(arphit(data, sources = c("RBA", "ABS", "someone else")), NA)
 
-# Scale units
-expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s")), NA)
+# Y units
+expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s")), NA)
 
 # Line, bar and marker options
 expect_error(arphit(data, col = list("x2" = "pink", "x4" = "lightblue")), NA)
@@ -61,6 +61,9 @@ expect_error(arphit(data, pch = 19), NA)
 # Axis limits
 expect_error(arphit(data, series = list("1" = c("x1"), "2" = c("x3")), ylim = list("1" = list(min = -10, max = 10, nsteps = 5), "2" = list(min = -20, max = 20, nsteps = 5))), NA)
 expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), ylim = list(min = -10, max = 10, nsteps = 5)), NA)
+
+# Drop x label
+expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), dropxlabel = TRUE), NA)
 
 # Shading between series
 expect_error(arphit(data, shading = list(list(from = "x1", to = "x2", color= "red"))), NA)

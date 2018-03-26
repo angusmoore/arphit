@@ -15,12 +15,12 @@ is.even <- function(x) {
   return(as.integer(x) %% 2 == 0)
 }
 
-leftrightpadding <- function(ticks, scaleunits, panels) {
+leftrightpadding <- function(yticks, yunits, panels) {
   R <- 0
   L <- 0
   for (p in names(panels)) {
-    nc <- max(graphics::strwidth(ticks[[p]], units = "inches"))
-    nc <- max(nc, graphics::strwidth(scaleunits[[p]], units = "inches"))
+    nc <- max(graphics::strwidth(yticks[[p]], units = "inches"))
+    nc <- max(nc, graphics::strwidth(yunits[[p]], units = "inches"))
     if (is.even(p)) {
       R <- max(R, nc)
     } else {
@@ -75,9 +75,9 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
   return(list(height = figheight, width = figwidth, top = top, bottom = bottom, left = left, right = right))
 }
 
-figuresetup <- function(filename, device, panels, ticks, scaleunits, title, subtitle, footnotes, sources, plotsize, portrait) {
+figuresetup <- function(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, plotsize, portrait) {
   # Figure out margins
-  LRpadding <- leftrightpadding(ticks, scaleunits, panels)
+  LRpadding <- leftrightpadding(yticks, yunits, panels)
   left <- 2 + 1.2*LRpadding$left
   right <- 2 + 1.2*LRpadding$right
 
