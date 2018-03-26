@@ -40,7 +40,7 @@ agg_subtitle <- function(text, panel = NULL) {
   return(list(type = "subtitle", text = text, panel = panel))
 }
 
-#' Add units
+#' Add units (for the y axis)
 #'
 #' @param units A string specifying the units.
 #' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
@@ -58,6 +58,25 @@ agg_units <- function(units, panel = NULL) {
     panel <- as.character(panel)
   }
   return(list(type = "units", units = units, panel = panel))
+}
+
+#' Add units to the x axis (only works for scatter graphs)
+#'
+#' @param units A string specifying the units.
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_xunits("index")
+#'
+#' @export
+agg_xunits <- function(units, panel = NULL) {
+  if (!is.null(panel)) {
+    panel <- as.character(panel)
+  }
+  return(list(type = "xunits", units = units, panel = panel))
 }
 
 #' Add a source (or many sources)
@@ -345,13 +364,13 @@ agg_aes <- function(x, y, group = NULL) {
 #' @param aes (Optional) The aesthetic that defines your graph. Can be left blank, but must then be supplied for each layer. Layers that don't specify aesthetics will inherit missing parts of aesthetic from here.
 #' @param layout (default = "1")
 #' @param portrait (default = false) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
-#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). TRUE by default.
+#' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
 #' how to use the ggplot-like interface.
 #'
 #' @export
-arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = TRUE) {
+arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE) {
   gg <- list(data = list(parent = data),
              aes = aes,
              x = list(),
@@ -364,7 +383,8 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              panelsubtitles = list(),
              footnotes = c(),
              sources = c(),
-             scaleunits = NULL,
+             yunits = NULL,
+             xunits = NULL,
              ylim = list(),
              xlim = list(),
              col = list(),
@@ -552,12 +572,24 @@ addsubtitle <- function(gg, subtitle) {
 
 addunits <- function(gg, units) {
   if (is.null(units$panel)) {
-    gg$scaleunits <- units$units
+    gg$yunits <- units$units
   } else {
-    if (is.null(gg$scaleunits)) {
-      gg$scaleunits <- list()
+    if (is.null(gg$yunits)) {
+      gg$yunits <- list()
     }
-    gg$scaleunits[[units$panel]] <- units$units
+    gg$yunits[[units$panel]] <- units$units
+  }
+  return(gg)
+}
+
+addxunits <- function(gg, units) {
+  if (is.null(units$panel)) {
+    gg$xunits <- units$units
+  } else {
+    if (is.null(gg$xunits)) {
+      gg$xunits <- list()
+    }
+    gg$xunits[[units$panel]] <- units$units
   }
   return(gg)
 }
@@ -641,7 +673,7 @@ agg_draw <- function(gg, filename = NULL) {
          panelsubtitles = gg$panelsubtitles,
          footnotes = gg$footnotes,
          sources = gg$sources,
-         scaleunits = gg$scaleunits,
+         yunits = gg$yunits,
          ylim = gg$ylim,
          xlim = gg$xlim,
          col = gg$col,
@@ -690,6 +722,7 @@ print.arphit.gg <- function(x, ...) {
          "title" = addtitle(gg, element),
          "subtitle" = addsubtitle(gg, element),
          "units" = addunits(gg, element),
+         "xunits" = addxunits(gg, element),
          "source" = addsource(gg, element),
          "footnote" = addfootnote(gg, element),
          "label" = addannotation(gg, element, "labels"),

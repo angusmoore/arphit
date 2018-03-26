@@ -377,18 +377,44 @@ knitr::include_graphics("sources.png")
 
 `arphit` will automatically pluralise if more than one source is given.
 
-# Scale units
+# Y axis units
 
-By default, `arphit` sets the scale units to %. You can set your own by passing in a list of panel identifiers
-to strings (corresponding to the units). For instance:
+By default, `arphit` sets the y axis units to %. You can set your own by passing in a list of panel identifiers to strings (corresponding to the units). For instance:
 ```{r, eval = FALSE}
-arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), scaleunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"), filename = "units.png")
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"), filename = "units.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("units.png")
+```
+
+If you want the same units for all panels, you can just pass in the string, instead of a list:
+```{r, eval = FALSE}
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = "000s")
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = "000s", filename = "units-all.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("units-all.png")
+```
+
+## x-axis units
+
+You can also add units for the x-axis in much the same way. These are ignored for anything other than scatter graphs.
+
+```{r, eval = FALSE}
+scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
+arphit(scatterdata, x = "x", xunits = "ppt")
+```
+```{r, echo = FALSE, results = "hide"}
+scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
+arphit(scatterdata, x = "x", filename = "x-units.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("x-units.png")
 ```
 
 # Line, bar and marker options
@@ -496,10 +522,19 @@ knitr::include_graphics("y-uniform.png")
 X-limits are controlled similar to y-limits. However, only a minimum and maximum (in years) is required. You can use
 part years if desired by adding decimal places (e.g. `2000.5`). As with the y-axis you can provide a list giving `c(minimum,maximum)` pairs for each panel, or just pass a single pair to apply to all panels. The latter method is strongly recommended - there are not many cases where you need different x-axes for different panels.
 
-Fine-grained control of x-ticks is not currently possible; only the limits can be set, the ticks are determined
-automatically.
+Fine-grained control of x-ticks is not currently possible; only the limits can be set, the ticks are determined automatically.
 
-By default, on "2b2" and "2v" layouts, the first tick of the right hand panel is not displayed. This prevents the last label of the left hand panel overlapping the first of the right hand panel. You can force the first tick to display by setting `dropxlabel = FALSE`.
+For "2b2" and "2v" layouts, you can drop the the first tick of the right hand panel by setting `dropxlabel = TRUE`. This prevents the last label of the left hand panel overlapping the first of the right hand panel.
+
+```{r, eval = FALSE}
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), dropxlabel = TRUE)
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), dropxlabel=TRUE, filename = "dropxlabel.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("dropxlabel.png")
+```
 
 # Shading between series
 
