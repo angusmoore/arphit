@@ -286,7 +286,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   }
 
   # Do we need an x unit
-  if (!is.scatter(xvals)) {
+  if (is.ts(data) || ists || !is.scatter(xvals)) {
     xunits <- NULL
   }
 
