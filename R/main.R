@@ -49,7 +49,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -72,6 +72,8 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   yticks <- handleticks(data, panels, ylim)
   xlim <- xlimconform(panels, xlim, xvars, data)
   xlabels <- handlexlabels(panels, xlim, xvars, data, layout)
+  yaxislabels <- handleaxislabels(yaxislabels, panels)
+  xaxislabels <- handleaxislabels(xaxislabels, panels)
 
   # Handle shading
   shading <- handleshading(shading, panels)
@@ -103,7 +105,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, portrait, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel, joined)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, portrait, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined)
   }
 
   # Draw outer material
@@ -111,10 +113,11 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   drawnotes(footnotes, sources)
 
   for (p in names(panels)) {
-    # Finally, draw all the annotations draw all
+    # Finally, draw all the annotations
     l <- getlocation(p ,layout)
     graphics::par(mfg = l)
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
+
     drawannotationlines(lines, p)
     drawarrows(arrows, p)
     drawlabels(labels, p)

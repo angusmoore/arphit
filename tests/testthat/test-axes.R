@@ -133,3 +133,6 @@ expect_equal(handlexunits(onesided, "index"), list("1" = "index", "2" = "index")
 panels2b2 <- handlepanels(fakeseries1, "2b2")
 expect_equal(handlexunits(panels2b2, "index"), list("1" = "index", "2" = "index", "3" = "index", "4" = "index"))
 
+# Axis labels
+expect_equal(handleaxislabels(list("1" = "foo"), onesided), list("1" = "foo"))
+expect_equal(handleaxislabels("foo", onesided), list("1" = "foo", "2" = "foo"))
