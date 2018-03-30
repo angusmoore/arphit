@@ -722,10 +722,10 @@ Or similarly for other series.
 
 Call the auto labeller like so:
 ```
-arphit.tsgraph(data, enable.autolabeller = TRUE)
+arphit(data, enable.autolabeller = TRUE)
 ```
 ```{r, echo = FALSE, message=FALSE, results = "hide"}
-arphit.tsgraph(data, enable.autolabeller = TRUE, filename = "autolabel.png")
+arphit(data, enable.autolabeller = TRUE, filename = "autolabel.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("autolabel.png")
@@ -733,19 +733,19 @@ knitr::include_graphics("autolabel.png")
 
 If you put text labels on panel 2, that disables the auto labeller for that panel:
 ```
-arphit.tsgraph(data,
-               series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
-               layout = "2v",
-               labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
-               enable.autolabeller = TRUE)
+arphit(data,
+       series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
+       layout = "2v",
+       labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+       enable.autolabeller = TRUE)
 ```
 ```{r, echo = FALSE, message=FALSE, results = "hide"}
-arphit.tsgraph(data,
-               series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
-               layout = "2v",
-               labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
-               enable.autolabeller = TRUE,
-               filename = "autolabel-disableone.png")
+arphit(data,
+       series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
+       layout = "2v",
+       labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+       enable.autolabeller = TRUE,
+       filename = "autolabel-disableone.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("autolabel-disableone.png")
