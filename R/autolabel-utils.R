@@ -3,11 +3,11 @@ createlabels <- function(data, panels, p, layout) {
   series <- list()
   if (layout == "1" || layout == "2h") {
     # also need to handle RHS series
-    primary <- panels$panels[[p]]
+    primary <- panels[[p]]
     if (p == "1") {
-      secondary <- panels$panels[["2"]]
+      secondary <- panels[["2"]]
     } else if (p == "3") {
-      secondary <- panels$panels[["4"]]
+      secondary <- panels[["4"]]
     } else {
       secondary <- list() # Shouldn't be called
     }
@@ -27,7 +27,7 @@ createlabels <- function(data, panels, p, layout) {
       }
     }
   } else {
-    for (s in panels$panels[[p]]) {
+    for (s in panels[[p]]) {
       series[[s]] <- s
     }
   }

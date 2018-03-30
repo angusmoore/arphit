@@ -1,16 +1,16 @@
-distancefitness <- function(candidate, data, serieslist) {
+distancefitness <- function(candidate, series.x, data, serieslist) {
   cost <- 0
   for (label in names(candidate)) {
     a <- candidate[[label]][1]
     b <- candidate[[label]][2]
-    losdistance <- series.distance(a, b, data, serieslist, label, TRUE)$distance
-    nolosdistance <- series.distance(a, b, data, serieslist, label, FALSE)$distance
+    losdistance <- series.distance(a, b, series.x, data, serieslist, label, TRUE)$distance
+    nolosdistance <- series.distance(a, b, series.x, data, serieslist, label, FALSE)$distance
     cost <- cost + min(losdistance, nolosdistance + LOSPENALTY)
   }
   return(cost)
 }
 
-bestcandidate <- function(candidates, data, labelsmap) {
+bestcandidate <- function(candidates, series.x, data, labelsmap) {
   ncandidates <- length(candidates)
 
   # Check which has the most labels
@@ -30,7 +30,7 @@ bestcandidate <- function(candidates, data, labelsmap) {
   # Fitness by distance (with penalty for no LOS)
   distances <- c()
   for (candidate in candidates) {
-    distances <- append(distances, distancefitness(candidate, data, names(labelsmap)))
+    distances <- append(distances, distancefitness(candidate, series.x, data, names(labelsmap)))
   }
   dmin <- min(distances)
   if (sum(distances == dmin) == 1) {

@@ -39,8 +39,7 @@ grid.collision <- function(text, x, y, xlim, ylim, ylim_n) {
   return(FALSE)
 }
 
-series.collision <- function(text, x, y, data, series) {
-  series.x <- stats::time(data) + 1.0/(2*stats::frequency(data))
+series.collision <- function(text, x, y, series.x, data, series) {
   series.y <- data[, series]
   for (i in 1:(length(series.x)-1)) {
     a1 <- series.x[[i]]
@@ -54,9 +53,9 @@ series.collision <- function(text, x, y, data, series) {
   return(FALSE)
 }
 
-allseries.collision <- function(text, x, y, data, serieslist) {
+allseries.collision <- function(text, x, y, series.x, data, serieslist) {
   for (series in serieslist) {
-    if (series.collision(text, x, y, data, series)) {
+    if (series.collision(text, x, y, series.x, data, series)) {
       return(TRUE)
     }
   }
@@ -84,8 +83,8 @@ outofbounds <- function(text, x, y, xlim, ylim) {
           bound$ty > ylim[2])
 }
 
-checkcollisions <- function(text, x, y, data, serieslist, labellocations, labelsmap, xlim, ylim, ylim_n) {
-  return(allseries.collision(text, x, y, data, serieslist) ||
+checkcollisions <- function(text, x, y, series.x, data, serieslist, labellocations, labelsmap, xlim, ylim, ylim_n) {
+  return(allseries.collision(text, x, y, series.x, data, serieslist) ||
            grid.collision(text, x, y, xlim, ylim, ylim_n) ||
            label.collision(text, x, y, labellocations, labelsmap) ||
            outofbounds(text, x, y, xlim, ylim))

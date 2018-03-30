@@ -38,10 +38,9 @@ seriesforce <- function(a, b, series.x, series.y) {
   vector <- sum(coulombrepulsion(a, b, series.x, series.y, SERIESREPULSION))
   return(vector)
 }
-calculate.seriesforces <- function(data, labelsmap, label, a, b) {
+calculate.seriesforces <- function(x, data, labelsmap, label, a, b) {
   vector <- c(0, 0)
   for (s in names(labelsmap)) {
-    x <- stats::time(data) + 1.0/(2*stats::frequency(data))
     y <- data[, s]
     vector <- vector + seriesforce(a, b, x, y)
   }
@@ -104,7 +103,7 @@ movelabel <- function(label, l, v, anchor, data, labelsmap, labellocations, xlim
   return(list(l = l, v = v))
 }
 
-location.fromanchor <- function(label, anchor, reduceddata, originaldata, labelsmap, labellocations, xlim, ylim, ylim_n) {
+location.fromanchor <- function(label, anchor, series.x, reduceddata, originaldata, labelsmap, labellocations, xlim, ylim, ylim_n) {
   l <- 0.1 * c(stats::runif(min = xlim[1], max = xlim[2], n = 1), stats::runif(min = ylim[1], max = ylim[2], n = 1)) +
     0.9 * anchor
   v <- c(stats::rnorm(n = 1, sd = (xlim[2] - xlim[1])/10), stats::rnorm(n = 1, sd = (ylim[2] - ylim[1])/10))
@@ -119,7 +118,7 @@ location.fromanchor <- function(label, anchor, reduceddata, originaldata, labels
     # DEBUG
     # graphics::points(l[1],l[2],col = simcol)
     v <- step$v
-    if (!checkcollisions(labelsmap[[label]], l[1], l[2], originaldata, names(labelsmap), labellocations, labelsmap, xlim, ylim, ylim_n)) {
+    if (!checkcollisions(labelsmap[[label]], l[1], l[2], series.x, originaldata, names(labelsmap), labellocations, labelsmap, xlim, ylim, ylim_n)) {
       labellocations[[label]] <- l
       return(l)
     }
@@ -134,7 +133,7 @@ sampleanchorpoints <- function(data, labelsmap) {
   return(ap)
 }
 
-labelsimulation <- function(data, labelsmap, xlim, ylim, ylim_n) {
+labelsimulation <- function(series.x, data, labelsmap, xlim, ylim, ylim_n) {
 
   labellocations <- list()
 
@@ -152,8 +151,8 @@ labelsimulation <- function(data, labelsmap, xlim, ylim, ylim_n) {
   ap <- sampleanchorpoints(data, labelsmap)
 
   for (label in names(labelsmap)) {
-    anchor <- c(stats::time(data)[ap[[label]]] + 1.0/(2*stats::frequency(data)), data[ap[[label]], label])
-    labellocations[[label]] <- location.fromanchor(label, anchor, reduceddata, data, labelsmap, labellocations, xlim, ylim, ylim_n)
+    anchor <- c(series.x[ap[[label]]], data[ap[[label]], label])
+    labellocations[[label]] <- location.fromanchor(label, anchor, series.x, reduceddata, data, labelsmap, labellocations, xlim, ylim, ylim_n)
   }
   return(labellocations)
 }

@@ -1,20 +1,36 @@
-findcandidates <- function(data, labelsmap, xlim, ylim, ylim_n) {
+findcandidates <- function(series.x, data, labelsmap, xlim, ylim, ylim_n) {
   candidates <- list()
   for (i in 1:AUTOLABELATTEMPTS) {
     message(paste("Finding candidate for label locations (attempt ", i, " of ", AUTOLABELATTEMPTS, ")", sep = ""))
-    candidates[[i]] <- labelsimulation(data, labelsmap, xlim, ylim, ylim_n)
+    candidates[[i]] <- labelsimulation(series.x, data, labelsmap, xlim, ylim, ylim_n)
   }
   return(candidates)
 }
 
-autolabel <- function(data, panels, shading, layout, xlim_list, ylim_list, col, bgshading, lines, arrows, labels) {
+autolabel <- function(xvals, data, panels, shading, layout, xlim_list, ylim_list, attributes, bgshading, lines, arrows, labels) {
   newlabels <- list()
   newarrows <- list()
   for (p in c("1","2","3","4")) {
     if (notalreadylabelled(p, labels) && notRHS(p, layout)) {
-      labelsmap <- createlabels(data, panels, p, layout)
+      labelsmap <- createlabels(data[[p]], panels, p, layout)
       if (length(labelsmap) > 1) {
-        data <- convertdata.axes(data, panels, p, layout, ylim_list)
+        data[[p]] <- convertdata.axes(data[[p]], panels, p, layout, ylim_list)
+        # Handling the x variables
+        ists <- !is.null(paste0(p, "ts"))
+        if (stats::is.ts(data[[p]]) || ists || is.scatter(xvals[[p]])) {
+          # time series or scatter
+          x <- xvals[[p]]
+        } else if (!is.null(xvals)) {
+          if (is.numeric(xvals)) {
+            x <- xvals[[p]] + 0.5*min(diff(xvals[[p]]))
+          } else {
+            # Categorical data, offset by half
+            x <- 1:length(xvals[[p]]) + 0.5
+          }
+        } else {
+          # No data at all, empty plot
+          x <- xvals[[p]]
+        }
 
         xlim <- xlim_list[[p]]
         ylim <- c(ylim_list[[p]]$min, ylim_list[[p]]$max)
@@ -26,10 +42,10 @@ autolabel <- function(data, panels, shading, layout, xlim_list, ylim_list, col, 
         graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim, ylim = ylim)
 
         ## TODO: Add collisions for bg shading, lines and arrows
-        candidates <- findcandidates(data, labelsmap, xlim, ylim, ylim_n)
-        locations <- bestcandidate(candidates, data, labelsmap)
-        newlabels <- append(newlabels, formatlabels(locations, labelsmap, col, p))
-        newarrows <- append(newarrows, addarrows(data, panels, labelsmap, locations, col, p))
+        candidates <- findcandidates(xvals[[p]], data[[p]], labelsmap, xlim, ylim, ylim_n)
+        locations <- bestcandidate(candidates, x, data[[p]], labelsmap)
+        newlabels <- append(newlabels, formatlabels(locations, labelsmap, attributes[[p]]$col, p))
+        newarrows <- append(newarrows, addarrows(xvals[[p]], data[[p]], panels, labelsmap, locations, attributes[[p]]$col, p))
         if (length(locations) < length(labelsmap)) {
           warning("Unable to find locations for some series labels.")
         }

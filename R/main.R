@@ -120,7 +120,6 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
   handlelayout(layout)
 
   # Plot each panel
-<<<<<<< HEAD
   for (p in names(panels)) {
     drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined, srt, margins$xtickmargin)
   }
@@ -139,7 +138,7 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
   drawnotes(footnotes, sources, margins$notesstart)
 
   if (enable.autolabeller) {
-    autogenlabel <- autolabel(data, panels, shading, layout, xlim, ylim, attributes$col, bgshading, lines, arrows, labels)
+    autogenlabel <- autolabel(xvars, data, panels, shading, layout, xlim, ylim, attributes, bgshading, lines, arrows, labels)
     labels <- append(labels, autogenlabel$labels)
     arrows <- append(arrows, autogenlabel$arrows)
   }

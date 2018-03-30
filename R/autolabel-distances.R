@@ -33,27 +33,25 @@ lineofsight.point2point <- function(x, y, a, b, block.x, block.y) {
   return(TRUE)
 }
 
-lineofsight <- function(x, y, a, b, data, serieslist, thisseries) {
-  block.x <- stats::time(data)
+lineofsight <- function(x, y, a, b, xvar, data, serieslist, thisseries) {
   los <- TRUE
   for (s in serieslist) {
     if (s != thisseries) {
       block.y <- data[, s]
-      los <- los && lineofsight.point2point(x, y, a, b, block.x, block.y)
+      los <- los && lineofsight.point2point(x, y, a, b, xvar, block.y)
     }
   }
   return(los)
 }
 
-series.distance <- function(a, b, data, serieslist, thisseries, requirelos) {
-  series.x <- stats::time(data) + 1.0/(2*stats::frequency(data))
+series.distance <- function(a, b, series.x, data, serieslist, thisseries, requirelos) {
   series.y <- data[, thisseries]
   distance <- Inf
   px <- NULL
   py <- NULL
   for (i in 1:(length(series.x)-1)) {
     tmp <- pointlinedistance(a, b, series.x[i], series.y[i], series.x[i+1], series.y[i+1])
-    if (!requirelos || lineofsight(series.x[i], series.y[i], a, b, data, serieslist, thisseries) || lineofsight(series.x[i+1], series.y[i+1], a, b, data, serieslist, thisseries)) {
+    if (!requirelos || lineofsight(series.x[i], series.y[i], a, b, series.x, data, serieslist, thisseries) || lineofsight(series.x[i+1], series.y[i+1], a, b, series.x, data, serieslist, thisseries)) {
       if (tmp$dist < distance) {
         ininches <- distanceininches(a, b, tmp$x, tmp$y)
         distance <- tmp$dist

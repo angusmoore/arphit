@@ -1,12 +1,12 @@
-addarrows <- function(data, panels, labelsmap, labellocations, colors, panelnumber) {
+addarrows <- function(series.x, data, panels, labelsmap, labellocations, colors, panelnumber) {
   arrows <- list()
   serieslist <- names(labellocations)
   for (thisseries in serieslist) {
-    d <- series.distance(labellocations[[thisseries]][1], labellocations[[thisseries]][2], data, serieslist, thisseries, TRUE)
+    d <- series.distance(labellocations[[thisseries]][1], labellocations[[thisseries]][2], series.x, data, serieslist, thisseries, TRUE)
     if (d$dist > MAXLABELDISTANCE) {
       # Either is a long way away from LOS point, or has no LOS. Put an arrow on
       # Find closest point without LOS
-      p <- series.distance(labellocations[[thisseries]][1], labellocations[[thisseries]][2], data, serieslist, thisseries, FALSE)
+      p <- series.distance(labellocations[[thisseries]][1], labellocations[[thisseries]][2], series.x, data, serieslist, thisseries, FALSE)
       head.x <- p$x
       head.y <- p$y
       bounding <- text.bounding(labelsmap[[thisseries]], labellocations[[thisseries]][1], labellocations[[thisseries]][2])
