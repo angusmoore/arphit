@@ -16,6 +16,8 @@
 #' @param subtitle (optional) A string indicating the subtitle for the entire chart. Passing NULL (or omitting the argument) will suppress printing of subtitle.
 #' @param paneltitles (optional) A list of string -> string pairs indicating panel titles. Keys must be "1", "2", etc to indicate which panel the title is for.
 #' @param panelsubtitles (optional) A list string -> string pairs indicating panel titles. See paneltitles.
+#' @param yaxislabels (optionaL) A list of string -> string pairs indicating the axis labels for the y axis. Alternatively, a single string which will be applied to all panels.
+#' @param xaxislabels (optionaL) A list of string -> string pairs indicating the axis labels for the x axis. Alternatively, a single string which will be applied to all panels.
 #' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
 #' @param yunits (optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.

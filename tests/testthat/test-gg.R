@@ -244,3 +244,16 @@ foo <- arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), color = RBA
   agg_shading(from = x1, to = x2)
 
 expect_equal(foo$shading, list(list(from = "x1", to = "x2")))
+
+# Axis labels
+## x
+foo <- arphitgg(data) + agg_xaxislabel("foo")
+bar <- arphitgg(data) + agg_xaxislabel("bar", panel = "1")
+expect_equal(foo$xaxislabels, "foo")
+expect_equal(bar$xaxislabels, list("1" = "bar"))
+
+## y
+foo <- arphitgg(data) + agg_yaxislabel("foo")
+bar <- arphitgg(data) + agg_yaxislabel("bar", panel = "1")
+expect_equal(foo$yaxislabels, "foo")
+expect_equal(bar$yaxislabels, list("1" = "bar"))

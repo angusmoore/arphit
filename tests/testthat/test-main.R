@@ -76,6 +76,8 @@ expect_error(arphit(data, lines = list(list(x = 2001, panel = 1), list(y = -1, c
 expect_error(arphit(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1))), NA)
 expect_error(arphit(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1))), NA)
 expect_error(arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen"))), NA)
+expect_error(arphit(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label"), NA)
+expect_error(arphit(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label")), NA)
 
 ## EXTRA integration tests
 # Numeric categorical labels
