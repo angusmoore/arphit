@@ -16,6 +16,8 @@
 #' @param subtitle (optional) A string indicating the subtitle for the entire chart. Passing NULL (or omitting the argument) will suppress printing of subtitle.
 #' @param paneltitles (optional) A list of string -> string pairs indicating panel titles. Keys must be "1", "2", etc to indicate which panel the title is for.
 #' @param panelsubtitles (optional) A list string -> string pairs indicating panel titles. See paneltitles.
+#' @param yaxislabels (optionaL) A list of string -> string pairs indicating the axis labels for the y axis. Alternatively, a single string which will be applied to all panels.
+#' @param xaxislabels (optionaL) A list of string -> string pairs indicating the axis labels for the x axis. Alternatively, a single string which will be applied to all panels.
 #' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
 #' @param yunits (optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.
@@ -49,7 +51,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -72,6 +74,8 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   yticks <- handleticks(data, panels, ylim)
   xlim <- xlimconform(panels, xlim, xvars, data)
   xlabels <- handlexlabels(panels, xlim, xvars, data, layout)
+  yaxislabels <- handleaxislabels(yaxislabels, panels)
+  xaxislabels <- handleaxislabels(xaxislabels, panels)
 
   # Handle shading
   shading <- handleshading(shading, panels)
@@ -98,23 +102,24 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, plotsize, portrait)
+  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, plotsize, portrait)
   handlelayout(layout)
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, portrait, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], bar.stacked, dropxlabel, joined)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, portrait, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined)
   }
 
   # Draw outer material
   drawtitle(title, subtitle)
-  drawnotes(footnotes, sources)
+  drawnotes(footnotes, sources, margins$bottomskip)
 
   for (p in names(panels)) {
-    # Finally, draw all the annotations draw all
+    # Finally, draw all the annotations
     l <- getlocation(p ,layout)
     graphics::par(mfg = l)
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
+
     drawannotationlines(lines, p)
     drawarrows(arrows, p)
     drawlabels(labels, p)

@@ -52,3 +52,19 @@ for (suffix in c("png","pdf","emf")) {
   # remove
   file.remove(file)
 }
+
+# tests for bottom spacing
+fakeseries1 <- c("a","b")
+onesided <- handlepanels(fakeseries1, "1")
+expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), LANDSCAPESIZE, FALSE)$bottomskip, 0)
+expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), LANDSCAPESIZE, FALSE)$bottomskip, 1.7)
+
+# tests for extra margins when have y axis labels
+noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), LANDSCAPESIZE, FALSE)$left
+yaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list("1" = "foo"), list(), LANDSCAPESIZE, FALSE)$left
+expect_that(yaxislabelmargin, is_more_than(noaxislabelmargin))
+
+# tests for extra margins when have x axis labels
+noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), LANDSCAPESIZE, FALSE)$bottom
+xaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "foo"), LANDSCAPESIZE, FALSE)$bottom
+expect_that(xaxislabelmargin, is_more_than(noaxislabelmargin))

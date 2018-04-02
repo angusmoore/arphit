@@ -7,7 +7,6 @@ expect_that(is.acceptable.data(utils::data), is_false())
 expect_that(is.acceptable.data(1), is_false())
 expect_that(is.acceptable.data(utils::data()), is_false())
 
-
 ## Handle data
 data <- ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
 

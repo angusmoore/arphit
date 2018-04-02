@@ -12,10 +12,10 @@ drawtitle <- function(title, subtitle) {
   }
 }
 
-drawnotes <- function(footnotes, sources) {
+drawnotes <- function(footnotes, sources, bottomskip) {
   graphics::par(lheight = 0.9)
   nf <- length(footnotes)
-  cumuloffset <- 0
+  cumuloffset <- bottomskip
   if (nf > 0 ) {
     for (i in 1:nf) {
       nlines <- stringr::str_count(footnotes[[i]], "\n")

@@ -79,6 +79,44 @@ agg_xunits <- function(units, panel = NULL) {
   return(list(type = "xunits", units = units, panel = panel))
 }
 
+#' Add an axis label to the y axis
+#'
+#' @param axislabel A string specifying the axis label
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_yaxislabel("Some y axis label")
+#'
+#' @export
+agg_yaxislabel <- function(axislabel, panel = NULL) {
+  if (!is.null(panel)) {
+    panel <- as.character(panel)
+  }
+  return(list(type = "yaxislabel", axislabel = axislabel, panel = panel))
+}
+
+#' Add an axis label to the x axis
+#'
+#' @param axislabel A string specifying the axis label
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels.
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' arphitgg(data) + agg_xaxislabel("year")
+#'
+#' @export
+agg_xaxislabel <- function(axislabel, panel = NULL) {
+  if (!is.null(panel)) {
+    panel <- as.character(panel)
+  }
+  return(list(type = "xaxislabel", axislabel = axislabel, panel = panel))
+}
+
 #' Add a source (or many sources)
 #'
 #' @param source A string, or vector of strings, to be added as sources
@@ -381,6 +419,8 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              subtitle = NULL,
              paneltitles = list(),
              panelsubtitles = list(),
+             yaxislabels = list(),
+             xaxislabels = list(),
              footnotes = c(),
              sources = c(),
              yunits = NULL,
@@ -649,6 +689,16 @@ addxlim <- function(gg, xlim) {
   return(gg)
 }
 
+addaxislabel <- function(gg, axislabel, axis) {
+  index <- paste0(axis, "axislabels")
+  if (is.null(axislabel$panel)) {
+    gg[[index]] <- axislabel$axislabel
+  } else {
+    gg[[index]][[axislabel$panel]] <- axislabel$axislabel
+  }
+  return(gg)
+}
+
 ## Wrap up
 
 #' Draw a defined graph
@@ -671,6 +721,8 @@ agg_draw <- function(gg, filename = NULL) {
          subtitle = gg$subtitle,
          paneltitles = gg$paneltitles,
          panelsubtitles = gg$panelsubtitles,
+         yaxislabels = gg$yaxislabels,
+         xaxislabels = gg$xaxislabels,
          footnotes = gg$footnotes,
          sources = gg$sources,
          yunits = gg$yunits,
@@ -732,6 +784,8 @@ print.arphit.gg <- function(x, ...) {
          "shading" = addshading(gg, element),
          "ylim" = addylim(gg, element),
          "xlim" = addxlim(gg, element),
+         "yaxislabel" = addaxislabel(gg, element, "y"),
+         "xaxislabel" = addaxislabel(gg, element, "x"),
          stop("Unknown element type for arphit.gg"))
   return(gg)
 }
