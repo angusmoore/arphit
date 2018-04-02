@@ -250,8 +250,13 @@ xlabels <- function(xlim, xvar, data, ists, layout) {
 handlexlabels <- function(panels, xlim, xvars, data, layout) {
   out <- list()
   for (p in names(panels)) {
-    ists <- xvars[[paste(p,"ts",sep="")]]
-    out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout)
+    if (!is.null(data[[p]])) {
+      ists <- xvars[[paste(p,"ts",sep="")]]
+      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout)
+    } else {
+      ists <- xvars[["1ts"]]
+      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout)
+    }
   }
   return(out)
 }
@@ -320,8 +325,20 @@ xlimconform <- function(panels, xlim, xvars, data) {
         out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
       }
     }
-    # have a check for non-matching xlimits
-    warnifxdiff(panels, out)
   }
+  # have a check for non-matching xlimits
+  warnifxdiff(panels, out)
   return(out)
+}
+
+handleaxislabels <- function(labels, panels) {
+  if (is.list(labels)) {
+    return(labels)
+  } else {
+    out <- list()
+    for (p in names(panels)) {
+      out[[p]] <- labels
+    }
+    return(out)
+  }
 }

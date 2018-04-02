@@ -75,13 +75,22 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
   return(list(height = figheight, width = figwidth, top = top, bottom = bottom, left = left, right = right))
 }
 
-figuresetup <- function(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, plotsize, portrait) {
+figuresetup <- function(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, plotsize, portrait) {
   # Figure out margins
   LRpadding <- leftrightpadding(yticks, yunits, panels)
   left <- 2 + 1.2*LRpadding$left
   right <- 2 + 1.2*LRpadding$right
 
-  bottom <- countfnlines(footnotes) + countsrclines(sources)
+  if (length(yaxislabels) > 0) {
+    left <- left + 1.2
+  }
+  if(length(xaxislabels) > 0) {
+    bottomskip <- 1.7
+  } else {
+    bottomskip <- 0
+  }
+
+  bottom <- countfnlines(footnotes) + countsrclines(sources) + bottomskip
   top <- counttitlelines(title, subtitle)
 
   if (portrait) {
@@ -92,7 +101,7 @@ figuresetup <- function(filename, device, panels, yticks, yunits, title, subtitl
   fig <- getfigsize(plotsize, top, bottom, left, right)
   createfigure(filename, device, fig, plotsize)
 
-  return(list("top" = top, "bottom" = bottom, "left" = left, "right" = right))
+  return(list(top = top, bottom = bottom, left = left, right = right, bottomskip = bottomskip))
 }
 
 handlelayout <- function(layout) {

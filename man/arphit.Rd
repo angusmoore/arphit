@@ -6,12 +6,13 @@
 \usage{
 arphit(data, series = NULL, x = NULL, layout = "1", bars = NULL,
   filename = NULL, shading = NULL, title = NULL, subtitle = NULL,
-  paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL,
-  sources = NULL, yunits = NULL, xunits = NULL, labels = NULL,
-  arrows = NULL, bgshading = NULL, lines = NULL, col = NULL,
-  pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL,
-  ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE,
-  bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE)
+  paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL,
+  xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL,
+  xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL,
+  lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL,
+  barcol = NULL, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE,
+  portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE,
+  joined = TRUE)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
@@ -38,6 +39,10 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 \item{paneltitles}{(optional) A list of string -> string pairs indicating panel titles. Keys must be "1", "2", etc to indicate which panel the title is for.}
 
 \item{panelsubtitles}{(optional) A list string -> string pairs indicating panel titles. See paneltitles.}
+
+\item{yaxislabels}{(optionaL) A list of string -> string pairs indicating the axis labels for the y axis. Alternatively, a single string which will be applied to all panels.}
+
+\item{xaxislabels}{(optionaL) A list of string -> string pairs indicating the axis labels for the x axis. Alternatively, a single string which will be applied to all panels.}
 
 \item{footnotes}{(optional) A vector strings, corresponding to the footnotes, in order.}
 

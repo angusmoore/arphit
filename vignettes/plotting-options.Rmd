@@ -642,6 +642,30 @@ arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = l
 knitr::include_graphics("shading2.png")
 ```
 
+## Adding axis labels
+
+You can add y and x axis labels to plots using the `yaxislabels` and `xaxislabels` arguments. These take a list (or, to apply the same label to all panels, a string) specifying the axis labels for each panel:
+
+```{r, eval = FALSE}
+arphit(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label")
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label", filename = "oneaxislabel.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("oneaxislabel.png")
+```
+
+```{r, eval = FALSE}
+arphit(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label")
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label"), filename = "differentaxislabel.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("differentaxislabel.png")
+```
+
 # Joining and missing values
 
 The `joined` argument controls how your graph behaves with missing values. When `joined = TRUE` (which is the default) the series will ignore the missing value and connect to the next non-missing value. When `joined = FALSE` the series will break.

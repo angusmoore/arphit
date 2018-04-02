@@ -63,7 +63,7 @@ expect_equal(xlimconform(onesided, c(-10,0), xvars, fakedata), list("1" = c(-10,
 xlim <- xlimconform(onesided, NULL, xvars, fakedata)
 x <- handlex(fakedata, NULL)
 xlabs <- handlexlabels(onesided, xlim, x, fakedata, "1")
-expect_equal(xlabs, list("1" = list(at = c(2.5,4.5,6.5,8.5,10.5), labels = c(2,4,6,8,10), ticks = 1:10)))
+expect_equal(xlabs, list("1" = list(at = c(2.5,4.5,6.5,8.5,10.5), labels = c(2,4,6,8,10), ticks = 1:10), "2" = list(at = c(2.5,4.5,6.5,8.5,10.5), labels = c(2,4,6,8,10), ticks = 1:10)))
 expect_warning(xlimconform(twosided, list("1" = c(2000,2010), "2" = c(2001,2009)), twosideddata))
 
 # Tests for restrictlabels and labelstep
@@ -133,3 +133,6 @@ expect_equal(handlexunits(onesided, "index"), list("1" = "index", "2" = "index")
 panels2b2 <- handlepanels(fakeseries1, "2b2")
 expect_equal(handlexunits(panels2b2, "index"), list("1" = "index", "2" = "index", "3" = "index", "4" = "index"))
 
+# Axis labels
+expect_equal(handleaxislabels(list("1" = "foo"), onesided), list("1" = "foo"))
+expect_equal(handleaxislabels("foo", onesided), list("1" = "foo", "2" = "foo"))

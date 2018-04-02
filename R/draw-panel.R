@@ -42,6 +42,18 @@ drawpaneltitle <- function(paneltitle, panelsubtitle) {
   }
 }
 
+drawaxislabels <- function(ylabel, xlabel, p, layout) {
+  if (!is.null(ylabel)) {
+    side <- getsides(p, layout)
+    if (side == 2) {
+      graphics::mtext(text = ylabel, side = side, line = 2.5, las = 3)
+    }
+  }
+  if (!is.null(xlabel) && needxlabels(p, layout)) {
+    graphics::mtext(text = xlabel, side = 1, line = 3)
+  }
+}
+
 getsides <- function(p, layout) {
   if (layout == "1" || layout == "2v") {
     if (p == "1") {
@@ -264,13 +276,13 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, bar.stacked, dropxlabel, joined) {
+drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined) {
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
 
   # Handling the x variables
-  if (stats::is.ts(data) || ists || is.scatter(xvals)) {
+  if (stats::is.ts(data) || ists || is.scatter(xvals) || is.null(data)) {
     # time series or scatter
     x <- xvals
   } else if (!is.null(xvals)) {
@@ -286,7 +298,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   }
 
   # Do we need an x unit
-  if (is.ts(data) || ists || !is.scatter(xvals)) {
+  if (stats::is.ts(data) || ists || !is.scatter(xvals) || is.null(data)) {
     xunits <- NULL
   }
 
@@ -307,4 +319,5 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   drawlines(l, series, bars, data, x, attributes, xlim, ylim, joined)
 
   drawpaneltitle(paneltitle, panelsubtitle)
+  drawaxislabels(yaxislabel, xaxislabel, p, layout)
 }
