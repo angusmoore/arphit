@@ -100,7 +100,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, plotsize, portrait)
+  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, plotsize, portrait)
   handlelayout(layout)
 
   # Plot each panel
@@ -110,7 +110,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Draw outer material
   drawtitle(title, subtitle)
-  drawnotes(footnotes, sources)
+  drawnotes(footnotes, sources, margins$bottomskip)
 
   for (p in names(panels)) {
     # Finally, draw all the annotations
