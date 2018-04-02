@@ -46,11 +46,11 @@ drawaxislabels <- function(ylabel, xlabel, p, layout) {
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
     if (side == 2) {
-      mtext(text = ylabel, side = side, line = 2.5, las = 3)
+      graphics::mtext(text = ylabel, side = side, line = 2.5, las = 3)
     }
   }
   if (!is.null(xlabel) && needxlabels(p, layout)) {
-    mtext(text = xlabel, side = 1, line = 3)
+    graphics::mtext(text = xlabel, side = 1, line = 3)
   }
 }
 
@@ -298,7 +298,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   }
 
   # Do we need an x unit
-  if (is.ts(data) || ists || !is.scatter(xvals) || is.null(data)) {
+  if (stats::is.ts(data) || ists || !is.scatter(xvals) || is.null(data)) {
     xunits <- NULL
   }
 
