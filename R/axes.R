@@ -339,5 +339,6 @@ handleaxislabels <- function(labels, panels) {
     for (p in names(panels)) {
       out[[p]] <- labels
     }
+    return(out)
   }
 }
