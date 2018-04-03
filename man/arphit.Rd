@@ -10,9 +10,9 @@ arphit(data, series = NULL, x = NULL, layout = "1", bars = NULL,
   xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL,
   xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL,
   lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL,
-  barcol = NULL, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE,
-  portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE,
-  joined = TRUE)
+  barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE,
+  legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE,
+  bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
@@ -73,6 +73,10 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 \item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).}
 
 \item{ylim}{(optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).}
+
+\item{legend}{A logical indicating whether to add a legend to the graph (default FALSE).}
+
+\item{legend.ncol}{How many columns do you want the legend to have (if NA, which is the default, arphit will guess for you).}
 
 \item{plotsize}{(optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE}
 
