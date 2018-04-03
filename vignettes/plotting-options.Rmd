@@ -697,6 +697,21 @@ arphit(joining_data, joined = FALSE, filename = "unjoined.png")
 knitr::include_graphics("unjoined.png")
 ```
 
+# Adding a legend
+
+You can add a legend to your graph by setting `legend = TRUE`. You can specify how many columns to have with `lengend.ncol`, but arphit will automatically guess otherwise.
+```{r, eval = FALSE}
+arphit(data, legend = TRUE)
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(data, legend = TRUE, filename = "legend.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("legend.png")
+```
+
+`arphit` is smart and will ignore duplicate series in multiple panels (i.e. it will only put in one legend entry).
+
 # Saving your graph
 
 By default, arphit uses R's default graphics device (`dev.new()`). This is only marginally useful, because

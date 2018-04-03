@@ -56,15 +56,20 @@ for (suffix in c("png","pdf","emf")) {
 # tests for bottom spacing
 fakeseries1 <- c("a","b")
 onesided <- handlepanels(fakeseries1, "1")
-expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), LANDSCAPESIZE, FALSE)$bottomskip, 0)
-expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), LANDSCAPESIZE, FALSE)$bottomskip, 1.7)
+expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE)$bottomskip, 0)
+expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE)$bottomskip, 1.7)
 
 # tests for extra margins when have y axis labels
-noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), LANDSCAPESIZE, FALSE)$left
-yaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list("1" = "foo"), list(), LANDSCAPESIZE, FALSE)$left
+noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE)$left
+yaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list("1" = "foo"), list(), 0, LANDSCAPESIZE, FALSE)$left
 expect_that(yaxislabelmargin, is_more_than(noaxislabelmargin))
 
 # tests for extra margins when have x axis labels
-noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), LANDSCAPESIZE, FALSE)$bottom
-xaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "foo"), LANDSCAPESIZE, FALSE)$bottom
+noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE)$bottom
+xaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "foo"), 0, LANDSCAPESIZE, FALSE)$bottom
 expect_that(xaxislabelmargin, is_more_than(noaxislabelmargin))
+
+# tests for extra margins with legends
+nolegendlabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE)$bottom
+legendlabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 1,  LANDSCAPESIZE, FALSE)$left
+expect_that(legendlabelmargin, is_more_than(nolegendlabelmargin))
