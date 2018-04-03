@@ -241,8 +241,6 @@ agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = NULL, pane
   return(list(type = "bgshading", x1 = x1, y1 = y1, x2 = x2, y2 = y2, color = color, panel = panel))
 }
 
-
-
 #' Add shading between series
 #'
 #' @param from The series name to shade from (if you have no group aesthetic, it will be the name of the y variable); if you have groups, it will (usually) be the group identifier. This can get more complicated if you have duplicate group names. If so, arphit appends .y to the group names, so try that.)
@@ -302,6 +300,22 @@ agg_ylim <- function(min, max, nsteps, panel = NULL) {
 #' @export
 agg_xlim <- function(min, max, panel = NULL) {
   return(list(type = "xlim", min = min, max = max, panel = panel))
+}
+
+#' Add a legend to the graph
+#'
+#' @param ncol (optional) Specify the number of columns in the legend (if left blank, arphit will guess)
+#'
+#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
+#' how to use the ggplot-like interface.
+#'
+#' @examples
+#' data <- data.frame(x = 1:10, y = 1:10)
+#' arphitgg(data) + agg_line(agg_aes(x = x, y = y)) + agg_legend()
+#'
+#' @export
+agg_legend <- function(ncol = NULL) {
+  return(list(type = "legend", ncol = ncol))
 }
 
 #' Add a line layer to an arphit plot.
@@ -427,6 +441,8 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              xunits = NULL,
              ylim = list(),
              xlim = list(),
+             legend = FALSE,
+             legend.ncol = NA,
              col = list(),
              pch = list(),
              lty = list(),
@@ -699,6 +715,14 @@ addaxislabel <- function(gg, axislabel, axis) {
   return(gg)
 }
 
+addlegend <- function(gg, legend) {
+  if (!is.null(legend$ncol)) {
+    gg$legend.ncol <- legend$ncol
+  }
+  gg$legend <- TRUE
+  return(gg)
+}
+
 ## Wrap up
 
 #' Draw a defined graph
@@ -728,6 +752,8 @@ agg_draw <- function(gg, filename = NULL) {
          yunits = gg$yunits,
          ylim = gg$ylim,
          xlim = gg$xlim,
+         legend = gg$legend,
+         legend.ncol = gg$legend.ncol,
          col = gg$col,
          pch = gg$pch,
          lty = gg$lty,
@@ -786,6 +812,7 @@ print.arphit.gg <- function(x, ...) {
          "xlim" = addxlim(gg, element),
          "yaxislabel" = addaxislabel(gg, element, "y"),
          "xaxislabel" = addaxislabel(gg, element, "x"),
+         "legend" = addlegend(gg, element),
          stop("Unknown element type for arphit.gg"))
   return(gg)
 }
