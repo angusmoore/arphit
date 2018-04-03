@@ -257,3 +257,9 @@ foo <- arphitgg(data) + agg_yaxislabel("foo")
 bar <- arphitgg(data) + agg_yaxislabel("bar", panel = "1")
 expect_equal(foo$yaxislabels, "foo")
 expect_equal(bar$yaxislabels, list("1" = "bar"))
+
+# legends
+foo <- arphitgg(data) + agg_legend()
+bar <- arphitgg(data) + agg_legend(ncol = 5)
+expect_equal(foo$legend, TRUE)
+expect_equal(bar$legend.ncol, 5)
