@@ -33,6 +33,8 @@
 #' @param barcol (optional) A list of string -> misc pairs.  The keys should be series names, and the values outline colours for each bar series (any colour accepted by R is fine.) You need not supply colours for all series. Bar series without assigned colours are given no outline by default. Alternatively, you can supply a single value to apply to all series.
 #' @param xlim (optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).
 #' @param ylim (optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).
+#' @param legend A logical indicating whether to add a legend to the graph (default FALSE).
+#' @param legend.ncol How many columns do you want the legend to have (if NA, which is the default, arphit will guess for you).
 #' @param plotsize (optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE
 #' @param portrait (optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
 #' @param bar.stacked (optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).
@@ -51,7 +53,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -86,6 +88,15 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   bgshading <- sanitycheckbgshading(bgshading)
   lines <- sanitychecklines(lines)
 
+  # Get number of legend cols (if needed)
+  if (legend) {
+    legend.cr <- determinelegendcols(panels, legend.ncol)
+    legend.nrow <- legend.cr$r
+    legend.ncol <- legend.cr$c
+  } else {
+    legend.nrow <- 0
+  }
+
   # Format titles, footnotes and sources
   footnotes <- formatfn(footnotes)
   sources <- formatsrcs(sources)
@@ -102,7 +113,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, plotsize, portrait)
+  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, plotsize, portrait)
   handlelayout(layout)
 
   # Plot each panel
@@ -112,13 +123,23 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
 
   # Draw outer material
   drawtitle(title, subtitle)
+  if (legend) {
+    # For easy alignment of the legend just draw a unit square over the graph
+    graphics::par(mfrow=c(1,1))
+    graphics::par(mfg = c(1,1))
+    graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
+                   xlim = c(0,1), ylim = c(0, 1))
+    drawlegend(panels, bars, attributes, legend.ncol, length(xaxislabels)>0)
+    handlelayout(layout) # Put the correct layout back
+  }
   drawnotes(footnotes, sources, margins$bottomskip)
 
   for (p in names(panels)) {
     # Finally, draw all the annotations
     l <- getlocation(p ,layout)
     graphics::par(mfg = l)
-    graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
+    graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
+                   xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
 
     drawannotationlines(lines, p)
     drawarrows(arrows, p)

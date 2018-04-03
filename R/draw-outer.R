@@ -12,6 +12,99 @@ drawtitle <- function(title, subtitle) {
   }
 }
 
+getlegendentries <- function(panels, bars, attributes) {
+  legend <- list()
+  for (p in names(panels)) {
+    for (series in panels[[p]]) {
+      isbar <- series %in% bars[[p]]
+      if (isbar) {
+        entry <- list(name = series,
+                      fill = attributes[[p]]$col[[series]],
+                      border = attributes[[p]]$barcol[[series]])
+      } else {
+        entry <- list(name = series,
+                      pch = attributes[[p]]$pch[[series]],
+                      lwd = attributes[[p]]$lwd[[series]],
+                      lty = attributes[[p]]$lty[[series]],
+                      col = attributes[[p]]$col[[series]])
+      }
+      if (!(list(entry) %in% legend)) {
+        legend <- append(legend, list(entry))
+      }
+    }
+  }
+  return(legend)
+}
+
+extract_item <- function(thelist, item) {
+  if(!is.null(thelist[[item]])) {
+    return(thelist[[item]])
+  } else {
+    return(NA)
+  }
+}
+
+rowchars <- function(row, names, ncol) {
+  start <- 1 + (row-1)*ncol
+  end <- min(row*ncol, length(names))
+  return(sum(nchar(names[start:end])))
+}
+
+determinelegendcols <- function(panels, ncol) {
+  series <- getlegendentries(panels, list(), list())
+  names <- sapply(series, FUN = extract_item, item = "name")
+
+  if (!is.na(ncol)) {
+    nrow <- ceiling(length(names) / ncol)
+  } else {
+    ncol <- length(names)
+    nrow <- ceiling(length(names) / ncol)
+    nc <- max(sapply(1:nrow, FUN = rowchars, names = names, ncol = ncol))
+    while ((nc+6*ncol) > MAXLEGENDCHARS && ncol > 1) {
+      ncol <- ncol - 1
+      nrow <- ceiling(length(names) / ncol)
+      nc <- max(sapply(1:nrow, FUN = rowchars, names = names, ncol = ncol))
+    }
+  }
+  return(list(r = nrow, c = ncol))
+}
+
+drawlegend <- function(panels, bars, attributes, ncol, shift_axislabel) {
+  series <- getlegendentries(panels, bars, attributes)
+
+  pch <- sapply(series, FUN = extract_item, item = "pch")
+  lty <- sapply(series, FUN = extract_item, item = "lty")
+  lwd <- sapply(series, FUN = extract_item, item = "lwd")
+  col <- sapply(series, FUN = extract_item, item = "col")
+  fill <- sapply(series, FUN = extract_item, item = "fill")
+  border <- sapply(series, FUN = extract_item, item = "border")
+  names <- sapply(series, FUN = extract_item, item = "name")
+
+  ph <- par("pin")[2]
+
+  ylines <- 2.5
+  if (shift_axislabel) {
+    ylines <- ylines + 1.7
+  }
+
+  y <- -ylines*CSI/ph
+
+  legend(x = 0.5, y = y,
+         ncol = ncol,
+         xjust = 0.5,
+         yjust = 1,
+         xpd = NA,
+         bty = "n",
+         plot = TRUE,
+         legend = names,
+         pch = pch,
+         lty = lty,
+         lwd = lwd,
+         col = col,
+         fill = fill,
+         border = border)
+}
+
 drawnotes <- function(footnotes, sources, bottomskip) {
   graphics::par(lheight = 0.9)
   nf <- length(footnotes)
