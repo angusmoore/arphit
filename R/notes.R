@@ -1,6 +1,8 @@
 conformpaneltitles <- function(panels, paneltitles, layout, maxchars) {
-  if (layout == "2v" || layout == "2b2") {
+  if (layout == "2v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
     maxchars <- floor(1/2 * maxchars)
+  } else if (layout == "3v") {
+    maxchars <- floor(1/3 * maxchars)
   } else {
     maxchars <- maxchars
   }
