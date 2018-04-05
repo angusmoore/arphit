@@ -141,7 +141,11 @@ handlelayout <- function(layout) {
 
 startdevice <- function(filename, device, figsize) {
   if (is.null(device)) {
-    grDevices::dev.new(width = figsize$width, height = figsize$height)
+    if (.Platform$OS.type == "windows") {
+      grDevices::windows(width = figsize$width, height = figsize$height)
+    } else {
+      grDevices::dev.new(width = figsize$width, height = figsize$height)
+    }
   } else if (device == "png") {
     grDevices::png(filename = filename, width = figsize$width, height = figsize$height, units = "in", res = PNGDPI)
   } else if (device == "pdf") {
