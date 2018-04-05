@@ -2,29 +2,64 @@ getlocation <- function(p, layout) {
   if (layout == "1") {
     l <- c(1,1)
   } else if (layout == "2h") {
-    if (p == "1" || p == "2") {
-      l <- c(1,1)
-    } else {
-      l <- c(2,1)
-    }
+    l <- switch(p,
+                "1" = c(1,1),
+                "2" = c(1,1),
+                "3" = c(2,1),
+                "4" = c(2,1))
   } else if (layout == "2v") {
-    if (p == "1") {
-      l <- c(1,1)
-    } else {
-      l <- c(1,2)
-    }
+    l <- switch(p,
+                "1" = c(1,1),
+                "2" = c(1,2))
   } else if (layout == "2b2") {
-    if (p == "1") {
-      l <- c(1,1)
-    } else if (p == "2") {
-      l <- c(1,2)
-    } else if (p == "3") {
-      l <- c(2,1)
-    } else {
-      l <- c(2,2)
-    }
+    l <- switch(p,
+                "1" = c(1,1),
+                "2" = c(1,2),
+                "3" = c(2,1),
+                "4" = c(2,2))
+  } else if (layout == "3v") {
+    l = switch(p,
+               "1" = c(1,1),
+               "2" = c(1,2),
+               "3" = c(1,3))
+  } else if (layout == "3h") {
+    l = switch(p,
+               "1" = c(1,1),
+               "2" = c(1,1),
+               "3" = c(2,1),
+               "4" = c(2,1),
+               "5" = c(3,1),
+               "6" = c(3,1))
+  } else if (layout == "3b2") {
+    l = switch(p,
+               "1" = c(1,1),
+               "2" = c(1,2),
+               "3" = c(2,1),
+               "4" = c(2,2),
+               "5" = c(3,1),
+               "6" = c(3,2))
+  } else if (layout == "4h") {
+    l = switch(p,
+               "1" = c(1,1),
+               "2" = c(1,1),
+               "3" = c(2,1),
+               "4" = c(2,1),
+               "5" = c(3,1),
+               "6" = c(3,1),
+               "7" = c(4,1),
+               "8" = c(4,1))
+  } else if (layout == "4b2") {
+    l = switch(p,
+               "1" = c(1,1),
+               "2" = c(1,2),
+               "3" = c(2,1),
+               "4" = c(2,2),
+               "5" = c(3,1),
+               "6" = c(3,2),
+               "7" = c(4,1),
+               "8" = c(4,2))
   } else {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
+    stop(paste0("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."))
   }
 }
 
@@ -45,7 +80,7 @@ drawpaneltitle <- function(paneltitle, panelsubtitle) {
 drawaxislabels <- function(ylabel, xlabel, p, layout) {
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
-    if (side == 2) {
+    if (!is.na(side) && side == 2) {
       graphics::mtext(text = ylabel, side = side, line = 2.5, las = 3)
     }
   }
@@ -71,14 +106,44 @@ getsides <- function(p, layout) {
     } else {
       stop(paste("Layout ", layout, " does not have panel ", p, sep = ""))
     }
+  } else if (layout == "3v") {
+    if (p == "1") {
+      side <- 2
+    } else if (p == "2") {
+      side <- NA
+    } else if (p == "3") {
+      side <- 4
+    } else {
+      stop(paste0("Layout ", layout, " does not have panel ", p))
+    }
+  } else if (layout == "3h" || layout == "3b2") {
+    if (p == "1" || p == "3" || p == "5") {
+      side <- 2
+    } else if (p == "2" || p == "4" || p == "6") {
+      side <- 4
+    } else {
+      stop(paste0("Layout ", layout, " does not have panel ", p))
+    }
+  } else if (layout == "4h" || layout == "4b2") {
+    if (p == "1" || p == "3" || p == "5" || p == "7") {
+      side <- 2
+    } else if (p == "2" || p == "4" || p == "6" || p == "8") {
+      side <- 4
+    } else {
+      stop(paste0("Layout ", layout, " does not have panel ", p))
+    }
   } else  {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
+    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2.", sep = ""))
   }
   return(side)
 }
 
 dropfirstxlabel <- function(p, layout, dropxlabel) {
-  if ((layout == "2v" && p == "2") || (layout == "2b2" && p == "4")) {
+  if ((layout == "2v" && p == "2") ||
+      (layout == "2b2" && p == "4") ||
+      (layout == "3v" && (p == "2" || p == "3")) ||
+      (layout == "3b2" && p == "6") ||
+      (layout == "4b2" && p == "8")) {
     return(dropxlabel)
   } else {
     return(FALSE)
@@ -87,39 +152,35 @@ dropfirstxlabel <- function(p, layout, dropxlabel) {
 
 needxlabels <- function(p, layout) {
   if (layout == "1") {
-    if (p == "1") {
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
+    return(p == "1")
   } else if (layout == "2h") {
-    if (p == "3") {
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  } else if (layout == "2v") {
+    return(p == "3")
+  } else if (layout == "2v" || layout == "3v") {
     return(TRUE)
   } else if (layout == "2b2") {
-    if (p == "3" || p == "4") {
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
+    return(p == "3" || p == "4")
+  } else if (layout == "3b2") {
+    return(p == "5" || p == "6")
+  } else if (layout == "3h") {
+    return(p == "5")
+  } else if (layout == "4h") {
+    return(p == "7")
+  } else if (layout == "4b2") {
+    return(p == "7" || p == "8")
   } else {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
+    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2.", sep = ""))
   }
 }
 
 dropbottomlabel <- function(p, layout) {
-  if (layout == "1" || layout == "2v") {
+  if (layout == "1" || layout == "2v" || layout == "3v") {
     return(FALSE)
   } else if (layout == "2h" || layout == "2b2") {
-    if (p == "1" || p == "2") {
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
+    return(p == "1" || p == "2")
+  } else if (layout == "3h" || layout == "3b2") {
+    return(p == "1" || p == "2" || p == "3" || p == "4")
+  } else if (layout == "4h" || layout == "4b2") {
+    return(p == "1" || p == "2" || p == "3" || p == "4" || p == "5" || p == "6")
   } else {
     stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
   }
@@ -127,21 +188,17 @@ dropbottomlabel <- function(p, layout) {
 
 needgrid <- function(p, layout) {
   if (layout == "1") {
-    if (p == "1") {
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
+    return(p == "1")
   } else if (layout == "2h") {
-    if (p == "1" || p == "3") {
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  } else if (layout == "2v" || layout == "2b2") {
+    return(p == "1" || p == "3")
+  } else if (layout == "3h") {
+    return(p == "1" || p == "3" || p == "5")
+  } else if (layout == "4h") {
+    return(p == "1" || p == "3" || p == "5" || p == "7")
+  } else if (layout == "2v" || layout == "2b2" || layout == "3v" || layout == "3b2" || layout == "4b2") {
     return(TRUE)
   } else {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
+    stop(paste0("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."))
   }
 }
 
@@ -158,10 +215,13 @@ gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels
   } else {
     labels_drop <- labels_drop[1:(length(labels_drop)-1)]
   }
-  graphics::axis(side, at = labels_drop, labels = labels_drop, tck = 0, cex.lab = 1, mgp = c(3, 0.2, 0))
 
-  # Add units
-  graphics::mtext(text = yunits, side = side, at = ylim$max, line = 0.2, cex = 1, padj = 1)
+  if (!is.na(side)) {
+    graphics::axis(side, at = labels_drop, labels = labels_drop,
+                   tck = 0, cex.lab = 1, mgp = c(3, 0.2, 0))
+    # Add units
+    graphics::mtext(text = yunits, side = side, at = ylim$max, line = 0.2, cex = 1, padj = 1)
+  }
 
   ## Draw the x-axis
   if (xlab) {
@@ -191,10 +251,12 @@ gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels
     }
   }
 
-  ## Draw the outer bouding box
-  graphics::axis(side, c(ylim$min, ylim$max), labels = FALSE, tck = 0, lwd = 1)
+  if (!is.na(side)) {
+    ## Draw the outer bouding box
+    graphics::axis(side, c(ylim$min, ylim$max), labels = FALSE, tck = 0, lwd = 1)
+  }
   # Add a line on the right. This is irrelevant/duplicate for some graphs, but for vertical multipanels it adds the divider
-  if (side == 2) {
+  if (is.na(side) || side != 4) {
     graphics::axis(4, c(ylim$min, ylim$max), labels = FALSE, tck = 0, lwd = 1)
   }
 

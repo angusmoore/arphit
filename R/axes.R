@@ -69,7 +69,7 @@ duplicateaxes <- function(toduplicate, panels, layout) {
   if (is.null(panels[["2"]]) && !is.null(panels[["1"]])) {
     toduplicate[["2"]] <- toduplicate[["1"]]
   }
-  if (layout == "2b2" || layout == "2h") {
+  if (layout == "2b2" || layout == "2h" || layout == "3h" || layout == "3b2" || layout == "4h" || layout == "4b2") {
     if (is.null(panels[["3"]]) && !is.null(panels[["4"]])) {
       toduplicate[["3"]] <- toduplicate[["4"]]
     }
@@ -77,6 +77,31 @@ duplicateaxes <- function(toduplicate, panels, layout) {
       toduplicate[["4"]] <- toduplicate[["3"]]
     }
   }
+  if (layout == "3h" || layout == "3b2" || layout == "4h" || layout == "4b2") {
+    if (is.null(panels[["5"]]) && !is.null(panels[["6"]])) {
+      toduplicate[["5"]] <- toduplicate[["6"]]
+    }
+    if (is.null(panels[["6"]]) && !is.null(panels[["5"]])) {
+      toduplicate[["6"]] <- toduplicate[["5"]]
+    }
+  }
+  if (layout == "4h" || layout == "4b2") {
+    if (is.null(panels[["7"]]) && !is.null(panels[["8"]])) {
+      toduplicate[["7"]] <- toduplicate[["8"]]
+    }
+    if (is.null(panels[["8"]]) && !is.null(panels[["7"]])) {
+      toduplicate[["8"]] <- toduplicate[["7"]]
+    }
+  }
+  if (layout == "3v") {
+    if (is.null(panels[["2"]]) && !is.null(panels[["1"]])) {
+      toduplicate[["2"]] <- toduplicate[["1"]]
+    }
+    if (is.null(panels[["2"]]) && !is.null(panels[["3"]])) {
+      toduplicate[["2"]] <- toduplicate[["3"]]
+    }
+  }
+
   return(toduplicate)
 }
 
@@ -194,8 +219,10 @@ restrictlabels <- function(ticks, layout_factor) {
 }
 
 xlabels.ts <- function(xlim, layout) {
-  if (layout == "2v" || layout == "2b2") {
+  if (layout == "2v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
     layout_factor <- 1/2
+  } else if (layout == "3v") {
+    layout_factor <- 1/3
   } else {
     layout_factor <- 1
   }

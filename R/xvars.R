@@ -16,7 +16,7 @@ handlex <- function(data, x) {
     x[["4"]] <- tmpx
   }
   outx <- list()
-  for (p in c("1", "2", "3", "4")) {
+  for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
     if (!is.null(data[[p]])) {
       if (stats::is.ts(data[[p]])) {
         outx[[p]] <- as.vector(stats::time(data[[p]])) + 1.0/(2*stats::frequency(data[[p]]))

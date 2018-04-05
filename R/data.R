@@ -49,7 +49,7 @@ handledata <- function(series, data, x) {
     }
 
         # Now apply the parent data to all panels with non null series
-    for (p in c("1", "2", "3", "4")) {
+    for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
       if (!is.null(out$series[[p]])) {
         out$data[[p]] <- data
       }
@@ -57,13 +57,13 @@ handledata <- function(series, data, x) {
   } else if (is.list(data)) {
     # have separate data for each panel
     # sanity check first
-    for (p in c("1", "2", "3", "4")) {
+    for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
       if (!is.null(data[[p]]) && !is.acceptable.data(data[[p]])) {
         stop(paste("The data you passed in for panel ", p, " is not a data.frame, tibble or ts.", sep = ""))
       }
     }
     out$data <- data
-    for (p in c("1", "2", "3", "4")) {
+    for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
       if (is.list(x)) {
         tmpx <- x[[p]]
       } else {
