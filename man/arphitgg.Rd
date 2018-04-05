@@ -12,7 +12,7 @@ arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
 
 \item{aes}{(Optional) The aesthetic that defines your graph. Can be left blank, but must then be supplied for each layer. Layers that don't specify aesthetics will inherit missing parts of aesthetic from here.}
 
-\item{layout}{(default = "1")}
+\item{layout}{(default = "1") The layout of the graph. Valid options are "1", "2v", "2h", "2b2", "3v", "3h", "3b2", "4h", "4b2".}
 
 \item{portrait}{(default = false) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).}
 

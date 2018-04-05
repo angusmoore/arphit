@@ -31,6 +31,12 @@ expect_error(arphit(data, layout = "2v", series = list("1" = c("x1"), "2" = c("x
 expect_error(arphit(data, layout = "2h", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4"))), NA)
 expect_error(arphit(data, layout = "2h", series = list("1" = c("x1","x2"), "3" = c("x3","x4"))), NA)
 expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4"))), NA)
+expect_error(arphit(data, layout = "3v", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"))), NA)
+expect_error(arphit(data, layout = "3h", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x1"), "5" = "x1")), NA)
+expect_error(arphit(data, layout = "3b2", series = list("1" = "x1", "2" = "x2", "3" = "x1", "4" = "x2", "5" = "x1", "6" = "x4")), NA)
+expect_error(arphit(data, layout = "4h", series = list("1" = "x1", "2" = "x2", "3" = "x1", "4" = "x2", "5" = "x1", "6" = "x4", "7" = "x2", "8" = c("x1","x2"))), NA)
+expect_error(arphit(data, layout = "4b2", series = list("1" = "x1", "2" = "x2", "3" = "x1", "4" = "x2", "5" = "x1", "6" = "x4", "7" = "x2", "8" = c("x1","x2"))), NA)
+
 expect_error(arphit(data), NA)
 
 # portrait size

@@ -24,7 +24,7 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 
 \item{x}{(optional) A list specifying x variables for each of your panels. ts objects passed in as data will automatically use dates.}
 
-\item{layout}{(optional) A string indicating the layout of the chart. Valid options are "1" (single panel), "2v" (side-by-side two panel), "2h" (top and bottom two panel), and "2b2" two-by-two four panel chart. Defaults to single panel if not supplied.}
+\item{layout}{(optional) A string indicating the layout of the chart. Valid options are "1" (single panel), "2v" (side-by-side two panel), "2h" (top and bottom two panel), "2b2" (two-by-two four panel chart), "3v" (side-by-side three panel), "3h" (horizonal three panel), "3b2" (three-by-two six panel chart), "4h" (horizonal four panel) and "4b2" (four-by-two eight panel). Defaults to single panel if not supplied.}
 
 \item{bars}{(optional) Vector of string names indicating which series should be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series will plot as bars.}
 
@@ -84,7 +84,7 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 
 \item{bar.stacked}{(optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).}
 
-\item{dropxlabel}{(optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.}
+\item{dropxlabel}{(optional) Logical indicating whether the first xlabel of right hand panels in 2v , 3v, 2b2, 3b2, and 4b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.}
 
 \item{joined}{(optiona) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE). TRUE by default.}
 }
