@@ -80,7 +80,7 @@ drawlegend <- function(panels, bars, attributes, ncol, shift_axislabel) {
   border <- sapply(series, FUN = extract_item, item = "border")
   names <- sapply(series, FUN = extract_item, item = "name")
 
-  ph <- par("pin")[2]
+  ph <- graphics::par("pin")[2]
 
   ylines <- 2.5
   if (shift_axislabel) {
@@ -89,20 +89,20 @@ drawlegend <- function(panels, bars, attributes, ncol, shift_axislabel) {
 
   y <- -ylines*CSI/ph
 
-  legend(x = 0.5, y = y,
-         ncol = ncol,
-         xjust = 0.5,
-         yjust = 1,
-         xpd = NA,
-         bty = "n",
-         plot = TRUE,
-         legend = names,
-         pch = pch,
-         lty = lty,
-         lwd = lwd,
-         col = col,
-         fill = fill,
-         border = border)
+  graphics::legend(x = 0.5, y = y,
+                   ncol = ncol,
+                   xjust = 0.5,
+                   yjust = 1,
+                   xpd = NA,
+                   bty = "n",
+                   plot = TRUE,
+                   legend = names,
+                   pch = pch,
+                   lty = lty,
+                   lwd = lwd,
+                   col = col,
+                   fill = fill,
+                   border = border)
 }
 
 drawnotes <- function(footnotes, sources, bottomskip) {
