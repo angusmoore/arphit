@@ -63,6 +63,9 @@ expect_that(ncol(bar$data[["1"]]), equals(5))
 expect_that(colnames(bar$data[["1"]]), equals(c("date", "A", "B", "C", "D")))
 expect_that(bar$x[["1"]], equals("date"))
 
+# error without data
+expect_error(arphitgg()+agg_line())
+
 # Set colours
 foo <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), color = "red")
 bar <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), color = c("red", "green"))
@@ -283,6 +286,7 @@ expect_equal(bar$data[["3"]]$b, c(NA,NA,NA,8,9,10))
 ## attributes
 foo <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet)) + agg_line(color = c("red","green"))
 bar <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet,group=group)) + agg_line(color = c("red","green"))
+baz <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet,group=group)) + agg_col(color = c("red","green"))
 
 expect_equal(foo$col[["1"]]$y, "red")
 expect_equal(foo$col[["3"]]$y, "red")
@@ -290,12 +294,20 @@ expect_equal(bar$col[["1"]]$a, "red")
 expect_equal(bar$col[["1"]]$b, "green")
 expect_equal(bar$col[["3"]]$a, "red")
 expect_equal(bar$col[["3"]]$b, "green")
+expect_equal(baz$col[["3"]]$a, "red")
+expect_equal(baz$col[["3"]]$b, "green")
 
 ## facet aesthetic inheritance
 foo <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet)) + agg_line()
 bar <- arphitgg(facet_data) + agg_line(agg_aes(x=x,y=y,facet=facet))
+baz <- arphitgg(facet_data, agg_aes(x=x,facet=facet)) + agg_line(agg_aes(y=y))
+qux <- arphitgg(facet_data, agg_aes(x=x,y=y)) + agg_line(agg_aes(facet=facet))
 expect_equal(foo$data, bar$data)
 expect_equal(foo$col, bar$col)
+expect_equal(foo$data, baz$data)
+expect_equal(foo$col, baz$col)
+expect_equal(foo$data, qux$data)
+expect_equal(foo$col, qux$col)
 
 ## auto facet layouts
 facetlayout <- arphit:::facetlayout
@@ -337,3 +349,5 @@ expect_error(facetlayout(nine_facets, "f", "1"))
 
 expect_equal(facetlayout(three_facets, "f", "4h")$layout, "4h")
 expect_equal(facetlayout(three_facets, "f", "4h")$panels, c("1","3","5"))
+expect_equal(facetlayout(five_facets, "f", "4h")$layout, "4h")
+expect_equal(facetlayout(five_facets, "f", "4h")$panels, c("1","2","3","4","5"))
