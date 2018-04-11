@@ -263,3 +263,30 @@ foo <- arphitgg(data) + agg_legend()
 bar <- arphitgg(data) + agg_legend(ncol = 5)
 expect_equal(foo$legend, TRUE)
 expect_equal(bar$legend.ncol, 5)
+
+# Facets
+## data
+facet_data <- data.frame(x=1:10,y=1:10,group=c("a","a","b","b","a","a","a","b","b","b"),facet=c("c","c","c","c","d","d","d","d","d","d"), stringsAsFactors = FALSE)
+foo <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet)) + agg_line()
+bar <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet,group=group)) + agg_line()
+expect_equal(foo$data[["1"]]$x, 1:4)
+expect_equal(foo$data[["3"]]$x, 5:10)
+expect_equal(foo$data[["1"]]$y, 1:4)
+expect_equal(foo$data[["3"]]$y, 5:10)
+expect_equal(bar$data[["1"]]$x, 1:4)
+expect_equal(bar$data[["3"]]$x, 5:10)
+expect_equal(bar$data[["1"]]$a, c(1,2,NA,NA))
+expect_equal(bar$data[["1"]]$b, c(NA,NA,3,4))
+expect_equal(bar$data[["3"]]$a, c(5,6,7,NA,NA,NA))
+expect_equal(bar$data[["3"]]$b, c(NA,NA,NA,8,9,10))
+
+## attributes
+foo <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet)) + agg_line(color = c("red","green"))
+bar <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet,group=group)) + agg_line(color = c("red","green"))
+
+expect_equal(foo$col[["1"]]$y, "red")
+expect_equal(foo$col[["3"]]$y, "red")
+expect_equal(bar$col[["1"]]$a, "red")
+expect_equal(bar$col[["1"]]$b, "green")
+expect_equal(bar$col[["3"]]$a, "red")
+expect_equal(bar$col[["3"]]$b, "green")
