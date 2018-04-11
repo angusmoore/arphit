@@ -4,7 +4,7 @@
 \alias{agg_aes}
 \title{Define an aesthetic for a graph, or a graph layer.}
 \usage{
-agg_aes(x, y, group = NULL)
+agg_aes(x, y, group = NULL, facet = NULL)
 }
 \arguments{
 \item{x}{Which series is the x variable.}
@@ -12,6 +12,8 @@ agg_aes(x, y, group = NULL)
 \item{y}{Which series are you plotting on the y axis.}
 
 \item{group}{If your data are in long form, which variable defines the groups.}
+
+\item{facet}{If you data are in long form, which variable defines the facets (facets split data across panels, see the gg-interface vignette for example)}
 }
 \description{
 If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.

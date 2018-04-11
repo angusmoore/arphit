@@ -63,6 +63,9 @@ expect_that(ncol(bar$data[["1"]]), equals(5))
 expect_that(colnames(bar$data[["1"]]), equals(c("date", "A", "B", "C", "D")))
 expect_that(bar$x[["1"]], equals("date"))
 
+# error without data
+expect_error(arphitgg()+agg_line())
+
 # Set colours
 foo <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), color = "red")
 bar <- arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), color = c("red", "green"))
@@ -263,3 +266,88 @@ foo <- arphitgg(data) + agg_legend()
 bar <- arphitgg(data) + agg_legend(ncol = 5)
 expect_equal(foo$legend, TRUE)
 expect_equal(bar$legend.ncol, 5)
+
+# Facets
+## data
+facet_data <- data.frame(x=1:10,y=1:10,group=c("a","a","b","b","a","a","a","b","b","b"),facet=c("c","c","c","c","d","d","d","d","d","d"), stringsAsFactors = FALSE)
+foo <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet)) + agg_line()
+bar <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet,group=group)) + agg_line()
+expect_equal(foo$data[["1"]]$x, 1:4)
+expect_equal(foo$data[["3"]]$x, 5:10)
+expect_equal(foo$data[["1"]]$y, 1:4)
+expect_equal(foo$data[["3"]]$y, 5:10)
+expect_equal(bar$data[["1"]]$x, 1:4)
+expect_equal(bar$data[["3"]]$x, 5:10)
+expect_equal(bar$data[["1"]]$a, c(1,2,NA,NA))
+expect_equal(bar$data[["1"]]$b, c(NA,NA,3,4))
+expect_equal(bar$data[["3"]]$a, c(5,6,7,NA,NA,NA))
+expect_equal(bar$data[["3"]]$b, c(NA,NA,NA,8,9,10))
+
+## attributes
+foo <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet)) + agg_line(color = c("red","green"))
+bar <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet,group=group)) + agg_line(color = c("red","green"))
+baz <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet,group=group)) + agg_col(color = c("red","green"))
+
+expect_equal(foo$col[["1"]]$y, "red")
+expect_equal(foo$col[["3"]]$y, "red")
+expect_equal(bar$col[["1"]]$a, "red")
+expect_equal(bar$col[["1"]]$b, "green")
+expect_equal(bar$col[["3"]]$a, "red")
+expect_equal(bar$col[["3"]]$b, "green")
+expect_equal(baz$col[["3"]]$a, "red")
+expect_equal(baz$col[["3"]]$b, "green")
+
+## facet aesthetic inheritance
+foo <- arphitgg(facet_data, agg_aes(x=x,y=y,facet=facet)) + agg_line()
+bar <- arphitgg(facet_data) + agg_line(agg_aes(x=x,y=y,facet=facet))
+baz <- arphitgg(facet_data, agg_aes(x=x,facet=facet)) + agg_line(agg_aes(y=y))
+qux <- arphitgg(facet_data, agg_aes(x=x,y=y)) + agg_line(agg_aes(facet=facet))
+expect_equal(foo$data, bar$data)
+expect_equal(foo$col, bar$col)
+expect_equal(foo$data, baz$data)
+expect_equal(foo$col, baz$col)
+expect_equal(foo$data, qux$data)
+expect_equal(foo$col, qux$col)
+
+## auto facet layouts
+facetlayout <- arphit:::facetlayout
+
+two_facets <- data.frame(f = letters[1:2])
+expect_equal(facetlayout(two_facets, "f", "1")$layout, "2h")
+expect_equal(facetlayout(two_facets, "f", "1")$panels, c("1","3"))
+expect_equal(facetlayout(two_facets, "f", "2b2")$layout, "2b2") # override
+expect_equal(facetlayout(two_facets, "f", "2b2")$panels, c("1","2"))
+
+three_facets <- data.frame(f = letters[1:3])
+expect_equal(facetlayout(three_facets, "f", "1")$layout, "3h")
+expect_equal(facetlayout(three_facets, "f", "1")$panels, c("1","3","5"))
+expect_equal(facetlayout(three_facets, "f", "3v")$layout, "3v")
+expect_equal(facetlayout(three_facets, "f", "3v")$panels, c("1","2","3"))
+
+four_facets <- data.frame(f = letters[1:4])
+expect_equal(facetlayout(four_facets, "f", "1")$layout, "2b2")
+expect_equal(facetlayout(four_facets, "f", "1")$panels, c("1","2","3","4"))
+
+five_facets <- data.frame(f = letters[1:5])
+expect_equal(facetlayout(five_facets, "f", "1")$layout, "3b2")
+expect_equal(facetlayout(five_facets, "f", "1")$panels, c("1","2","3","4","5"))
+
+six_facets <- data.frame(f = letters[1:6])
+expect_equal(facetlayout(six_facets, "f", "1")$layout, "3b2")
+expect_equal(facetlayout(six_facets, "f", "1")$panels, c("1","2","3","4","5","6"))
+
+seven_facets <- data.frame(f = letters[1:7])
+expect_equal(facetlayout(seven_facets, "f", "1")$layout, "4b2")
+expect_equal(facetlayout(seven_facets, "f", "1")$panels, c("1","2","3","4","5","6","7"))
+
+eight_facets <- data.frame(f = letters[1:8])
+expect_equal(facetlayout(eight_facets, "f", "1")$layout, "4b2")
+expect_equal(facetlayout(eight_facets, "f", "1")$panels, c("1","2","3","4","5","6","7","8"))
+
+nine_facets <- data.frame(f = letters[1:9])
+expect_error(facetlayout(nine_facets, "f", "1"))
+
+expect_equal(facetlayout(three_facets, "f", "4h")$layout, "4h")
+expect_equal(facetlayout(three_facets, "f", "4h")$panels, c("1","3","5"))
+expect_equal(facetlayout(five_facets, "f", "4h")$layout, "4h")
+expect_equal(facetlayout(five_facets, "f", "4h")$panels, c("1","2","3","4","5"))

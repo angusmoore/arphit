@@ -1,4 +1,4 @@
-checklayout <- function(series, layout) {
+maxpanels <- function(layout) {
   # Switch through the layout options
   if (layout == "1" || layout == "2v") {
     maxnp <- 2
@@ -13,7 +13,11 @@ checklayout <- function(series, layout) {
   } else {
     stop(paste0("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4b2."))
   }
+  return(maxnp)
+}
 
+checklayout <- function(series, layout) {
+  maxnp <- maxpanels(layout)
   permittedpanels <- as.character(1:maxnp)
   for (i in names(series)) {
     if (!(i %in% permittedpanels)) {
