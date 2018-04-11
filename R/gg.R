@@ -389,6 +389,7 @@ agg_point <- function(aes = NULL, data = NULL, color = NULL, panel = "1") {
 #' @param x Which series is the x variable.
 #' @param y Which series are you plotting on the y axis.
 #' @param group If your data are in long form, which variable defines the groups.
+#' @param facet If you data are in long form, which variable defines the facets (facets split data across panels, see the gg-interface vignette for example)
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
 #' how to use the ggplot-like interface.
@@ -541,14 +542,14 @@ facetlayout <- function(data, facet, layout) {
     # have specified a layout and it is fine (assume that 1 is just the default and should be ignored)
     if (layout == "2v" || layout == "3v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
       # No left and right axes to worry about
-      return(layout=layout,panels=as.character(1:n))
+      return(list(layout=layout,panels=as.character(1:n)))
     } else {
       # Try to keep to odd, if that doesn't work, use all
       if (max(seq(1, length.out = n, by = 2)) <= maxnp) {
-        return(layout=layout,panels=as.character(seq(1, length.out = n, by = 2)))
+        return(list(layout=layout,panels=as.character(seq(1, length.out = n, by = 2))))
       } else {
         # nope, doesn't fit on left axes
-        return(layout=layout,panels=as.character(1:n))
+        return(list(layout=layout,panels=as.character(1:n)))
       }
     }
   } else {
