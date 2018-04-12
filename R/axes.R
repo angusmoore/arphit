@@ -252,9 +252,9 @@ xlabels.numericcategorical <- function(xlim, xvar) {
   return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = step)))
 }
 
-xlabels.scatter <- function(xvalues) {
+xlabels.scatter <- function(xlim, xvalues) {
   scale <- defaultscale(xvalues)
-  scale <- createscale (scale$min,scale$max,scale$nsteps)
+  scale <- createscale(scale$min,scale$max,scale$nsteps)
   return(list(at = scale, labels = scale, ticks = scale))
 }
 
@@ -262,7 +262,7 @@ xlabels <- function(xlim, xvar, data, ists, layout) {
   if (stats::is.ts(data) || !is.null(ists)) {
     return(xlabels.ts(xlim, layout))
   } else if (is.scatter(xvar)) {
-    return(xlabels.scatter(xvar))
+    return(xlabels.scatter(xlim, xvar))
   } else if (!is.null(xvar)) {
     if (is.numeric(xvar)) {
       return(xlabels.numericcategorical(xlim, xvar))
@@ -270,7 +270,12 @@ xlabels <- function(xlim, xvar, data, ists, layout) {
       return(xlabels.categorical(xlim, xvar))
     }
   } else {
-    return(NULL)
+    # Empty plot, if we're using the empty scale, that's a TS
+    if (identical(xlim, EMPTYXSCALE)) {
+      return(xlabels.ts(xlim, layout))
+    } else {
+      xlabels.scatter(xlim, xlim) # Seems least worse choice?
+    }
   }
 }
 
