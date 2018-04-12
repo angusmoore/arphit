@@ -41,9 +41,9 @@ tsdata <- ts(dfdata, start = c(2000,1), frequency = 4)
 multidata2 <- handledata(NULL, list("1" = dfdata, "2" = tsdata), NULL)$data
 expect_that(handlex(multidata2, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE, "2" = tsoffsetdates, "2ts" = TRUE)))
 
-# Error if supply multiple datasets but one x variable
-data1 <- data.frame(x1 = rnorm(10), x2 = rnorm(10))
-data2 <- data.frame(x1 = rnorm(10), x4 = rnorm(10))
+# Same x variable across multiple datasets
+data1 <- data.frame(x1 = 1:10, x2 = rnorm(10))
+data2 <- data.frame(x1 = 1:10, x4 = rnorm(10))
 expect_error(arphit(data = list("1" = data1, "2" = data2), x = "x1"), NA)
 
 # categorical x data
