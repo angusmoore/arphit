@@ -243,7 +243,7 @@ xlabels.categorical <- function(xlim, xvar, layout, showall) {
   end <- xlim[2] - 1
   at <- seq(from = start, to = end, by = 1) + 0.5
   labels <- xvar
-  if (is.null(showall) || !showall) {
+  if (!is.null(showall) && !showall) {
     layout_factor <- getlayoutfactor(layout)
     keep <- restrictlabels(labels, layout_factor)
     at <- at[keep]
@@ -258,7 +258,7 @@ xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
   end <- xlim[2] - 1
   at <- seq(from = start, to = end, by = step) + 0.5*step
   labels <- xvar
-  if (!is.null(showall) && !showall) {
+  if (is.null(showall) || !showall) {
     layout_factor <- getlayoutfactor(layout)
     keep <- restrictlabels(labels, layout_factor)
     at <- at[keep]

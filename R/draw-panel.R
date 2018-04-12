@@ -244,14 +244,14 @@ gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels
       graphics::mtext(text = xunits, side = 1, at = xlim[2], line = 0, cex = 1, padj = 1)
     }
     # Calculate what one line is in user coordinates
-    y <- inchesasuser(1 * CSI)
+    y <- inchesasuser(1.5 * CSI)
     y <- ylim$min - y
     if (srt == 0) {
       adj <- 0.5
     } else {
       adj <- 1
     }
-    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = adj, srt = srt, xpd = NA)
+    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = c(adj,0), srt = srt, xpd = NA)
   }
 
   ## Draw the grid
