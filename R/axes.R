@@ -211,44 +211,59 @@ findlabelstep <- function(start, end, layout_factor) {
 }
 
 restrictlabels <- function(ticks, layout_factor) {
-  end <- ticks[length(ticks)]
-  start <- ticks[1]
-  step <- findlabelstep(start, end, layout_factor)
-  n <- floor((end - start) / step) + 1
-  return(seq(to = end, length.out = n, by = step))
+  step <- findlabelstep(1, length(ticks), layout_factor)
+  n <- floor((length(ticks) - 1) / step) + 1
+  return(seq(to = length(ticks), length.out = n, by = step))
+}
+
+getlayoutfactor <- function(layout) {
+  if (layout == "2v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
+    return(1/2)
+  } else if (layout == "3v") {
+    return(1/3)
+  } else {
+    return(1)
+  }
 }
 
 xlabels.ts <- function(xlim, layout) {
-  if (layout == "2v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
-    layout_factor <- 1/2
-  } else if (layout == "3v") {
-    layout_factor <- 1/3
-  } else {
-    layout_factor <- 1
-  }
+  layout_factor <- getlayoutfactor(layout)
   startyear <- xlim[1]
   endyear <- xlim[2]
   # Create the sequence and offset the labels by half a year so that the labels are centered
   ticks <- seq(from = startyear, to = (endyear-1), by = 1)
-  labels <- restrictlabels(ticks, layout_factor)
+  keep <- restrictlabels(ticks, layout_factor)
+  labels <- ticks[keep]
   at <- labels + 0.5
   return(list("at" = at, "labels" = labels, "ticks" = ticks))
 }
 
-xlabels.categorical <- function(xlim, xvar) {
+xlabels.categorical <- function(xlim, xvar, layout, showall) {
   start <- xlim[1]
   end <- xlim[2] - 1
   at <- seq(from = start, to = end, by = 1) + 0.5
   labels <- xvar
+  if (is.null(showall) || !showall) {
+    layout_factor <- getlayoutfactor(layout)
+    keep <- restrictlabels(labels, layout_factor)
+    at <- at[keep]
+    labels <- labels[keep]
+  }
   return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = 1)))
 }
 
-xlabels.numericcategorical <- function(xlim, xvar) {
+xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
   step <- min(diff(xvar))
   start <- xlim[1]
   end <- xlim[2] - 1
   at <- seq(from = start, to = end, by = step) + 0.5*step
   labels <- xvar
+  if (!is.null(showall) && !showall) {
+    layout_factor <- getlayoutfactor(layout)
+    keep <- restrictlabels(labels, layout_factor)
+    at <- at[keep]
+    labels <- labels[keep]
+  }
   return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = step)))
 }
 
@@ -258,16 +273,16 @@ xlabels.scatter <- function(xlim, xvalues) {
   return(list(at = scale, labels = scale, ticks = scale))
 }
 
-xlabels <- function(xlim, xvar, data, ists, layout) {
+xlabels <- function(xlim, xvar, data, ists, layout, showall) {
   if (stats::is.ts(data) || !is.null(ists)) {
     return(xlabels.ts(xlim, layout))
   } else if (is.scatter(xvar)) {
     return(xlabels.scatter(xlim, xvar))
   } else if (!is.null(xvar)) {
     if (is.numeric(xvar)) {
-      return(xlabels.numericcategorical(xlim, xvar))
+      return(xlabels.numericcategorical(xlim, xvar, layout, showall))
     } else {
-      return(xlabels.categorical(xlim, xvar))
+      return(xlabels.categorical(xlim, xvar, layout, showall))
     }
   } else {
     # Empty plot, if we're using the empty scale, that's a TS
@@ -279,15 +294,15 @@ xlabels <- function(xlim, xvar, data, ists, layout) {
   }
 }
 
-handlexlabels <- function(panels, xlim, xvars, data, layout) {
+handlexlabels <- function(panels, xlim, xvars, data, layout, showall) {
   out <- list()
   for (p in names(panels)) {
     if (!is.null(data[[p]])) {
       ists <- xvars[[paste(p,"ts",sep="")]]
-      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout)
+      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout, showall)
     } else {
       ists <- xvars[["1ts"]]
-      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout)
+      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout, showall)
     }
   }
   return(out)

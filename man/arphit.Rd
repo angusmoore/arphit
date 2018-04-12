@@ -12,7 +12,8 @@ arphit(data, series = NULL, x = NULL, layout = "1", bars = NULL,
   lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL,
   barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE,
   legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE,
-  bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0)
+  bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0,
+  showallxlabels = NULL)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
@@ -89,6 +90,8 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 \item{joined}{(optiona) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE). TRUE by default.}
 
 \item{srt}{(default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.}
+
+\item{showallxlabels}{(optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.}
 }
 \description{
 Creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
