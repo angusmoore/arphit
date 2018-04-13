@@ -69,7 +69,7 @@ determinelegendcols <- function(panels, ncol) {
   return(list(r = nrow, c = ncol))
 }
 
-drawlegend <- function(panels, bars, attributes, ncol, shift_axislabel) {
+drawlegend <- function(panels, bars, attributes, ncol, xtickmargin, hasaxislabel) {
   series <- getlegendentries(panels, bars, attributes)
 
   pch <- sapply(series, FUN = extract_item, item = "pch")
@@ -82,8 +82,8 @@ drawlegend <- function(panels, bars, attributes, ncol, shift_axislabel) {
 
   ph <- graphics::par("pin")[2]
 
-  ylines <- 2.5
-  if (shift_axislabel) {
+  ylines <- xtickmargin
+  if (hasaxislabel) {
     ylines <- ylines + 1.7
   }
 
@@ -105,29 +105,29 @@ drawlegend <- function(panels, bars, attributes, ncol, shift_axislabel) {
                    border = border)
 }
 
-drawnotes <- function(footnotes, sources, bottomskip) {
-  graphics::par(lheight = 0.9)
+drawnotes <- function(footnotes, sources, notesstart) {
+  graphics::par(lheight = 1)
   nf <- length(footnotes)
-  cumuloffset <- bottomskip
+  cumuloffset <- notesstart
   if (nf > 0 ) {
     for (i in 1:nf) {
       nlines <- stringr::str_count(footnotes[[i]], "\n")
       replacedtext <- stringr::str_replace_all(footnotes[[i]], "\n", paste("\n", strrep(" ", NSPACESNOTES), sep = ""))
-      graphics::mtext(strrep("*", i), outer = TRUE, side = 1, adj = 0, line = 2.55 + 1.1*(i-1) + 1.1*cumuloffset, cex = (14/20))
-      graphics::mtext(paste(strrep(" ", NSPACESNOTES), replacedtext, sep = ""), outer = TRUE, side = 1, adj = 0, line = 2.5 + 1.1*(i-1) + 1.1*nlines + 1.1*cumuloffset, cex = (14/20))
-      cumuloffset <- cumuloffset + nlines
+      graphics::mtext(strrep("*", i), outer = TRUE, side = 1, adj = 0, line = cumuloffset + 1.1*(i-1), cex = (14/20))
+      graphics::mtext(paste(strrep(" ", NSPACESNOTES), replacedtext, sep = ""), outer = TRUE, side = 1, adj = 0, line = cumuloffset + (i-1), cex = (14/20))
+      cumuloffset <- cumuloffset + 1.1*nlines
     }
   }
   if (nchar(sources$text) > 0) {
     if (sources$plural) {
-      graphics::mtext("Sources:", outer = TRUE, side = 1, adj = 0, line = 2.7 + 1.1*cumuloffset + 1.1*nf, cex = (14/20))
+      graphics::mtext("Sources:", outer = TRUE, side = 1, adj = 0, line = cumuloffset + 1.1*nf, cex = (14/20))
     } else {
-      graphics::mtext("Source:", outer = TRUE, side = 1, adj = 0, line = 2.7 + 1.1*cumuloffset + 1.1*nf, cex = (14/20))
+      graphics::mtext("Source:", outer = TRUE, side = 1, adj = 0, line = cumuloffset + 1.1*nf, cex = (14/20))
     }
 
     nlines <- stringr::str_count(sources$text, "\n")
     replacedtext <- stringr::str_replace_all(sources$text, "\n", paste("\n", strrep(" ", NSPACESSOURCES), sep = ""))
-    graphics::mtext(paste(strrep(" ", NSPACESSOURCES), replacedtext, sep = ""), outer = TRUE, side = 1, adj = 0, line = 2.7 + 1.1*nlines + 1.1*cumuloffset + 1.1*nf, cex = (14/20))
+    graphics::mtext(paste(strrep(" ", NSPACESSOURCES), replacedtext, sep = ""), outer = TRUE, side = 1, adj = 0, line = cumuloffset + 1.1*nf, cex = (14/20))
   }
   graphics::par(lheight = 1)
 }

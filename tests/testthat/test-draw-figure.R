@@ -17,10 +17,11 @@ expect_equal(getfigsize(c(10,20), 1, 2, 1, 6)$width, width)
 
 expect_error(handlelayout("sdf"))
 
-expect_that(countfnlines("asdf"), equals(3.5))
-expect_that(countfnlines(list("asdf","asdf")), equals(4.6))
-expect_that(countfnlines(list("asdf","as\ndf")), equals(5.7))
-expect_that(countfnlines(list("as\ndf","as\ndf")), equals(6.8))
+expect_equal(countfnlines(NULL), 0)
+expect_that(countfnlines("asdf"), equals(1.1))
+expect_that(countfnlines(list("asdf","asdf")), equals(2.2))
+expect_that(countfnlines(list("asdf","as\ndf")), equals(3.3))
+expect_that(countfnlines(list("as\ndf","as\ndf")), equals(4.4))
 
 expect_that(counttitlelines("foo", NULL), equals(2.7))
 expect_that(counttitlelines(NULL, NULL), equals(0.99))
@@ -56,20 +57,32 @@ for (suffix in c("png","pdf","emf")) {
 # tests for bottom spacing
 fakeseries1 <- c("a","b")
 onesided <- handlepanels(fakeseries1, "1")
-expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE)$bottomskip, 0)
-expect_equal(figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE)$bottomskip, 1.7)
+expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 2)
+expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 3.7)
 
 # tests for extra margins when have y axis labels
-noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE)$left
-yaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list("1" = "foo"), list(), 0, LANDSCAPESIZE, FALSE)$left
+noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE, "1", 0)$left
+yaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list("1" = "foo"), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$left
 expect_that(yaxislabelmargin, is_more_than(noaxislabelmargin))
 
 # tests for extra margins when have x axis labels
-noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE)$bottom
-xaxislabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "foo"), 0, LANDSCAPESIZE, FALSE)$bottom
+noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$bottom
+xaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "foo"), 0, LANDSCAPESIZE, FALSE, "1", 0)$bottom
 expect_that(xaxislabelmargin, is_more_than(noaxislabelmargin))
 
 # tests for extra margins with legends
-nolegendlabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE)$bottom
-legendlabelmargin <- figuresetup("", NULL, onesided, list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 1,  LANDSCAPESIZE, FALSE)$left
+nolegendlabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE, "1", 0)$bottom
+legendlabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 1,  LANDSCAPESIZE, FALSE, "1", 0)$left
 expect_that(legendlabelmargin, is_more_than(nolegendlabelmargin))
+
+# rotated x labels should have larger bototm padding
+
+norotation <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)
+rotated45 <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 45)
+rotated90 <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 90)
+
+expect_that(rotated45$bottom, is_more_than(norotation$bottom))
+expect_that(rotated90$bottom, is_more_than(rotated45$bottom))
+
+expect_that(rotated45$bottom, is_more_than(norotation$xtickmargin))
+expect_that(rotated90$bottom, is_more_than(rotated45$xtickmargin))
