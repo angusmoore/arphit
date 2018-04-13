@@ -1,17 +1,17 @@
-conformpaneltitles <- function(panels, paneltitles, layout, maxchars) {
+conformpaneltitles <- function(panels, paneltitles, layout, width) {
   if (layout == "2v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
-    maxchars <- floor(1/2 * maxchars)
+    width <- floor(1/2 * width)
   } else if (layout == "3v") {
-    maxchars <- floor(1/3 * maxchars)
+    width <- floor(1/3 * width)
   } else {
-    maxchars <- maxchars
+    width <- width
   }
 
   out <- list()
   if (!is.list(paneltitles)) {
     for (p in names(panels)) {
       if (!is.null(paneltitles)) {
-        out[[p]] <- splitoverlines(paneltitles, maxchars)
+        out[[p]] <- splitoverlines(paneltitles, width, 1)
       } else {
         out[p] <- list(NULL)
       }
@@ -19,7 +19,7 @@ conformpaneltitles <- function(panels, paneltitles, layout, maxchars) {
   } else {
     for (p in names(panels)) {
       if (p %in% names(paneltitles)) {
-        out[[p]] <- splitoverlines(paneltitles[[p]], maxchars)
+        out[[p]] <- splitoverlines(paneltitles[[p]], width, 18/20)
       } else {
         out[p] <- list(NULL)
       }
@@ -28,7 +28,7 @@ conformpaneltitles <- function(panels, paneltitles, layout, maxchars) {
   return(out)
 }
 
-formatsrcs <- function(sources) {
+formatsrcs <- function(sources, width) {
   if (!is.null(sources)) {
     for (i in 1:length(sources)) {
       if (i == 1) {
@@ -43,22 +43,25 @@ formatsrcs <- function(sources) {
       srcplural <- FALSE
     }
 
-    return(list(text = splitoverlines(out, LINELENGTHNOTES), plural = srcplural))
+    return(list(text = splitoverlines(out, width, 14/20), plural = srcplural))
   } else {
     return(list(text = "", plural = FALSE))
   }
 }
 
-formatfn <- function(footnotes) {
+formatfn <- function(footnotes, width) {
   if (length(footnotes) > 0) {
     for (i in 1:length(footnotes)) {
-      footnotes[i] <- splitoverlines(footnotes[[i]], LINELENGTHNOTES)
+      footnotes[i] <- splitoverlines(footnotes[[i]], width, 14/20)
     }
   }
   return(footnotes)
 }
 
-splitoverlines <- function(s, maxsize) {
+splitoverlines <- function(s, maxsize, cex) {
+  # Set values needed to determine str widths
+  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, las = 1, lheight = 1)
+
   breakpoints <- c()
   if (nchar(s) > 0) {
     lastspace <- NULL
@@ -71,7 +74,8 @@ splitoverlines <- function(s, maxsize) {
         cumul <- 0
         lastspace <- NULL
       }
-      if (cumul > maxsize && !is.null(lastspace)) {
+      string <- substr(s, i-cumul, i)
+      if (graphics::strwidth(string, units = "inches", cex = cex) > maxsize && !is.null(lastspace)) {
         breakpoints <- append(breakpoints, lastspace)
         cumul <- 0
         lastspace <- NULL

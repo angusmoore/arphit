@@ -91,14 +91,33 @@ xlim1 <- xlimconform(catpanels, NULL, xvar1, catdata1)
 expect_that(xlim1, equals(list("1" = c(2001, 2006), "2" = c(2001, 2006))))
 xlim2 <- xlimconform(catpanels, NULL, xvar2, catdata2)
 expect_that(xlim2, equals(list("1" = c(2,12), "2" = c(2,12))))
-xlabs1 <- handlexlabels(catpanels, xlim1, xvar1, catdata1)
+xlabs1 <- handlexlabels(catpanels, xlim1, xvar1, catdata1, "1", NULL)
 expect_that(xlabs1[["1"]]$at, equals(c(2001.5, 2002.5, 2003.5, 2004.5, 2005.5)))
 expect_that(xlabs1[["1"]]$labels, equals(2001:2005))
 expect_that(xlabs1[["1"]]$ticks, equals(2001:2005))
-xlabs2 <- handlexlabels(catpanels, xlim2, xvar2, catdata2)
+xlabs2 <- handlexlabels(catpanels, xlim2, xvar2, catdata2, "1", NULL)
 expect_that(xlabs2[["1"]]$at, equals(c(3,5,7,9,11)))
 expect_that(xlabs2[["1"]]$labels, equals(c(2,4,6,8,10)))
 expect_that(xlabs2[["1"]]$ticks, equals(c(2,4,6,8,10)))
+
+# Restricting x labels for categorical graphs
+catdata1 <- handledata(NULL, data.frame(x = 1:10, y = 1:10), "x")$data
+xvar1 <- handlex(catdata1, "x")
+xlim1 <- xlimconform(catpanels, NULL, xvar1, catdata1)
+
+catdata2 <- handledata(NULL, data.frame(x = letters[1:10], y = 1:10, stringsAsFactors = FALSE), "x")$data
+xvar2 <- handlex(catdata2, "x")
+xlim2 <- xlimconform(catpanels, NULL, xvar2, catdata2)
+
+xlabs1 <- handlexlabels(catpanels, xlim1, xvar1, catdata1, "1", TRUE)
+expect_equal(xlabs1[["1"]]$labels, 1:10)
+xlabs1 <- handlexlabels(catpanels, xlim1, xvar1, catdata1, "1", FALSE)
+expect_equal(xlabs1[["1"]]$labels, c(2,4,6,8,10))
+
+xlabs2 <- handlexlabels(catpanels, xlim2, xvar2, catdata2, "1", TRUE)
+expect_equal(xlabs2[["1"]]$labels, letters[1:10])
+xlabs2 <- handlexlabels(catpanels, xlim2, xvar2, catdata2, "1", FALSE)
+expect_equal(xlabs2[["1"]]$labels, c("b","d","f","h","j"))
 
 # X lim conforming for scatter graph data
 scatter <- data.frame(x = runif(100), y = runif(100))

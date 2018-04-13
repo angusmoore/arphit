@@ -40,6 +40,8 @@
 #' @param bar.stacked (optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).
 #' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v , 3v, 2b2, 3b2, and 4b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.
 #' @param joined (optiona) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE). TRUE by default.
+#' @param srt (default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.
+#' @param showallxlabels (optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options and how they affect the output.
@@ -53,7 +55,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE) {
+arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL) {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -75,7 +77,7 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   ylim <- ylimconform(panels, ylim, data, layout)
   yticks <- handleticks(data, panels, ylim)
   xlim <- xlimconform(panels, xlim, xvars, data)
-  xlabels <- handlexlabels(panels, xlim, xvars, data, layout)
+  xlabels <- handlexlabels(panels, xlim, xvars, data, layout, showallxlabels)
   yaxislabels <- handleaxislabels(yaxislabels, panels)
   xaxislabels <- handleaxislabels(xaxislabels, panels)
 
@@ -98,27 +100,27 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
   }
 
   # Format titles, footnotes and sources
-  footnotes <- formatfn(footnotes)
-  sources <- formatsrcs(sources)
+  footnotes <- formatfn(footnotes, plotsize[2] - WIDTHSPACESNOTES)
+  sources <- formatsrcs(sources, plotsize[2] - WIDTHSPACESSOURCES)
   if (!is.null(title)) {
-    title <- splitoverlines(title, LINELENGTHTITLE)
+    title <- splitoverlines(title, plotsize[2]+MINIMUMSIDEPADDING, 28/20)
   }
   if (!is.null(subtitle)) {
-    subtitle <- splitoverlines(subtitle, LINELENGTHTITLE)
+    subtitle <- splitoverlines(subtitle, plotsize[2]+MINIMUMSIDEPADDING, 1)
   }
 
   # Conform panel titles
-  paneltitles <- conformpaneltitles(panels, paneltitles, layout, LINELENGTHPANELTITLE)
-  panelsubtitles <- conformpaneltitles(panels, panelsubtitles, layout, LINELENGTHPANELSUBTITLE)
+  paneltitles <- conformpaneltitles(panels, paneltitles, layout, plotsize[2])
+  panelsubtitles <- conformpaneltitles(panels, panelsubtitles, layout, plotsize[2])
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, plotsize, portrait)
+  margins <- figuresetup(filename, device, panels, xlabels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, plotsize, portrait, layout, srt)
   handlelayout(layout)
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, portrait, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, portrait, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined, srt, margins$xtickmargin)
   }
 
   # Draw outer material
@@ -129,10 +131,10 @@ arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, fil
     graphics::par(mfg = c(1,1))
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = c(0,1), ylim = c(0, 1))
-    drawlegend(panels, bars, attributes, legend.ncol, length(xaxislabels)>0)
+    drawlegend(panels, bars, attributes, legend.ncol, margins$xtickmargin, length(xaxislabels)>0)
     handlelayout(layout) # Put the correct layout back
   }
-  drawnotes(footnotes, sources, margins$bottomskip)
+  drawnotes(footnotes, sources, margins$notesstart)
 
   for (p in names(panels)) {
     # Finally, draw all the annotations

@@ -77,7 +77,7 @@ drawpaneltitle <- function(paneltitle, panelsubtitle) {
   }
 }
 
-drawaxislabels <- function(ylabel, xlabel, p, layout) {
+drawaxislabels <- function(ylabel, xlabel, p, layout, xtickmargin) {
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
     if (!is.na(side) && side == 2) {
@@ -85,7 +85,7 @@ drawaxislabels <- function(ylabel, xlabel, p, layout) {
     }
   }
   if (!is.null(xlabel) && needxlabels(p, layout)) {
-    graphics::mtext(text = xlabel, side = 1, line = 3)
+    graphics::mtext(text = xlabel, side = 1, line = (xtickmargin+0.2))
   }
 }
 
@@ -202,7 +202,11 @@ needgrid <- function(p, layout) {
   }
 }
 
-gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel) {
+inchesasuser <- function(x) {
+  x*graphics::strheight("AA",units="user")/graphics::strheight("AA",units="inches")
+}
+
+gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt) {
   side <- getsides(p, layout)
   xlab <- needxlabels(p, layout)
 
@@ -239,7 +243,15 @@ gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels
       labels <- xlabels$labels[1:(length(xlabels$labels)-1)]
       graphics::mtext(text = xunits, side = 1, at = xlim[2], line = 0, cex = 1, padj = 1)
     }
-    graphics::axis(1, xlim[1]:xlim[2], tck = 0, at = at, labels = labels, cex.lab = 1, mgp = c(3, 1.2, 0))
+    # Calculate what one line is in user coordinates
+    y <- inchesasuser(1.5 * CSI)
+    y <- ylim$min - y
+    if (srt == 0) {
+      adj <- 0.5
+    } else {
+      adj <- 1
+    }
+    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = c(adj,0), srt = srt, xpd = NA)
   }
 
   ## Draw the grid
@@ -338,7 +350,7 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined) {
+drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, xtickmargin) {
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
@@ -370,7 +382,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
 
   drawbgshadings(bgshadings, p)
 
-  gridsandborders(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel)
+  gridsandborders(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt)
 
   drawbars(l, series, bars, data, x, attributes, xlim, ylim, bar.stacked)
 
@@ -381,5 +393,5 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   drawlines(l, series, bars, data, x, attributes, xlim, ylim, joined)
 
   drawpaneltitle(paneltitle, panelsubtitle)
-  drawaxislabels(yaxislabel, xaxislabel, p, layout)
+  drawaxislabels(yaxislabel, xaxislabel, p, layout, xtickmargin)
 }

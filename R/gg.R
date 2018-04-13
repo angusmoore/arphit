@@ -422,12 +422,14 @@ agg_aes <- function(x, y, group = NULL, facet = NULL) {
 #' @param layout (default = "1") The layout of the graph. Valid options are "1", "2v", "2h", "2b2", "3v", "3h", "3b2", "4h", "4b2".
 #' @param portrait (default = false) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
 #' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.
+#' @param srt (default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.
+#' @param showallxlabels (optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.
 #'
 #' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
 #' how to use the ggplot-like interface.
 #'
 #' @export
-arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE) {
+arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE, srt = 0, showallxlabels = NULL) {
   gg <- list(data = list(parent = data),
              aes = aes,
              x = list(),
@@ -460,7 +462,9 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              shading = list(),
              portrait = portrait,
              dropxlabel = dropxlabel,
-             stacked = TRUE)
+             stacked = TRUE,
+             srt = srt,
+             showallxlabels = showallxlabels)
 
   class(gg) <- "arphit.gg"
   return(gg)
@@ -865,6 +869,8 @@ agg_draw <- function(gg, filename = NULL) {
          portrait = gg$portrait,
          dropxlabel = gg$dropxlabel,
          bar.stacked = gg$stacked,
+         srt = gg$srt,
+         showallxlabels = gg$showallxlabels,
          filename = filename)
 }
 

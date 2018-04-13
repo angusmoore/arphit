@@ -1,3 +1,15 @@
+getstrheight <- function(text, units = "inches", cex = 1) {
+  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, lheight = 1)
+  h <- graphics::strheight(text, units = units, cex = cex)
+  return(h)
+}
+
+getstrwidth <- function(text, units = "inches", cex = 1) {
+  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, lheight = 1)
+  h <- graphics::strwidth(text, units = units, cex = cex)
+  return(h)
+}
+
 finddevice <- function(filename) {
   if (is.null(filename)) {
     return(NULL)
@@ -19,8 +31,8 @@ leftrightpadding <- function(yticks, yunits, panels) {
   R <- 0
   L <- 0
   for (p in names(panels)) {
-    nc <- max(graphics::strwidth(yticks[[p]], units = "inches"))
-    nc <- max(nc, graphics::strwidth(yunits[[p]], units = "inches"))
+    nc <- max(getstrwidth(yticks[[p]]))
+    nc <- max(nc, getstrwidth(yunits[[p]]))
     if (is.even(p)) {
       R <- max(R, nc)
     } else {
@@ -41,7 +53,7 @@ countsrclines <- function(sources) {
 countfnlines <- function(footnotes) {
   nf <- length(footnotes)
   extralines <- sum(stringr::str_count(footnotes, "\n"))
-  return(3.5 + 1.1*(nf-1) + 1.1*extralines)
+  return(1.1*nf + 1.1*extralines)
 }
 
 counttitlelines <- function(title, subtitle) {
@@ -61,6 +73,25 @@ counttitlelines <- function(title, subtitle) {
   return(top)
 }
 
+xticksize <- function(xlabels, layout, srt) {
+  size <- 0
+  for (p in names(xlabels)) {
+    if (needxlabels(p, layout)) {
+      xticks <- xlabels[[p]]$labels
+      if (srt == 0) {
+        size <- max(size, max(getstrheight(xticks)))
+      } else if (srt == 90) {
+        size <- max(size, max(getstrwidth(xticks)))
+      } else {
+        h <- getstrheight(xticks)
+        w <- getstrwidth(xticks)
+        size <- max(size, max(sin(srt*pi/180)*w + cos(srt*pi/180)*h))
+      }
+    }
+  }
+  return(size/CSI)
+}
+
 getfigsize <- function(plotsize, top, bottom, left, right) {
   top <- top*CSI
   bottom <- bottom*CSI
@@ -75,25 +106,28 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
   return(list(height = figheight, width = figwidth, top = top, bottom = bottom, left = left, right = right))
 }
 
-figuresetup <- function(filename, device, panels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, plotsize, portrait) {
+figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, plotsize, portrait, layout, srt) {
   # Figure out margins
   LRpadding <- leftrightpadding(yticks, yunits, panels)
-  left <- 2 + 1.2*LRpadding$left
-  right <- 2 + 1.2*LRpadding$right
+  left <- 2 + LRpadding$left
+  right <- 2 + LRpadding$right
 
   if (length(yaxislabels) > 0) {
     left <- left + 1.2
   }
   if(length(xaxislabels) > 0) {
-    bottomskip <- 1.7
+    notesstart <- 1.7
   } else {
-    bottomskip <- 0
+    notesstart <- 0
   }
   if(legend.nrow > 0) {
-    bottomskip <- (legend.nrow-1)*1.2 + 2.5
+    notesstart <- notesstart + (legend.nrow-1)*1.2 + 2.5
   }
 
-  bottom <- countfnlines(footnotes) + countsrclines(sources) + bottomskip
+  xtickmargin <- 2 + xticksize(xticks, layout, srt)
+  notesstart <- notesstart + xtickmargin
+
+  bottom <- countfnlines(footnotes) + countsrclines(sources) + notesstart
   top <- counttitlelines(title, subtitle)
 
   if (portrait) {
@@ -104,7 +138,7 @@ figuresetup <- function(filename, device, panels, yticks, yunits, title, subtitl
   fig <- getfigsize(plotsize, top, bottom, left, right)
   createfigure(filename, device, fig, plotsize)
 
-  return(list(top = top, bottom = bottom, left = left, right = right, bottomskip = bottomskip))
+  return(list(top = top, bottom = bottom, left = left, right = right, xtickmargin = xtickmargin, notesstart = notesstart))
 }
 
 handlelayout <- function(layout) {
@@ -142,7 +176,16 @@ handlelayout <- function(layout) {
 startdevice <- function(filename, device, figsize) {
   if (is.null(device)) {
     if (.Platform$OS.type == "windows") {
-      grDevices::windows(width = figsize$width, height = figsize$height)
+      # I use try catch because R can't always use the windows device even on windows
+      # (e.g. when running examples, or during tests)
+      tryCatch(
+        {
+          grDevices::windows(width = figsize$width, height = figsize$height)
+        },
+        error = function(cond) {
+          grDevices::dev.new(width = figsize$width, height = figsize$height)
+        }
+      )
     } else {
       grDevices::dev.new(width = figsize$width, height = figsize$height)
     }

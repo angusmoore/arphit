@@ -720,6 +720,19 @@ arphit(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxis
 knitr::include_graphics("differentaxislabel.png")
 ```
 
+## Rotating x ticks
+
+You can rotate x ticks using the `srt` option. It represents the rotation (in degrees):
+```{r, eval = FALSE}
+arphit(categoricaldata, x = "categoryname", srt = 45)
+```
+```{r, echo = FALSE, results = "hide"}
+arphit(categoricaldata, x = "categoryname", srt = 45, filename = "xlabel-rotation.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("xlabel-rotation.png")
+```
+
 # Joining and missing values
 
 The `joined` argument controls how your graph behaves with missing values. When `joined = TRUE` (which is the default) the series will ignore the missing value and connect to the next non-missing value. When `joined = FALSE` the series will break.
