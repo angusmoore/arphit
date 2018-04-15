@@ -85,7 +85,7 @@ expect_error(arphit(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), 
 expect_error(arphit(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label"), NA)
 expect_error(arphit(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label")), NA)
 expect_error(arphit(categoricaldata, x = "categoryname", srt = 45), NA)
-joining_data <- ts(data.frame(y = c(1,2,NA,3,4)), start = 2000, frequency = 1)
+joining_data <- ts(data.frame(y1 = c(1,2,NA,3,4)), start = 2000, frequency = 1)
 expect_error(arphit(joining_data, joined = TRUE), NA)
 
 ## EXTRA integration tests
@@ -151,3 +151,8 @@ expect_error(agg_draw(p), NA)
 
 p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1))
 expect_error(agg_draw(p, filename = "my-graph.png"), NA)
+
+
+# #71 incorrect handling of NAs
+bar <- data.frame(x = c(2000:2003), y = c(NA, rnorm(3)), z = c(NA, y = rnorm(3)))
+expect_error(arphit(bar, x="x"), NA)
