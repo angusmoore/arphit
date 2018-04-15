@@ -294,10 +294,12 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined) 
       }
       if (joined) {
         nas <- is.na(x) | is.na(y)
-        x <- x[!nas]
+        plotx <- x[!nas]
         y <- y[!nas]
+      } else {
+        plotx <- x
       }
-      graphics::plot(x, y, type = "o", col = attributes$col[[s]], xlim = xlim, ylim = c(ylim$min, ylim$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
+      graphics::plot(plotx, y, type = "o", col = attributes$col[[s]], xlim = xlim, ylim = c(ylim$min, ylim$max), axes = FALSE, xlab = "", ylab = "", pch = attributes$pch[[s]], lty = attributes$lty[[s]], lwd = attributes$lwd[[s]])
     }
   }
 }
