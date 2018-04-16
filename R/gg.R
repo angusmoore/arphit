@@ -636,6 +636,7 @@ addlayer <- function(gg, new, panel) {
       subset_data$data <- subset_data$data[new$data[new$aes$facet] == facets[i],]
       out <- addlayertopanel(gg, subset_data, panel)
       gg <- out$gg
+      gg$paneltitles[[panel]] <- facets[i]
       newseriesnames[[panel]] <- out$newseriesnames
     }
   }
