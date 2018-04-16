@@ -239,8 +239,8 @@ xlabels.ts <- function(xlim, layout) {
 }
 
 xlabels.categorical <- function(xlim, xvar, layout, showall) {
-  start <- xlim[1]
-  end <- xlim[2] - 1
+  start <- 1
+  end <- length(xvar)
   at <- seq(from = start, to = end, by = 1) + 0.5
   labels <- xvar
   if (!is.null(showall) && !showall) {
@@ -255,9 +255,9 @@ xlabels.categorical <- function(xlim, xvar, layout, showall) {
 xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
   step <- min(diff(xvar))
   start <- xlim[1]
-  end <- xlim[2] - 1
+  end <- xlim[2] - step
   at <- seq(from = start, to = end, by = step) + 0.5*step
-  labels <- xvar
+  labels <- seq(from = start, to = end, by = step)
   if (is.null(showall) || !showall) {
     layout_factor <- getlayoutfactor(layout)
     keep <- restrictlabels(labels, layout_factor)
@@ -268,7 +268,7 @@ xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
 }
 
 xlabels.scatter <- function(xlim, xvalues) {
-  scale <- defaultscale(xvalues)
+  scale <- defaultscale(c(xlim[1],xlim[2]-(xlim[2]-xlim[1])/10000))
   scale <- createscale(scale$min,scale$max,scale$nsteps)
   return(list(at = scale, labels = scale, ticks = scale))
 }
