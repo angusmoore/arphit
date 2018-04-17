@@ -352,7 +352,10 @@ expect_equal(facetlayout(three_facets, "f", "4h")$panels, c("1","3","5"))
 expect_equal(facetlayout(five_facets, "f", "4h")$layout, "4h")
 expect_equal(facetlayout(five_facets, "f", "4h")$panels, c("1","2","3","4","5"))
 
-
+# Facets adding panel titles (#77)
+foo <- data.frame(x=1:10,y=1:10,facet=c("a","a","a","a","a","b","b","b","b","b"), stringsAsFactors = FALSE)
+bar <- arphitgg(foo, agg_aes(x=x,y=y,facet=facet))+agg_line()
+expect_equal(bar$paneltitles, list("1" = "a", "3" = "b"))
 
 # Tests for time series handling
 foo <- ts(data.frame(x1=rnorm(10),x2=rnorm(10)), frequency = 4, start=2000)
@@ -360,4 +363,5 @@ bar <- arphitgg() + agg_line(agg_aes(y=x1),data=foo) + agg_col(agg_aes(y=x2),dat
 expect_equal(colnames(bar$data[["1"]]), c("agg_time", "x1", "x2"))
 expect_error(print(bar), NA)
 
+# Shutdown any devices
 graphics.off()
