@@ -359,3 +359,5 @@ foo <- ts(data.frame(x1=rnorm(10),x2=rnorm(10)), frequency = 4, start=2000)
 bar <- arphitgg() + agg_line(agg_aes(y=x1),data=foo) + agg_col(agg_aes(y=x2),data=foo)
 expect_equal(colnames(bar$data[["1"]]), c("agg_time", "x1", "x2"))
 expect_error(print(bar), NA)
+
+graphics.off()
