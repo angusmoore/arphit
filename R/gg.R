@@ -573,12 +573,16 @@ addlayertopanel <- function(gg, new, panel) {
   }
 
   # handle data
+  reorder <- !is.unsorted(new$data[[new$aes$x]]) && !is.unsorted(gg$data[[panel]][[new$aes$x]])
   newdata <- subsetdata(new$data, new$aes$x, new$aes$y, new$aes$group)
   newdata <- convert2wide(newdata, new$aes)
   if (!is.null(gg$data[[panel]])) {
     # We have already added a series for this panel, so we need to merge the new data on to the old
     mergeddata <- dplyr::full_join(gg$data[[panel]], newdata, by = gg$x[[panel]])
     mergeddata <- unrename(mergeddata)
+    if (reorder) {
+      mergeddata <- dplyr::arrange_(mergeddata, gg$x[[panel]])
+    }
     newseriesnames <- getnewcolumns(gg$data[[panel]], mergeddata)
     gg$data[[panel]] <- mergeddata
   } else {
