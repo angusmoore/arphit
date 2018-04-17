@@ -23,6 +23,7 @@ expect_error(arphit(mytibble, x = "date"), NA)
 expect_error(arphit(categoricaldata, x = "categoryname"), NA)
 expect_error(arphit(scatterdata, x = "x"), NA)
 expect_error(arphit(data = list("1" = data1, "2" = data2), x = list("1" = "date", "2" = "years"), layout = "2v"), NA)
+graphics.off()
 
 # Panels and layouts section
 expect_error(arphit(data, layout = "1", series = list("1" = c("x1","x4"))), NA)
@@ -36,8 +37,8 @@ expect_error(arphit(data, layout = "3h", series = list("1" = c("x1"), "2" = c("x
 expect_error(arphit(data, layout = "3b2", series = list("1" = "x1", "2" = "x2", "3" = "x1", "4" = "x2", "5" = "x1", "6" = "x4")), NA)
 expect_error(arphit(data, layout = "4h", series = list("1" = "x1", "2" = "x2", "3" = "x1", "4" = "x2", "5" = "x1", "6" = "x4", "7" = "x2", "8" = c("x1","x2"))), NA)
 expect_error(arphit(data, layout = "4b2", series = list("1" = "x1", "2" = "x2", "3" = "x1", "4" = "x2", "5" = "x1", "6" = "x4", "7" = "x2", "8" = c("x1","x2"))), NA)
-
 expect_error(arphit(data), NA)
+graphics.off()
 
 # portrait size
 expect_error(arphit(data, portrait = TRUE), NA)
@@ -56,6 +57,7 @@ expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("
 # Footnotes and sources
 expect_error(arphit(data, footnote = c("Footnote 1", "Footnote 2", "etc, this can go on for a while")), NA)
 expect_error(arphit(data, sources = c("RBA", "ABS", "someone else")), NA)
+graphics.off()
 
 # Y units
 expect_error(arphit(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s")), NA)
@@ -87,6 +89,7 @@ expect_error(arphit(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = 
 expect_error(arphit(categoricaldata, x = "categoryname", srt = 45), NA)
 joining_data <- ts(data.frame(y1 = c(1,2,NA,3,4)), start = 2000, frequency = 1)
 expect_error(arphit(joining_data, joined = TRUE), NA)
+graphics.off()
 
 ## EXTRA integration tests
 # Numeric categorical labels
@@ -95,7 +98,6 @@ expect_error(arphit(catdata1, x = "x"), NA)
 # Non-one spaced numerical categorical labels
 catdata2 <- data.frame(x = c(2,4,6,8,10), y = 1:5)
 expect_error(arphit(catdata2, x = "x"), NA)
-
 graphics.off()
 
 ## gg-interface vignette
@@ -123,6 +125,7 @@ expect_error(agg_draw(p), NA)
 p <- arphitgg() +
   agg_line(data = simple_data, aes = agg_aes(x = date, y = y1), color = RBA["Red1"])
 expect_error(agg_draw(p), NA)
+graphics.off()
 
 p <- arphitgg() +
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), color = RBA["Red1"])
@@ -144,6 +147,7 @@ expect_error(agg_draw(p), NA)
 
 p <- arphitgg() + agg_units("index", panel = "1") + agg_units("ppt", panel = "2")
 expect_error(agg_draw(p), NA)
+graphics.off()
 
 p <- arphitgg() + agg_source("Source 1") + agg_source(c("Source 2 (as a vector)", "Source 3 (vectors are easy!")) +
   agg_footnote("This is my first footnoote") + agg_footnote("This is a second footnote")
@@ -151,9 +155,12 @@ expect_error(agg_draw(p), NA)
 
 p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1))
 expect_error(agg_draw(p, filename = "my-graph.png"), NA)
-
+graphics.off()
 
 # #71 incorrect handling of NAs
 bar <- data.frame(x = c(2000:2003), y = c(NA, rnorm(3)), z = c(NA, y = rnorm(3)))
 expect_error(arphit(bar, x="x"), NA)
 expect_error(arphit(bar, x="x", joined = FALSE), NA)
+
+
+graphics.off()

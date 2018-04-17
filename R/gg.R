@@ -562,7 +562,15 @@ facetlayout <- function(data, facet, layout) {
 }
 
 addlayertopanel <- function(gg, new, panel) {
-  # Figure out the x variable
+  # Special case ts data
+  if (is.null(new$aes$x) && (stats::is.ts(new$data))) {
+    agg_time <-as.Date(lubridate::date_decimal(as.numeric(stats::time(new$data))))
+    new$aes$x <- "agg_time"
+    new$data <- tibble::as_tibble(new$data)
+    new$data$agg_time <- agg_time
+  }
+
+  # Assign the x variable
   if (!is.null(gg$x[[panel]])) {
     # Have previously set an x variable. Check is the same.
     if (gg$x[[panel]] != new$aes$x) {
