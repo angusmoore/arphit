@@ -1,5 +1,8 @@
 sanitycheckdata <- function(series, data) {
   for (p in names(series)) {
+    if (!is.null(data[[p]]) && nrow(data[[p]]) == 0) {
+      stop(paste0("Data in panel ", p, " has no rows."))
+    }
     for (s in series[[p]]) {
       if (!s %in% colnames(data[[p]])) {
         stop(paste("Series ", s, " is not in your dataset for panel ", p , ".", sep = ""))

@@ -72,3 +72,9 @@ expect_error(arphit(infinitedata, x = "cat"), "Series x1 in panel 1 contains non
 infinitets <- ts(data.frame(x1 = rnorm(10), x2 = rnorm(10)), start = c(2000,1), frequency = 4)
 infinitets[4, "x2"] <- Inf
 expect_error(arphit(infinitets), "Series x2 in panel 1 contains non-finite values")
+
+# Error if pass in data with no rows (#86)
+foo <- data.frame(x=numeric(),y=numeric())
+expect_error(arphit(foo,x="x"), "Data in panel 1 has no rows.")
+bar <- arphitgg(foo, agg_aes(x=x,y=y))+agg_line()
+expect_error(print(bar), "Data in panel 1 has no rows")
