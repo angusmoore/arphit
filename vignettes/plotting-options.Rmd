@@ -525,6 +525,12 @@ To see the full list of availble colours type `vignette("rba-colours", package =
 
 Alternatively, you can use any colour that R recognises.
 
+You can access the default colors using the alias `RBA["Default1"]` etc.
+
+## (Advanced) Defining your own default colors
+
+If you want to define your own set of default colors to be used define a vector called `ARPHIT_USERCOLORS` before you load `arphit`. Putting this into your `.Rprofile` is sensible.
+
 ## Line markers
 
 `pch` allows you to add markers to your series. These directly follow the R options.
