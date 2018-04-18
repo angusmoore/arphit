@@ -139,4 +139,4 @@ RBA["Default5"] <- RBA["Blue7"]
 RBA["Default6"] <- RBA["Red5"]
 RBA["Default7"] <- RBA["Brown4"]
 RBA["Default8"] <- RBA["Pink2"]
-RBA["Default9"] <- RBA["Grey7"])
+RBA["Default9"] <- RBA["Grey7"]
