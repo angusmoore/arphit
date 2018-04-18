@@ -363,5 +363,10 @@ bar <- arphitgg() + agg_line(agg_aes(y=x1),data=foo) + agg_col(agg_aes(y=x2),dat
 expect_equal(colnames(bar$data[["1"]]), c("agg_time", "x1", "x2"))
 expect_error(print(bar), NA)
 
+# Failure if data is grouped by a variable not used in the plot (#85)
+foo <- dplyr::group_by(data.frame(x=1:10,y=rnorm(10),unused=letters[1:10]), unused)
+bar <- arphitgg(foo) + agg_line(agg_aes(x=x,y=y))
+expect_error(print(bar), NA)
+
 # Shutdown any devices
 graphics.off()
