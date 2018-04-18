@@ -644,7 +644,7 @@ addlayer <- function(gg, new, panel) {
   } else {
     layoutoverride <- facetlayout(new$data, new$aes$facet, gg$layout)
     gg$layout <- layoutoverride$layout
-    facets <- unique(new$data[[new$aes$facet]])
+    facets <- sort(unique(new$data[[new$aes$facet]]))
     newseriesnames <- list()
     for (i in 1:length(facets)) {
       panel <- layoutoverride$panels[[i]]

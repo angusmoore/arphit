@@ -363,6 +363,11 @@ bar <- arphitgg() + agg_line(agg_aes(y=x1),data=foo) + agg_col(agg_aes(y=x2),dat
 expect_equal(colnames(bar$data[["1"]]), c("agg_time", "x1", "x2"))
 expect_error(print(bar), NA)
 
+# Order facets
+foo <- data.frame(x=c(1,2,1,2),y=rnorm(4),facet=c("b","b","a","a"), stringsAsFactors = FALSE)
+bar <- arphitgg(foo,agg_aes(x=x,y=y,facet=facet))+agg_col()
+expect_equal(bar$paneltitles, list("1" = "a", "3" = "b"))
+
 # Failure if data is grouped by a variable not used in the plot (#85)
 foo <- dplyr::group_by(data.frame(x=1:10,y=rnorm(10),unused=letters[1:10]), unused)
 bar <- arphitgg(foo) + agg_line(agg_aes(x=x,y=y))
