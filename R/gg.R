@@ -562,8 +562,10 @@ facetlayout <- function(data, facet, layout) {
 }
 
 addlayertopanel <- function(gg, new, panel) {
-  # Make sure data isn't grouped (causes errors sometimes if it is)
-  new$data <- dplyr::ungroup(new$data)
+  if (tibble::is_tibble(new$data) || is.data.frame(new$data)) {
+    # Make sure data isn't grouped (causes errors sometimes if it is)
+    new$data <- dplyr::ungroup(new$data)
+  }
   # Special case ts data
   if (is.null(new$aes$x) && (stats::is.ts(new$data))) {
     agg_time <-as.Date(lubridate::date_decimal(as.numeric(stats::time(new$data))))
