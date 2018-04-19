@@ -368,10 +368,14 @@ foo <- data.frame(x=c(1,2,1,2),y=rnorm(4),facet=c("b","b","a","a"), stringsAsFac
 bar <- arphitgg(foo,agg_aes(x=x,y=y,facet=facet))+agg_col()
 expect_equal(bar$paneltitles, list("1" = "a", "3" = "b"))
 
-# Failure if data is grouped by a variable not used in the plot (#85)
+# Shouldn't fail if data is grouped by a variable not used in the plot (#85)
 foo <- dplyr::group_by(data.frame(x=1:10,y=rnorm(10),unused=letters[1:10]), unused)
 bar <- arphitgg(foo) + agg_line(agg_aes(x=x,y=y))
 expect_error(print(bar), NA)
+
+# Facet variable is a factor (#88)
+foo <- data.frame(x=1:3,b=c("a","b","a"),y=1:3)
+expect_error(arphitgg(foo,agg_aes(x=x,y=y,facet=b)) + agg_line(), NA)
 
 # Shutdown any devices
 graphics.off()

@@ -649,10 +649,10 @@ addlayer <- function(gg, new, panel) {
     for (i in 1:length(facets)) {
       panel <- layoutoverride$panels[[i]]
       subset_data <- new
-      subset_data$data <- subset_data$data[new$data[new$aes$facet] == facets[i],]
+      subset_data$data <- subset_data$data[new$data[[new$aes$facet]] == facets[i],]
       out <- addlayertopanel(gg, subset_data, panel)
       gg <- out$gg
-      gg$paneltitles[[panel]] <- facets[i]
+      gg$paneltitles[[panel]] <- as.character(facets[i])
       newseriesnames[[panel]] <- out$newseriesnames
     }
   }
