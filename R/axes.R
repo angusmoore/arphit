@@ -54,11 +54,10 @@ defaultscale <- function(data,permittedsteps=PERMITTEDSTEPS) {
 }
 
 createscale <- function(minscale,maxscale,nsteps) {
-  scale <- rep(NA,nsteps)
   stepsize <- (maxscale-minscale)/(nsteps-1)
-  for (i in 1:nsteps) {
-    scale[i] <- minscale + (i-1)*stepsize
-  }
+  # Get the significand of the minscale
+  significand <- -floor(log10(abs(minscale)))
+  scale <- round(seq(from=minscale, by=stepsize, length.out=nsteps), significand+4) # Assume the rounding to the level of significance on the minscale + 4 will be _more_ than enough to wipe out small innaccuracies
   return(scale)
 }
 
