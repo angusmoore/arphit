@@ -338,6 +338,7 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
   }
   if (length(barcolumns) > 0) {
     bardata <- t(as.matrix(data[, barcolumns]))
+    bardata[is.na(bardata)] <- 0 # singletons don't show otherwise (#82)
     # Split into positive and negative (R doesn't stack well across axes)
     bardata_p <- bardata
     bardata_n <- bardata
