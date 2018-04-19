@@ -155,3 +155,7 @@ expect_equal(handlexunits(panels2b2, "index"), list("1" = "index", "2" = "index"
 # Axis labels
 expect_equal(handleaxislabels(list("1" = "foo"), onesided), list("1" = "foo"))
 expect_equal(handleaxislabels("foo", onesided), list("1" = "foo", "2" = "foo"))
+
+# Incorrect rounding of labels (#81)
+foo <- createscale(-0.2, 0.4, 4)
+expect_true(foo[2] == 0)
