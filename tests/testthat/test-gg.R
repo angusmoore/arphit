@@ -377,5 +377,15 @@ expect_error(print(bar), NA)
 foo <- data.frame(x=1:3,b=c("a","b","a"),y=1:3)
 expect_error(arphitgg(foo,agg_aes(x=x,y=y,facet=b)) + agg_line(), NA)
 
+# Variables with spaces
+library(tibble)
+foo <- tibble(x=1:10, `A spaced title` = rnorm(10), y = rnorm(10))
+expect_error(print(arphitgg(foo, agg_aes(x=x,y=`A spaced title`))+agg_line()), NA)
+bar <- tibble(`spaced x`=1:10,
+                         `spaced y`=1:10,
+                         `spaced group`=c("a","a","b","b","a","a","a","b","b","b"),
+                         `spaced facet`=c("c","c","c","c","d","d","d","d","d","d"))
+arphitgg(bar, agg_aes(x = `spaced x`, y = `spaced y`, group = `spaced group`, facet = `spaced facet`)) + agg_line()
+
 # Shutdown any devices
 graphics.off()
