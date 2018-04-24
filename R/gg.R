@@ -480,8 +480,15 @@ convert2wide <- function(data, aes) {
   }
 }
 
+addbackticks <- function(x) {
+  paste0("`", x, "`")
+}
+
 subsetdata <- function(data, x, y, group) {
+  x <- addbackticks(x)
+  y <- addbackticks(y)
   if (!is.null(group)) {
+    group <- addbackticks(group)
     return(dplyr::select_(data, x, y, group))
   } else {
     return(dplyr::select_(data, x, y))
@@ -593,7 +600,7 @@ addlayertopanel <- function(gg, new, panel) {
     mergeddata <- dplyr::full_join(gg$data[[panel]], newdata, by = gg$x[[panel]])
     mergeddata <- unrename(mergeddata)
     if (reorder) {
-      mergeddata <- dplyr::arrange_(mergeddata, gg$x[[panel]])
+      mergeddata <- dplyr::arrange_(mergeddata, addbackticks(gg$x[[panel]]))
     }
     newseriesnames <- getnewcolumns(gg$data[[panel]], mergeddata)
     gg$data[[panel]] <- mergeddata
