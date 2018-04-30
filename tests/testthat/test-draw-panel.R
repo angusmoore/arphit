@@ -195,3 +195,13 @@ expect_that(needgrid("3", "2b2"), equals(TRUE))
 expect_that(needgrid("4", "2b2"), equals(TRUE))
 
 expect_error(needgrid("4", "foo"))
+
+# Get x vals
+expect_equal(getxvals(ts(data.frame(x=1:10),frequency=4,start=2000),TRUE,seq(from=2000.125,by=0.25,length.out = 10)),
+             seq(from=2000.125,by=0.25,length.out = 10))
+
+expect_equal(getxvals(data.frame(),TRUE,seq(from=2000.125,by=0.25,length.out = 10)),
+             seq(from=2000.125,by=0.25,length.out = 10))
+expect_equal(getxvals(data.frame(),FALSE,1:10), 1.5:10.5)
+expect_equal(getxvals(data.frame(),FALSE,c(2,4,6,8)), c(3,5,7,9))
+expect_equal(getxvals(data.frame(),FALSE,letters[1:4]), 1.5:4.5)

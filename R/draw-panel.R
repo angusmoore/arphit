@@ -353,26 +353,29 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
   }
 }
 
+getxvals <- function(data, ists, xvals) {
+  if (stats::is.ts(data) || ists || is.scatter(xvals) || is.null(data)) {
+    # time series or scatter
+    return(xvals)
+  } else if (!is.null(xvals)) {
+    if (is.numeric(xvals)) {
+      return(xvals + 0.5*min(diff(xvals)))
+    } else {
+      # Categorical data, offset by half
+      return(1:length(xvals) + 0.5)
+    }
+  } else {
+    return(xvals)
+  }
+}
+
 drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, xtickmargin) {
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
 
   # Handling the x variables
-  if (stats::is.ts(data) || ists || is.scatter(xvals) || is.null(data)) {
-    # time series or scatter
-    x <- xvals
-  } else if (!is.null(xvals)) {
-    if (is.numeric(xvals)) {
-      x <- xvals + 0.5*min(diff(xvals))
-    } else {
-      # Categorical data, offset by half
-      x <- 1:length(xvals) + 0.5
-    }
-  } else {
-    # No data at all, empty plot
-    x <- xvals
-  }
+  x <- getxvals(data, ists, xvals)
 
   # Do we need an x unit
   if (stats::is.ts(data) || ists || !is.scatter(xvals) || is.null(data)) {
