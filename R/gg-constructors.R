@@ -469,3 +469,4 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
   class(gg) <- "arphit.gg"
   return(gg)
 }
+
