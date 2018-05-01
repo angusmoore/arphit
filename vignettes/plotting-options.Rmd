@@ -294,7 +294,7 @@ To see the full list of availble colours type `vignette("rba-colours", package =
 
 Alternatively, you can use any colour that R recognises.
 
-If you don't specify colours, arphit cycles through a set of default colours. Should you need to (e..g for labels) you can access the default colors using the alias `RBA["Default1"]` etc.
+If you don't specify colours, arphit cycles through a set of default colours. Should you need to (e.g. for labels) you can access the default colors using the alias `RBA["Default1"]` etc.
 
 ### (Advanced) Defining your own default colors
 
