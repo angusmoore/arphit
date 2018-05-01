@@ -1,6 +1,6 @@
-#' RBA-style time series graphs in R
+#' RBA-style graphs in R
 #'
-#' Creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
+#' Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
 #'
 #' @param data Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.
 #' @param series (optional) A list of vectors of string names of the series from data you wish to plot. The keys in the list must be "1", "2", etc to indicate which panel the series should be plotted on.
@@ -50,12 +50,12 @@
 #' T <- 24
 #' randomdata <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10),
 #'   x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
-#' arphit(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
+#' agg_qplot(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
 #'   bars = c("x3","x4"), layout = "2v", title = "A Title", subtitle = "A subtitle",
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-arphit <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL) {
+agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL) {
 
   out <- handledata(series, data, x)
   data <- out$data

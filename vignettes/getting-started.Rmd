@@ -1,0 +1,271 @@
+---
+title: "Getting stated"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    theme: united
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{getting-started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette details the first steps for how to create `arphit` graphs. More detailed descriptions of all of the plotting options are available in the [plotting options vignette](plotting-options.html). 
+
+The `ggplot2`-like interface for `arphit` is referred to as `agg` throughout (and in function names).
+
+# Basics
+
+## First steps
+
+The very first step to using `arphit` is to import it into your workspace:
+```{r}
+library(arphit)
+```
+
+If you get an error because you haven't yet installed `arphit`, see the 'Installation' section of the [README](https://github.com/angusmoore/arphit/blob/master/README.md).
+
+## Data
+
+`arphit` can accept `data.frame`s, `tibble`s and `ts`s. If you are making scatter graphs, or categorical graphs, you'll be using the first two. If you are making time series graphs, you might be using `ts`, but you can also use `data.frame`s or `tibble`s with a date column. If you have long data, you'll be using `tibble`s or `data.frame`s.
+
+For this guide, we're going create the following three random datasets for all our examples:
+```{r, eval = FALSE}
+simple_data <- data.frame(x = seq.Date(from = as.Date("2000-03-01"), length.out = 10, by = "quarter"),
+                          y = rnorm(10))
+long_data <- data.frame(x = rep(seq.Date(from = as.Date("2000-03-01"), length.out = 10, by = "quarter"), 2),
+                        y = rnorm(10),
+                        y2 = rnorm(10),
+                        state = c(rep("A", 10), rep("B", 10)))
+scatter_data <- data.frame(x = rnorm(10), y = rnorm(10))
+```
+
+## Layouts, panels and types of graphs
+
+### Layouts
+
+Each layout has a number of panels where series can be placed. *Right hand side axes count as separate panels in some layouts.* Panels are numbered from left to right, top to bottom.
+
+There are nine supported layouts. THe [plotting options guide](plotting-options.html) details all 9 options. For this getting started guide, we'll focus on just two:
+
+  1. One-panel "1". This is the default if you do not supply a value for `layout`. Despite its name this layout has *two* panels. Panel "1" corresponds to the left axis; panel "2" corresponds to the right axis.
+```{r, eval = FALSE}
+arphitgg(layout = "1")
+```
+```{r, echo = FALSE, results = "hide"}
+library(arphit)
+agg_draw(arphitgg(layout = "1"), filename = "layout_1.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("layout_1.png")
+```  
+
+  2. Two-panel horizontal "2h". This layout has *four* panels. Panels "1" and "2" are the left and
+right axes of the top panel. "3" and "4" for the bottom.
+```{r, eval = FALSE}
+arphitgg(layout = "2h")
+```
+```{r, echo = FALSE, results = "hide"}
+agg_draw(arphitgg(layout = "2h"), filename = "layout_2h.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("layout_2h.png")
+```  
+
+# Creating a graph
+
+The first part of creating an `arphit` ggplot-like graph is to create one and define the layout:
+```{r, results = "hide"}
+library(arphit)
+p <- arphitgg(layout = "1")
+```
+(If omitted, `layout` defaults to "1".)
+
+Here we are assigning the graph to the variable `p`. Graphs are created by adding layers and other elements (such as titles). These are added using the `+` operator. To _show_ the graph, we call `agg_draw(p)`. Alternatively, if you are working interactively, you can simply type `p` (or whatever you have assigned your graph to) at the console to display it.
+
+`arphitgg` can optionally take a `data` and `aes` (short for aesthetic) argument. These provide defaults that layers will inherit if the layer does not specify its own. This is very useful when you have a single dataset you want to use in multiple layers, as it saves you from specifying it for each layer.
+
+## Data
+
+The `data` argument mostly speaks for itself. It must be a `tibble`, `data.frame` or `ts`.
+
+## Aesthetic
+
+An aesthetic is the definition of a layer. It specifies the `x` and `y` variables for the layer.
+```{r, results = "hide"}
+p <- arphitgg() + 
+  agg_line(data = simple_data, aes = agg_aes(x = x, y = y))
+agg_draw(p, filename = "no-group-aes.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("no-group-aes.png")
+```
+
+If your data are a `ts`, the `x` aesthetic does not need to specified, it is automatically the dates in the time series.
+
+### Groups
+
+An aesthetic can also specify a `group` variable. This is used when your data is in long form and you have multiple observations on each `x` observation, corresponding to different variables. For instance, `x` might be the date column, `y` the column containing observations of the unemployment rate and `group` the column containing state identifiers.
+```{r, results = "hide"}
+p <- arphitgg() +
+  agg_line(data = long_data, aes = agg_aes(x = x, y = y, group = state))
+agg_draw(p, filename = "group-aes.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("group-aes.png")
+```
+
+### Facets
+
+An aesthetic can also specify a `facet` variable. `facet`s work like `group`s, except that facets are split across panels (and so layers ignore if you give them a panel). `facet`s are covered in more detail in the [plotting options guide](plotting-options.html). Data can have both `group`s and `facet`s.
+
+## Layers
+
+A layer is a series (or group of series) built from the same aesthetic. In `arphit`, layers must be assigned to a panel.
+
+Layers take four arguments:
+  1. Data
+  2. Aesthetic
+  3. Panel (defaults to "1" if not supplied)
+  4. Colour (optional, and discussed below)
+
+There are three types of layers, `agg_line`, `agg_point` and `agg_col`. These are used nearly identically to produce line, scatter and column graphs respectively:
+```{r, results = "hide"}
+p <- arphitgg(layout = "2h") + 
+  agg_line(data = long_data, aes = agg_aes(x = date, y = y, group = state), panel = "1") + 
+  agg_col(data = long_data, aes = agg_aes(x = date, y = y, group = state), panel = "3")
+agg_draw(p, filename = "layers.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("layers.png")
+```
+
+```{r, results = "hide"}
+p <- arphitgg(layout = "1") + 
+  agg_point(data = scatter_data, aes = agg_aes(x = x, y = y), panel = "1")
+agg_draw(p, filename = "scatter.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("scatter.png")
+```
+
+Layers will inherit data and aesthetic (or parts of the aesthetic) if these are left null in the layer specification. This is handy to save you from having to repeat yourself:
+```{r, results = "hide"}
+p <- arphitgg(long_data, aes = agg_aes(x = date, group = state), layout = "2h") + 
+  agg_line(aes = agg_aes(y = y), panel = "1") + 
+  agg_col(aes = agg_aes(y = y2), panel = "3")
+agg_draw(p, filename = "inherit.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("inherit.png")
+```
+
+NB: column layers have an additional optional argument `stacked`, which determines whether the bars should be stacked or not.
+
+# Series colours and other attributes
+
+## Colours
+
+Specifying line, bar or point (depending on layer type) colours for series is done when creating a layer. For instance:
+```{r, results = "hide"}
+p <- arphitgg() + 
+  agg_line(data = simple_data, aes = agg_aes(x = date, y = y), color = RBA["Red1"])
+agg_draw(p, filename = "simplecolor.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("simplecolor.png")
+```
+
+This color is applied to _all_ series in the layer. This is less helpful when you have a group variable, since they will all show up as the same colour (which is unlikely to be what you want). E.g. this is not helpful:
+```{r, results = "hide"}
+p <- arphitgg() +
+  agg_line(data = long_data, aes = agg_aes(x = date, y = y, group = state), color = RBA["Red1"])
+agg_draw(p, filename = "group-single-color.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("group-single-color.png")
+```
+
+To specify for different colours for different series in a grouped layer, you can instead specify a _vector_ of colours:
+```{r, results = "hide"}
+p <- arphitgg() +
+  agg_line(data = long_data, aes = agg_aes(x = date, y = y, group = state), color = c(RBA["Red1"], RBA["Blue4"]))
+agg_draw(p, filename = "group-multi-color.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("group-multi-color.png")
+```
+
+(NB: `arphit` will cycle through the supplied vector colours if there aren't enough in the vector to cover the number of series in the layer.)
+
+To see the full list of availble colours type `vignette("rba-colours", package = "arphit")`.
+
+Alternatively, you can use any colour that R recognises.
+
+## Line markers, and other attributes
+
+`pch` allows you to add markers to your series; `lty` allows you to control the line type - e.g. add dashing; `lwd` controls the width of the line; `barcol` lets you set the colour of the bar outline for `agg_col` layers.
+
+These options all directly follow the R options. These are specified like colours (setting one will apply it to all series in the layer, a vector will be looped through).
+
+# Titles
+
+Titles and subtitles are added using `agg_title` and `agg_subtitle` respectively. The only required argument is the text for the title/subtitle:
+```{r results = "hide"}
+p <- arphitgg() + agg_title("Graph Title Goes Here") + agg_subtitle("Or a subtitle, if you like")
+agg_draw(p, filename = "title.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("title.png")
+```
+
+To add panel titles, specify a panel identifier in the `agg_title` or `agg_subtitle` call:
+```{r results = "hide"}
+p <- arphitgg() + agg_title("Graph Title Goes Here") + agg_subtitle("Or a subtitle, if you like") + 
+  agg_title("And here is panel title", panel = "1") + agg_subtitle("Panel subtitle too if needed", panel = "1")
+agg_draw(p, filename = "paneltitle.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("paneltitle.png")
+```
+
+# Units
+
+You can specify the units for your graph using `agg_units` This can be used either with or without a panel specifier. If called without a panel specifier, the units are applied to all panels, otherwise the units are added only to specified panel:
+```{r results = "hide"}
+p <- arphitgg() + agg_units("index")
+agg_draw(p, filename = "units-all.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("units-all.png")
+```
+
+```{r results = "hide"}
+p <- arphitgg() + agg_units("index", panel = "1") + agg_units("ppt", panel = "2")
+agg_draw(p, filename = "units-specific.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("units-specific.png")
+```
+
+# Sources and footnotes
+
+Adding sources and footnotes is done using `agg_source` and `agg_footnote`. You can pass in a single text string, or a vector of multiple strings. You can add as many `agg_source`/`agg_footnote` as you like:
+```{r results = "hide"}
+p <- arphitgg() + agg_source("Source 1") + agg_source(c("Source 2 (as a vector)", "Source 3 (vectors are easy!")) + 
+  agg_footnote("This is my first footnoote") + agg_footnote("This is a second footnote")
+agg_draw(p, filename = "sources.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("sources.png")
+```
+
+# Saving to a file
+
+To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf` and `pdf` are supported.
+```{r, results = "hide", eval = FALSE}
+p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1))
+agg_draw(p, filename = "my-graph.png")
+```
