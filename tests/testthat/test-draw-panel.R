@@ -205,3 +205,14 @@ expect_equal(getxvals(data.frame(),TRUE,seq(from=2000.125,by=0.25,length.out = 1
 expect_equal(getxvals(data.frame(),FALSE,1:10), 1.5:10.5)
 expect_equal(getxvals(data.frame(),FALSE,c(2,4,6,8)), c(3,5,7,9))
 expect_equal(getxvals(data.frame(),FALSE,letters[1:4]), 1.5:4.5)
+
+# tick adjustment (#100)
+expect_equal(tickadjustment("1"), 1)
+expect_equal(tickadjustment("2v"), 3/2) # seems like a weird bug in R, shouldn't be needed, but shows up better this way...
+expect_equal(tickadjustment("2h"), 2)
+expect_equal(tickadjustment("2b2"), 2)
+expect_equal(tickadjustment("3v"), 2) # seems like a weird bug in R, shouldn't be needed, but shows up better this way...
+expect_equal(tickadjustment("3h"), 3)
+expect_equal(tickadjustment("3b2"), 3)
+expect_equal(tickadjustment("4h"), 4)
+expect_equal(tickadjustment("4b2"), 4)
