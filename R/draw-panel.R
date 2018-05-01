@@ -206,7 +206,20 @@ inchesasuser <- function(x) {
   x*graphics::strheight("AA",units="user")/graphics::strheight("AA",units="inches")
 }
 
-gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt) {
+tickadjustment <- function(layout) {
+  return(switch(layout,
+                "1" = 1,
+                "2h" = 2,
+                "2v" = 3/2,
+                "2b2" = 2,
+                "3h" = 3,
+                "3v" = 2,
+                "3b2" = 3,
+                "4h" = 4,
+                "4b2" = 4))
+}
+
+gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt) {
   side <- getsides(p, layout)
   xlab <- needxlabels(p, layout)
 
@@ -230,7 +243,7 @@ gridsandborders <- function(p, layout, portrait, yunits, xunits, yticks, xlabels
   ## Draw the x-axis
   if (xlab) {
     # Draw x ticks and labels
-    graphics::axis(1, xlabels$ticks, tck = DEFAULTTICKLENGTH, labels = FALSE)
+    graphics::axis(1, xlabels$ticks, tck = tickadjustment(layout)*DEFAULTTICKLENGTH, labels = FALSE)
     if (dropfirstxlabel(p, layout, dropxlabel)) {
       at <- xlabels$at[2:length(xlabels$at)]
       labels <- xlabels$labels[2:length(xlabels$labels)]
@@ -369,7 +382,7 @@ getxvals <- function(data, ists, xvals) {
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, portrait, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, xtickmargin) {
+drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, xtickmargin) {
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
@@ -388,7 +401,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
 
   drawbgshadings(bgshadings, p)
 
-  gridsandborders(p, layout, portrait, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt)
+  gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt)
 
   drawbars(l, series, bars, data, x, attributes, xlim, ylim, bar.stacked)
 
