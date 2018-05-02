@@ -5,7 +5,8 @@
 \title{Create an arphit graph to be built using the ggplot-like interface.}
 \usage{
 arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
-  dropxlabel = FALSE, srt = 0, showallxlabels = NULL)
+  dropxlabel = FALSE, srt = 0, showallxlabels = NULL, joined = TRUE,
+  plotsize = LANDSCAPESIZE)
 }
 \arguments{
 \item{data}{(Optional) Data to be used for the plot. Can be left blank, but must then be supplied for each layer.}
@@ -14,13 +15,17 @@ arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
 
 \item{layout}{(default = "1") The layout of the graph. Valid options are "1", "2v", "2h", "2b2", "3v", "3h", "3b2", "4h", "4b2".}
 
-\item{portrait}{(default = false) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).}
+\item{portrait}{(default = FALSE) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).}
 
 \item{dropxlabel}{(optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.}
 
 \item{srt}{(default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.}
 
 \item{showallxlabels}{(optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.}
+
+\item{joined}{(default TRUE) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE).}
+
+\item{plotsize}{(optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE}
 }
 \description{
 Create an arphit graph to be built using the ggplot-like interface.

@@ -42,6 +42,8 @@ agg_draw <- function(gg, filename = NULL) {
          bar.stacked = gg$stacked,
          srt = gg$srt,
          showallxlabels = gg$showallxlabels,
+         joined = gg$joined,
+         plotsize = gg$plotsize,
          filename = filename)
 }
 
