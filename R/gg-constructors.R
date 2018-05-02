@@ -429,7 +429,7 @@ agg_aes <- function(x, y, group = NULL, facet = NULL) {
 #' how to use the ggplot-like interface.
 #'
 #' @export
-arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE, srt = 0, showallxlabels = NULL) {
+arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE, srt = 0, showallxlabels = NULL, joined = TRUE, plotsize = LANDSCAPESIZE) {
   gg <- list(data = list(parent = data),
              aes = aes,
              x = list(),
@@ -464,7 +464,9 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              dropxlabel = dropxlabel,
              stacked = TRUE,
              srt = srt,
-             showallxlabels = showallxlabels)
+             showallxlabels = showallxlabels,
+             joined = joined,
+             plotsize = plotsize)
 
   class(gg) <- "arphit.gg"
   return(gg)
