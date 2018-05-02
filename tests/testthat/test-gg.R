@@ -387,5 +387,11 @@ bar <- tibble(`spaced x`=1:10,
                          `spaced facet`=c("c","c","c","c","d","d","d","d","d","d"))
 arphitgg(bar, agg_aes(x = `spaced x`, y = `spaced y`, group = `spaced group`, facet = `spaced facet`)) + agg_line()
 
+# Joined and plotsize in gg interface (#101 and #102)
+foo <- tibble(x=1:10, y = rnorm(10))
+foo$y[4] <- NA
+expect_error(arphitgg(foo, agg_aes(x=x,y=y),joined=FALSE) + agg_line(), NA)
+expect_error(arphitgg(foo, agg_aes(x=x,y=y), plotsize=c(2,5)) + agg_line(), NA)
+
 # Shutdown any devices
 graphics.off()
