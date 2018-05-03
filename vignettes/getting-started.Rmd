@@ -12,9 +12,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette details the first steps for how to create `arphit` graphs. More detailed descriptions of all of the plotting options are available in the [plotting options vignette](plotting-options.html). 
-
-The `ggplot2`-like interface for `arphit` is referred to as `agg` throughout (and in function names).
+This vignette details the first steps for how to create `arphit` graphs. Not all elements that you can add to graphs are covered in this guide. More detailed descriptions of all of the plotting options (including those discussed here) are available in the [plotting options vignette](plotting-options.html). 
 
 # Basics
 
@@ -129,7 +127,7 @@ Layers take four arguments:
   1. Data
   2. Aesthetic
   3. Panel (defaults to "1" if not supplied)
-  4. Colour (optional, and discussed below)
+  4. Colour (optional)
 
 There are three types of layers, `agg_line`, `agg_point` and `agg_col`. These are used nearly identically to produce line, scatter and column graphs respectively:
 ```{r, results = "hide"}
@@ -162,11 +160,7 @@ agg_draw(p, filename = "inherit.png")
 knitr::include_graphics("inherit.png")
 ```
 
-NB: column layers have an additional optional argument `stacked`, which determines whether the bars should be stacked or not.
-
 # Series colours and other attributes
-
-## Colours
 
 Specifying line, bar or point (depending on layer type) colours for series is done when creating a layer. For instance:
 ```{r, results = "hide"}
@@ -204,11 +198,9 @@ To see the full list of availble colours type `vignette("rba-colours", package =
 
 Alternatively, you can use any colour that R recognises.
 
-## Line markers, and other attributes
+## Other attributes
 
-`pch` allows you to add markers to your series; `lty` allows you to control the line type - e.g. add dashing; `lwd` controls the width of the line; `barcol` lets you set the colour of the bar outline for `agg_col` layers.
-
-These options all directly follow the R options. These are specified like colours (setting one will apply it to all series in the layer, a vector will be looped through).
+You can control line type, line width and points markers with `lty`, `lwd` and `pch`. These work just like `color`. See the [plotting options guide](plotting-options.html) for more detail.
 
 # Titles
 
@@ -260,12 +252,4 @@ agg_draw(p, filename = "sources.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("sources.png")
-```
-
-# Saving to a file
-
-To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf` and `pdf` are supported.
-```{r, results = "hide", eval = FALSE}
-p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1))
-agg_draw(p, filename = "my-graph.png")
 ```

@@ -145,6 +145,8 @@ knitr::include_graphics("no-group-aes.png")
 
 If your data are a `ts`, the `x` aesthetic does not need to specified, it is automatically the dates in the time series.
 
+### Inheriting aesthetics
+
 Aesthetics inherit from their parent. That is, if you omit part of an aesthetic in the definition of a layer, it will inherit from the parent (if it exists). If you specify both a parent aesthetic and a layer aesthetic, the layer aesthetic overrides.
 
 In this example, the whole aesthetic is inherited:
@@ -209,11 +211,13 @@ knitr::include_graphics("facet-group.png")
 
 A layer is a series (or group of series) built from the same aesthetic. In `arphit`, layers must be assigned to a panel.
 
-Layers take four arguments:
+All require have four common arguments, and some layers have extra options to define their look:
   1. Data
   2. Aesthetic
   3. Panel (defaults to "1" if not supplied)
-  4. Colour (optional, and discussed below)
+  4. Colour (optional)
+
+*NB:* Layers will inherit data and aesthetic from their parent if omitted. This is helpful if you want to define multiple layers from the one dataset. (Example below)
 
 There are three types of layers, `agg_line`, `agg_point` and `agg_col`. These are used nearly identically to produce line, scatter and column graphs respectively:
 ```{r, results = "hide"}
@@ -248,11 +252,32 @@ knitr::include_graphics("inherit.png")
 
 ### Line layers
 
+`agg_line` layers convert data and an aesthetic into line series in the chosen panel (or, panels if you set a facet variable in the aesthetic).
+
+There are 7 options for line layers:
+ - The dataset to be drawn (`data`)
+ - The aesthetic that defines how to turn the data into a graph (`aes`)
+ - The colour (or colours) for the series (`color`)
+ - Point markers for the series (`pch`)
+ - The line type - e.g. solid or dashed - for the sereis (`lty`)
+ - The linewidth of the lines (`lwd`)
+ - Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 
 ### Column/bar layers
 
+`agg_col` layers plot data as a vertical column graph. They have six options:
+ - The aesthetic that defines how to turn the data into a graph (`aes`)
+ - The dataset to be drawn (`data`)
+ - The colour (or colours) for the series (`color`)
+ - Point markers for the series (`barcol`)
+ - Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
+ - Whether the bars should be stacked (default) or grouped (`stacked`). This is a global option; you cannot combine stacked and grouped layers.
 
 ### Point/scatter layers
+
+`agg_point` layers are just a wrapper around `agg_line` that set the line to NA, and the point marker (`pch`) to `19` for solid dots. Naturally, these are best for scatter graphs, as they quicker and easier than constructing your own `agg_line` layer.
+
+`agg_point` has only four arguments. Data (`data`), aesthetic (`aes`), panel (`panel`) and colour for the markers (`color`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
 
 # Series colours and other attributes
 
@@ -282,9 +307,9 @@ To specify for different colours for different series in a grouped layer, you ca
 ```{r, results = "hide"}
 p <- arphitgg() +
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), color = c(RBA["Red1"], RBA["Blue4"]))
-agg_draw(p, filename = "group-multi-color.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "group-multi-color.png")
 knitr::include_graphics("group-multi-color.png")
 ```
 
@@ -303,80 +328,86 @@ If you want to define your own set of default colors to be used define a vector 
 ## Line markers
 
 `pch` allows you to add markers to your series. These directly follow the R options. These are specified like colours (setting one will apply it to all series in the layer, a vector will be cycled through).
-
-[example]
+```{r, results = "hide"}
+p <- arphitgg(simple_data) + 
+  agg_line(agg_aes(x = date, y = y1), pch = 19)
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "pch.png")
+knitr::include_graphics("pch.png")
+```
 
 ## Line type
 
 `lty` allows you to control the line type - e.g. add dashing. These directly follow the R options. These are specified like colours (setting one will apply it to all series in the layer, a vector will be cycled through).
-
-[example]
+```{r, results = "hide"}
+p <- arphitgg(simple_data) + 
+  agg_line(agg_aes(x = date, y = y1), lty = 2)
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "lty.png")
+knitr::include_graphics("lty.png")
+```
 
 ## Line width
 
 `lwd` controls the width of the line. 1 corresponds to default. 2 to twice default, 0.5 half it, etc. These are specified like colours (setting one will apply it to all series in the layer, a vector will be cycled through).
-
-[example]
+```{r, results = "hide"}
+p <- arphitgg(simple_data) + 
+  agg_line(agg_aes(x = date, y = y1), lwd = 3)
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "lwd.png")
+knitr::include_graphics("lwd.png")
+```
 
 ## Bar outline
 
 `barcol` lets you set the colour of the bar outline for `agg_col` layers. By default, this is `NA`, meaning no outline. These are specified like colours (setting one will apply it to all series in the layer, a vector will be cycled through).
-
-[example]
+```{r, results = "hide"}
+p <- arphitgg(simple_data) + 
+  agg_col(agg_aes(x = date, y = y1), barcol = "black")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "barcol.png")
+knitr::include_graphics("barcol.png")
+```
 
 # Titles and subtitles
 
 Titles and subtitles are added using `agg_title` and `agg_subtitle` respectively. The only required argument is the text for the title/subtitle:
 ```{r results = "hide"}
-p <- arphitgg() + agg_title("Graph Title Goes Here") + agg_subtitle("Or a subtitle, if you like")
+p <- arphitgg() + 
+  agg_title("Graph Title Goes Here") + 
+  agg_subtitle("Or a subtitle, if you like")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 agg_draw(p, filename = "title.png")
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("title.png")
-```
-
-To add panel titles, specify a panel identifier in the `agg_title` or `agg_subtitle` call:
-```{r results = "hide"}
-p <- arphitgg() + agg_title("Graph Title Goes Here") + agg_subtitle("Or a subtitle, if you like") + 
-  agg_title("And here is panel title", panel = "1") + agg_subtitle("Panel subtitle too if needed", panel = "1")
-agg_draw(p, filename = "paneltitle.png")
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("paneltitle.png")
 ```
 
 `arphit` will automatically place linebreaks in long titles but may not be smart enough in all cases. You can insert linebreaks yourself as necessary by using "\\n".
 
-```{r, eval = FALSE}
-arphitgg() + 
-  agg_title("Here is a very very very long title that arphit will automatically put a break in") +
-  agg_subtitle("And a subtitle\nwith a manual break too")
-```
-```{r, echo = FALSE, results = "hide"}
+```{r, eacho = FALSE}
 p <- arphitgg() + 
   agg_title("Here is a very very very long title that arphit will automatically put a break in") +
   agg_subtitle("And a subtitle\nwith a manual break too")
-agg_draw(p, filename = "longtitle.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "longtitle.png")
 knitr::include_graphics("longtitle.png")
 ```
 
 # Panel titles and subtitles
 
 You can add titles and subtitles to panels in much the same way as titles and subtitles. Allyou do is specify `panel` as an argument:
-```{r, eval = FALSE}
-arphitgg() + 
-  agg_title("Panel title for panel 1", panel = "1") +
-  agg_subtitle("And a subtitle", panel = "1")
-```
 ```{r, echo = FALSE, results = "hide"}
 p <- arphitgg() + 
   agg_title("Panel title for panel 1", panel = "1") +
   agg_subtitle("And a subtitle", panel = "1")
-agg_draw(p, filename = "paneltitles.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "paneltitles.png")
 knitr::include_graphics("paneltitles.png")
 ```
 
@@ -385,32 +416,29 @@ knitr::include_graphics("paneltitles.png")
 You can specify the units for your graph using the `agg_units` function. This can be used either with or without a panel specifier. If called without a panel specifier, the units are applied to all panels, otherwise the units are added only to specified panel:
 ```{r results = "hide"}
 p <- arphitgg() + agg_units("index")
-agg_draw(p, filename = "units-all.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "units-all.png")
 knitr::include_graphics("units-all.png")
 ```
 
 ```{r results = "hide"}
 p <- arphitgg() + agg_units("index", panel = "1") + agg_units("ppt", panel = "2")
-agg_draw(p, filename = "units-specific.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "units-specific.png")
 knitr::include_graphics("units-specific.png")
 ```
 
 ## x-axis units
 
 You can also add units for the x-axis in much the same way. These are ignored for anything other than scatter graphs.
-
-```{r, eval = FALSE}
-arphitgg(scatterdata, agg_aes(x=x,y=y)) + agg_point() + agg_xunits("ppt")
-```
-```{r, echo = FALSE, results = "hide"}
-p <- arphitgg(scatterdata, agg_aes(x=x,y=y)) + agg_point() + agg_xunits("ppt")
-agg_draw(p, filename = "x-units.png")
+```{r, results = "hide"}
+p <- arphitgg(scatterdata, agg_aes(x=x,y=y)) + 
+  agg_point() + agg_xunits("ppt")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "x-units.png")
 knitr::include_graphics("x-units.png")
 ```
 
@@ -418,11 +446,14 @@ knitr::include_graphics("x-units.png")
 
 Adding sources and footnotes is done using `agg_source` and `agg_footnote`. You can pass in a single text string, or a vector of multiple strings. You can add as many `agg_source`/`agg_footnote` as you like:
 ```{r results = "hide"}
-p <- arphitgg() + agg_source("Source 1") + agg_source(c("Source 2 (as a vector)", "Source 3 (vectors are easy!")) + 
-  agg_footnote("This is my first footnoote") + agg_footnote("This is a second footnote")
-agg_draw(p, filename = "sources.png")
+p <- arphitgg() + 
+  agg_source("Source 1") + 
+  agg_source(c("Source 2 (as a vector)", "Source 3 (vectors are easy!")) + 
+  agg_footnote("This is my first footnoote") + 
+  agg_footnote("This is a second footnote")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "sources.png")
 knitr::include_graphics("sources.png")
 ```
 
@@ -435,25 +466,28 @@ knitr::include_graphics("sources.png")
 Y-limits can be controlled with `agg_ylim`. This function takes three required arguments: a minimum, a maximum, and the number of steps to include. You can optionally include a panel identifier; if omitted, the limits will be applied to all panels.
 
 ### Example 1: Manually setting left and right axes
-```{r, eval = FALSE}
-
-```
-```{r, echo = FALSE, results = "hide"}
-
+```{r, results = "hide"}
+p <- arphitgg(simple_data) + 
+  agg_line(agg_aes(x=x,y=y1),panel="1") + 
+  agg_line(agg_aes(x=x,y=y1),panel="2") + 
+  agg_ylim(-1,1,5,panel="1") +
+  agg_ylim(-4,4,5,panel="2")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-
+agg_draw(p, filename = "ylim-left-right-axes.png")
+knitr::include_graphics("ylim-left-right-axes.png")
 ```
 
 ### Example 2: Applying the same y axis to all panels
-```{r, eval = FALSE}
-
-```
-```{r, echo = FALSE, results = "hide"}
-
+```{r, results = "hide"}
+p <- arphitgg(simple_data) + 
+  agg_line(agg_aes(x=x,y=y1),panel="1") + 
+  agg_line(agg_aes(x=x,y=y1),panel="2") + 
+  agg_ylim(-1,1,5)
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-
+agg_draw(p, filename = "ylim-all-axes.png")
+knitr::include_graphics("ylim-all-axes.png")
 ```
 
 ## X axis
@@ -465,15 +499,14 @@ As with the y-axis you can specify a panel identifier to apply the limits to a s
 Fine-grained control of x-ticks is not currently possible; only the limits can be set, the ticks are determined automatically. Time series graphs only support year ticks; higher frequency - such as months or quarters are not supported.
 
 For layouts with vertical division (e.g. "2v", "2b2" etc), you can drop the the first tick of the right hand panel by setting `dropxlabel = TRUE` in `arphitgg`. This prevents the last label of the left hand panel overlapping the first of the right hand panel.
-
-```{r, eval = FALSE}
-
-```
-```{r, echo = FALSE, results = "hide"}
-
+```{r, results = "hide"}
+p <- arphitgg(simple_data, agg_aes(X=date, y=y1)) + 
+  agg_line() + 
+  agg_xlim(1998, 2008)
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-
+agg_draw(p, filename = "x-axis-lim.png")
+knitr::include_graphics("x-axis-lim.png")
 ```
 
 # Shading between series
@@ -481,25 +514,30 @@ For layouts with vertical division (e.g. "2v", "2b2" etc), you can drop the the 
 You can shade the area between series by adding `agg_shading`. 
 
 Shading is drawn in the order you add it; the first shading added is on the bottom. Series are _always_ drawn on top of shading.
-```{r, eval = FALSE}
-
-```
-```{r, echo = FALSE, results = "hide"}
-
+```{r, results = "hide"}
+p <- arphitgg(simple_data, agg_aes(x=date)) +
+  agg_line(agg_aes(y=y1)) +
+  agg_line(agg_aes(y=y2)) +
+  agg_shading(from = y1, to = y2, color = RBA["Blue1"])
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-
+agg_draw(p, filename = "shading-single.png")
+knitr::include_graphics("shading-single.png")
 ```
 
 Multiple shading:
-```{r, eval = FALSE}
-agg_qplot(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")))
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")), filename = "shading-layered.png")
+```{r, results = "hide"}
+p <- arphitgg(simple_data, agg_aes(x=date)) +
+  agg_line(agg_aes(y=y1)) +
+  agg_line(agg_aes(y=y2)) +
+  agg_line(agg_aes(y=y3)) +
+  agg_line(agg_aes(y=y4)) +
+  agg_shading(from = y1, to = y2, color = RBA["Blue1"]) + 
+  agg_shading(from = y3, to = y4, color = "lightgrey") + 
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("shading-layered.png")
+agg_draw(p, filename = "shading-multiple.png")
+knitr::include_graphics("shading-multiple.png")
 ```
 
 # Plot annotations
@@ -513,92 +551,91 @@ You can add series labels, and arrows to aid those labels, using `agg_label` and
  - `x` and `y` specify where (in the units on the plot) the centre of the label should be. For time series, `x` is in decimal years (i.e. 2000.5 is July 2, 2000). For categorical graphs, 1 corresponds to the first categories, 2 to the second, etc.
  - `panel` specifies which panel to place the label on.
  - `color` is self-explanatory.
-```{r, eval = FALSE}
-agg_qplot(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2004, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")))
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2002, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")), filename = "labels.png")
+```{r, results = "hide"}
+p <- arphitgg() +
+  agg_label("A label", x = 2002, y = 0.5, color = RBA["Blue2"], panel = "1")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "labels.png")
 knitr::include_graphics("labels.png")
 ```
 
-Arrows are specified with `agg_arrow`. `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at, `head.x` and `head.y` where to finish it. `panel` specifies which panel to place the arrow on. `color` is self-explanatory. `lwd` is optional and specifies the linewidth of the arrow (default = 1).
-```{r, eval = FALSE}
-agg_qplot(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)))
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)), filename = "arrows.png")
+Arrows are specified with `agg_arrow`.
+ - `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at.
+ - `head.x` and `head.y` where to finish the arrow (and where the arrow head is).
+ - `panel` specifies which panel to place the arrow on.
+ - `color` is self-explanatory.
+ - `lwd` is optional and specifies the linewidth of the arrow (default = 1).
+```{r, results = "hide"}
+p <- arphitgg() +
+  agg_arrow(tail.x = 2000, tail.y = 0, head.x = 2001, head.y = 0.5, color = RBA["Blue1"], panel = "1")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("arrows.png")
+agg_draw(p, filename = "arrow.png")
+knitr::include_graphics("arrow.png")
 ```
 
 ## Adding horizonal and vertical lines
 
-A list of lists specifying line segments to add to the plot. Each of the sublists specifies a single line segment to add. These can be specified in three ways. The most common way is specifying either a horizontal or vertical line that stretches across the panel. Do this by having a sublist entry similar to `list(x = 2001, panel = 1, color = "green", lty = 1)`. `x` is where, on the x-axis, the line will be drawn. `panel` specifies which panel to draw on. `color` is self-explanatory and is optional (default black). `lty` specifies what line type to use (see R lty options) - it is optional and defaults to 1 (solid). To draw a horizontal line use y instead of x.
+Horizontal and vertical lines are added using `agg_abline`. Horizontal lines are drawn by specifying the `y` variable _only; vertical the `x` variable only. You can also control the color and line type. These are optional and default to a solid black line. You must also tell `arphit` which panel to put the line on.
 
 The following example draws a vertical line at 2001 using the default colour and solid line. It also draws a horizontal line at -1 colored darkred and dashed (`lty = 2`).
-```{r, eval = FALSE}
-agg_qplot(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)))
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)), filename = "lines.png")
+```{r, results = "hide"}
+p <- arphitgg() + 
+  agg_abline(x = 2001, panel = "1") + 
+  agg_abline(y = -1, color = "darkred", lty = 2, panel = "1")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "lines.png")
 knitr::include_graphics("lines.png")
 ```
 
-If you want more control, you can specify the coordinates of the line segment instead of using `x` or `y`.  To do so use `list(x1 = 2000, y1 = -1, x2 = 2001, y2 = 0, panel = 1)` instead of x and y. All other options are the same. For example:
-```{r, eval = FALSE}
-agg_qplot(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1)))
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1)), filename = "specificlines.png")
+If you need more control over the line, you can specify the coordinates of the line segment instead of using `x` or `y`.  To do so use `x1`, `x2`, `y1` and `y2` instead of `x` and `y`. All other options are the same. For example:
+```{r, results = "hide"}
+p <- arphitgg() + 
+  agg_abline(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = "1")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "specificlines.png")
 knitr::include_graphics("specificlines.png")
 ```
 
-Entering NA for any of `x1`, `y1`, `x2`, or `y2` will set that coordinate to the axis limit (with `x1` and `y1` going to the left and bottom axes and `x2` and `y2` to the right and top).
+Entering NA (or omitting the argument) for any of `x1`, `y1`, `x2`, or `y2` will set that coordinate to the axis limit (with `x1` and `y1` going to the left and bottom axes and `x2` and `y2` to the right and top).
 
 ## Adding background shading
 
-Background shading can be added using the `bgshading` argument. This is a list of lists specifying background shading to add to the plot. Each of the sublists corresponds to a rectangle of background shading to draw. Each must be of the form: `list(x1 = NA, y1 = -1, x2 = NA, y2 = 1, panel = 1, color = "lightgrey")`. `x1` and `x2` correspond to the bottom left corner; `x2`, `y2` the top right. Passing NA will set that coordinate to the axis limit - this is useful for creating shading that stretches across a whole panel. `color` and `panel` are self-explanatory (color is optional and defaults to light grey).
+Background shading can be added using `agg_bgshading`. This draws a rectangle with bottom left corner at `x1`, `y1` and top right corner at `x2`,`y2`. Passing NA for any of the four coordinates will set that coordinate to the axis limit - this is useful for creating shading that stretches across a whole panel. `color` and `panel` are self-explanatory (color is optional and defaults to light grey).
 
 This example creates horizontal shading across the whole panel between -1 and 3 on the y axis.
-```{r, eval = FALSE}
-agg_qplot(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1)))
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1)), filename = "shading1.png")
+```{r, results = "hide"}
+p <- arphitgg() + 
+  agg_bgshading(x1 = NA< y1 = -1, x2 = NA, y2 = 3, panel = "1")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("shading1.png")
+agg_draw(p, filename = "bgshading.png")
+knitr::include_graphics("bgshading.png")
 ```
 
 And this two panel example repeats the above example for panel 1, but puts light green shading between two dates on the bottom panel.
-```{r, eval = FALSE}
-agg_qplot(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")))
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")), filename = "shading2.png")
+```{r, results = "hide"}
+p <- arphitgg(layout = "2h") + 
+  agg_bgshading(x1 = NA< y1 = -1, x2 = NA, y2 = 3, panel = "1") + 
+  agg_bgshading(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = "3", color = "lightgreen")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("shading2.png")
+agg_draw(p, filename = "bgshading.png")
+knitr::include_graphics("bgshading.png")
 ```
-
 ## Adding axis labels
 
-You can add y and x axis labels to plots using the `yaxislabels` and `xaxislabels` arguments. These take a list (or, to apply the same label to all panels, a string) specifying the axis labels for each panel:
-
-```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label")
-```
+You can add y and x axis labels to plots using `agg_yaxislabel` and `agg_xaxislabel`. These take the text for the axis label, plus an optional panel identifier. If omitted, the label is applied to all panels.
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label", filename = "oneaxislabel.png")
+p <- arphitgg(layout = "2b2") + 
+  agg_yaxislabel("A y axis label") + 
+  agg_xaxislabel("An x label")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "oneaxislabel.png")
 knitr::include_graphics("oneaxislabel.png")
 ```
 
@@ -614,14 +651,12 @@ knitr::include_graphics("differentaxislabel.png")
 
 ## Rotating x ticks
 
-You can rotate x ticks using the `srt` option. It represents the rotation (in degrees):
-```{r, eval = FALSE}
-agg_qplot(categoricaldata, x = "categoryname", srt = 45)
-```
+You can rotate x ticks using the `srt` option in `arphitgg`. It represents the rotation (in degrees):
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(categoricaldata, x = "categoryname", srt = 45, filename = "xlabel-rotation.png")
+p <- arphitgg(simple_data, agg_aes(x=date,y=y1), srt = 45) + agg_line()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename =  "xlabel-rotation.png")
 knitr::include_graphics("xlabel-rotation.png")
 ```
 
@@ -635,37 +670,31 @@ joining_data <- ts(data.frame(y = c(1,2,NA,3,4)), start = 2000, frequency = 1)
 ```
 
 With `joined = TRUE`, the series continues straight across the missing value for 2002.
-```{r, eval = FALSE}
-agg_qplot(joining_data, joined = TRUE)
-```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(joining_data, joined = TRUE, filename = "joined.png")
+p <- arphitgg(joining_data, agg_aes(y = y), joined = TRUE) + agg_line()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "joined.png")
 knitr::include_graphics("joined.png")
 ```
 
 But when we set `joined = FALSE`, the series does not connect over the missing observation:
-```{r, eval = FALSE}
-agg_qplot(joining_data, joined = FALSE)
-```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(joining_data, joined = FALSE, filename = "unjoined.png")
+p <- arphitgg(joining_data, agg_aes(y = y), joined = FALSE) + agg_line()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "unjoined.png")
 knitr::include_graphics("unjoined.png")
 ```
 
 # Adding a legend
 
-You can add a legend to your graph by setting `legend = TRUE`. You can specify how many columns to have with `lengend.ncol`, but arphit will automatically guess otherwise.
-```{r, eval = FALSE}
-agg_qplot(data, legend = TRUE)
-```
+You can add a legend to your graph by adding `agg_legend()`. This can also take one optional argument to specify how many columns to have with `ncol`; `arphit` will automatically guess if you leave it blank.
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, legend = TRUE, filename = "legend.png")
+arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var)) + agg_line() + agg_legend()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+agg_draw(p, filename = "legend.png")
 knitr::include_graphics("legend.png")
 ```
 
