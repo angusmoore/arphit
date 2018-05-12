@@ -20,11 +20,11 @@ cd out
 git init
 git config user.name "travis"
 git config user.email "travis"
+cp ../arphit/inst/doc/getting-started.html getting-started.html
 cp ../arphit/inst/doc/index.html index.html
 cp ../arphit/inst/doc/plotting-options.html plotting-options.html
-cp ../arphit/inst/doc/todo.html todo.html
+cp ../arphit/inst/doc/qplot-options.html qplot-options.html
 cp ../arphit/inst/doc/rba-colours.html rba-colours.html
-cp ../arphit/inst/doc/gg-interface.html gg-interface.html
 
 cp ../arphit.pdf arphit.pdf
 
@@ -33,7 +33,7 @@ cp ../simple_example.png images/simple_example.png
 cp ../complex_example.png images/complex_example.png
 cp ../nooptions.png images/nooptions.png
 cp ../lotsofoptions.png images/lotsofoptions.png
-cp ../ggplot.png images/ggplot.png
+cp ../qplot.png images/qplot.png
 
 git add .
 git commit -m "Auto-deploy vignettes to github pages"

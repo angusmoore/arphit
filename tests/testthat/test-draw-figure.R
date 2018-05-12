@@ -47,7 +47,7 @@ expect_that(finddevice(NULL), equals(NULL))
 randomdata <- ts(data.frame(x1 = rnorm(12)), start = c(2000,1), frequency = 4)
 for (suffix in c("png","pdf","emf")) {
   file <- paste("foo.", suffix, sep = "")
-  arphit(randomdata, filename = file)
+  agg_qplot(randomdata, filename = file)
   # test exists
   expect_that(file.exists(file), is_true())
   # remove

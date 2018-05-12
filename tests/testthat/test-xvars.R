@@ -44,7 +44,7 @@ expect_that(handlex(multidata2, x = list("1" = "date")), equals(list("1" = offse
 # Same x variable across multiple datasets
 data1 <- data.frame(x1 = 1:10, x2 = rnorm(10))
 data2 <- data.frame(x1 = 1:10, x4 = rnorm(10))
-expect_error(arphit(data = list("1" = data1, "2" = data2), x = "x1"), NA)
+expect_error(agg_qplot(data = list("1" = data1, "2" = data2), x = "x1"), NA)
 
 # categorical x data
 catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), NULL)$data
@@ -71,4 +71,4 @@ expect_that(handlex(handledata(NULL, data, "year")$data, "year")[["1"]], equals(
 # Test #37
 # Error if x variable has NA values
 data <- data.frame(x = c(1,2,3,NA,4),y = c(4,3,7,1,2))
-expect_error(arphit(data, x="x"), NA)
+expect_error(agg_qplot(data, x="x"), NA)

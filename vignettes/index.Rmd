@@ -1,39 +1,64 @@
 ---
 title: "Index"
-author: "Angus Moore"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    toc: true
+    theme: united
+    toc_float: true
 vignette: >
   %\VignetteIndexEntry{index}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+# Quick links
+
+ - [Getting started](getting-started.html)
+ - [Plotting options](plotting-options.html)
+ - [Colour palette](rba-colours.html)
+ - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
+ - [qplot options](qplot-options.html)
+
 # arphit
 
-`arphit` is an R package to make it easy to quickly create RBA-style time series plots. Once you have your data, creating a plot is as simple as:
-```
-arphit(data)
+`arphit` is a ggplot-inspired R package to easily create RBA-style graphs in R. Once you have your data, you can quickly create a plot with:
+```{r, eval = FALSE}
+arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("simple_example.png")
 ```
 
-`arphit` is also extremely customisable. You can create complex charts, with multiple panels, bars, titles, annotations, shading, sources and footnotes:
-```
-arphit(data,
-               layout = "2b2",
-               series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3", "x4"), "4" = c("x5")),
-               bars = c("x1"),
-               title = "arphit Makes Graphing Easy",
-               yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"),
-               shading = list(list(from = "x3", to = "x4", color= "lightgrey")),
-               labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red")),
-               lines = list(list(x = 2004, panel = "2")),
-               bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = "4")))
+`arphit` is also customisable. You can create complex charts, with multiple panels, bars, titles, annotations, shading, sources and footnotes:
+```{r, eval = FALSE}
+arphitgg(data, agg_aes(x = date), layout = "2b2") +
+  agg_col(agg_aes(y=x1), panel = "1") +
+  agg_line(agg_aes(y=x2), panel = "2") +
+  agg_line(agg_aes(y=x3), panel = "3") +
+  agg_line(agg_aes(y=x4), panel = "3") +
+  agg_line(agg_aes(y=x4), panel = "4") +
+  agg_title("arphit Makes Graphs in R") +
+  agg_units("index", panel = "1") +
+  agg_units("ppt", panel = "2") +
+  agg_units("$", panel = "3") +
+  agg_units("'000", panel = "4") +
+  agg_shading(from = x4, to = x3) +
+  agg_label("A label", x = 2001.5, y = 1, panel = "1", color = "red") +
+  agg_abline(x = 2002, panel = "2") +
+  agg_bgshading(y1 = -1, y2 = 3, panel = "4")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("complex_example.png")
+```
+
+`arphit` also has a quick plotting function, which plots all (or a subset of) the columns in your data. This is particularly helpful for time series data, or other 'wide' data:
+```{r, eval = FALSE}
+data <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
+agg_qplot(data)
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("qplot.png")
 ```
 
 # Installation and getting started
@@ -41,7 +66,7 @@ knitr::include_graphics("complex_example.png")
 ## Installation
 
 Install the package using the R `devtools` package:
-```
+```{r, eval = FALSE}
 library(devtools)
 install_github("angusmoore/arphit", build_vignettes = TRUE)
 ```
@@ -49,69 +74,67 @@ install_github("angusmoore/arphit", build_vignettes = TRUE)
 You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
 
 Installing may fail if `devtools` cannot correctly determine your proxy server. If so, you'll get the following error message when you try to install:
-```
+```{r, eval = FALSE}
 Installation failed: Timeout was reached: Connection timed out after 10000 milliseconds
 ```
 If you get this message, try setting your proxy server with the following command, and then running the install again:
-```
+```{r, eval = FALSE}
 httr::set_config(httr::use_proxy(curl::ie_get_proxy_for_url("http://www.google.com")))
 ```
 
 ## Getting started
 
+(For more detail see [getting started guide](getting-started.html).)
+
 The very first step to using arphit is to import it into your workspace:
-```
+```{r, eval = FALSE}
 library(arphit)
 ```
 
-The second step is to get some data. The easiest way to plot is to have your data as `ts` object. (However, `tibble`s and `data.frame`s are also supported, and you can plot non-time-series graphs too). For these simple examples, we'll randomly construct three years worth of quarterly time series data, starting from Q1 2000:
-```
-T <- 12
-data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
+The second step is to get some data. For these simple examples, we'll randomly construct three years worth of quarterly time series data, starting from Q1 2000:
+```{r, eval = FALSE}
+data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
+                                   by = "quarter",
+                                   length.out = 10),
+                   x1 = rnorm(10),
+                   x2 = rnorm(10),
+                   x3 = rnorm(10, sd = 10),
+                   x4 = rnorm(10, sd = 5))
 ```
 
-To make the simplest plot, all you need to do is call:
-```
-arphit(data)
+To make a simple line plot, all we need to do is specify the `x` and `y` variables and tell arphit we want a layer:
+```{r, eval = FALSE}
+arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("nooptions.png")
 ```
 
-That chart is serviceable, but not very well labelled. Let's make it a bit nicer, by putting each of the four series into its own panel, and giving the chart and panels titles, and assign a source.
-```
-arphit(data,
-               series = list("1" = "x1", "2" = "x2", "3" = "x3", "4" = "x4"),
-               title = "A Randomly Created Chart",
-               subtitle = "A short example",
-               yunits = "index",
-               paneltitles = list("1" = "Series 1", "2" = "Series 2", "3" = "Series 3", "4" = "Series 4"),
-               sources = c("Randomly generated data"))
+That chart is serviceable, but not very well labelled. Let's make it a bit nicer, by putting each of the four series into its own panel, and giving the graph and panels titles, and a source.
+```{r, eval = FALSE}
+arphitgg(data, layout = "2b2") +
+  agg_line(agg_aes(x=date, y = x1), panel = "1") + 
+  agg_line(agg_aes(x=date, y = x2), panel = "2") + 
+  agg_line(agg_aes(x=date, y = x3), panel = "3") + 
+  agg_line(agg_aes(x=date, y = x4), panel = "4") + 
+  agg_title("A Randomly Created Graph") +
+  agg_subtitle("A short example") + 
+  agg_units("index") + 
+  agg_title("Panel 1", panel = "1") + 
+  agg_title("Panel 2", panel = "2") + 
+  agg_title("Panel 3", panel = "3") + 
+  agg_title("Panel 4", panel = "4") + 
+  agg_source("Randomly generated data")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("lotsofoptions.png")
 ```
 
-`arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](plotting-options.html).
-
-## ``ggplot2``-like interface
-
-`arphit` also has an alternative, `ggplot2`-like way of creating graphs. This may be useful for those more familiar with that style of plotting. For instance:
-```
-data <- tibble(dates = seq.Date(from = as.Date("2000-01-01"), length.out = 20, by = "quarter"), y = rnorm(20))
-data %>% 
-  arphitgg(agg_aes(x = dates, y = y)) + agg_line()
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("ggplot.png")
-```
-The interface supports groups, so that you can easily plot 'long' data. It can plot scatter, line and bar graphs. 
-
-See the [gg-interface vignette](gg-interface.html) for more information.
+The [getting started vignette](getting-started.html) provides more introduction on how to create graphs in `arphit`. `arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](plotting-options.html).
 
 # Documentation
 
-A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](plotting-options.html). It is a good first place to start.
+The [getting started](getting-started.html) guide is a good place to start. A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](plotting-options.html). It is more detailed than the getting started guide.
 
 Package documentation can be found [here](https://angusmoore.github.io/arphit/arphit.pdf). It is technical and in most cases will be less useful than the plotting options vignette.
 
@@ -119,49 +142,60 @@ If these sources don't answer your problems, or you encounter a bug, please open
 
 # Bugs and planned features
 
-A list of known drawbacks, planned features and other to-do tasks can be found [here](todo.html).
+Please report any bugs you find on the github [issue tracker](https://github.com/angusmoore/arphit/issues). Feature requests can also be made there (and you can see planned improvements as well).
 
-Please report any bugs you find on the github [issue tracker](https://github.com/angusmoore/arphit/issues).
-
-
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = 'hide', warning = FALSE, message = FALSE}
 # Build all the images used in the readme
 library(arphit)
 
-T <- 48
-data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5), x5 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 12)
+data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
+                                   by = "quarter",
+                                   length.out = 10),
+                   x1 = rnorm(10),
+                   x2 = rnorm(10),
+                   x3 = rnorm(10, sd = 10),
+                   x4 = rnorm(10, sd = 5))
+
+p <- arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
+agg_draw(p, filename = "simple_example.png")
 
 
-arphit(data, series = list("1" = "x1"), filename = "simple_example.png")
+p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
+  agg_col(agg_aes(y=x1), panel = "1") +
+  agg_line(agg_aes(y=x2), panel = "2") +
+  agg_line(agg_aes(y=x3), panel = "3") +
+  agg_line(agg_aes(y=x4), panel = "3") +
+  agg_line(agg_aes(y=x4), panel = "4") +
+  agg_title("arphit Makes Graphs in R") +
+  agg_units("index", panel = "1") +
+  agg_units("ppt", panel = "2") +
+  agg_units("$", panel = "3") +
+  agg_units("'000", panel = "4") +
+  agg_shading(from = x4, to = x3) +
+  agg_label("A label", x = 2001.5, y = 1, panel = "1", color = "red") +
+  agg_abline(x = 2002, panel = "2") +
+  agg_bgshading(y1 = -1, y2 = 3, panel = "4")
+agg_draw(p, filename = "complex_example.png")
 
-arphit(data,
-               layout = "2b2",
-               series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3", "x4"), "4" = c("x5")),
-               bars = c("x1"),
-               title = "arphit Makes Graphing Easy",
-               yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"),
-               shading = list(list(from = "x3", to = "x4", color= "lightgrey")),
-               labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red")),
-               lines = list(list(x = 2004, panel = "2")),
-               bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = "4")),
-               filename = "complex_example.png")
+tsdata <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
+agg_qplot(tsdata, filename = "qplot.png")
 
-T <- 12
-data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
+p <- arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
+agg_draw(p, filename = "nooptions.png")
 
-arphit(data, filename = "nooptions.png")
+p <- arphitgg(data, layout = "2b2") +
+  agg_line(agg_aes(x=date, y = x1), panel = "1") + 
+  agg_line(agg_aes(x=date, y = x2), panel = "2") + 
+  agg_line(agg_aes(x=date, y = x3), panel = "3") + 
+  agg_line(agg_aes(x=date, y = x4), panel = "4") + 
+  agg_title("A Randomly Created Graph") +
+  agg_subtitle("A short example") + 
+  agg_units("index") + 
+  agg_title("Panel 1", panel = "1") + 
+  agg_title("Panel 2", panel = "2") + 
+  agg_title("Panel 3", panel = "3") + 
+  agg_title("Panel 4", panel = "4") + 
+  agg_source("Randomly generated data")
+agg_draw(p, filename = "lotsofoptions.png")
 
-arphit(data,
-               series = list("1" = "x1", "2" = "x2", "3" = "x3", "4" = "x4"),
-               layout = "2b2",
-               title = "A Randomly Created Chart",
-               subtitle = "A short example",
-               yunits = "index",
-               paneltitles = list("1" = "Series 1", "2" = "Series 2", "3" = "Series 3", "4" = "Series 4"),
-               sources = c("Randomly generated data"),
-               filename = "lotsofoptions.png")
-
-data <- tibble::tibble(dates = seq.Date(from = as.Date("2000-01-01"), length.out = 20, by = "quarter"), y = rnorm(20))
-p <-  arphitgg(data, agg_aes(x = dates, y = y)) + agg_line()
-agg_draw(p, filename = "ggplot.png")
 ```

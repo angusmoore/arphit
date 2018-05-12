@@ -10,7 +10,7 @@ agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
 \arguments{
 \item{x}{Draw a vertical line at x (omit to draw a specific AB line)}
 
-\item{y}{Draw a horizontal at y (omit to draw a specific AB line)}
+\item{y}{Draw a horizontal at y omit to draw a specific AB line)}
 
 \item{x1}{For specific AB lines: the first x coordinate}
 
@@ -32,13 +32,10 @@ agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
 You need specify only one of x, or y, or x1,x2,y1,y2
 }
 \examples{
-arphitgg(data) +
-  agg_abline(x = 2001, color = RBA["Blue1"], panel = "1") +
+arphitgg(data) + agg_abline(x = 2001, color = RBA["Blue1"], panel = "1") +
   agg_abline(y = -0.5, color = RBA["Red1"], panel = "1")
 
-arphitgg(data) +
-  agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5,
-             color = RBA["Blue1"], panel = "1")
+arphitgg(data) + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, color = RBA["Blue1"], panel = "1")
 
 }
 \seealso{
