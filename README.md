@@ -111,7 +111,7 @@ arphitgg(data, layout = "2b2") +
   <img src="https://angusmoore.github.io/arphit/images/lotsofoptions.png" width="400px" />
 </p>
 
-The [getting started vignette](https://angusmoore.github.io/arphit/getting-started.html) provides more introduction on how to create graphs in `arphit`. `arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [https://angusmoore.github.io/arphit/plotting options vignette](plotting-options.html).
+The [getting started vignette](https://angusmoore.github.io/arphit/getting-started.html) provides more introduction on how to create graphs in `arphit`. `arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](https://angusmoore.github.io/arphit/plotting-options.html).
 
 # Documentation
 
