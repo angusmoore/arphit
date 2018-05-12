@@ -12,10 +12,20 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Quick links
+
+ - [Index](index.html)
+ - [Getting started](getting-started.html)
+ - [Plotting options](plotting-options.html)
+ - [Colour palette](rba-colours.html)
+ - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
+
+# Introduction
+
 This document outlines all of the plotting options in `agg_qplot` and how to use them.
 Examples are included of output, along with explanations.
 
-A word of warning:`agg_qplot` is actually extremely feature-filled, despite being for quick plots. Any graph you can make in `arphit` can be made with a suitably complex call to `agg_qplot`. But, if you're graph is complex, you should use `arphitgg`. It's much easier to use (no lists of lists) and much easier to read and understand the code.
+A word of warning:`agg_qplot` is actually extremely feature-filled, despite being for quick plots. Any graph you can make in `arphit` can be made with a suitably complex call to `agg_qplot`. But, if you're graph is complex, you should use `arphitgg`. It's much easier to use (no lists of lists) and much easier to read the code.
 
 # Data and types of graphs
 
@@ -26,8 +36,12 @@ Data can be a `tibble`, a `data.frame` or a `ts`. (For more details on the `ts` 
 Please note, unless otherwise specified, the examples in this vignette use the following randomly constructed time
 series:
 ```{r}
-T <- 12
-data <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
+data <- ts(data.frame(x1 = rnorm(12),
+                      x2 = rnorm(12),
+                      x3 = rnorm(12, sd = 10),
+                      x4 = rnorm(12, sd = 5)),
+           start = c(2000,1),
+           frequency = 4)
 ```
 
 ## Specifying data
@@ -37,6 +51,7 @@ The data is the first argument to an `agg_qplot` call. Calling `agg_qplot` is as
 agg_qplot(data)
 ```
 ```{r, echo = FALSE, results = "hide"}
+library(arphit)
 agg_qplot(data, filename = "data_1.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -62,7 +77,9 @@ knitr::include_graphics("data_ts.png")
 
 Alternatively if you have a `data.frame` or `tibble` with a date column, specify that as the x-variable:
 ```{r, eval = FALSE}
-mydataframe <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
+mydataframe <- data.frame(date = seq.Date(from = as.Date("2000-01-01"),
+                                          length.out = 10, by = "quarter"),
+                          x1 = rnorm(10))
 agg_qplot(mydataframe, x = "date")
 ```
 ```{r, echo = FALSE, results = "hide"}
@@ -116,14 +133,26 @@ agg_qplot(list("1" = data1, "2" = data2))
 
 It is also possible to specify different x variables for different panels (and, by extension, have different plot types in each panel). Simply specify your `x` as a list, with keys for each panel:
 ```{r, eval = FALSE}
-data1 <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
-data2 <- data.frame(years = seq.Date(from = as.Date("2000-01-01"), length.out = 4, by = "year"), x2 = rnorm(4))
-agg_qplot(data = list("1" = data1, "2" = data2), x = list("1" = "date", "2" = "years"), layout = "2v")
+data1 <- data.frame(date = seq.Date(from = as.Date("2000-01-01"),
+                                    length.out = 10, by = "quarter"),
+                    x1 = rnorm(10))
+data2 <- data.frame(years = seq.Date(from = as.Date("2000-01-01"),
+                                     length.out = 4, by = "year"),
+                    x2 = rnorm(4))
+agg_qplot(data = list("1" = data1, "2" = data2),
+          x = list("1" = "date", "2" = "years"),
+          layout = "2v")
 ```
 ```{r, echo = FALSE, results = "hide"}
-data1 <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 10, by = "quarter"), x1 = rnorm(10))
-data2 <- data.frame(years = seq.Date(from = as.Date("2000-01-01"), length.out = 4, by = "year"), x2 = rnorm(4))
-agg_qplot(data = list("1" = data1, "2" = data2), x = list("1" = "date", "2" = "years"), layout = "2v", filename = "multidata.png")
+data1 <- data.frame(date = seq.Date(from = as.Date("2000-01-01"),
+                                    length.out = 10, by = "quarter"),
+                    x1 = rnorm(10))
+data2 <- data.frame(years = seq.Date(from = as.Date("2000-01-01"),
+                                     length.out = 4, by = "year"),
+                    x2 = rnorm(4))
+agg_qplot(data = list("1" = data1, "2" = data2),
+          x = list("1" = "date", "2" = "years"),
+          layout = "2v", filename = "multidata.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("multidata.png")
@@ -296,7 +325,7 @@ knitr::include_graphics("layout_portrait.png")
 
 ## (Advanced) Custom graph sizes
 
-You can also manually specify the plot size if you want greater control. This size is for the *whole* graph - i.e. the size of the graph, not the size of a panel. Units are inches.
+You can also manually specify the plot size if you want greater control. This size is for the *whole* graph - i.e. the size of the graph, not the size of a panel. Units are inches (the graphs have been scaled to half original size when included in this document).
 ```{r, eval = FALSE}
 agg_qplot(data, plotsize = c(2,10))
 ```
@@ -430,10 +459,17 @@ knitr::include_graphics("sources.png")
 
 By default, `arphit` sets the y axis units to %. You can set your own by passing in a list of panel identifiers to strings (corresponding to the units). For instance:
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"), filename = "units.png")
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          yunits = list("1" = "index", "2" = "ppt", "3" = "$", "4" = "000s"),
+          filename = "units.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("units.png")
@@ -441,10 +477,17 @@ knitr::include_graphics("units.png")
 
 If you want the same units for all panels, you can just pass in the string, instead of a list:
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = "000s")
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          yunits = "000s")
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), yunits = "000s", filename = "units-all.png")
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          yunits = "000s",
+          filename = "units-all.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("units-all.png")
@@ -500,14 +543,19 @@ knitr::include_graphics("setattributeall.png")
 
 ## Line colour
 
-`col` controls the colour of your series. If a colour is not specified for a series, `arphit` cycles through the default RBA colours.
+`col` controls the colour of your series. If a colour is not specified for a series, `arphit` cycles through default colours.
 
-The RBA color palette can be accessed using `RBA["Green1"]` etc. For instance:
+The color palette can be accessed using `RBA["Green1"]` etc. For instance:
 ```{r, eval = FALSE}
-agg_qplot(data, series = list("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]))
+agg_qplot(data,
+          series = list("1" = c("x2", "x4")),
+          col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, series = list("1" = c("x2", "x4")), col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]), filename = "rbacolours.png")
+agg_qplot(data,
+          series = list("1" = c("x2", "x4")),
+          col = list("x2" = RBA["Red1"], "x4" = RBA["Blue10"]),
+          filename = "rbacolours.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("rbacolours.png")
@@ -547,10 +595,16 @@ Y-limits are controlled by three variables: a minimum, a maximum, and the number
 
 ### Example 1: Manually setting left and right axes
 ```{r, eval = FALSE}
-agg_qplot(data, series = list("1" = c("x1"), "2" = c("x3")), ylim = list("1" = list(min = -10, max = 10, nsteps = 5), "2" = list(min = -20, max = 20, nsteps = 5)))
+agg_qplot(data,
+          series = list("1" = c("x1"), "2" = c("x3")),
+          ylim = list("1" = list(min = -10, max = 10, nsteps = 5), 
+                      "2" = list(min = -20, max = 20, nsteps = 5)))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, series = list("1" = c("x1"), "2" = c("x3")), ylim = list("1" = list(min = -10, max = 10, nsteps = 5), "2" = list(min = -20, max = 20, nsteps = 5)), filename = "y-individual.png")
+agg_qplot(data,
+          series = list("1" = c("x1"), "2" = c("x3")),
+          ylim = list("1" = list(min = -10, max = 10, nsteps = 5), 
+                      "2" = list(min = -20, max = 20, nsteps = 5)), filename = "y-individual.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("y-individual.png")
@@ -558,10 +612,16 @@ knitr::include_graphics("y-individual.png")
 
 ### Example 2: Applying the same y axis to all panels
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), ylim = list(min = -10, max = 10, nsteps = 5))
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          ylim = list(min = -10, max = 10, nsteps = 5))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), ylim = list(min = -10, max = 10, nsteps = 5), filename = "y-uniform.png")
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          ylim = list(min = -10, max = 10, nsteps = 5), filename = "y-uniform.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("y-uniform.png")
@@ -576,10 +636,17 @@ Fine-grained control of x-ticks is not currently possible; only the limits can b
 For layouts with vertical division (e.g. "2v", "2b2" etc), you can drop the the first tick of the right hand panel by setting `dropxlabel = TRUE`. This prevents the last label of the left hand panel overlapping the first of the right hand panel.
 
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), dropxlabel = TRUE)
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          dropxlabel = TRUE)
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), dropxlabel=TRUE, filename = "dropxlabel.png")
+agg_qplot(data,
+          layout = "2b2",
+          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
+          dropxlabel = TRUE,
+          filename = "dropxlabel.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("dropxlabel.png")
@@ -591,7 +658,7 @@ You can shade the area between series by using the `shading` argument. This take
 ```{r, eval = FALSE}
 agg_qplot(data, shading = list(list(from = "x1", to = "x2", color= "red")))
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning =  FALSE, message = FALSE}
 agg_qplot(data, shading = list(list(from = "x1", to = "x2", color= "red")), filename = "shading.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -600,10 +667,15 @@ knitr::include_graphics("shading.png")
 
 If you want to have more than one set of shading, just have multiple elements in the shading list.
 ```{r, eval = FALSE}
-agg_qplot(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")))
+agg_qplot(data,
+          shading = list(list(from = "x1", to = "x2", color= "red"),
+                         list(from = "x3", to = "x4", color = "purple")))
 ```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, shading = list(list(from = "x1", to = "x2", color= "red"), list(from = "x3", to = "x4", color = "purple")), filename = "shading-layered.png")
+```{r, echo = FALSE, results = "hide", warning =  FALSE, message = FALSE}
+agg_qplot(data,
+          shading = list(list(from = "x1", to = "x2", color= "red"),
+                         list(from = "x3", to = "x4", color = "purple")),
+          filename = "shading-layered.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("shading-layered.png")
@@ -617,10 +689,19 @@ You can add series labels, and arrows to aid those labels, using the `labels` an
 
 Labels are specified as a list of lists. Each sub-list specifies a single text label. These must be of the form: `list(x = 2008, y = -1, text = "Label text", panel = 1, color = "black")`. Where `x` and `y` specify where (in the units on the plot) the centre of the label should be. `panel` specifies which panel to place the label on. `color` is self-explanatory. You can add line breaks in text using the `\n` character.
 ```{r, eval = FALSE}
-agg_qplot(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2004, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")))
+agg_qplot(data,
+          labels = list(list(x = 2001, y = 2, text = "A label",
+                             panel = 1, color = "red"),
+                        list(x = 2004, y = 10, text = "A label\n(On two lines!)",
+                             panel = 1, color = "green")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, labels = list(list(x = 2001, y = 2, text = "A label", panel = 1, color = "red"), list(x = 2002, y = 10, text = "A label\n(On two lines!)", panel = 1, color = "green")), filename = "labels.png")
+agg_qplot(data,
+          labels = list(list(x = 2001, y = 2, text = "A label",
+                             panel = 1, color = "red"),
+                        list(x = 2004, y = 10, text = "A label\n(On two lines!)",
+                             panel = 1, color = "green")),
+          filename = "labels.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("labels.png")
@@ -628,10 +709,17 @@ knitr::include_graphics("labels.png")
 
 Arrows are specified similarly. You pass in a list of lists specifying arrows to add to the plot Each sub-list specifies a single arrow. These must be of the form: `list(tail.x = 2000, tail.y = -1, head.x = 2001, head.y = 0, panel = 1, lwd = 1, color = "black")`. `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at, `head.x` and `head.y` where to finish it. panel specifies which panel to place the arrow on. `color` is self-explanatory. `lwd` is optional and specifies the linewidth of the arrow (default = 1).
 ```{r, eval = FALSE}
-agg_qplot(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)))
+agg_qplot(data,
+          arrows = list(list(tail.x = 2000, tail.y = 10,
+                             head.x = 2001, head.y = 1,
+                             color = "darkred", panel = 1)))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, arrows = list(list(tail.x = 2000, tail.y = 10, head.x = 2001, head.y = 1, color = "darkred", panel = 1)), filename = "arrows.png")
+agg_qplot(data,
+          arrows = list(list(tail.x = 2000, tail.y = 10,
+                             head.x = 2001, head.y = 1,
+                             color = "darkred", panel = 1)),
+          filename = "arrows.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("arrows.png")
@@ -643,10 +731,15 @@ A list of lists specifying line segments to add to the plot. Each of the sublist
 
 The following example draws a vertical line at 2001 using the default colour and solid line. It also draws a horizontal line at -1 colored darkred and dashed (`lty = 2`).
 ```{r, eval = FALSE}
-agg_qplot(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)))
+agg_qplot(data,
+          lines = list(list(x = 2001, panel = 1),
+                       list(y = -1, color = "darkred", panel = 1, lty = 2)))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, lines = list(list(x = 2001, panel = 1), list(y = -1, color = "darkred", panel = 1, lty = 2)), filename = "lines.png")
+agg_qplot(data,
+          lines = list(list(x = 2001, panel = 1),
+                       list(y = -1, color = "darkred", panel = 1, lty = 2)),
+          filename = "lines.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("lines.png")
@@ -682,10 +775,26 @@ knitr::include_graphics("shading1.png")
 
 And this two panel example repeats the above example for panel 1, but puts light green shading between two dates on the bottom panel.
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")))
+agg_qplot(data,
+          layout = "2h",
+          series = list("1" = "x4", "3" = "x2"),
+          bgshading = list(list(x1 = NA, y1 = -1,
+                                x2 = NA, y2 = 3,
+                                panel = 1),
+                           list(x1 = 2000.5, y1 = NA,
+                                x2 = 2001.5, y2 = NA,
+                                panel = 3, color = "lightgreen")))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2h", series = list("1" = "x4", "3" = "x2"), bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1), list(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = 3, color = "lightgreen")), filename = "shading2.png")
+agg_qplot(data,
+          layout = "2h",
+          series = list("1" = "x4", "3" = "x2"),
+          bgshading = list(list(x1 = NA, y1 = -1,
+                                x2 = NA, y2 = 3,
+                                panel = 1),
+                           list(x1 = 2000.5, y1 = NA,
+                                x2 = 2001.5, y2 = NA,
+                                panel = 3, color = "lightgreen")), filename = "shading2.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("shading2.png")
@@ -696,20 +805,29 @@ knitr::include_graphics("shading2.png")
 You can add y and x axis labels to plots using the `yaxislabels` and `xaxislabels` arguments. These take a list (or, to apply the same label to all panels, a string) specifying the axis labels for each panel:
 
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label")
+agg_qplot(data, layout = "2b2",
+          yaxislabels = "A y axis label",
+          xaxislabels = "An x label")
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", yaxislabels = "A y axis label", xaxislabels = "An x label", filename = "oneaxislabel.png")
+agg_qplot(data, layout = "2b2",
+          yaxislabels = "A y axis label",
+          xaxislabels = "An x label",
+          filename = "oneaxislabel.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("oneaxislabel.png")
 ```
 
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label")
+agg_qplot(data, layout = "2b2",
+          yaxislabels = list("1" = "Foo", "3" = "Bar"),
+          xaxislabels = list("3" = "An x label", "4" = "Another x label"))
 ```
 ```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label"), filename = "differentaxislabel.png")
+agg_qplot(data, layout = "2b2",
+          yaxislabels = list("1" = "Foo", "3" = "Bar"),
+          xaxislabels = list("3" = "An x label", "4" = "Another x label"), filename = "differentaxislabel.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("differentaxislabel.png")

@@ -14,16 +14,16 @@ vignette: >
 
 # Quick links
 
-[Getting started](getting-started.html)
-[Plotting options](plotting-options.html)
-[Colour palette](rba-colours.html)
-[qplot options](qplot-options.html)
-[Package documentation (pdf)][https://angusmoore.github.io/arphit/arphit.pdf]
+ - [Getting started](getting-started.html)
+ - [Plotting options](plotting-options.html)
+ - [Colour palette](rba-colours.html)
+ - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
+ - [qplot options](qplot-options.html)
 
 # arphit
 
 `arphit` is a ggplot-inspired R package to easily create RBA-style graphs in R. Once you have your data, you can quickly create a plot with:
-```
+```{r, eval = FALSE}
 arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -31,34 +31,34 @@ knitr::include_graphics("simple_example.png")
 ```
 
 `arphit` is also customisable. You can create complex charts, with multiple panels, bars, titles, annotations, shading, sources and footnotes:
-```
-arphitgg(data, layout = "2b2") + 
+```{r, eval = FALSE}
+arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_col(agg_aes(y=x1), panel = "1") +
   agg_line(agg_aes(y=x2), panel = "2") +
   agg_line(agg_aes(y=x3), panel = "3") +
   agg_line(agg_aes(y=x4), panel = "3") +
-  agg_line(agg_aes(y=x5), panel = "4") +
+  agg_line(agg_aes(y=x4), panel = "4") +
   agg_title("arphit Makes Graphs in R") +
-  agg_units("index", panel = "1") + 
-  agg_units("ppt", panel = "2") + 
-  agg_units("$", panel = "3") + 
-  agg_units("'000", panel = "4") + 
-  agg_shading(from = "x3", to = "x4") + 
-  agg_label("A label", x = 2001, y = 2, panel = "1", color = "red") + 
-  agg_line(x = 2004, panel = "2") + 
+  agg_units("index", panel = "1") +
+  agg_units("ppt", panel = "2") +
+  agg_units("$", panel = "3") +
+  agg_units("'000", panel = "4") +
+  agg_shading(from = x4, to = x3) +
+  agg_label("A label", x = 2001.5, y = 1, panel = "1", color = "red") +
+  agg_abline(x = 2002, panel = "2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("complex_example.png")
 ```
 
-`arphit` also a quick plotting function, which plots all (or a subset of) the columns in your data. This is particularly helpful for time series data, or other 'wide' data:
-```
+`arphit` also has a quick plotting function, which plots all (or a subset of) the columns in your data. This is particularly helpful for time series data, or other 'wide' data:
+```{r, eval = FALSE}
 data <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
 agg_qplot(data)
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphs("qplot.png")
+knitr::include_graphics("qplot.png")
 ```
 
 # Installation and getting started
@@ -66,7 +66,7 @@ knitr::include_graphs("qplot.png")
 ## Installation
 
 Install the package using the R `devtools` package:
-```
+```{r, eval = FALSE}
 library(devtools)
 install_github("angusmoore/arphit", build_vignettes = TRUE)
 ```
@@ -74,11 +74,11 @@ install_github("angusmoore/arphit", build_vignettes = TRUE)
 You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
 
 Installing may fail if `devtools` cannot correctly determine your proxy server. If so, you'll get the following error message when you try to install:
-```
+```{r, eval = FALSE}
 Installation failed: Timeout was reached: Connection timed out after 10000 milliseconds
 ```
 If you get this message, try setting your proxy server with the following command, and then running the install again:
-```
+```{r, eval = FALSE}
 httr::set_config(httr::use_proxy(curl::ie_get_proxy_for_url("http://www.google.com")))
 ```
 
@@ -87,26 +87,31 @@ httr::set_config(httr::use_proxy(curl::ie_get_proxy_for_url("http://www.google.c
 (For more detail see [getting started guide](getting-started.html).)
 
 The very first step to using arphit is to import it into your workspace:
-```
+```{r, eval = FALSE}
 library(arphit)
 ```
 
 The second step is to get some data. For these simple examples, we'll randomly construct three years worth of quarterly time series data, starting from Q1 2000:
-```
-data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"), by = "quarter", length.out = 10),
-                   x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5))
+```{r, eval = FALSE}
+data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
+                                   by = "quarter",
+                                   length.out = 10),
+                   x1 = rnorm(10),
+                   x2 = rnorm(10),
+                   x3 = rnorm(10, sd = 10),
+                   x4 = rnorm(10, sd = 5))
 ```
 
 To make a simple line plot, all we need to do is specify the `x` and `y` variables and tell arphit we want a layer:
-```
+```{r, eval = FALSE}
 arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("nooptions.png")
 ```
 
-That chart is serviceable, but not very well labelled. Let's make it a bit nicer, by putting each of the four series into its own panel, and giving the chart and panels titles, and assign a source.
-```
+That chart is serviceable, but not very well labelled. Let's make it a bit nicer, by putting each of the four series into its own panel, and giving the graph and panels titles, and a source.
+```{r, eval = FALSE}
 arphitgg(data, layout = "2b2") +
   agg_line(agg_aes(x=date, y = x1), panel = "1") + 
   agg_line(agg_aes(x=date, y = x2), panel = "2") + 
@@ -139,39 +144,41 @@ If these sources don't answer your problems, or you encounter a bug, please open
 
 Please report any bugs you find on the github [issue tracker](https://github.com/angusmoore/arphit/issues). Feature requests can also be made there (and you can see planned improvements as well).
 
-
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = 'hide', warning = FALSE, message = FALSE}
 # Build all the images used in the readme
 library(arphit)
 
-data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"), by = "quarter", length.out = 10),
-                   x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10), x4 = rnorm(T, sd = 5))
-
+data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
+                                   by = "quarter",
+                                   length.out = 10),
+                   x1 = rnorm(10),
+                   x2 = rnorm(10),
+                   x3 = rnorm(10, sd = 10),
+                   x4 = rnorm(10, sd = 5))
 
 p <- arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
 agg_draw(p, filename = "simple_example.png")
 
 
-p <- arphitgg(data, layout = "2b2") + 
+p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_col(agg_aes(y=x1), panel = "1") +
   agg_line(agg_aes(y=x2), panel = "2") +
   agg_line(agg_aes(y=x3), panel = "3") +
   agg_line(agg_aes(y=x4), panel = "3") +
-  agg_line(agg_aes(y=x5), panel = "4") +
+  agg_line(agg_aes(y=x4), panel = "4") +
   agg_title("arphit Makes Graphs in R") +
-  agg_units("index", panel = "1") + 
-  agg_units("ppt", panel = "2") + 
-  agg_units("$", panel = "3") + 
-  agg_units("'000", panel = "4") + 
-  agg_shading(from = "x3", to = "x4") + 
-  agg_label("A label", x = 2001, y = 2, panel = "1", color = "red") + 
-  agg_line(x = 2004, panel = "2") + 
+  agg_units("index", panel = "1") +
+  agg_units("ppt", panel = "2") +
+  agg_units("$", panel = "3") +
+  agg_units("'000", panel = "4") +
+  agg_shading(from = x4, to = x3) +
+  agg_label("A label", x = 2001.5, y = 1, panel = "1", color = "red") +
+  agg_abline(x = 2002, panel = "2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
 agg_draw(p, filename = "complex_example.png")
 
-data <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
-p <- agg_qplot(data)
-agg_draw(p, filename = "qplot.png")
+tsdata <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
+agg_qplot(tsdata, filename = "qplot.png")
 
 p <- arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
 agg_draw(p, filename = "nooptions.png")

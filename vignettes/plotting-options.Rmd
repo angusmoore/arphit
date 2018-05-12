@@ -12,14 +12,48 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Quick links
+
+ - [Index](index.html)
+ - [Getting started](getting-started.html)
+ - [Colour palette](rba-colours.html)
+ - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
+ - [qplot options](qplot-options.html)
+
+# Introduction
+
 This vignette details all the plotting options available in `arphit`. If you are learning how to use `arphit`, you should read the [getting started guide](getting-started.html) first.
 
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+library(arphit)
+```
 # Data types
 
-## `tibble`s and `data.frame`s
+## tibbles and data.frames
 
-## `ts`
+```{r}
+simple_data <- data.frame(date = seq.Date(from = as.Date("2000-03-01"),
+                                          length.out = 10,
+                                          by = "quarter"),
+                          y1 = rnorm(10),
+                          y2 = rnorm(10),
+                          y3 = rnorm(10),
+                          y4 = rnorm(10))
+long_data <- data.frame(date = rep(seq.Date(from = as.Date("2000-03-01"),
+                                            length.out = 10,
+                                            by = "quarter"), 2),
+                        y1 = rnorm(20),
+                        y2 = rnorm(20),
+                        group_var = c(rep("A", 10), rep("B", 10)))
+scatter_data <- data.frame(x = rnorm(10), y = rnorm(10))
+```
 
+## ts
+
+Here we create a time series starting in 2000Q1 (`frequency = 4` means quarterly) with 10 random observations for two variables: `x1` and `x2`.
+```{r}
+ts_data <- ts(data.frame(x1 = rnorm(10), x2 = rnorm(10)), frequency = 4, start = c(2000, 1))
+```
 
 # Layouts and panels
 
@@ -29,7 +63,7 @@ There are nine supported layouts, with up to 8 panels. *Right hand side axes cou
 ```{r, eval = FALSE}
 arphitgg(layout = "1")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 library(arphit)
 agg_draw(arphitgg(layout = "1"), filename = "layout_1.png")
 ```
@@ -41,7 +75,7 @@ knitr::include_graphics("layout_1.png")
 ```{r, eval = FALSE}
 arphitgg(layout = "2v")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "2v"), filename = "layout_2v.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -53,7 +87,7 @@ right axes of the top panel. "3" and "4" for the bottom.
 ```{r, eval = FALSE}
 arphitgg(layout = "2h")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "2h"), filename = "layout_2h.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -64,7 +98,7 @@ knitr::include_graphics("layout_2h.png")
 ```{r, eval = FALSE}
 arphitgg(layout = "2b2")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "2b2"), filename = "layout_2b2.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -75,7 +109,7 @@ knitr::include_graphics("layout_2b2.png")
 ```{r, eval = FALSE}
 arphitgg(layout = "3v")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "3v"), filename = "layout_3v.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -85,7 +119,7 @@ knitr::include_graphics("layout_3v.png")
 ```{r, eval = FALSE}
 arphitgg(layout = "3h")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "3h"), filename = "layout_3h.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -96,7 +130,7 @@ knitr::include_graphics("layout_3h.png")
 ```{r, eval = FALSE}
 arphitgg(layout = "3b2")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "3b2"), filename = "layout_3b2.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -107,7 +141,7 @@ knitr::include_graphics("layout_3b2.png")
 ```{r, eval = FALSE}
 arphitgg(layout = "4h")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "4h"), filename = "layout_4h.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -118,12 +152,38 @@ knitr::include_graphics("layout_4h.png")
 ```{r, eval = FALSE}
 arphitgg(layout = "4b2")
 ```
-```{r, echo = FALSE, results = "hide"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(arphitgg(layout = "4b2"), filename = "layout_4b2.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("layout_4b2.png")
 ```  
+
+## Portrait-size graphs
+
+If you want a larger, portrait size layout, simply pass in `portait = TRUE`. This works with any of the layouts.
+```{r, results = "hide"}
+p <- arphitgg(portrait = TRUE)
+```
+```{r, echo = FALSE, results = "hide"}
+agg_draw(p, filename = "layout_portrait.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("layout_portrait.png")
+```
+
+## (Advanced) Custom graph sizes
+
+You can also manually specify the plot size if you want greater control. This size is for the *whole* graph - i.e. the size of the graph, not the size of a panel. Units are inches (the graphs have been scaled to half original size when included in this document).
+```{r, results = "hide"}
+p <- arphitgg(plotsize = c(2,10))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "plotsize.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("plotsize.png")
+```
 
 # Layers and aesthetics
 
@@ -137,6 +197,8 @@ The `x` and `y` variables speak for themselves, and must be values in the data y
 ```{r, results = "hide"}
 p <- arphitgg() + 
   agg_line(data = simple_data, aes = agg_aes(x = date, y = y1))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "no-group-aes.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -153,6 +215,8 @@ In this example, the whole aesthetic is inherited:
 ```{r, results = "hide"}
 p <- arphitgg(data = simple_data, aes = agg_aes(x = date, y = y1)) + 
   agg_line()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "inherit-aes-all.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -163,6 +227,8 @@ In this example, we specify the`x` aesthetic in the parent, but specify the y ae
 ```{r, results = "hide"}
 p <- arphitgg(data = simple_data, aes = agg_aes(x = date)) + 
   agg_line(aes = agg_aes(y = y1))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "inherit-aes-some.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -175,6 +241,8 @@ An aesthetic can also specify a `group` variable. This is used when your data is
 ```{r, results = "hide"}
 p <- arphitgg() +
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "group-aes.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -187,6 +255,8 @@ An aesthetic can also specify a `facet` variable. `facet`s work like `group`s, e
 ```{r, results = "hide"}
 p <- arphitgg() +
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, facet = group_var))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "facet.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -200,7 +270,9 @@ facet_data <- data.frame(x = rep(c(1,2),4),
                          age = c(rep("A", 4), rep("B", 4)),
                          sex = rep(c("F","F","M","M"), 2))
 p <- arphitgg() +
-  agg_line(data = long_data, aes = agg_aes(x = date, y = y, group = sex, facet = age))
+  agg_line(data = facet_data, aes = agg_aes(x = x, y = y, group = sex, facet = age))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "facet-group.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -224,6 +296,8 @@ There are three types of layers, `agg_line`, `agg_point` and `agg_col`. These ar
 p <- arphitgg(layout = "2h") + 
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), panel = "1") + 
   agg_col(data = long_data, aes = agg_aes(x = date, y = y2, group = group_var), panel = "3")
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "layers.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -233,6 +307,8 @@ knitr::include_graphics("layers.png")
 ```{r, results = "hide"}
 p <- arphitgg(layout = "1") + 
   agg_point(data = data.frame(x = rnorm(10), y = rnorm(10)), aes = agg_aes(x = x, y = y), panel = "1")
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "scatter.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -244,6 +320,8 @@ Layers will inherit data and aesthetic (or parts of the aesthetic) if these are 
 p <- arphitgg(long_data, aes = agg_aes(x = date, group = group_var), layout = "2h") + 
   agg_line(aes = agg_aes(y = y1), panel = "1") + 
   agg_col(aes = agg_aes(y = y2), panel = "3")
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "inherit.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -287,6 +365,8 @@ Specifying line, bar or point (depending on layer type) colours for series is do
 ```{r, results = "hide"}
 p <- arphitgg() + 
   agg_line(data = simple_data, aes = agg_aes(x = date, y = y1), color = RBA["Red1"])
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "simplecolor.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -296,7 +376,11 @@ knitr::include_graphics("simplecolor.png")
 This color is applied to _all_ series in the layer. This is less helpful when you have a group variable, since they will all show up as the same colour (which is unlikely to be what you want). E.g. this is not helpful:
 ```{r, results = "hide"}
 p <- arphitgg() +
-  agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), color = RBA["Red1"])
+  agg_line(data = long_data,
+           aes = agg_aes(x = date, y = y1, group = group_var),
+           color = RBA["Red1"])
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "group-single-color.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
@@ -306,10 +390,14 @@ knitr::include_graphics("group-single-color.png")
 To specify for different colours for different series in a grouped layer, you can instead specify a _vector_ of colours:
 ```{r, results = "hide"}
 p <- arphitgg() +
-  agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), color = c(RBA["Red1"], RBA["Blue4"]))
+  agg_line(data = long_data,
+           aes = agg_aes(x = date, y = y1, group = group_var),
+           color = c(RBA["Red1"], RBA["Blue4"]))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "group-multi-color.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-agg_draw(p, filename = "group-multi-color.png")
 knitr::include_graphics("group-multi-color.png")
 ```
 
@@ -332,8 +420,10 @@ If you want to define your own set of default colors to be used define a vector 
 p <- arphitgg(simple_data) + 
   agg_line(agg_aes(x = date, y = y1), pch = 19)
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "pch.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("pch.png")
 ```
 
@@ -344,8 +434,10 @@ knitr::include_graphics("pch.png")
 p <- arphitgg(simple_data) + 
   agg_line(agg_aes(x = date, y = y1), lty = 2)
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "lty.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("lty.png")
 ```
 
@@ -356,8 +448,10 @@ knitr::include_graphics("lty.png")
 p <- arphitgg(simple_data) + 
   agg_line(agg_aes(x = date, y = y1), lwd = 3)
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "lwd.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("lwd.png")
 ```
 
@@ -368,8 +462,10 @@ knitr::include_graphics("lwd.png")
 p <- arphitgg(simple_data) + 
   agg_col(agg_aes(x = date, y = y1), barcol = "black")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "barcol.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("barcol.png")
 ```
 
@@ -381,8 +477,10 @@ p <- arphitgg() +
   agg_title("Graph Title Goes Here") + 
   agg_subtitle("Or a subtitle, if you like")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "title.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("title.png")
 ```
 
@@ -393,8 +491,10 @@ p <- arphitgg() +
   agg_title("Here is a very very very long title that arphit will automatically put a break in") +
   agg_subtitle("And a subtitle\nwith a manual break too")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "longtitle.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("longtitle.png")
 ```
 
@@ -406,8 +506,10 @@ p <- arphitgg() +
   agg_title("Panel title for panel 1", panel = "1") +
   agg_subtitle("And a subtitle", panel = "1")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "paneltitles.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("paneltitles.png")
 ```
 
@@ -417,16 +519,22 @@ You can specify the units for your graph using the `agg_units` function. This ca
 ```{r results = "hide"}
 p <- arphitgg() + agg_units("index")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "units-all.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("units-all.png")
 ```
 
 ```{r results = "hide"}
-p <- arphitgg() + agg_units("index", panel = "1") + agg_units("ppt", panel = "2")
+p <- arphitgg() +
+  agg_units("index", panel = "1") +
+  agg_units("ppt", panel = "2")
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "units-specific.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-agg_draw(p, filename = "units-specific.png")
 knitr::include_graphics("units-specific.png")
 ```
 
@@ -434,11 +542,13 @@ knitr::include_graphics("units-specific.png")
 
 You can also add units for the x-axis in much the same way. These are ignored for anything other than scatter graphs.
 ```{r, results = "hide"}
-p <- arphitgg(scatterdata, agg_aes(x=x,y=y)) + 
+p <- arphitgg(scatter_data, agg_aes(x=x,y=y)) + 
   agg_point() + agg_xunits("ppt")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "x-units.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("x-units.png")
 ```
 
@@ -452,8 +562,10 @@ p <- arphitgg() +
   agg_footnote("This is my first footnoote") + 
   agg_footnote("This is a second footnote")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "sources.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("sources.png")
 ```
 
@@ -468,25 +580,29 @@ Y-limits can be controlled with `agg_ylim`. This function takes three required a
 ### Example 1: Manually setting left and right axes
 ```{r, results = "hide"}
 p <- arphitgg(simple_data) + 
-  agg_line(agg_aes(x=x,y=y1),panel="1") + 
-  agg_line(agg_aes(x=x,y=y1),panel="2") + 
+  agg_line(agg_aes(x=date,y=y1),panel="1") + 
+  agg_line(agg_aes(x=date,y=y1),panel="2") + 
   agg_ylim(-1,1,5,panel="1") +
   agg_ylim(-4,4,5,panel="2")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "ylim-left-right-axes.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("ylim-left-right-axes.png")
 ```
 
 ### Example 2: Applying the same y axis to all panels
 ```{r, results = "hide"}
 p <- arphitgg(simple_data) + 
-  agg_line(agg_aes(x=x,y=y1),panel="1") + 
-  agg_line(agg_aes(x=x,y=y1),panel="2") + 
+  agg_line(agg_aes(x=date,y=y1),panel="1") + 
+  agg_line(agg_aes(x=date,y=y1),panel="2") + 
   agg_ylim(-1,1,5)
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "ylim-all-axes.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("ylim-all-axes.png")
 ```
 
@@ -500,12 +616,14 @@ Fine-grained control of x-ticks is not currently possible; only the limits can b
 
 For layouts with vertical division (e.g. "2v", "2b2" etc), you can drop the the first tick of the right hand panel by setting `dropxlabel = TRUE` in `arphitgg`. This prevents the last label of the left hand panel overlapping the first of the right hand panel.
 ```{r, results = "hide"}
-p <- arphitgg(simple_data, agg_aes(X=date, y=y1)) + 
+p <- arphitgg(simple_data, agg_aes(x=date, y=y1)) + 
   agg_line() + 
   agg_xlim(1998, 2008)
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "x-axis-lim.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("x-axis-lim.png")
 ```
 
@@ -520,8 +638,10 @@ p <- arphitgg(simple_data, agg_aes(x=date)) +
   agg_line(agg_aes(y=y2)) +
   agg_shading(from = y1, to = y2, color = RBA["Blue1"])
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "shading-single.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("shading-single.png")
 ```
 
@@ -533,14 +653,16 @@ p <- arphitgg(simple_data, agg_aes(x=date)) +
   agg_line(agg_aes(y=y3)) +
   agg_line(agg_aes(y=y4)) +
   agg_shading(from = y1, to = y2, color = RBA["Blue1"]) + 
-  agg_shading(from = y3, to = y4, color = "lightgrey") + 
+  agg_shading(from = y3, to = y4, color = "lightgrey")
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "shading-multiple.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-agg_draw(p, filename = "shading-multiple.png")
 knitr::include_graphics("shading-multiple.png")
 ```
 
-# Plot annotations
+# Plot annotations (labels, arrows and lines)
 
 ## Adding labels and arrows
 
@@ -555,8 +677,10 @@ You can add series labels, and arrows to aid those labels, using `agg_label` and
 p <- arphitgg() +
   agg_label("A label", x = 2002, y = 0.5, color = RBA["Blue2"], panel = "1")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "labels.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("labels.png")
 ```
 
@@ -570,8 +694,10 @@ Arrows are specified with `agg_arrow`.
 p <- arphitgg() +
   agg_arrow(tail.x = 2000, tail.y = 0, head.x = 2001, head.y = 0.5, color = RBA["Blue1"], panel = "1")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "arrow.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("arrow.png")
 ```
 
@@ -585,8 +711,10 @@ p <- arphitgg() +
   agg_abline(x = 2001, panel = "1") + 
   agg_abline(y = -1, color = "darkred", lty = 2, panel = "1")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "lines.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("lines.png")
 ```
 
@@ -595,8 +723,10 @@ If you need more control over the line, you can specify the coordinates of the l
 p <- arphitgg() + 
   agg_abline(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = "1")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "specificlines.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("specificlines.png")
 ```
 
@@ -609,21 +739,25 @@ Background shading can be added using `agg_bgshading`. This draws a rectangle wi
 This example creates horizontal shading across the whole panel between -1 and 3 on the y axis.
 ```{r, results = "hide"}
 p <- arphitgg() + 
-  agg_bgshading(x1 = NA< y1 = -1, x2 = NA, y2 = 3, panel = "1")
+  agg_bgshading(x1 = NA, y1 = -0.5, x2 = NA, y2 = 0.5, panel = "1")
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "bgshading.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-agg_draw(p, filename = "bgshading.png")
 knitr::include_graphics("bgshading.png")
 ```
 
 And this two panel example repeats the above example for panel 1, but puts light green shading between two dates on the bottom panel.
 ```{r, results = "hide"}
 p <- arphitgg(layout = "2h") + 
-  agg_bgshading(x1 = NA< y1 = -1, x2 = NA, y2 = 3, panel = "1") + 
+  agg_bgshading(x1 = NA, y1 = -0.5, x2 = NA, y2 = 0.5, panel = "1") + 
   agg_bgshading(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = "3", color = "lightgreen")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "bgshading.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("bgshading.png")
 ```
 ## Adding axis labels
@@ -634,16 +768,22 @@ p <- arphitgg(layout = "2b2") +
   agg_yaxislabel("A y axis label") + 
   agg_xaxislabel("An x label")
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "oneaxislabel.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("oneaxislabel.png")
 ```
 
 ```{r, eval = FALSE}
-agg_qplot(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label")
+p <- arphitgg(layout = "2b2") + 
+  agg_yaxislabel("Foo", panel = "1") + 
+  agg_yaxislabel("Bar", panel = "3") + 
+  agg_xaxislabel("An x label", panel = "3") + 
+  agg_xaxislabel("Another x label", panel = "4")
 ```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, layout = "2b2", yaxislabels = list("1" = "Foo", "3" = "Bar"), xaxislabels = list("3" = "An x label", "4" = "Another x label"), filename = "differentaxislabel.png")
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "differentaxislabel.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("differentaxislabel.png")
@@ -655,8 +795,10 @@ You can rotate x ticks using the `srt` option in `arphitgg`. It represents the r
 ```{r, echo = FALSE, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x=date,y=y1), srt = 45) + agg_line()
 ```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename =  "xlabel-rotation.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("xlabel-rotation.png")
 ```
 
@@ -671,19 +813,25 @@ joining_data <- ts(data.frame(y = c(1,2,NA,3,4)), start = 2000, frequency = 1)
 
 With `joined = TRUE`, the series continues straight across the missing value for 2002.
 ```{r, echo = FALSE, results = "hide"}
-p <- arphitgg(joining_data, agg_aes(y = y), joined = TRUE) + agg_line()
+p <- arphitgg(joining_data, agg_aes(y = y), joined = TRUE) +
+  agg_line()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "joined.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-agg_draw(p, filename = "joined.png")
 knitr::include_graphics("joined.png")
 ```
 
 But when we set `joined = FALSE`, the series does not connect over the missing observation:
 ```{r, echo = FALSE, results = "hide"}
-p <- arphitgg(joining_data, agg_aes(y = y), joined = FALSE) + agg_line()
+p <- arphitgg(joining_data, agg_aes(y = y), joined = FALSE) +
+  agg_line()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "unjoined.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-agg_draw(p, filename = "unjoined.png")
 knitr::include_graphics("unjoined.png")
 ```
 
@@ -691,10 +839,14 @@ knitr::include_graphics("unjoined.png")
 
 You can add a legend to your graph by adding `agg_legend()`. This can also take one optional argument to specify how many columns to have with `ncol`; `arphit` will automatically guess if you leave it blank.
 ```{r, echo = FALSE, results = "hide"}
-arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var)) + agg_line() + agg_legend()
+p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var)) +
+  agg_line() +
+  agg_legend()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "legend.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-agg_draw(p, filename = "legend.png")
 knitr::include_graphics("legend.png")
 ```
 
@@ -704,6 +856,9 @@ knitr::include_graphics("legend.png")
 
 To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf` and `pdf` are supported.
 ```{r, results = "hide", eval = FALSE}
-p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1))
+p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1)) +
+  agg_line()
 agg_draw(p, filename = "my-graph.png")
+agg_draw(p, filename = "my-graph.emf")
+agg_draw(p, filename = "my-graph.pdf")
 ```
