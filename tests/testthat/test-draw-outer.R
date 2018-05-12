@@ -56,8 +56,8 @@ expect_equal(determinelegendcols(list("1" = c(paste0(longname,1), paste0(longnam
 
 # smoke tests
 data <- ts(data.frame(x1 = rnorm(10), x2 = rnorm(10), x3 = rnorm(10)), frequency = 4, start = c(2000,1))
-expect_error(arphit(data, legend=TRUE), NA)
-expect_error(arphit(data, legend = TRUE, bars = "x1"), NA)
-expect_error(arphit(data, legend = TRUE, bars = "x1", pch = list("x2" = ".")), NA)
+expect_error(agg_qplot(data, legend=TRUE), NA)
+expect_error(agg_qplot(data, legend = TRUE, bars = "x1"), NA)
+expect_error(agg_qplot(data, legend = TRUE, bars = "x1", pch = list("x2" = ".")), NA)
 colnames(data) <- c(paste0(longname,1), paste0(longname,2), paste0(longname,3))
-expect_error(arphit(data, legend = TRUE), NA)
+expect_error(agg_qplot(data, legend = TRUE), NA)

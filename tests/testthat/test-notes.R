@@ -24,4 +24,4 @@ expect_that(stringr::str_count(formatfn(foo2, LANDSCAPESIZE[2] - WIDTHSPACESNOTE
 
 context("Plotting long titles")
 data <- ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
-expect_error(arphit(data, title = "This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines", paneltitles = list("1" = "And also a very long panel title to break across lines as well")), NA)
+expect_error(agg_qplot(data, title = "This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines", paneltitles = list("1" = "And also a very long panel title to break across lines as well")), NA)

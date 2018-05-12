@@ -1,6 +1,3 @@
-# Build all the images used in the readme
-library(arphit)
-
 data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
                                    by = "quarter",
                                    length.out = 10),
@@ -9,9 +6,9 @@ data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
                    x3 = rnorm(10, sd = 10),
                    x4 = rnorm(10, sd = 5))
 
-p <- arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
-agg_draw(p, filename = "simple_example.png")
 
+p <- arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
+print(p)
 
 p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_col(agg_aes(y=x1), panel = "1") +
@@ -25,16 +22,16 @@ p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_units("$", panel = "3") +
   agg_units("'000", panel = "4") +
   agg_shading(from = x4, to = x3) +
-  agg_label("A label", x = 2001.5, y = 1, panel = "1", color = "red") +
-  agg_abline(x = 2002, panel = "2") +
+  agg_label("A label", x = 2001, y = 2, panel = "1", color = "red") +
+  agg_abline(x = 2004, panel = "2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
-agg_draw(p, filename = "complex_example.png")
+print(p)
 
 tsdata <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
-agg_qplot(tsdata, filename = "qplot.png")
+agg_qplot(tsdata)
 
 p <- arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
-agg_draw(p, filename = "nooptions.png")
+print(p)
 
 p <- arphitgg(data, layout = "2b2") +
   agg_line(agg_aes(x=date, y = x1), panel = "1") +
@@ -49,4 +46,4 @@ p <- arphitgg(data, layout = "2b2") +
   agg_title("Panel 3", panel = "3") +
   agg_title("Panel 4", panel = "4") +
   agg_source("Randomly generated data")
-agg_draw(p, filename = "lotsofoptions.png")
+print(p)
