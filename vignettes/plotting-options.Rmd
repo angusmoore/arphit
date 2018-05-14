@@ -709,12 +709,12 @@ knitr::include_graphics("arrow.png")
 
 The auto labeller will use whatever your series are called in the data `ts` object. You can see the names of your columns like so:
 ```{r}
-colnames(data)
+colnames(ts_data)
 ```
 
 To set the first series name to something else try:
 ```
-colnames(data)[1] <- "Series 1 name"
+colnames(ts_data)[1] <- "Series 1 name"
 ```
 Or similarly for other series.
 
@@ -722,10 +722,10 @@ Or similarly for other series.
 
 Call the auto labeller like so:
 ```
-agg_qplot(data, enable.autolabeller = TRUE)
+agg_qplot(ts_data, enable.autolabeller = TRUE)
 ```
 ```{r, echo = FALSE, message=FALSE, results = "hide"}
-agg_qplot(data, enable.autolabeller = TRUE, filename = "autolabel.png")
+agg_qplot(ts_data, enable.autolabeller = TRUE, filename = "autolabel.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("autolabel.png")
@@ -733,19 +733,19 @@ knitr::include_graphics("autolabel.png")
 
 If you put text labels on panel 2, that disables the auto labeller for that panel:
 ```
-agg_qplot(data,
-          series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
+agg_qplot(ts_data,
+          series = list("1" = c("x1","x2"), "2" = c("x1","x2")),
           layout = "2v",
-           labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
-           enable.autolabeller = TRUE)
+          labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+          enable.autolabeller = TRUE)
 ```
 ```{r, echo = FALSE, message=FALSE, results = "hide"}
-agg_qplot(data,
-           series = list("1" = c("x1","x2"), "2" = c("x3","x4")),
-           layout = "2v",
-           labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
-           enable.autolabeller = TRUE,
-           filename = "autolabel-disableone.png")
+agg_qplot(ts_data,
+          series = list("1" = c("x1","x2"), "2" = c("x1","x2")),
+          layout = "2v",
+          labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+          enable.autolabeller = TRUE,
+          filename = "autolabel-disableone.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("autolabel-disableone.png")
