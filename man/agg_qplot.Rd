@@ -13,7 +13,7 @@ agg_qplot(data, series = NULL, x = NULL, layout = "1", bars = NULL,
   barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE,
   legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE,
   bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0,
-  showallxlabels = NULL)
+  showallxlabels = NULL, enable.autolabeller = FALSE)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
@@ -92,6 +92,8 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 \item{srt}{(default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.}
 
 \item{showallxlabels}{(optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.}
+
+\item{enable.autolabeller}{(optional) Logical indicating whether you want to enable the autolabeller to add series labels to your graph (defaults to FALSE). Note that the autolabeller will not run on any panel that you manually add text labels to even if enable.autolabeller is set to TRUE.}
 }
 \description{
 Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
