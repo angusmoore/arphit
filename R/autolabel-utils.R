@@ -1,4 +1,3 @@
-
 createlabels <- function(data, panels, p, layout) {
   series <- list()
   if (layout == "1" || layout == "2h") {
@@ -53,7 +52,7 @@ convertdata.axes <- function(data, panels, p, layout, ylim_list) {
       stop("Invalid panel for converting axes.")
     }
     fromaxis <- ylim_list[[otherp]]
-    for (s in panels$panels[[otherp]]) {
+    for (s in panels[[otherp]]) {
       data[, s] <- convertaxis(data[, s], fromaxis, toaxis)
     }
   }
@@ -70,8 +69,8 @@ notalreadylabelled <- function(p, labels) {
 }
 
 notRHS <- function(p, layout) {
-  if (layout == "1" || layout == "2h") {
-    if (p == "2" || p == "4") {
+  if (layout == "1" || layout == "2h" || layout == "3h" || layout == "4h") {
+    if (p == "2" || p == "4" || p == "6" || p == "8") {
       return(FALSE)
     } else {
       return(TRUE)

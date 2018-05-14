@@ -5,7 +5,7 @@ linesegment.intersect <- function(x1, y1, x2, y2, a1, b1, a2, b2) {
   if (max(x1, x2) < min(a1, a2) || min(x1, x2) > max(a1, a2) || max(y1, y2) < min(b1, b2) || min(y1, y2) > max(b1, b2)) {
     return(FALSE)
   } else {
-    return(((a1-x1)*(y2-y1) - (b1-y1)*(x2-x1)) * ((a2-x1)*(y2-y1) - (b2-y1)*(x2-x1)) < 0 && ((x1-a1)*(b2-b1) - (y1-b1)*(a2-a1)) * ((x2-a1)*(b2-b1) - (y2-b1)*(a2-a1)) < 0)
+    return(((a1-x1)*(y2-y1) - (b1-y1)*(x2-x1)) * ((a2-x1)*(y2-y1) - (b2-y1)*(x2-x1)) <= 0 && ((x1-a1)*(b2-b1) - (y1-b1)*(a2-a1)) * ((x2-a1)*(b2-b1) - (y2-b1)*(a2-a1)) <= 0)
   }
 }
 
@@ -27,6 +27,14 @@ text.collision <- function(text, x, y, a1, b1, a2, b2) {
             linesegment.intersect(bound$lx, bound$by, bound$rx, bound$by, a1, b1, a2, b2) ||
             linesegment.intersect(bound$lx, bound$ty, bound$lx, bound$by, a1, b1, a2, b2) ||
             linesegment.intersect(bound$rx, bound$ty, bound$rx, bound$by, a1, b1, a2, b2)))
+}
+
+outofbounds <- function(text, x, y, xlim, ylim) {
+  bound <- text.bounding(text, x, y)
+  return (bound$lx < xlim[1] ||
+            bound$rx > xlim[2] ||
+            bound$by < ylim[1] ||
+            bound$ty > ylim[2])
 }
 
 grid.collision <- function(text, x, y, xlim, ylim, ylim_n) {
@@ -65,7 +73,8 @@ allseries.collision <- function(text, x, y, series.x, data, serieslist) {
 label.collision <- function(text, x, y, labellocations, labelsmap) {
   for (label in names(labellocations)) {
     bounding <- text.bounding(labelsmap[[label]], labellocations[[label]][1], labellocations[[label]][2])
-    if (text.collision(text, x, y, bounding$lx, bounding$ty, bounding$rx, bounding$ty) ||
+    if ((x <= bounding$rx & x >= bounding$lx & y <= bounding$ty & y >= bounding$by) ||
+        text.collision(text, x, y, bounding$lx, bounding$ty, bounding$rx, bounding$ty) ||
         text.collision(text, x, y, bounding$lx, bounding$by, bounding$rx, bounding$by) ||
         text.collision(text, x, y, bounding$lx, bounding$ty, bounding$lx, bounding$by) ||
         text.collision(text, x, y, bounding$rx, bounding$ty, bounding$rx, bounding$by)) {
@@ -73,14 +82,6 @@ label.collision <- function(text, x, y, labellocations, labelsmap) {
     }
   }
   return(FALSE)
-}
-
-outofbounds <- function(text, x, y, xlim, ylim) {
-  bound <- text.bounding(text, x, y)
-  return (bound$lx < xlim[1] ||
-          bound$rx > xlim[2] ||
-          bound$by < ylim[1] ||
-          bound$ty > ylim[2])
 }
 
 checkcollisions <- function(text, x, y, series.x, data, serieslist, labellocations, labelsmap, xlim, ylim, ylim_n) {
