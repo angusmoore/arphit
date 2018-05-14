@@ -725,7 +725,7 @@ Call the auto labeller like so:
 agg_qplot(data, enable.autolabeller = TRUE)
 ```
 ```{r, echo = FALSE, message=FALSE, results = "hide"}
-arphit(data, enable.autolabeller = TRUE, filename = "autolabel.png")
+agg_qplot(data, enable.autolabeller = TRUE, filename = "autolabel.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("autolabel.png")
