@@ -3,8 +3,8 @@
 #' @param gg An arphitgg built graph.
 #' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @export
 agg_draw <- function(gg, filename = NULL) {
@@ -44,6 +44,7 @@ agg_draw <- function(gg, filename = NULL) {
          showallxlabels = gg$showallxlabels,
          joined = gg$joined,
          plotsize = gg$plotsize,
+         enable_autolabeller = gg$enable_autolabeller,
          filename = filename)
 }
 
@@ -52,8 +53,8 @@ agg_draw <- function(gg, filename = NULL) {
 #' @param x An arphitgg built graph.
 #' @param ... Further arguments passed to or from other methods.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @export
 print.arphit.gg <- function(x, ...) {
@@ -65,8 +66,8 @@ print.arphit.gg <- function(x, ...) {
 #' @param gg An arphitgg built graph.
 #' @param element The element to add to the graph.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @export
 "+.arphit.gg" <- function(gg, element) {
@@ -90,6 +91,7 @@ print.arphit.gg <- function(x, ...) {
          "yaxislabel" = addaxislabel(gg, element, "y"),
          "xaxislabel" = addaxislabel(gg, element, "x"),
          "legend" = addlegend(gg, element),
+         "autolabel" = enableautolabel(gg),
          stop("Unknown element type for arphit.gg"))
   return(gg)
 }

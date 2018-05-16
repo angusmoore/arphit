@@ -19,6 +19,6 @@ agg_aes(x, y, group = NULL, facet = NULL)
 If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

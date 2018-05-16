@@ -1,3 +1,5 @@
+context("draw outer")
+
 # Legend
 
 # Set up panels

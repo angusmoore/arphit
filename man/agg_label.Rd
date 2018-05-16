@@ -25,6 +25,6 @@ arphitgg(data) + agg_label("Here is a footnote", RBA["Red3"], 2003, 0.2, "1")
 
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

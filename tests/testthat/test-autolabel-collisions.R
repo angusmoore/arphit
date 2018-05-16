@@ -1,3 +1,5 @@
+context("Autolabel collisions")
+
 # Set up
 # set parameters and draw a plot so that strheight works
 graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, lheight = 1)

@@ -18,6 +18,6 @@ arphitgg(data) + agg_line(agg_aes(x = x, y = y)) + agg_legend()
 
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

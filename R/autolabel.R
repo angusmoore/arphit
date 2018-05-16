@@ -14,7 +14,7 @@ autolabel <- function(xvals, data, panels, shading, layout, xlim_list, ylim_list
     if (notalreadylabelled(p, labels) && notRHS(p, layout)) {
       labelsmap <- createlabels(data[[p]], panels, p, layout)
       if (length(labelsmap) > 1) {
-        data[[p]] <- convertdata.axes(data[[p]], panels, p, layout, ylim_list)
+        data[[p]] <- convertdata.axes(data, panels, p, layout, ylim_list)
         # Handling the x variables
         ists <- !is.null(paste0(p, "ts"))
         if (stats::is.ts(data[[p]]) || ists || is.scatter(xvals[[p]])) {
@@ -44,7 +44,7 @@ autolabel <- function(xvals, data, panels, shading, layout, xlim_list, ylim_list
         ## TODO: Add collisions for bg shading, lines and arrows
         candidates <- findcandidates(xvals[[p]], data[[p]], labelsmap, xlim, ylim, ylim_n)
         locations <- bestcandidate(candidates, x, data[[p]], labelsmap)
-        newlabels <- append(newlabels, formatlabels(locations, labelsmap, attributes[[p]]$col, p))
+        newlabels <- append(newlabels, formatlabels(locations, labelsmap, attributes, p, layout))
         newarrows <- append(newarrows, addarrows(xvals[[p]], data[[p]], panels, labelsmap, locations, attributes[[p]]$col, p))
         if (length(locations) < length(labelsmap)) {
           warning("Unable to find locations for some series labels.")
