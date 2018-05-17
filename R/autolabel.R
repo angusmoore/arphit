@@ -17,20 +17,7 @@ autolabel <- function(xvals, data, panels, shading, layout, xlim_list, ylim_list
         data[[p]] <- convertdata.axes(data, panels, p, layout, ylim_list)
         # Handling the x variables
         ists <- !is.null(paste0(p, "ts"))
-        if (stats::is.ts(data[[p]]) || ists || is.scatter(xvals[[p]])) {
-          # time series or scatter
-          x <- xvals[[p]]
-        } else if (!is.null(xvals)) {
-          if (is.numeric(xvals)) {
-            x <- xvals[[p]] + 0.5*min(diff(xvals[[p]]))
-          } else {
-            # Categorical data, offset by half
-            x <- 1:length(xvals[[p]]) + 0.5
-          }
-        } else {
-          # No data at all, empty plot
-          x <- xvals[[p]]
-        }
+        x <- getxvals(data[[p]], ists, xvals[[p]])
 
         xlim <- xlim_list[[p]]
         ylim <- c(ylim_list[[p]]$min, ylim_list[[p]]$max)
