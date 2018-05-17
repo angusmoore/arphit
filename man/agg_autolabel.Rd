@@ -10,7 +10,11 @@ agg_autolabel()
 Add automatically placed label
 }
 \examples{
-arphitgg(data) + agg_line() + agg_autolabel()
+data <- data.frame(x=1:10,y1=rnorm(10),y2=rnorm(10))
+arphitgg(data,agg_aes(x=x)) +
+  agg_line(agg_aes(y=y1)) +
+  agg_line(agg_aes(y=y2)) +
+  agg_autolabel()
 
 }
 \seealso{
