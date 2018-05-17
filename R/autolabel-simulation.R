@@ -29,12 +29,6 @@ hookesattraction <- function(a, b, x, y, stiffness) {
 }
 
 seriesforce <- function(a, b, series.x, series.y) {
-  # vector <- c(0, 0)
-  # for (i in 1:(length(series.x)-1)) {
-  #   x <- series.x[[i]]
-  #   y <- series.y[[i]]
-  #   vector <- vector + coulombrepulsion(a, b, x, y, SERIESREPULSION)
-  # }
   vector <- sum(coulombrepulsion(a, b, series.x, series.y, SERIESREPULSION))
   return(vector)
 }
@@ -76,19 +70,19 @@ calculate.boundingforce <- function(a, b, xlim, ylim) {
   return(vector)
 }
 
-calculate.repulsion <- function(l, label, data, labelsmap, labellocations, xlim, ylim, ylim_n) {
+calculate.repulsion <- function(l, label, x, data, labelsmap, labellocations, xlim, ylim, ylim_n) {
   a <- l[1]
   b <- l[2]
-  vector <- calculate.seriesforces(data, labelsmap, label, a, b)
+  vector <- calculate.seriesforces(x, data, labelsmap, label, a, b)
   vector <- vector + calculate.labelsforce(labellocations, label, a, b)
   return(asunits(vector))
 }
 
 ## Simulation code
 
-movelabel <- function(label, l, v, anchor, data, labelsmap, labellocations, xlim, ylim, ylim_n, timestep, dampening) {
+movelabel <- function(label, l, v, anchor, x, data, labelsmap, labellocations, xlim, ylim, ylim_n, timestep, dampening) {
   absforce <- 0
-  repulsiveforce <- calculate.repulsion(l, label, data, labelsmap, labellocations, xlim, ylim, ylim_n)
+  repulsiveforce <- calculate.repulsion(l, label, x, data, labelsmap, labellocations, xlim, ylim, ylim_n)
   anchorforce <- asunits(hookesattraction(l[1], l[2], anchor[1], anchor[2], ANCHORSTIFFNESS))
   bounds <- calculate.boundingforce(l[1], l[2], xlim, ylim)
 
@@ -113,7 +107,7 @@ location.fromanchor <- function(label, anchor, series.x, reduceddata, originalda
   # simcol <- sample(colors(), 1)
   while (abs(distanceininches(v[1], v[2], 0, 0)) > MINMOVEMENTSPEED && i < MAXSIMSTEPS) {
     i <- i + 1
-    step <- movelabel(label, l, v, anchor, reduceddata, labelsmap, labellocations, xlim, ylim, ylim_n, TIMESTEP, DAMPENING)
+    step <- movelabel(label, l, v, anchor, series.x, reduceddata, labelsmap, labellocations, xlim, ylim, ylim_n, TIMESTEP, DAMPENING)
     l <- step$l
     # DEBUG
     # graphics::points(l[1],l[2],col = simcol)
