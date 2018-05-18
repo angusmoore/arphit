@@ -28,6 +28,6 @@ arphitgg(data) + agg_bgshading(y1 = 0.5, y2 = -0.5, panel = "1")
 
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

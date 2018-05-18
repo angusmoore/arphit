@@ -1,3 +1,5 @@
+context("Integration - qplot options")
+
 data <- ts(data.frame(x1 = rnorm(12),
                       x2 = rnorm(12),
                       x3 = rnorm(12, sd = 10),
@@ -140,6 +142,12 @@ agg_qplot(data,
 agg_qplot(data,
           lines = list(list(x = 2001, panel = 1),
                        list(y = -1, color = "darkred", panel = 1, lty = 2)))
+agg_qplot(data, enable_autolabeller = TRUE)
+agg_qplot(data,
+          series = list("1" = c("x1","x2"), "2" = c("x1","x2")),
+          layout = "2v",
+          labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+          enable_autolabeller = TRUE)
 agg_qplot(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1)))
 agg_qplot(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1)))
 agg_qplot(data,

@@ -1,3 +1,5 @@
+context("Axes")
+
 # needed set up
 fakeseries1 <- c("a","b")
 fakeseries2 <- c("c","d")

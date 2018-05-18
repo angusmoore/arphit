@@ -1,3 +1,5 @@
+context("Integration - index")
+
 data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
                                    by = "quarter",
                                    length.out = 10),

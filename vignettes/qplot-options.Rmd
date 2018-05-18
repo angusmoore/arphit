@@ -725,6 +725,61 @@ agg_qplot(data,
 knitr::include_graphics("arrows.png")
 ```
 
+## (Experimental) Automatic labels
+
+`arphit` has (experimental) functionality to _automatically_ add series labels for you. You can  the auto labeller by setting `enable_autolabeller = TRUE`. If enabled, the auto labeller will run on panels with more than one series, and which do not already have text labels. If you manually set text labels for a panel, the auto labeller will skip that panel. It will also add arrows from the label to the series if necessary.
+
+### Series names
+
+The auto labeller will use whatever your series are called in the data `ts` object. You can see the names of your columns like so:
+```{r}
+colnames(data)
+```
+
+To set the first series name to something else try:
+```
+colnames(data)[1] <- "Series 1 name"
+```
+Or similarly for other series.
+
+### Enabling the auto labeller
+
+Call the auto labeller like so:
+```
+agg_qplot(data, enable_autolabeller = TRUE)
+```
+```{r, echo = FALSE, message=FALSE, results = "hide"}
+agg_qplot(data, enable_autolabeller = TRUE, filename = "autolabel.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("autolabel.png")
+```
+
+If you put text labels on panel 2, that disables the auto labeller for that panel:
+```
+agg_qplot(data,
+          series = list("1" = c("x1","x2"), "2" = c("x1","x2")),
+          layout = "2v",
+          labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+          enable_autolabeller = TRUE)
+```
+```{r, echo = FALSE, message=FALSE, results = "hide"}
+agg_qplot(data,
+          series = list("1" = c("x1","x2"), "2" = c("x1","x2")),
+          layout = "2v",
+          labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
+          enable_autolabeller = TRUE,
+          filename = "autolabel-disableone.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("autolabel-disableone.png")
+```
+
+### Caveats for the auto labeller
+* The auto labeller can be _slow_, particularly if you have a lot of series. Be patient while it runs.
+* There are no guarantees the auto labeller will be able to find labels for all series, particularly if you have many series.
+* The auto labeller is random; each run will put the labels in a different location.
+
 ## Adding horizonal and vertical lines
 
 A list of lists specifying line segments to add to the plot. Each of the sublists specifies a single line segment to add. These can be specified in three ways. The most common way is specifying either a horizontal or vertical line that stretches across the panel. Do this by having a sublist entry similar to `list(x = 2001, panel = 1, color = "green", lty = 1)`. `x` is where, on the x-axis, the line will be drawn. `panel` specifies which panel to draw on. `color` is self-explanatory and is optional (default black). `lty` specifies what line type to use (see R lty options) - it is optional and defaults to 1 (solid). To draw a horizontal line use y instead of x.

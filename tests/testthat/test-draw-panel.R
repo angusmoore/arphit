@@ -1,3 +1,5 @@
+context("Draw panel")
+
 # get panel locations
 context("getlocation")
 expect_that(getlocation("1", "1"), equals(c(1,1)))

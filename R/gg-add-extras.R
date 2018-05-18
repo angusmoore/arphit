@@ -112,3 +112,8 @@ addlegend <- function(gg, legend) {
   gg$legend <- TRUE
   return(gg)
 }
+
+enableautolabel <- function(gg) {
+  gg$enable_autolabeller <-  TRUE
+  return(gg)
+}

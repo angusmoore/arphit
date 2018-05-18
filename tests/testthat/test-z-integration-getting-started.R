@@ -1,3 +1,5 @@
+context("Integration - getting started")
+
 simple_data <- data.frame(date = seq.Date(from = as.Date("2000-03-01"),
                                           length.out = 10,
                                           by = "quarter"),

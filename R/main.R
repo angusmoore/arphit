@@ -42,8 +42,9 @@
 #' @param joined (optiona) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE). TRUE by default.
 #' @param srt (default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.
 #' @param showallxlabels (optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.
+#' @param enable_autolabeller (optional) Logical indicating whether you want to enable the autolabeller to add series labels to your graph (defaults to FALSE). Note that the autolabeller will not run on any panel that you manually add text labels to even if enable_autolabeller is set to TRUE.
 #'
-#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' @seealso \code{vignette("qplot-options", package = "arphit")} for a detailed description of
 #' all the plotting options and how they affect the output.
 #'
 #' @examples
@@ -55,7 +56,7 @@
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL) {
+agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL, enable_autolabeller = FALSE) {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -135,6 +136,12 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
     handlelayout(layout) # Put the correct layout back
   }
   drawnotes(footnotes, sources, margins$notesstart)
+
+  if (enable_autolabeller) {
+    autogenlabel <- autolabel(xvars, data, panels, shading, layout, xlim, ylim, attributes, bgshading, lines, arrows, labels)
+    labels <- append(labels, autogenlabel$labels)
+    arrows <- append(arrows, autogenlabel$arrows)
+  }
 
   for (p in names(panels)) {
     # Finally, draw all the annotations
