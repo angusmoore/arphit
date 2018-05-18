@@ -5,8 +5,8 @@
 #' @param text A string for the title.
 #' @param panel (optional) Specify a panel identifier to add a panel title instead of an overall graph title.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_title("Graph Title")
@@ -25,8 +25,8 @@ agg_title <- function(text, panel = NULL) {
 #' @param text A string for the subtitle.
 #' @param panel (optional) Specify a panel identifier to add a panel subtitle instead of an overall graph subtitle.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_subtitle("Graph Subtitle")
@@ -45,8 +45,8 @@ agg_subtitle <- function(text, panel = NULL) {
 #' @param units A string specifying the units.
 #' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_units("index")
@@ -65,8 +65,8 @@ agg_units <- function(units, panel = NULL) {
 #' @param units A string specifying the units.
 #' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_xunits("index")
@@ -84,8 +84,8 @@ agg_xunits <- function(units, panel = NULL) {
 #' @param axislabel A string specifying the axis label
 #' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_yaxislabel("Some y axis label")
@@ -103,8 +103,8 @@ agg_yaxislabel <- function(axislabel, panel = NULL) {
 #' @param axislabel A string specifying the axis label
 #' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_xaxislabel("year")
@@ -121,8 +121,8 @@ agg_xaxislabel <- function(axislabel, panel = NULL) {
 #'
 #' @param source A string, or vector of strings, to be added as sources
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_source("Source 1")
@@ -137,8 +137,8 @@ agg_source <- function(source) {
 #'
 #' @param footnote A string, or vector of strings, to be added as footnotes.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_footnote("Here is a footnote")
@@ -157,8 +157,8 @@ agg_footnote <- function(footnote) {
 #' @param y The y coordinate of the center of your label
 #' @param panel Which panel should the label be placed on?
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_label("Here is a footnote", RBA["Red3"], 2003, 0.2, "1")
@@ -167,6 +167,24 @@ agg_footnote <- function(footnote) {
 agg_label <- function(text, color, x, y, panel) {
   return(list(type = "label", text = text, color = color, x = x, y = y, panel = panel))
 }
+
+#' Add automatically placed label
+#'
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
+#'
+#' @examples
+#' data <- data.frame(x=1:10,y1=rnorm(10),y2=rnorm(10))
+#' arphitgg(data,agg_aes(x=x)) +
+#'   agg_line(agg_aes(y=y1)) +
+#'   agg_line(agg_aes(y=y2)) +
+#'   agg_autolabel()
+#'
+#' @export
+agg_autolabel <- function() {
+  return(list(type = "autolabel"))
+}
+
 
 #' Add an arrow
 #'
@@ -178,8 +196,8 @@ agg_label <- function(text, color, x, y, panel) {
 #' @param panel Which panel should the arrow be placed on?
 #' @param lwd (Optional, default 1) The linewidth of the arrow
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_arrow(tail.x = 2002, tail.y = 0, head.x = 2003, head.y = 1, color = RBA["Blue1"], panel = "1")
@@ -205,8 +223,8 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1) {
 #' @param lwd (Optional, default 1) The linewidth
 #' @param lty (Optional, default 1) The line type
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_abline(x = 2001, color = RBA["Blue1"], panel = "1") +
@@ -229,8 +247,8 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
 #' @param color (optional) The color of the AB line (default grey)
 #' @param panel Which panel should the background shading be placed on?
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_bgshading(x1 = 2001, x2 = 2002, panel = "1")
@@ -248,8 +266,8 @@ agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = NULL, pane
 #' @param color (optional) The color to shade between the series (default grey)
 #' @param panel (optional) Which panel are the relevant series in? (arphit will try to find them if you don't specify)
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' data <- data.frame(date = seq.Date(from = as.Date("2000-03-10"), length.out = 12, by = "month"),
@@ -272,8 +290,8 @@ agg_shading <- function(from, to, panel = NULL, color = NULL) {
 #' @param nsteps The number of steps (includes the minimum and maximum)
 #' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5)
@@ -290,8 +308,8 @@ agg_ylim <- function(min, max, nsteps, panel = NULL) {
 #' @param max The maximum
 #' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' arphitgg(data) + agg_xlim(min = -10, max = 10)
@@ -306,8 +324,8 @@ agg_xlim <- function(min, max, panel = NULL) {
 #'
 #' @param ncol (optional) Specify the number of columns in the legend (if left blank, arphit will guess)
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' data <- data.frame(x = 1:10, y = 1:10)
@@ -328,8 +346,8 @@ agg_legend <- function(ncol = NULL) {
 #' @param lwd A line width to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)),
@@ -350,8 +368,8 @@ agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NU
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #' @param stacked (default = TRUE) Stack the bars, or group them?
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' data  <- data.frame(unemployment = rnorm(20), state = c(rep("A", 10), rep("B", 10)),
@@ -370,8 +388,8 @@ agg_col <- function(aes = NULL, data = NULL, color = NULL, barcol = NULL, panel 
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @examples
 #' data  <- data.frame(x = rnorm(10), y = rnorm(10))
@@ -391,8 +409,8 @@ agg_point <- function(aes = NULL, data = NULL, color = NULL, panel = "1") {
 #' @param group If your data are in long form, which variable defines the groups.
 #' @param facet If you data are in long form, which variable defines the facets (facets split data across panels, see the gg-interface vignette for example)
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @export
 agg_aes <- function(x, y, group = NULL, facet = NULL) {
@@ -427,8 +445,8 @@ agg_aes <- function(x, y, group = NULL, facet = NULL) {
 #' @param joined (default TRUE) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE).
 #' @param plotsize (optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE
 #'
-#' @seealso \code{vignette("gg-interface", package = "arphit")} for a detailed description of
-#' how to use the ggplot-like interface.
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
 #'
 #' @export
 arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE, srt = 0, showallxlabels = NULL, joined = TRUE, plotsize = LANDSCAPESIZE) {
@@ -468,7 +486,8 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              srt = srt,
              showallxlabels = showallxlabels,
              joined = joined,
-             plotsize = plotsize)
+             plotsize = plotsize,
+             enable_autolabeller = FALSE)
 
   class(gg) <- "arphit.gg"
   return(gg)

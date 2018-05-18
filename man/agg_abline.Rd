@@ -39,6 +39,6 @@ arphitgg(data) + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, color = R
 
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

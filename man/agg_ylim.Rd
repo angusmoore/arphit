@@ -24,6 +24,6 @@ arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5, panel
 
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

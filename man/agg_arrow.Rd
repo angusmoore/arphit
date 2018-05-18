@@ -29,6 +29,6 @@ arphitgg(data) + agg_arrow(tail.x = 2002, tail.y = 0, head.x = 2003, head.y = 1,
 
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

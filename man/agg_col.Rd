@@ -30,6 +30,6 @@ arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state
 
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }

@@ -31,6 +31,6 @@ arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
 Create an arphit graph to be built using the ggplot-like interface.
 }
 \seealso{
-\code{vignette("gg-interface", package = "arphit")} for a detailed description of
-how to use the ggplot-like interface.
+\code{vignette("plotting-options", package = "arphit")} for a detailed description of
+all the plotting options
 }
