@@ -272,7 +272,7 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
     graphics::grid(nx = FALSE, ny = (ylim$nsteps - 1), col = "lightgray", lty = "solid", lwd = 1)
     # Add a zero line if needed
     if (0 %in% yticks) {
-      graphics::axis(1, pos = 0, xlim[1]:xlim[2], labels = FALSE, tck = 0, lwd = 1)
+      graphics::axis(1, pos = 0, c(xlim[1], xlim[2]), labels = FALSE, tck = 0, lwd = 1)
     }
   }
 
@@ -286,8 +286,8 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
   }
 
   # Draw top and bottom line, will often double up but better to overdo than under
-  graphics::axis(1, xlim[1]:xlim[2], tck = 0, labels = FALSE, lwd = 1)
-  graphics::axis(3, xlim[1]:xlim[2], tck = 0, labels = FALSE, lwd = 1)
+  graphics::axis(1, c(xlim[1], xlim[2]), tck = 0, labels = FALSE, lwd = 1)
+  graphics::axis(3, c(xlim[1], xlim[2]), tck = 0, labels = FALSE, lwd = 1)
 }
 
 drawshading <- function(shading, data, x) {
