@@ -23,6 +23,7 @@ agg_draw <- function(gg, filename = NULL) {
          footnotes = gg$footnotes,
          sources = gg$sources,
          yunits = gg$yunits,
+         xunits = gg$xunits,
          ylim = gg$ylim,
          xlim = gg$xlim,
          legend = gg$legend,
