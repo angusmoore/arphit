@@ -81,11 +81,11 @@ drawaxislabels <- function(ylabel, xlabel, p, layout, xtickmargin) {
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
     if (!is.na(side) && side == 2) {
-      graphics::mtext(text = ylabel, side = side, line = 2.5, las = 3)
+      graphics::mtext(text = ylabel, side = side, line = 1.8, las = 3)
     }
   }
   if (!is.null(xlabel) && needxlabels(p, layout)) {
-    graphics::mtext(text = xlabel, side = 1, line = (xtickmargin+0.2))
+    graphics::mtext(text = xlabel, side = 1, line = (xtickmargin-0.5))
   }
 }
 
