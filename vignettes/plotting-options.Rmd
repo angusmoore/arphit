@@ -486,7 +486,7 @@ knitr::include_graphics("title.png")
 
 `arphit` will automatically place linebreaks in long titles but may not be smart enough in all cases. You can insert linebreaks yourself as necessary by using "\\n".
 
-```{r, eacho = FALSE}
+```{r, results = "hide"}
 p <- arphitgg() + 
   agg_title("Here is a very very very long title that arphit will automatically put a break in") +
   agg_subtitle("And a subtitle\nwith a manual break too")
@@ -501,7 +501,7 @@ knitr::include_graphics("longtitle.png")
 # Panel titles and subtitles
 
 You can add titles and subtitles to panels in much the same way as titles and subtitles. Allyou do is specify `panel` as an argument:
-```{r, echo = FALSE, results = "hide"}
+```{r, results = "hide"}
 p <- arphitgg() + 
   agg_title("Panel title for panel 1", panel = "1") +
   agg_subtitle("And a subtitle", panel = "1")
@@ -823,7 +823,7 @@ knitr::include_graphics("bgshading.png")
 ## Adding axis labels
 
 You can add y and x axis labels to plots using `agg_yaxislabel` and `agg_xaxislabel`. These take the text for the axis label, plus an optional panel identifier. If omitted, the label is applied to all panels.
-```{r, echo = FALSE, results = "hide"}
+```{r, results = "hide"}
 p <- arphitgg(layout = "2b2") + 
   agg_yaxislabel("A y axis label") + 
   agg_xaxislabel("An x label")
@@ -835,7 +835,7 @@ agg_draw(p, filename = "oneaxislabel.png")
 knitr::include_graphics("oneaxislabel.png")
 ```
 
-```{r, eval = FALSE}
+```{r, results = "hide"}
 p <- arphitgg(layout = "2b2") + 
   agg_yaxislabel("Foo", panel = "1") + 
   agg_yaxislabel("Bar", panel = "3") + 
@@ -852,7 +852,7 @@ knitr::include_graphics("differentaxislabel.png")
 ## Rotating x ticks
 
 You can rotate x ticks using the `srt` option in `arphitgg`. It represents the rotation (in degrees):
-```{r, echo = FALSE, results = "hide"}
+```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x=date,y=y1), srt = 45) + agg_line()
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
@@ -872,7 +872,7 @@ joining_data <- ts(data.frame(y = c(1,2,NA,3,4)), start = 2000, frequency = 1)
 ```
 
 With `joined = TRUE`, the series continues straight across the missing value for 2002.
-```{r, echo = FALSE, results = "hide"}
+```{r, results = "hide"}
 p <- arphitgg(joining_data, agg_aes(y = y), joined = TRUE) +
   agg_line()
 ```
@@ -884,7 +884,7 @@ knitr::include_graphics("joined.png")
 ```
 
 But when we set `joined = FALSE`, the series does not connect over the missing observation:
-```{r, echo = FALSE, results = "hide"}
+```{r, results = "hide"}
 p <- arphitgg(joining_data, agg_aes(y = y), joined = FALSE) +
   agg_line()
 ```
@@ -898,7 +898,7 @@ knitr::include_graphics("unjoined.png")
 # Adding a legend
 
 You can add a legend to your graph by adding `agg_legend()`. This can also take one optional argument to specify how many columns to have with `ncol`; `arphit` will automatically guess if you leave it blank.
-```{r, echo = FALSE, results = "hide"}
+```{r, results = "hide"}
 p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var)) +
   agg_line() +
   agg_legend()
