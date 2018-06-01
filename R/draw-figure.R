@@ -124,7 +124,7 @@ figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title,
     notesstart <- notesstart + (legend.nrow-1)*1.2 + 2.5
   }
 
-  xtickmargin <- 2 + xticksize(xticks, layout, srt)
+  xtickmargin <- 1.5 + xticksize(xticks, layout, srt)
   notesstart <- notesstart + xtickmargin
 
   bottom <- countfnlines(footnotes) + countsrclines(sources) + notesstart

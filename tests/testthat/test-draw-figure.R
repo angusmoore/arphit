@@ -57,8 +57,8 @@ for (suffix in c("png","pdf","emf")) {
 # tests for bottom spacing
 fakeseries1 <- c("a","b")
 onesided <- handlepanels(fakeseries1, "1")
-expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 2)
-expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 3.7)
+expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 1.5)
+expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 3.2)
 
 # tests for extra margins when have y axis labels
 noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE, "1", 0)$left
