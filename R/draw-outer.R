@@ -103,7 +103,8 @@ drawlegend <- function(panels, bars, attributes, ncol, xtickmargin, hasaxislabel
                    col = col,
                    fill = fill,
                    border = border,
-                   cex = (18/20))
+                   cex = (18/20),
+                   y.intersp = 1.4)
 }
 
 drawnotes <- function(footnotes, sources, notesstart) {
