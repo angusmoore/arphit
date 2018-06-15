@@ -16,8 +16,12 @@ autolabel <- function(xvals, data, panels, shading, layout, xlim_list, ylim_list
       if (length(labelsmap) > 1) {
         data[[p]] <- convertdata.axes(data, panels, p, layout, ylim_list)
         # Handling the x variables
-        ists <- !is.null(paste0(p, "ts"))
+        ists <- !is.null(xvals[[paste0(p,"ts")]])
         x <- getxvals(data[[p]], ists, xvals[[p]])
+        if (stats::is.ts(data[[p]])) {
+          # because indexing into time series data doesn't work with [[seriesname]]
+          data[[p]] <- as.data.frame(data[[p]])
+        }
 
         xlim <- xlim_list[[p]]
         ylim <- c(ylim_list[[p]]$min, ylim_list[[p]]$max)
@@ -29,10 +33,10 @@ autolabel <- function(xvals, data, panels, shading, layout, xlim_list, ylim_list
         graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "", xlim = xlim, ylim = ylim)
 
         ## TODO: Add collisions for bg shading, lines and arrows
-        candidates <- findcandidates(xvals[[p]], data[[p]], labelsmap, xlim, ylim, ylim_n)
+        candidates <- findcandidates(x, data[[p]], labelsmap, xlim, ylim, ylim_n)
         locations <- bestcandidate(candidates, x, data[[p]], labelsmap)
         newlabels <- append(newlabels, formatlabels(locations, labelsmap, attributes, p, layout))
-        newarrows <- append(newarrows, addarrows(xvals[[p]], data[[p]], panels, labelsmap, locations, attributes[[p]]$col, p))
+        newarrows <- append(newarrows, addarrows(x, data[[p]], panels, labelsmap, locations, attributes[[p]]$col, p))
         if (length(locations) < length(labelsmap)) {
           warning("Unable to find locations for some series labels.")
         }

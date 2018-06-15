@@ -48,7 +48,7 @@ grid.collision <- function(text, x, y, xlim, ylim, ylim_n) {
 }
 
 series.collision <- function(text, x, y, series.x, data, series) {
-  series.y <- data[, series]
+  series.y <- data[[series]]
   for (i in 1:(length(series.x)-1)) {
     a1 <- series.x[[i]]
     b1 <- series.y[[i]]
