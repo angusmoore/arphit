@@ -16,3 +16,13 @@ expect_error(
   print(p),
   NA
 )
+
+# Factors in data for auto labeller (#123)
+p <- data.frame(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10)) %>% 
+  arphitgg(agg_aes(x=x,y=y,group=g)) +
+  agg_col() +
+  agg_autolabel()
+expect_error(
+  print(p),
+  NA
+)
