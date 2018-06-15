@@ -16,35 +16,35 @@ scatter_data <- data.frame(x = rnorm(10), y = rnorm(10))
 
 graphics.off()
 p <- arphitgg(layout = "1")
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg(layout = "2h")
-print(p)
+expect_error(print(p), NA)
 
 # CREATING A GRAPH ================
 
 graphics.off()
 p <- arphitgg(layout = "1")
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg() +
   agg_line(data = simple_data, aes = agg_aes(x = date, y = y))
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg() +
   agg_line(data = long_data, aes = agg_aes(x = date, y = y, group = state))
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg(layout = "2h") +
   agg_line(data = long_data, aes = agg_aes(x = date, y = y, group = state), panel = "1") +
   agg_col(data = long_data, aes = agg_aes(x = date, y = y, group = state), panel = "3")
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg(layout = "1") +
   agg_point(data = scatter_data, aes = agg_aes(x = x, y = y), panel = "1")
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg(long_data, aes = agg_aes(x = date, group = state), layout = "2h") +
   agg_line(aes = agg_aes(y = y), panel = "1") +
   agg_col(aes = agg_aes(y = y2), panel = "3")
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg() +
   agg_line(data = simple_data, aes = agg_aes(x = date, y = y), color = RBA["Red1"])
-print(p)
+expect_error(print(p), NA)
 
 # SERIES COLORS AND OTHER ATTRIBUTES ===============
 
@@ -53,12 +53,12 @@ p <- arphitgg() +
   agg_line(data = long_data,
            aes = agg_aes(x = date, y = y, group = state),
            color = RBA["Red1"])
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg() +
   agg_line(data = long_data,
            aes = agg_aes(x = date, y = y, group = state),
            color = c(RBA["Red1"], RBA["Blue4"]))
-print(p)
+expect_error(print(p), NA)
 
 # TITLES ============
 
@@ -66,22 +66,22 @@ graphics.off()
 p <- arphitgg() +
   agg_title("Graph Title Goes Here") +
   agg_subtitle("Or a subtitle, if you like")
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg() + agg_title("Graph Title Goes Here") +
   agg_subtitle("Or a subtitle, if you like") +
   agg_title("And here is panel title", panel = "1") +
   agg_subtitle("Panel subtitle too if needed", panel = "1")
-print(p)
+expect_error(print(p), NA)
 
 # UNITS ==============
 
 graphics.off()
 p <- arphitgg() + agg_units("index")
-print(p)
+expect_error(print(p), NA)
 p <- arphitgg() +
   agg_units("index", panel = "1") +
   agg_units("ppt", panel = "2")
-print(p)
+expect_error(print(p), NA)
 
 # SOURCES AND FOOTNOTES =============
 
@@ -90,4 +90,4 @@ p <- arphitgg() + agg_source("Source 1") +
   agg_source(c("Source 2 (as a vector)", "Source 3 (vectors are easy!")) +
   agg_footnote("This is my first footnoote") +
   agg_footnote("This is a second footnote")
-print(p)
+expect_error(print(p), NA)
