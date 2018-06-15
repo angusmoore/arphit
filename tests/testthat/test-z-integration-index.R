@@ -10,7 +10,7 @@ data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
 
 
 p <- arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
-print(p)
+expect_error(print(p), NA)
 
 p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_col(agg_aes(y=x1), panel = "1") +
@@ -27,13 +27,13 @@ p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_label("A label", x = 2001, y = 2, panel = "1", color = "red") +
   agg_abline(x = 2004, panel = "2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
-print(p)
+expect_error(print(p), NA)
 
 tsdata <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
 agg_qplot(tsdata)
 
 p <- arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
-print(p)
+expect_error(print(p), NA)
 
 p <- arphitgg(data, layout = "2b2") +
   agg_line(agg_aes(x=date, y = x1), panel = "1") +
@@ -48,4 +48,4 @@ p <- arphitgg(data, layout = "2b2") +
   agg_title("Panel 3", panel = "3") +
   agg_title("Panel 4", panel = "4") +
   agg_source("Randomly generated data")
-print(p)
+expect_error(print(p), NA)
