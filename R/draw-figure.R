@@ -146,31 +146,24 @@ handlelayout <- function(layout) {
     graphics::par(mfrow=c(1,1))
   } else if (layout == "2h") {
     graphics::par(mfrow=c(2,1))
-    graphics::par(cex = 1)
   } else if (layout == "2v") {
     graphics::par(mfrow=c(1,2))
-    graphics::par(cex = 1)
   } else if (layout == "2b2") {
     graphics::par(mfrow=c(2,2))
-    graphics::par(cex = 1)
   } else if (layout == "3v") {
     graphics::par(mfrow=c(1,3))
-    graphics::par(cex=1)
   } else if (layout == "3h") {
     graphics::par(mfrow=c(3,1))
-    graphics::par(cex=1)
   } else if (layout == "3b2") {
     graphics::par(mfrow=c(3,2))
-    graphics::par(cex=1)
   } else if (layout == "4h") {
     graphics::par(mfrow=c(4,1))
-    graphics::par(cex=1)
   } else if (layout == "4b2") {
     graphics::par(mfrow=c(4,2))
-    graphics::par(cex=1)
   } else {
     stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2.", sep = ""))
   }
+  graphics::par(cex=1)
 }
 
 startdevice <- function(filename, device, figsize) {
