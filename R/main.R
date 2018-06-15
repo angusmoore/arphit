@@ -125,17 +125,18 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
   }
 
   # Draw outer material
+  # For easy alignment of legend, footnotes and sources just draw a unit square over the graph
+  graphics::par(mfrow=c(1,1))
+  graphics::par(mfg = c(1,1))
+  graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
+                 xlim = c(0,1), ylim = c(0, 1))
   drawtitle(title, subtitle)
   if (legend) {
-    # For easy alignment of the legend just draw a unit square over the graph
-    graphics::par(mfrow=c(1,1))
-    graphics::par(mfg = c(1,1))
-    graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
-                   xlim = c(0,1), ylim = c(0, 1))
+
     drawlegend(panels, bars, attributes, legend.ncol, margins$xtickmargin, length(xaxislabels)>0)
-    handlelayout(layout) # Put the correct layout back
   }
   drawnotes(footnotes, sources, margins$notesstart)
+  handlelayout(layout) # Put the correct layout back
 
   if (enable_autolabeller) {
     autogenlabel <- autolabel(xvars, data, panels, shading, layout, xlim, ylim, attributes, bgshading, lines, arrows, labels)
