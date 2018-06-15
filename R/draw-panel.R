@@ -77,11 +77,11 @@ drawpaneltitle <- function(paneltitle, panelsubtitle) {
   }
 }
 
-drawaxislabels <- function(ylabel, xlabel, p, layout, xtickmargin) {
+drawaxislabels <- function(ylabel, xlabel, p, layout, xtickmargin, leftmargin) {
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
     if (!is.na(side) && side == 2) {
-      graphics::mtext(text = ylabel, side = side, line = 2.5, las = 3)
+      graphics::mtext(text = ylabel, side = side, line = leftmargin - 2, las = 3)
     }
   }
   if (!is.null(xlabel) && needxlabels(p, layout)) {
@@ -382,7 +382,7 @@ getxvals <- function(data, ists, xvals) {
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, xtickmargin) {
+drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt) {
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
@@ -412,5 +412,5 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   drawlines(l, series, bars, data, x, attributes, xlim, ylim, joined)
 
   drawpaneltitle(paneltitle, panelsubtitle)
-  drawaxislabels(yaxislabel, xaxislabel, p, layout, xtickmargin)
+  drawaxislabels(yaxislabel, xaxislabel, p, layout, margins$xtickmargin, margins$left)
 }
