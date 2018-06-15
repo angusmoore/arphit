@@ -37,7 +37,7 @@ lineofsight <- function(x, y, a, b, xvar, data, serieslist, thisseries) {
   los <- TRUE
   for (s in serieslist) {
     if (s != thisseries) {
-      block.y <- data[, s]
+      block.y <- data[[s]]
       los <- los && lineofsight.point2point(x, y, a, b, xvar, block.y)
     }
   }
@@ -45,7 +45,7 @@ lineofsight <- function(x, y, a, b, xvar, data, serieslist, thisseries) {
 }
 
 series.distance <- function(a, b, series.x, data, serieslist, thisseries, requirelos) {
-  series.y <- data[, thisseries]
+  series.y <- data[[thisseries]]
   distance <- Inf
   px <- NULL
   py <- NULL

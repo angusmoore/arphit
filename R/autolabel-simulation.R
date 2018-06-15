@@ -35,7 +35,7 @@ seriesforce <- function(a, b, series.x, series.y) {
 calculate.seriesforces <- function(x, data, labelsmap, label, a, b) {
   vector <- c(0, 0)
   for (s in names(labelsmap)) {
-    y <- data[, s]
+    y <- data[[s]]
     vector <- vector + seriesforce(a, b, x, y)
   }
   return(vector)
@@ -145,7 +145,7 @@ labelsimulation <- function(series.x, data, labelsmap, xlim, ylim, ylim_n) {
   ap <- sampleanchorpoints(data, labelsmap)
 
   for (label in names(labelsmap)) {
-    anchor <- c(series.x[ap[[label]]], data[ap[[label]], label])
+    anchor <- c(series.x[ap[[label]]], data[[ap[[label]], label]])
     labellocations[[label]] <- location.fromanchor(label, anchor, series.x, reduceddata, data, labelsmap, labellocations, xlim, ylim, ylim_n)
   }
   return(labellocations)
