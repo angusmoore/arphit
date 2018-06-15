@@ -200,7 +200,9 @@ agg_autolabel <- function() {
 #' all the plotting options
 #'
 #' @examples
-#' arphitgg(data) + agg_arrow(tail.x = 2002, tail.y = 0, head.x = 2003, head.y = 1, color = RBA["Blue1"], panel = "1")
+#' arphitgg(data) +
+#'   agg_arrow(tail.x = 2002, tail.y = 0, head.x = 2003, head.y = 1,
+#'             color = RBA["Blue1"], panel = "1")
 #'
 #' @export
 agg_arrow <- function(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1) {
@@ -230,7 +232,9 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1) {
 #' arphitgg(data) + agg_abline(x = 2001, color = RBA["Blue1"], panel = "1") +
 #'   agg_abline(y = -0.5, color = RBA["Red1"], panel = "1")
 #'
-#' arphitgg(data) + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, color = RBA["Blue1"], panel = "1")
+#' arphitgg(data) +
+#'   agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5,
+#'              color = RBA["Blue1"], panel = "1")
 #'
 #' @export
 agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, color = NULL, panel, lwd = 1, lty = 1) {
