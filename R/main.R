@@ -121,7 +121,7 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined, srt, margins$xtickmargin)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined, srt)
   }
 
   # Draw outer material
