@@ -18,6 +18,10 @@ autolabel <- function(xvals, data, panels, shading, layout, xlim_list, ylim_list
         # Handling the x variables
         ists <- !is.null(xvals[[paste0(p,"ts")]])
         x <- getxvals(data[[p]], ists, xvals[[p]])
+        if (stats::is.ts(data[[p]])) {
+          # because indexing into time series data doesn't work with [[seriesname]]
+          data[[p]] <- as.data.frame(data[[p]])
+        }
 
         xlim <- xlim_list[[p]]
         ylim <- c(ylim_list[[p]]$min, ylim_list[[p]]$max)
