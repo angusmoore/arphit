@@ -25,7 +25,9 @@ agg_arrow(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1)
 Add an arrow
 }
 \examples{
-arphitgg(data) + agg_arrow(tail.x = 2002, tail.y = 0, head.x = 2003, head.y = 1, color = RBA["Blue1"], panel = "1")
+arphitgg(data) +
+  agg_arrow(tail.x = 2002, tail.y = 0, head.x = 2003, head.y = 1,
+            color = RBA["Blue1"], panel = "1")
 
 }
 \seealso{

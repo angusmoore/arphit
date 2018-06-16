@@ -35,7 +35,9 @@ You need specify only one of x, or y, or x1,x2,y1,y2
 arphitgg(data) + agg_abline(x = 2001, color = RBA["Blue1"], panel = "1") +
   agg_abline(y = -0.5, color = RBA["Red1"], panel = "1")
 
-arphitgg(data) + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, color = RBA["Blue1"], panel = "1")
+arphitgg(data) +
+  agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5,
+             color = RBA["Blue1"], panel = "1")
 
 }
 \seealso{
