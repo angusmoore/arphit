@@ -292,7 +292,7 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
 
 drawshading <- function(shading, data, x) {
   for (s in shading) {
-    graphics::polygon(c(x,rev(x)),c(data[, s$to],rev(data[, s$from])),col = s$color, border = NA)
+    graphics::polygon(c(x,rev(x)),c(data[[s$to]],rev(data[[s$from]])),col = s$color, border = NA)
   }
 }
 
