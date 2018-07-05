@@ -257,7 +257,7 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
       graphics::mtext(text = xunits, side = 1, at = xlim[2], line = 0, cex = 1, padj = 1)
     }
     # Calculate what one line is in user coordinates
-    y <- inchesasuser(1.5 * CSI)
+    y <- inchesasuser(1.8 * CSI)
     y <- ylim$min - y
     if (srt == 0) {
       adj <- 0.5

@@ -57,8 +57,8 @@ for (suffix in c("png","pdf","emf")) {
 # tests for bottom spacing
 fakeseries1 <- c("a","b")
 onesided <- handlepanels(fakeseries1, "1")
-expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 1.5)
-expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 3.2)
+expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 1.8)
+expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 3.5)
 
 # tests for extra margins when have y axis labels
 noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE, "1", 0)$left
@@ -75,8 +75,7 @@ nolegendlabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" 
 legendlabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 1,  LANDSCAPESIZE, FALSE, "1", 0)$left
 expect_that(legendlabelmargin, is_more_than(nolegendlabelmargin))
 
-# rotated x labels should have larger bototm padding
-
+# rotated x labels should have larger bottom padding
 norotation <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)
 rotated45 <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 45)
 rotated90 <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 90)
