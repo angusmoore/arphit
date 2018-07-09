@@ -260,11 +260,11 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
     y <- inchesasuser(1.8 * CSI)
     y <- ylim$min - y
     if (srt == 0) {
-      adj <- 0.5
+      adj <- c(0.5, 0)
     } else {
-      adj <- 1
+      adj <- c(1, 0.5)
     }
-    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = c(adj,0), srt = srt, xpd = NA)
+    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = adj, srt = srt, xpd = NA)
   }
 
   ## Draw the grid
