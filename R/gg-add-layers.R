@@ -107,6 +107,14 @@ addlayertopanel <- function(gg, new, panel) {
     new$data$agg_time <- agg_time
   }
 
+  # Check for bare minimum aes
+  if (is.null(new$aes$x)) {
+    stop("Cannot add layer. You have not specified an x aesthetic (and there was not one to inherit).")
+  }
+  if (is.null(new$aes$y)) {
+    stop("Cannot add layer. You have not specified a y aesthetic for at least one of your layers (and there was not one to inherit).")
+  }
+
   # Assign the x variable
   if (!is.null(gg$x[[panel]])) {
     # Have previously set an x variable. Check is the same.
