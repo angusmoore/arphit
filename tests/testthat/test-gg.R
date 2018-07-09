@@ -395,3 +395,17 @@ expect_error(arphitgg(foo, agg_aes(x=x,y=y), plotsize=c(2,5)) + agg_line(), NA)
 
 # Shutdown any devices
 graphics.off()
+
+# More helpful error messages if forget to pass in required parts of
+# aesthetic (#130)
+expect_error(
+  tibble(y=rnorm(10)) %>% arphitgg(agg_aes(y=y)) + agg_line(),
+  "Cannot add layer. You have not specified an x aesthetic (and there was not one to inherit).",
+  fixed = TRUE
+)
+
+expect_error(
+  tibble(x=rnorm(10)) %>%  arphitgg(agg_aes(x=x)) + agg_line(),
+  "Cannot add layer. You have not specified a y aesthetic for at least one of your layers (and there was not one to inherit).",
+  fixed = TRUE
+)
