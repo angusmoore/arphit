@@ -256,15 +256,19 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
       labels <- xlabels$labels[1:(length(xlabels$labels)-1)]
       graphics::mtext(text = xunits, side = 1, at = xlim[2], line = 0, cex = 1, padj = 1)
     }
-    # Calculate what one line is in user coordinates
-    y <- inchesasuser(1.8 * CSI)
-    y <- ylim$min - y
+
     if (srt == 0) {
-      adj <- 0.5
+      adj <- c(0.5, 0)
+      # Calculate what one line is in user coordinates
+      y <- inchesasuser(1.8 * CSI)
     } else {
-      adj <- 1
+      adj <- c(1, 0.5)
+      # Calculate what one line is in user coordinates
+      y <- inchesasuser(0.8 * CSI)
     }
-    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = c(adj,0), srt = srt, xpd = NA)
+
+    y <- ylim$min - y
+    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = adj, srt = srt, xpd = NA)
   }
 
   ## Draw the grid
