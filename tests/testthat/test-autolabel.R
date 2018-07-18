@@ -18,7 +18,7 @@ expect_error(
 )
 
 # Factors in data for auto labeller (#123)
-p <- data.frame(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10)) %>% 
+p <- data.frame(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10)) %>%
   arphitgg(agg_aes(x=x,y=y,group=g)) +
   agg_col() +
   agg_autolabel()
@@ -59,7 +59,21 @@ expect_error(
 # NAs in data for autolabeller (#126)
 foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
 foo$y[1:10] <- NA
+p <- arphitgg(foo, agg_aes(x=year)) +
+  agg_line(agg_aes(y=y)) +
+  agg_line(agg_aes(y=y2)) +
+  agg_autolabel()
 expect_error(
-  agg_qplot(foo, x="year", enable_autolabeller = TRUE),
+  print(p),
+  NA
+)
+
+foo <- ts(data.frame(x1=rnorm(10),x2=rnorm(10)),start=c(2000,1),frequency=4)
+p <- arphitgg(foo) +
+  agg_line(agg_aes(y=x1)) +
+  agg_line(agg_aes(y=x2)) +
+  agg_autolabel()
+expect_error(
+  print(p),
   NA
 )

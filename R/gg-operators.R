@@ -10,7 +10,7 @@
 agg_draw <- function(gg, filename = NULL) {
   # Here we call the arphit drawing function
   gg$data[["parent"]] <- NULL
-  agg_qplot(data = gg$data,
+  agg_draw_internal(data = gg$data,
          x = gg$x,
          layout = gg$layout,
          bars = gg$bars,

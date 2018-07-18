@@ -131,11 +131,7 @@ location.fromanchor <- function(label, anchor, series.x, reduceddata, originalda
 
 sampleanchorpoints <- function(data, series.x, series) {
   x <- sample(series.x[!is.na(series.x)], 1)
-  if (stats::is.ts(data)) {
-    data <- as.vector(data[, series])
-  } else {
-    data <- data[[series]]
-  }
+  data <- data[[series]]
   data <- data[!is.na(data)]
   y <- sample(data, 1)
 

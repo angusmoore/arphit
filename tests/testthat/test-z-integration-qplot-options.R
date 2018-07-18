@@ -105,9 +105,6 @@ expect_error(
 expect_error(
   agg_qplot(data, portrait = TRUE),
   NA)
-expect_error(
-  agg_qplot(data, plotsize = c(2,10)),
-  NA)
 
 # BAR GRAPHS =================
 
@@ -164,10 +161,6 @@ expect_error(
             series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
             yunits = "000s"),
   NA)
-scatterdata <- data.frame(x = rnorm(20), y = rnorm(20))
-expect_error(
-  agg_qplot(scatterdata, x = "x", xunits = "ppt"),
-  NA)
 
 # LINE, BAR AND MARKER OPTIONS ===============
 
@@ -204,80 +197,6 @@ expect_error(
             layout = "2b2",
             series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
             dropxlabel = TRUE),
-  NA)
-
-# SHADING BETWEEN SERIES ============
-
-graphics.off()
-expect_error(
-  agg_qplot(data, shading = list(list(from = "x1", to = "x2", color= "red"))),
-  NA)
-expect_error(
-  agg_qplot(data,
-            shading = list(list(from = "x1", to = "x2", color= "red"),
-                           list(from = "x3", to = "x4", color = "purple"))),
-  NA)
-
-# PLOT ANNOTATIONS ==============
-
-graphics.off()
-expect_error(
-  agg_qplot(data,
-            labels = list(list(x = 2001, y = 2, text = "A label",
-                               panel = 1, color = "red"),
-                          list(x = 2004, y = 10, text = "A label\n(On two lines!)",
-                               panel = 1, color = "green"))),
-  NA)
-expect_error(
-  agg_qplot(data,
-            arrows = list(list(tail.x = 2000, tail.y = 10,
-                               head.x = 2001, head.y = 1,
-                               color = "darkred", panel = 1))),
-  NA)
-expect_error(
-  agg_qplot(data,
-            lines = list(list(x = 2001, panel = 1),
-                         list(y = -1, color = "darkred", panel = 1, lty = 2))),
-  NA)
-expect_error(
-  agg_qplot(data, enable_autolabeller = TRUE),
-  NA)
-expect_error(
-  agg_qplot(data,
-            series = list("1" = c("x1","x2"), "2" = c("x1","x2")),
-            layout = "2v",
-            labels = list(list(x = 2001, y = 2, text = "A label", panel = "2", color = "red")),
-            enable_autolabeller = TRUE),
-  NA)
-expect_error(
-  agg_qplot(data, lines = list(list(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = 1))),
-  NA)
-expect_error(
-  agg_qplot(data, bgshading = list(list(x1 = NA, y1 = -1, x2 = NA, y2 = 3, panel = 1))),
-  NA)
-expect_error(
-  agg_qplot(data,
-            layout = "2h",
-            series = list("1" = "x4", "3" = "x2"),
-            bgshading = list(list(x1 = NA, y1 = -1,
-                                  x2 = NA, y2 = 3,
-                                  panel = 1),
-                             list(x1 = 2000.5, y1 = NA,
-                                  x2 = 2001.5, y2 = NA,
-                                  panel = 3, color = "lightgreen"))),
-  NA)
-expect_error(
-  agg_qplot(data, layout = "2b2",
-            yaxislabels = "A y axis label",
-            xaxislabels = "An x label"),
-  NA)
-expect_error(
-  agg_qplot(data, layout = "2b2",
-            yaxislabels = list("1" = "Foo", "3" = "Bar"),
-            xaxislabels = list("3" = "An x label", "4" = "Another x label")),
-  NA)
-expect_error(
-  agg_qplot(categoricaldata, x = "categoryname", srt = 45),
   NA)
 
 # JOINING AND MISSING VALUES ==============
