@@ -9,7 +9,9 @@ plot(1:10,1:10)
 expect_true(linesegment.intersect(0,0,1,1,0,1,1,0))
 expect_true(linesegment.intersect(10,10,10,0,0,4,20,4))
 expect_false(linesegment.intersect(0,0,1,1,10,10,12,12))
-expect_error(linesegment.intersect(0,0,1,1,10,10,12,NA))
+expect_false(linesegment.intersect(0,0,1,1,10,10,12,NA))
+expect_false(linesegment.intersect(0,0,1,1,NA,10,12,12))
+expect_false(linesegment.intersect(NA,0,1,1,10,10,12,12))
 expect_true(linesegment.intersect(0,0,1,1,0,1,1,1))
 
 # Text bounding box
