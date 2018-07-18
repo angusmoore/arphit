@@ -57,7 +57,7 @@ expect_error(
 )
 
 # NAs in data for autolabeller (#126)
-foo <- tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
+foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
 foo$y[1:10] <- NA
 expect_error(
   agg_qplot(foo, x="year", enable_autolabeller = TRUE),
