@@ -1,6 +1,6 @@
 linesegment.intersect <- function(x1, y1, x2, y2, a1, b1, a2, b2) {
   if (is.na(x1) || is.na(y1) || is.na(x2) || is.na(y2) || is.na(a1) || is.na(b1) || is.na(a2) || is.na(b2)) {
-    stop("huh")
+    return(FALSE)
   }
   if (max(x1, x2) < min(a1, a2) || min(x1, x2) > max(a1, a2) || max(y1, y2) < min(b1, b2) || min(y1, y2) > max(b1, b2)) {
     return(FALSE)
