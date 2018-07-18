@@ -71,12 +71,6 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 \item{srt}{(default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.}
 
 \item{showallxlabels}{(optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.}
-
-\item{shading}{(optional) List of shading between series. See the plotting options vignette for information on how to use.}
-
-\item{yaxislabels}{(optional) A list of string -> string pairs indicating the axis labels for the y axis. Alternatively, a single string which will be applied to all panels.}
-
-\item{xaxislabels}{(optional) A list of string -> string pairs indicating the axis labels for the x axis. Alternatively, a single string which will be applied to all panels.}
 }
 \description{
 Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
