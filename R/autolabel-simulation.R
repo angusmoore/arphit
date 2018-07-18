@@ -14,18 +14,26 @@ asunits <- function(vector) {
 }
 
 coulombrepulsion <- function(a, b, x, y, forceconstant) {
-  angle <- atan2((b-y), (a-x))
-  distance <- distanceininches(a, b, x, y)
-  distance = max(distance, 1e-3) # prevents when two points exactly coincide causing errors
-  magnitude <- forceconstant / (distance^2)
-  return(c(magnitude*cos(angle), magnitude*sin(angle)))
+  if (is.na(a) || is.na(b) || is.na(x) || is.na(y)) {
+    return(c(0,0))
+  } else {
+    angle <- atan2((b-y), (a-x))
+    distance <- distanceininches(a, b, x, y)
+    distance = max(distance, 1e-3) # prevents when two points exactly coincide causing errors
+    magnitude <- forceconstant / (distance^2)
+    return(c(magnitude*cos(angle), magnitude*sin(angle)))
+  }
 }
 
 hookesattraction <- function(a, b, x, y, stiffness) {
-  angle <- atan2((b-y), (a-x))
-  distance <- distanceininches(a, b, x, y)
-  magnitude <- -stiffness * distance
-  return(c(magnitude*cos(angle), magnitude*sin(angle)))
+  if (is.na(a) || is.na(b) || is.na(x) || is.na(y)) {
+    return(c(0,0))
+  } else {
+    angle <- atan2((b-y), (a-x))
+    distance <- distanceininches(a, b, x, y)
+    magnitude <- -stiffness * distance
+    return(c(magnitude*cos(angle), magnitude*sin(angle)))
+  }
 }
 
 seriesforce <- function(a, b, series.x, series.y) {
@@ -121,10 +129,17 @@ location.fromanchor <- function(label, anchor, series.x, reduceddata, originalda
   return(NULL)
 }
 
-sampleanchorpoints <- function(data, labelsmap) {
-  ap <- sample(1:nrow(data), length(labelsmap), replace = TRUE)
-  names(ap) <- names(labelsmap)
-  return(ap)
+sampleanchorpoints <- function(data, series.x, series) {
+  x <- sample(series.x[!is.na(series.x)], 1)
+  if (stats::is.ts(data)) {
+    data <- as.vector(data[, series])
+  } else {
+    data <- data[[series]]
+  }
+  data <- data[!is.na(data)]
+  y <- sample(data, 1)
+
+  c(x, y)
 }
 
 labelsimulation <- function(series.x, data, labelsmap, xlim, ylim, ylim_n) {
@@ -141,11 +156,9 @@ labelsimulation <- function(series.x, data, labelsmap, xlim, ylim, ylim_n) {
     reduceddata <- data
   }
 
-  # Find some sample anchor points
-  ap <- sampleanchorpoints(data, labelsmap)
-
   for (label in names(labelsmap)) {
-    anchor <- c(series.x[ap[[label]]], data[[ap[[label]], label]])
+    # Get an anchor point for this label
+    anchor <- sampleanchorpoints(data, series.x, labelsmap[[label]])
     labellocations[[label]] <- location.fromanchor(label, anchor, series.x, reduceddata, data, labelsmap, labellocations, xlim, ylim, ylim_n)
   }
   return(labellocations)
