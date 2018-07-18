@@ -158,7 +158,7 @@ labelsimulation <- function(series.x, data, labelsmap, xlim, ylim, ylim_n) {
 
   for (label in names(labelsmap)) {
     # Get an anchor point for this label
-    anchor <- sampleanchorpoints(data, series.x, labelsmap[[label]])
+    anchor <- sampleanchorpoints(data, series.x, label)
     labellocations[[label]] <- location.fromanchor(label, anchor, series.x, reduceddata, data, labelsmap, labellocations, xlim, ylim, ylim_n)
   }
   return(labellocations)
