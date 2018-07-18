@@ -59,7 +59,7 @@ expect_error(
 # NAs in data for autolabeller (#126)
 foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
 foo$y[1:10] <- NA
-p <- arphitgg(foo, agg_aes(x=x)) +
+p <- arphitgg(foo, agg_aes(x=year)) +
   agg_line(agg_aes(y=y)) +
   agg_line(agg_aes(y=y2)) +
   agg_autolabel()
