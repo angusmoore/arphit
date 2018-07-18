@@ -67,3 +67,13 @@ expect_error(
   print(p),
   NA
 )
+
+foo <- ts(data.frame(x1=rnorm(10),x2=rnorm(10)),start=c(2000,1),frequency=4)
+p <- arphitgg(foo) +
+  agg_line(agg_aes(y=x1)) +
+  agg_line(agg_aes(y=x2)) +
+  agg_autolabel()
+expect_error(
+  print(p),
+  NA
+)
