@@ -25,7 +25,7 @@ vignette: >
 This document outlines all of the plotting options in `agg_qplot` and how to use them.
 Examples are included of output, along with explanations.
 
-A word of warning:`agg_qplot` is actually extremely feature-filled, despite being for quick plots. Any graph you can make in `arphit` can be made with a suitably complex call to `agg_qplot`. But, if you're graph is complex, you should use `arphitgg`. It's much easier to use (no lists of lists) and much easier to read the code.
+A word of warning:`agg_qplot` has many features, despite being for quick plots. But, if you're graph is complex, you should use `arphitgg`. It's much easier to use (no lists of lists) and much easier to read the code.
 
 # Data and types of graphs
 
