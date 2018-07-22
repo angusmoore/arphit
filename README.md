@@ -46,10 +46,10 @@ agg_qplot(data)
 
 ## Installation
 
-Install the package using the R `devtools` package:
+Install the latest stable release of `arphit` using the R `devtools` package:
 ```
 library(devtools)
-install_github("angusmoore/arphit", build_vignettes = TRUE)
+install_github("angusmoore/arphit", ref = "stable", build_vignettes = TRUE)
 ```
 
 You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
