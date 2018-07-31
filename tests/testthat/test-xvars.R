@@ -72,3 +72,14 @@ expect_that(handlex(handledata(NULL, data, "year")$data, "year")[["1"]], equals(
 # Error if x variable has NA values
 data <- data.frame(x = c(1,2,3,NA,4),y = c(4,3,7,1,2))
 expect_error(agg_qplot(data, x="x"), NA)
+
+# Test #143
+# Correctly handle if dates are not in order
+foo <- data.frame(x = c(2017,2015,2012,2009,2006),y=rnorm(5))
+foo$x <-  lubridate::make_date(foo$x, 1, 1)
+p <- arphitgg(foo, agg_aes(x=x,y=y)) + agg_line()
+expect_error(
+  print(p),
+  NA
+)
+graphics.off()
