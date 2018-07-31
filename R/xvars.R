@@ -1,5 +1,5 @@
 frequencyof <- function(dates) {
-  smallestdiff <- min(diff(dates))
+  smallestdiff <- min(abs(diff(dates)))
   options <- c(1, 1/4, 1/12, 1/365)
   bestchoice <- (abs(log(smallestdiff)-log(options)) == min(abs(log(smallestdiff) -log(options))))
   return(options[bestchoice])
