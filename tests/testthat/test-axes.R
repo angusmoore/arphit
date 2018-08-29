@@ -76,6 +76,14 @@ for (end in 1991:2050) {
   expect_true(length(restrictlabels(ticks, 1/2)) <= 4)
   expect_true(length(restrictlabels(ticks, 1/3)) <= 2)
 }
+# Tests for much longer label steps
+start <- 1500
+for (end in 1991:2050) {
+  ticks <- start:end
+  expect_true(length(restrictlabels(ticks, 1)) <= 8)
+  expect_true(length(restrictlabels(ticks, 1/2)) <= 4)
+  expect_true(length(restrictlabels(ticks, 1/3)) <= 2)
+}
 
 # Check x lim conforming for categorical data
 catdata <- handledata(NULL, data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE), "x")$data
@@ -161,3 +169,24 @@ expect_equal(handleaxislabels("foo", onesided), list("1" = "foo", "2" = "foo"))
 # Incorrect rounding of labels (#81)
 foo <- createscale(-0.2, 0.4, 4)
 expect_true(foo[2] == 0)
+
+# Insufficient x label steps available (#145)
+library(dplyr)
+library(tidyr)
+dates <- c("1911-06-01","1925-06-01","1936-06-01","1947-06-01","1958-06-01",
+           "1969-08-01","1980-02-01","1991-02-01","2002-02-01","2013-02-01")
+
+data <- data.frame(date = dates, Males = rnorm(length(dates)), Females = rnorm(length(dates)))
+data$date <-  as.Date(data$date)
+data <- mutate(data, age_group = "15-24") %>%
+  bind_rows(mutate(data, age_group = "25-54")) %>%
+  bind_rows(mutate(data, age_group = "55+")) %>%
+  gather(key = sex, value = PR, Males, Females)
+
+p <- data %>%
+  arphitgg(agg_aes(x=date,y=PR,group=sex,facet=age_group), layout = "3v") +
+  agg_line()
+expect_error(
+  agg_draw(p),
+  NA
+)

@@ -201,12 +201,14 @@ handleticks <- function(data, panels, ylim) {
   return(ticks)
 }
 
-findlabelstep <- function(start, end, layout_factor) {
-  for (i in c(1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50)) {
-    if ((floor((end - start) / i) + 1) < round(MAXXLABELS*layout_factor)) {
-      return(i)
+findlabelstep <- function(start, end, layout_factor, exponent = 1) {
+  for (i in c(1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90)) {
+    if ((floor((end - start) / (i*exponent)) + 1) < round(MAXXLABELS*layout_factor)) {
+      return(i*exponent)
     }
   }
+  # haven't found one, increase exponent (with tial recursion to keep increasing it)
+  return(findlabelstep(start, end, layout_factor, exponent*10))
 }
 
 restrictlabels <- function(ticks, layout_factor) {
