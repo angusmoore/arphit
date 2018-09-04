@@ -41,11 +41,12 @@ expect_error(finddevice("abc.xyz"))
 expect_that(finddevice("abc.png"), equals("png"))
 expect_that(finddevice("abc.pdf"), equals("pdf"))
 expect_that(finddevice("abc.emf"), equals("emf"))
+expect_that(finddevice("abc.svg"), equals("svg"))
 expect_that(finddevice(NULL), equals(NULL))
 
 # test that each of the filenames output the right type of file
 randomdata <- ts(data.frame(x1 = rnorm(12)), start = c(2000,1), frequency = 4)
-for (suffix in c("png","pdf","emf")) {
+for (suffix in c("png","pdf","emf","svg")) {
   file <- paste("foo.", suffix, sep = "")
   agg_qplot(randomdata, filename = file)
   # test exists

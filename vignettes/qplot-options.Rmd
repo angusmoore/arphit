@@ -691,9 +691,10 @@ You can export your files automatically by using the `filename` argument. This w
 agg_qplot(data, filename = "my_filename.png")
 ```
 
-There are three supported file extensions: PNG, EMF and PDF. Simply include the relevant extension (lower case only) in the filename and `arphit` will figure it out.
+There are three supported file extensions: PNG, EMF, SVG and PDF. Simply include the relevant extension (lower case only) in the filename and `arphit` will figure it out.
 ```{r, eval = FALSE}
 agg_qplot(data, filename = "my_filename.png")
 agg_qplot(data, filename = "my_filename.emf")
+agg_qplot(data, filename = "my_filename.svg")
 agg_qplot(data, filename = "my_filename.pdf")
 ```
