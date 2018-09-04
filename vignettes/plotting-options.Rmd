@@ -914,11 +914,12 @@ knitr::include_graphics("legend.png")
 
 # Saving to a file
 
-To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf` and `pdf` are supported.
+To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf`, `svg` and `pdf` are supported.
 ```{r, results = "hide", eval = FALSE}
 p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1)) +
   agg_line()
 agg_draw(p, filename = "my-graph.png")
 agg_draw(p, filename = "my-graph.emf")
+agg_draw(p, filename = "my-graph.svg")
 agg_draw(p, filename = "my-graph.pdf")
 ```

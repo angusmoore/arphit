@@ -14,8 +14,8 @@ finddevice <- function(filename) {
   if (is.null(filename)) {
     return(NULL)
   } else {
-    filetype <- stringr::str_sub(filename, -3,-1)
-    if (filetype == "png" || filetype == "pdf" || filetype == "emf") {
+    filetype <- tools::file_ext(filename)
+    if (filetype == "png" || filetype == "pdf" || filetype == "emf" || filetype == "svg") {
       return(filetype)
     } else {
       stop(paste("Unsupported file type ", filetype, ".", sep = ""))
@@ -188,6 +188,8 @@ startdevice <- function(filename, device, figsize) {
     grDevices::pdf(file = filename, width = figsize$width, height = figsize$height)
   } else if (device == "emf") {
     devEMF::emf(file = filename, width = figsize$width, height = figsize$height)
+  } else if (device == "svg") {
+    grDevices::svg(filename = filename, width = figsize$width, height = figsize$height)
   }
 }
 
