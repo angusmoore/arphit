@@ -333,23 +333,25 @@ knitr::include_graphics("inherit.png")
 `agg_line` layers convert data and an aesthetic into line series in the chosen panel (or, panels if you set a facet variable in the aesthetic).
 
 There are 7 options for line layers:
- - The dataset to be drawn (`data`)
- - The aesthetic that defines how to turn the data into a graph (`aes`)
- - The colour (or colours) for the series (`color`)
- - Point markers for the series (`pch`)
- - The line type - e.g. solid or dashed - for the sereis (`lty`)
- - The linewidth of the lines (`lwd`)
- - Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
+
+* The dataset to be drawn (`data`)
+* The aesthetic that defines how to turn the data into a graph (`aes`)
+* The colour (or colours) for the series (`color`)
+* Point markers for the series (`pch`)
+* The line type - e.g. solid or dashed - for the sereis (`lty`)
+* The linewidth of the lines (`lwd`)
+* Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 
 ### Column/bar layers
 
 `agg_col` layers plot data as a vertical column graph. They have six options:
- - The aesthetic that defines how to turn the data into a graph (`aes`)
- - The dataset to be drawn (`data`)
- - The colour (or colours) for the series (`color`)
- - Point markers for the series (`barcol`)
- - Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
- - Whether the bars should be stacked (default) or grouped (`stacked`). This is a global option; you cannot combine stacked and grouped layers.
+
+* The aesthetic that defines how to turn the data into a graph (`aes`)
+* The dataset to be drawn (`data`)
+* The colour (or colours) for the series (`color`)
+* Point markers for the series (`barcol`)
+* Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
+* Whether the bars should be stacked (default) or grouped (`stacked`). This is a global option; you cannot combine stacked and grouped layers.
 
 ### Point/scatter layers
 
@@ -669,10 +671,12 @@ knitr::include_graphics("shading-multiple.png")
 You can add series labels, and arrows to aid those labels, using `agg_label` and `agg_arrow` arguments.
 
 `agg_label` takes 5 arguments.
- - `text` is the label text. You can add line breaks in text using the `\n` character.
- - `x` and `y` specify where (in the units on the plot) the centre of the label should be. For time series, `x` is in decimal years (i.e. 2000.5 is July 2, 2000). For categorical graphs, 1 corresponds to the first categories, 2 to the second, etc.
- - `panel` specifies which panel to place the label on.
- - `color` is self-explanatory.
+
+* `text` is the label text. You can add line breaks in text using the `\n` character.
+* `x` and `y` specify where (in the units on the plot) the centre of the label should be. For time series, `x` is in decimal years (i.e. 2000.5 is July 2, 2000). For categorical graphs, 1 corresponds to the first categories, 2 to the second, etc.
+* `panel` specifies which panel to place the label on.
+* `color` is self-explanatory.
+ 
 ```{r, results = "hide"}
 p <- arphitgg() +
   agg_label("A label", x = 2002, y = 0.5, color = RBA["Blue2"], panel = "1")
@@ -685,11 +689,13 @@ knitr::include_graphics("labels.png")
 ```
 
 Arrows are specified with `agg_arrow`.
- - `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at.
- - `head.x` and `head.y` where to finish the arrow (and where the arrow head is).
- - `panel` specifies which panel to place the arrow on.
- - `color` is self-explanatory.
- - `lwd` is optional and specifies the linewidth of the arrow (default = 1).
+
+* `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at.
+* `head.x` and `head.y` where to finish the arrow (and where the arrow head is).
+* `panel` specifies which panel to place the arrow on.
+* `color` is self-explanatory.
+* `lwd` is optional and specifies the linewidth of the arrow (default = 1).
+ 
 ```{r, results = "hide"}
 p <- arphitgg() +
   agg_arrow(tail.x = 2000, tail.y = 0, head.x = 2001, head.y = 0.5, color = RBA["Blue1"], panel = "1")
