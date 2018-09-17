@@ -68,6 +68,21 @@ expect_error(
   "You did not specify an x variable for panel 1"
 )
 
+# Monthly and daily data
+foo <- ts(data.frame(y = rnorm(100)), frequency = 12, start = c(2000,1))
+p <- arphitgg(foo, aes(y=y)) + agg_line()
+expect_error(
+  print(p),
+  NA
+)
+
+foo <- ts(data.frame(y = rnorm(1000)), frequency = 365, start = c(2000,1))
+p <- arphitgg(foo, aes(y=y)) + agg_line()
+expect_error(
+  print(p),
+  NA
+)
+
 # Test #37
 # Error if x variable has NA values
 data <- data.frame(x = c(1,2,3,NA,4),y = c(4,3,7,1,2))
