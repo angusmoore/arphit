@@ -1,8 +1,22 @@
 frequencyof <- function(dates) {
-  smallestdiff <- min(abs(diff(dates)))
+  dates <- lubridate::decimal_date(dates)
+  smallestdiff <- min(abs(diff(dates))[abs(diff(dates)) > 0])
   options <- c(1, 1/4, 1/12, 1/365)
   bestchoice <- (abs(log(smallestdiff)-log(options)) == min(abs(log(smallestdiff) -log(options))))
   return(options[bestchoice])
+}
+
+make_decimal_date <- function(date, frequency) {
+  if (frequency == 1) {
+    return(lubridate::year(date) + 0.5)
+  } else if (frequency == 1/4) {
+    return(lubridate::year(date) + (lubridate::quarter(date) - 0.5)/4)
+  } else if (frequency == 1/12) {
+    return(lubridate::year(date) + (lubridate::month(date) - 0.5)/12)
+  } else if (frequency == 1/365) {
+    return(lubridate::decimal_date(date) + 0.5/365)
+  }
+  stop("Unknown frequency")
 }
 
 get_x_values <- function(data, x) {
@@ -13,9 +27,7 @@ get_x_values <- function(data, x) {
         outx[[p]] <- data[[p]][[x[[p]]]]
         # if is dates, convert to year fractions
         if (lubridate::is.Date(outx[[p]])) {
-          outx[[p]] <- lubridate::decimal_date(outx[[p]])
-          # shift by half, so that we're between ticks
-          outx[[p]] <- outx[[p]] + 1/2*frequencyof(outx[[p]])
+          outx[[p]] <- make_decimal_date(outx[[p]], frequencyof(outx[[p]]))
           # Add a little helper to tell other functions we have time series data
           outx[[paste0(p, "ts")]] <- TRUE
         }
