@@ -275,7 +275,7 @@ xlabels.scatter <- function(xlim, xvalues) {
 }
 
 xlabels <- function(xlim, xvar, data, ists, layout, showall) {
-  if (stats::is.ts(data) || !is.null(ists)) {
+  if (!is.null(ists)) {
     return(xlabels.ts(xlim, layout))
   } else if (is.scatter(xvar)) {
     return(xlabels.scatter(xlim, xvar))
@@ -333,7 +333,7 @@ is.scatter <- function(x) {
 
 defaultxscale <- function(xvars, xscales, data, ists) {
   if (!is.null(xvars)) {
-    if (is.numeric(xvars) && (stats::is.ts(data) || ists)) {
+    if (is.numeric(xvars) && ists) {
       return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
     } else if (is.scatter(xvars)) {
       scale <- defaultscale(xvars)

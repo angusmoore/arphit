@@ -7,11 +7,7 @@ sanitycheckdata <- function(series, data) {
       if (!s %in% colnames(data[[p]])) {
         stop(paste("Series ", s, " is not in your dataset for panel ", p , ".", sep = ""))
       } else {
-        if (stats::is.ts(data[[p]])) {
-          y <- as.vector(data[[p]][, s])
-        } else {
-          y <- data[[p]][[s]]
-        }
+        y <- data[[p]][[s]]
         if (any(is.infinite(y))) {
           stop(paste0("Series ", s, " in panel ", p, " contains non-finite values."))
         }
@@ -48,7 +44,7 @@ handledata <- function(series, data, x) {
     } else {
       out$series[[p]] <- series[[p]]
     }
-    if (!is.null(tmpx) && !stats::is.ts(out$data[[p]])) {
+    if (!is.null(tmpx)) {
       out$series[[p]] <- out$series[[p]][out$series[[p]]!=tmpx]
     }
   }

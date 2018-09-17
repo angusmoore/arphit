@@ -306,11 +306,7 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined) 
   for (s in series) {
     if (!(s %in% bars)) {
       graphics::par(mfg = l)
-      if (stats::is.ts(data)) {
-        y <- as.vector(data[, s])
-      } else {
-        y <- data[[s]]
-      }
+      y <- data[[s]]
       if (joined) {
         nas <- is.na(x) | is.na(y)
         plotx <- x[!nas]
@@ -373,7 +369,7 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
 }
 
 getxvals <- function(data, ists, xvals) {
-  if (stats::is.ts(data) || ists || is.scatter(xvals) || is.null(data)) {
+  if (ists || is.scatter(xvals) || is.null(data)) {
     # time series or scatter
     return(xvals)
   } else if (!is.null(xvals)) {
@@ -397,7 +393,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
   x <- getxvals(data, ists, xvals)
 
   # Do we need an x unit
-  if (stats::is.ts(data) || ists || !is.scatter(xvals) || is.null(data)) {
+  if (ists || !is.scatter(xvals) || is.null(data)) {
     xunits <- NULL
   }
 
