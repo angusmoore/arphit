@@ -59,7 +59,6 @@ data <- data.frame(year = c(1991, 2001, 2006, 2011, 2016), y = rnorm(5))
 data$year <- as.Date(paste0(data$year, "-01-01"))
 expect_that(get_x_values(handledata(NULL, list("1" = data), list("1" = "year"))$data, list("1" = "year"))[["1"]],
             equals(c(1991.5, 2001.5, 2006.5, 2011.5, 2016.5)))
-
 # Test if don't specify x variable for qplot
 expect_error(
   agg_qplot(data.frame(y=1:10)),
