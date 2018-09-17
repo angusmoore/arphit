@@ -70,14 +70,21 @@ expect_error(
 
 # Monthly and daily data
 foo <- ts(data.frame(y = rnorm(100)), frequency = 12, start = c(2000,1))
-p <- arphitgg(foo, aes(y=y)) + agg_line()
+p <- arphitgg(foo, agg_aes(y=y)) + agg_line()
+expect_error(
+  print(p),
+  NA
+)
+
+foo <- ts(data.frame(y = rnorm(1000)), frequency = 365.25, start = c(2000,1))
+p <- arphitgg(foo, agg_aes(y=y)) + agg_line()
 expect_error(
   print(p),
   NA
 )
 
 foo <- ts(data.frame(y = rnorm(1000)), frequency = 365, start = c(2000,1))
-p <- arphitgg(foo, aes(y=y)) + agg_line()
+p <- arphitgg(foo, agg_aes(y=y)) + agg_line()
 expect_error(
   print(p),
   NA
