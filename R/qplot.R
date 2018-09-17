@@ -99,7 +99,7 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
   x <- conformxvariable(x, data, layout)
   if (is.null(series)) {
     series <- list()
-    for (p in colnames(data)) {
+    for (p in names(data)) {
       series[[p]] <- colnames(data)
     }
   }
