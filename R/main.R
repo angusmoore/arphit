@@ -6,7 +6,10 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
   series <- out$series
 
   # Determine the x values for each panel
-  xvars <- handlex(data, x)
+  xvals <- get_x_values(data, x)
+  out <- arrange_data(data, x, xvals)
+  data <- out$data
+  xvals <- out$xvals
 
   # Handle panels
   panels <- handlepanels(series, layout)
@@ -20,8 +23,8 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
   xunits <- handlexunits(panels, xunits)
   ylim <- ylimconform(panels, ylim, data, layout)
   yticks <- handleticks(data, panels, ylim)
-  xlim <- xlimconform(panels, xlim, xvars, data)
-  xlabels <- handlexlabels(panels, xlim, xvars, data, layout, showallxlabels)
+  xlim <- xlimconform(panels, xlim, xvals, data)
+  xlabels <- handlexlabels(panels, xlim, xvals, data, layout, showallxlabels)
   yaxislabels <- handleaxislabels(yaxislabels, panels)
   xaxislabels <- handleaxislabels(xaxislabels, panels)
 
@@ -64,7 +67,7 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvars[[p]], !is.null(xvars[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined, srt)
+    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvals[[p]], !is.null(xvals[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined, srt)
   }
 
   # Draw outer material
@@ -82,7 +85,7 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
   handlelayout(layout) # Put the correct layout back
 
   if (enable_autolabeller) {
-    autogenlabel <- autolabel(xvars, data, panels, shading, layout, xlim, ylim, attributes, bgshading, lines, arrows, labels)
+    autogenlabel <- autolabel(xvals, data, panels, shading, layout, xlim, ylim, attributes, bgshading, lines, arrows, labels)
     labels <- append(labels, autogenlabel$labels)
     arrows <- append(arrows, autogenlabel$arrows)
   }

@@ -7,11 +7,7 @@ sanitycheckdata <- function(series, data) {
       if (!s %in% colnames(data[[p]])) {
         stop(paste("Series ", s, " is not in your dataset for panel ", p , ".", sep = ""))
       } else {
-        if (stats::is.ts(data[[p]])) {
-          y <- as.vector(data[[p]][, s])
-        } else {
-          y <- data[[p]][[s]]
-        }
+        y <- data[[p]][[s]]
         if (any(is.infinite(y))) {
           stop(paste0("Series ", s, " in panel ", p, " contains non-finite values."))
         }
@@ -26,67 +22,42 @@ is.acceptable.data <- function(data) {
 
 handledata <- function(series, data, x) {
   out <- list(data = list(), series = list())
-  if (is.acceptable.data(data)) {
-    # We do not have different data for each panel
-    # First test if we have specified series. If not, just apply them all on 1
-    if (is.null(series)) {
-      out$series <- list("1" = colnames(data))
-      # strip out the x var if it exists
-      if (!is.null(x)) {
-        if (is.list(x)) {
-          stop("Cannot specify different x variables for different panels if you supply only a single dataset. Supply only one x variables.")
-        } else {
-          if (!(x %in% out$series[["1"]])) {
-            stop(paste("Your supplied x variable", x, "is not in your data"))
-          } else if (!stats::is.ts(data)) {
-            out$series[["1"]] <- out$series[["1"]][out$series[["1"]]!=x]
-          }
-        }
-      }
-    } else {
-      if (is.list(series)) {
-        out$series <- series
-      } else {
-        stop("The value you passed in for series is not a list and it needs to be.")
-      }
-    }
-
-        # Now apply the parent data to all panels with non null series
-    for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
-      if (!is.null(out$series[[p]])) {
-        out$data[[p]] <- data
-      }
-    }
-  } else if (is.list(data)) {
-    # have separate data for each panel
-    # sanity check first
-    for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
-      if (!is.null(data[[p]]) && !is.acceptable.data(data[[p]])) {
-        stop(paste("The data you passed in for panel ", p, " is not a data.frame, tibble or ts.", sep = ""))
-      }
-    }
-    out$data <- data
-    for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
-      if (is.list(x)) {
-        tmpx <- x[[p]]
-      } else {
-        tmpx <- x
-      }
-
-      if (is.null(series[[p]])) {
-        out$series[[p]] <- colnames(out$data[[p]])
-      } else {
-        out$series[[p]] <- series[[p]]
-      }
-      if (!is.null(tmpx) && !stats::is.ts(out$data[[p]])) {
-        out$series[[p]] <- out$series[[p]][out$series[[p]]!=tmpx]
-      }
-    }
-  } else {
-    stop(paste("The data you passed in is not a data.frame, tibble or ts.", sep = ""))
+  # sanity check first
+  if (any(!names(data) %in% c("1", "2", "3", "4", "5", "6", "7", "8"))) {
+    stop("Invalid index in data sets. Indexes must correspond to panel numbers between 1 and 8.")
   }
+  for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
+    if (!is.null(data[[p]]) && (!tibble::is_tibble(data[[p]])) && !is.data.frame(data[[p]])) {
+      stop(paste("The data you passed in for panel ", p, " is not a tibble or data.frame.", sep = ""))
+    }
+  }
+  out$data <- data
+  for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
+    if (is.list(x)) {
+      tmpx <- x[[p]]
+    } else {
+      tmpx <- x
+    }
 
+    if (is.null(series[[p]])) {
+      out$series[[p]] <- colnames(out$data[[p]])
+    } else {
+      out$series[[p]] <- series[[p]]
+    }
+    if (!is.null(tmpx)) {
+      out$series[[p]] <- out$series[[p]][out$series[[p]]!=tmpx]
+    }
+  }
   sanitycheckdata(out$series, out$data)
-
   return(out)
+}
+
+arrange_data <- function(data, x, xvals) {
+  for (p in c("1", "2", "3", "4", "5", "6", "7", "8")) {
+    if (!is.null(xvals[[paste0(p,"ts")]])) {
+      data[[p]] <- dplyr::arrange_(data[[p]], x[[p]])
+      xvals[[p]] <- sort(xvals[[p]])
+    }
+  }
+  return(list(data = data, xvals = xvals))
 }
