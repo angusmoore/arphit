@@ -101,7 +101,7 @@ addlayertopanel <- function(gg, new, panel) {
   }
   # Special case ts data
   if (is.null(new$aes$x) && (stats::is.ts(new$data))) {
-    agg_time <-as.Date(lubridate::date_decimal(as.numeric(stats::time(new$data))))
+    agg_time <- as.Date(lubridate::date_decimal(as.numeric(stats::time(new$data))))
     new$aes$x <- "agg_time"
     new$data <- tibble::as_tibble(new$data)
     new$data$agg_time <- agg_time

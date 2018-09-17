@@ -1,3 +1,50 @@
+conformdata <- function(data, layout, series) {
+  if (is.acceptable.data(data)) {
+    # Only a single data set, not a list of data
+    tmpdata <- data
+    data <- list()
+
+    if (stats::is.ts(tmpdata)) {
+      agg_time <- as.Date(lubridate::date_decimal(as.numeric(stats::time(tmpdata))))
+      tmpdata <- tibble::as_tibble(tmpdata)
+      tmpdata$agg_time <- agg_time
+    }
+
+    if (!is.null(series)) {
+      for (p in names(series)) {
+        data[[as.character(p)]] <- tmpdata
+      }
+    } else {
+      data[["1"]] <- tmpdata
+    }
+
+  } else if (!is.list(data)) {
+    stop("Data is of unknown form.")
+  }
+  return(data)
+}
+
+conformxvariable <- function(x, data, layout) {
+  if (!is.list(x) && !is.null(x)) {
+    tmpx <- x
+    x <- list()
+    for (p in 1:maxpanels(layout)) {
+      x[[as.character(p)]] <- tmpx
+    }
+  } else if (is.null(x)) {
+    # Check for if we gave a time series, and need to make agg_time
+    x <- list()
+    for (p in names(data)) {
+      if ("agg_time" %in% colnames(data[[p]])) {
+        x[[p]] <- "agg_time"
+      } else {
+        stop(paste("You did not specify an x variable for panel", p))
+      }
+    }
+  }
+  return(x)
+}
+
 #' RBA-style graphs in R
 #'
 #' Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
@@ -47,6 +94,15 @@
 #'
 #' @export
 agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL, sources = NULL, yunits = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL) {
+
+  data <- conformdata(data, layout, series)
+  x <- conformxvariable(x, data, layout)
+  if (is.null(series)) {
+    series <- list()
+    for (p in colnames(data)) {
+      series[[p]] <- colnames(data)
+    }
+  }
 
   agg_draw_internal(data = data,
                     series = series,
