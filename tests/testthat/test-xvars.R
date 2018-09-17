@@ -1,7 +1,10 @@
 context("X vars")
 
-dfdata <- list("1" = data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"),
-                     x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)))
+dfdata <- list("1" = data.frame(date = seq.Date(from = as.Date("2000-01-01"),
+                                                length.out = 12,
+                                                by = "quarter"),
+                     x1 = rnorm(12), x2 = rnorm(12),
+                     x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)))
 tsdata <- conformdata(ts(dfdata[["1"]], start = c(2000,1), frequency = 4), "1", NULL)
 tibbledata <- list("1" = tibble::as_tibble(dfdata[["1"]]))
 
@@ -19,21 +22,21 @@ expect_error(get_x_values(tibbledata, NULL),
 expect_error(get_x_values(tibbledata, list("1" = "foo")))
 
 # Supply x value for each panel
-offsetdates <- lubridate::decimal_date(dfdata[["1"]][, "date"]) + 1/8
-expect_that(get_x_values(dfdata, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE)))
-expect_that(get_x_values(tibbledata, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE)))
-
+offsetdates <- seq(from = 2000.125, by = 0.25, length.out = 12)
+expect_equal(get_x_values(dfdata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
+expect_equal(get_x_values(tibbledata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
 # Supply an x for all panels
-expect_that(get_x_values(dfdata, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE)))
-expect_that(get_x_values(tibbledata, x = list("1" = "date")), equals(list("1" = offsetdates, "1ts" = TRUE)))
+expect_equal(get_x_values(dfdata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
+expect_equal(get_x_values(tibbledata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
 
 # supply multiple datasets and multiple x variables
-offsetdates <- lubridate::decimal_date(seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter")) + 1/8
+offsetdates <- seq(from = 2000.125, by = 0.25, length.out = 12)
 dfdata <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"), x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5))
 dfdata2 <- data.frame(date2 = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"), x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5))
 
 multidata <- handledata(NULL, list("1" = dfdata, "2" = dfdata2), NULL)$data
-expect_that(get_x_values(multidata, x = list("1" = "date", "2" = "date2")), equals(list("1" = offsetdates, "1ts" = TRUE, "2" = offsetdates, "2ts" = TRUE)))
+expect_equal(get_x_values(multidata, x = list("1" = "date", "2" = "date2")),
+             list("1" = offsetdates, "1ts" = TRUE, "2" = offsetdates, "2ts" = TRUE))
 
 # Same x variable across multiple datasets
 data1 <- data.frame(x1 = 1:10, x2 = rnorm(10))
@@ -45,14 +48,14 @@ catdata <- handledata(NULL, list("1" = data.frame(x = letters[1:5], y = 1:5, str
 expect_that(get_x_values(catdata, list("1" = "x")), equals(list("1" = letters[1:5])))
 
 # Frequency guessing
-days <- lubridate::decimal_date(seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "day"))
-months <- lubridate::decimal_date(seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "month"))
-quarters <- lubridate::decimal_date(seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "quarter"))
-years <- lubridate::decimal_date(seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "year"))
-expect_that(frequencyof(days), equals(1/365))
-expect_that(frequencyof(months), equals(1/12))
-expect_that(frequencyof(quarters), equals(1/4))
-expect_that(frequencyof(years), equals(1))
+days <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "day")
+months <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "month")
+quarters <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "quarter")
+years <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "year")
+expect_equal(frequencyof(days), 1/365)
+expect_equal(frequencyof(months), 1/12)
+expect_equal(frequencyof(quarters), 1/4)
+expect_equal(frequencyof(years), 1)
 
 # Test old bug from old frequency guessing causing incorrect labels with irregularly spaced data
 data <- data.frame(year = c(1991, 2001, 2006, 2011, 2016), y = rnorm(5))
