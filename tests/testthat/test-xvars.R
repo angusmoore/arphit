@@ -22,21 +22,77 @@ expect_error(get_x_values(tibbledata, NULL),
 expect_error(get_x_values(tibbledata, list("1" = "foo")))
 
 # Supply x value for each panel
-offsetdates <- seq(from = 2000.125, by = 0.25, length.out = 12)
-expect_equal(get_x_values(dfdata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
-expect_equal(get_x_values(tibbledata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
+offsetdates <- seq(from = 2000.125,
+                   by = 0.25,
+                   length.out = 12)
+expect_equal(get_x_values(dfdata, x = list("1" = "date")),
+             list(
+               "1" = offsetdates,
+               "1ts" = TRUE,
+               "1freq" = 0.25
+             ))
+expect_equal(get_x_values(tibbledata, x = list("1" = "date")),
+             list(
+               "1" = offsetdates,
+               "1ts" = TRUE,
+               "1freq" = 0.25
+             ))
 # Supply an x for all panels
-expect_equal(get_x_values(dfdata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
-expect_equal(get_x_values(tibbledata, x = list("1" = "date")), list("1" = offsetdates, "1ts" = TRUE))
+expect_equal(get_x_values(dfdata, x = list("1" = "date")),
+             list(
+               "1" = offsetdates,
+               "1ts" = TRUE,
+               "1freq" = 0.25
+             ))
+expect_equal(get_x_values(tibbledata, x = list("1" = "date")),
+             list(
+               "1" = offsetdates,
+               "1ts" = TRUE,
+               "1freq" = 0.25
+             ))
 
 # supply multiple datasets and multiple x variables
-offsetdates <- seq(from = 2000.125, by = 0.25, length.out = 12)
-dfdata <- data.frame(date = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"), x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5))
-dfdata2 <- data.frame(date2 = seq.Date(from = as.Date("2000-01-01"), length.out = 12, by = "quarter"), x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5))
+offsetdates <- seq(from = 2000.125,
+                   by = 0.25,
+                   length.out = 12)
+dfdata <-
+  data.frame(
+    date = seq.Date(
+      from = as.Date("2000-01-01"),
+      length.out = 12,
+      by = "quarter"
+    ),
+    x1 = rnorm(12),
+    x2 = rnorm(12),
+    x3 = rnorm(12, sd = 10),
+    x4 = rnorm(12, sd = 5)
+  )
+dfdata2 <-
+  data.frame(
+    date2 = seq.Date(
+      from = as.Date("2000-01-01"),
+      length.out = 12,
+      by = "quarter"
+    ),
+    x1 = rnorm(12),
+    x2 = rnorm(12),
+    x3 = rnorm(12, sd = 10),
+    x4 = rnorm(12, sd = 5)
+  )
 
-multidata <- handledata(NULL, list("1" = dfdata, "2" = dfdata2), NULL)$data
-expect_equal(get_x_values(multidata, x = list("1" = "date", "2" = "date2")),
-             list("1" = offsetdates, "1ts" = TRUE, "2" = offsetdates, "2ts" = TRUE))
+multidata <-
+  handledata(NULL, list("1" = dfdata, "2" = dfdata2), NULL)$data
+expect_equal(
+  get_x_values(multidata, x = list("1" = "date", "2" = "date2")),
+  list(
+    "1" = offsetdates,
+    "1ts" = TRUE,
+    "1freq" = 0.25,
+    "2" = offsetdates,
+    "2ts" = TRUE,
+    "2freq" = 0.25
+  )
+)
 
 # Same x variable across multiple datasets
 data1 <- data.frame(x1 = 1:10, x2 = rnorm(10))
