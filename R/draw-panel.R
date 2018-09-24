@@ -353,13 +353,14 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
   }
   if (length(barcolumns) > 0) {
     bardata <- data[, barcolumns, drop = FALSE]
-    # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
-    bardata$x <- x
-    equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))
-    x <- seq(from = min(x), to = max(x), by = freq) # and replace x
-    bardata <- dplyr::arrange_(full_join(bardata, equal_spaced, by = "x"), "x")
-    bardata <- select_(bardata, "-x")
-
+    if (!is.null(freq)) {
+      # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
+      bardata$x <- x
+      equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))
+      x <- seq(from = min(x), to = max(x), by = freq) # and replace x
+      bardata <- dplyr::arrange_(full_join(bardata, equal_spaced, by = "x"), "x")
+      bardata <- select_(bardata, "-x")
+    }
     bardata <- t(as.matrix(bardata))
     bardata[is.na(bardata)] <- 0 # singletons don't show otherwise (#82)
     # Split into positive and negative (R doesn't stack well across axes)
