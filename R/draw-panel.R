@@ -339,7 +339,7 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked) {
   return(c(x1,x2))
 }
 
-drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stacked) {
+drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, ylim, bar.stacked) {
   barcolumns <- c()
   colors <- c()
   bordercol <- c()
@@ -352,7 +352,15 @@ drawbars <- function(l, series, bars, data, x, attributes, xlim, ylim, bar.stack
     }
   }
   if (length(barcolumns) > 0) {
-    bardata <- t(as.matrix(data[, barcolumns]))
+    bardata <- data[, barcolumns, drop = FALSE]
+    # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
+    bardata$x <- x
+    equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))
+    x <- seq(from = min(x), to = max(x), by = freq) # and replace x
+    bardata <- dplyr::arrange_(full_join(bardata, equal_spaced, by = "x"), "x")
+    bardata <- select_(bardata, "-x")
+
+    bardata <- t(as.matrix(bardata))
     bardata[is.na(bardata)] <- 0 # singletons don't show otherwise (#82)
     # Split into positive and negative (R doesn't stack well across axes)
     bardata_p <- bardata
@@ -384,7 +392,7 @@ getxvals <- function(data, ists, xvals) {
   }
 }
 
-drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, margins, layout, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt) {
+drawpanel <- function(p, series, bars, data, xvals, ists, freq, shading, bgshadings, margins, layout, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt) {
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
@@ -405,7 +413,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, shading, bgshadings, m
 
   gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt)
 
-  drawbars(l, series, bars, data, x, attributes, xlim, ylim, bar.stacked)
+  drawbars(l, series, bars, data, x, ists, freq, attributes, xlim, ylim, bar.stacked)
 
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
   graphics::par(mfg = l)

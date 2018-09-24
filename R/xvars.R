@@ -27,9 +27,11 @@ get_x_values <- function(data, x) {
         outx[[p]] <- data[[p]][[x[[p]]]]
         # if is dates, convert to year fractions
         if (lubridate::is.Date(outx[[p]])) {
-          outx[[p]] <- make_decimal_date(outx[[p]], frequencyof(outx[[p]]))
+          freq <- frequencyof(outx[[p]])
+          outx[[p]] <- make_decimal_date(outx[[p]], freq)
           # Add a little helper to tell other functions we have time series data
           outx[[paste0(p, "ts")]] <- TRUE
+          outx[[paste0(p, "freq")]] <- freq
         }
       } else {
         stop(paste0("The x variable you supplied for panel ", p, " (" , x[[p]], ") is not a variable in the data you supplied."))

@@ -67,7 +67,34 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
 
   # Plot each panel
   for (p in names(panels)) {
-    drawpanel(p, panels[[p]], bars[[p]], data[[p]], xvals[[p]], !is.null(xvals[[paste0(p,"ts")]]), shading[[p]], bgshading, margins, layout, attributes[[p]], yunits[[p]], xunits[[p]], yticks[[p]], xlabels[[p]], ylim[[p]], xlim[[p]], paneltitles[[p]], panelsubtitles[[p]], yaxislabels[[p]], xaxislabels[[p]], bar.stacked, dropxlabel, joined, srt)
+    drawpanel(
+      p,
+      panels[[p]],
+      bars[[p]],
+      data[[p]],
+      xvals[[p]],
+      !is.null(xvals[[paste0(p, "ts")]]),
+      xvals[[paste0(p, "freq")]],
+      shading[[p]],
+      bgshading,
+      margins,
+      layout,
+      attributes[[p]],
+      yunits[[p]],
+      xunits[[p]],
+      yticks[[p]],
+      xlabels[[p]],
+      ylim[[p]],
+      xlim[[p]],
+      paneltitles[[p]],
+      panelsubtitles[[p]],
+      yaxislabels[[p]],
+      xaxislabels[[p]],
+      bar.stacked,
+      dropxlabel,
+      joined,
+      srt
+    )
   }
 
   # Draw outer material
