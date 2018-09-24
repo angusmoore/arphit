@@ -359,7 +359,7 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
       equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))
       x <- seq(from = min(x), to = max(x), by = freq) # and replace x
       bardata <- dplyr::arrange_(dplyr::full_join(bardata, equal_spaced, by = "x"), "x")
-      bardata <- dpyr::select_(bardata, "-x")
+      bardata <- dplyr::select_(bardata, "-x")
     }
     bardata <- t(as.matrix(bardata))
     bardata[is.na(bardata)] <- 0 # singletons don't show otherwise (#82)
