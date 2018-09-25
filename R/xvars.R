@@ -1,9 +1,13 @@
 frequencyof <- function(dates) {
   dates <- lubridate::decimal_date(dates)
+  if (length(dates) > 1) {
   smallestdiff <- min(abs(diff(dates))[abs(diff(dates)) > 0])
   options <- c(1, 1/4, 1/12, 1/365)
   bestchoice <- (abs(log(smallestdiff)-log(options)) == min(abs(log(smallestdiff) -log(options))))
   return(options[bestchoice])
+  } else {
+    return(1)
+  }
 }
 
 make_decimal_date <- function(date, frequency) {
