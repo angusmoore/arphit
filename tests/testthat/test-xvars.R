@@ -161,3 +161,11 @@ expect_error(
   NA
 )
 graphics.off()
+
+# Test #159 - frequencyof failing for singleton observation time series
+foo <- data.frame(date= as.Date("2018-08-01"),y=rnorm(3),group=letters[1:3])
+p <- arphitgg(foo, agg_aes(x=date,y=y,group=group)) + agg_col()
+expect_error(
+  print(p),
+  NA
+)
