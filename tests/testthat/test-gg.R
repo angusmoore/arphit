@@ -430,3 +430,15 @@ expect_error(
   print(foo),
   NA
 )
+
+# ordering without groups
+data <- tibble(x = letters[1:10], y=1:10, order = letters[10:1])
+
+foo <- data %>%
+  arphitgg(agg_aes(x=x,y=y,order=order)) + agg_col()
+
+expect_equal(foo$data[["1"]]$x, letters[10:1])
+expect_error(
+  print(foo),
+  NA
+)
