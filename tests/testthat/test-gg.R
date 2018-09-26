@@ -409,3 +409,24 @@ expect_error(
   "Cannot add layer. You have not specified a y aesthetic for at least one of your layers (and there was not one to inherit).",
   fixed = TRUE
 )
+
+# ordering categorical graphs by value of a variable (#138)
+data <- tibble(x = letters[1:10], y=1:10, group = "A", order = letters[10:1]) %>%
+  bind_rows(tibble(x = letters[1:10], y=1:10, group = "B", order = letters[10:1]))
+
+foo <- data %>%
+  arphitgg(agg_aes(x=x,y=y,group=group,order=order)) + agg_col()
+
+expect_equal(foo$data[["1"]]$x, letters[10:1])
+expect_equal(foo$data[["1"]]$A, 10:1)
+# repeat w/o ordering
+baz <- data %>%
+  arphitgg(agg_aes(x=x,y=y,group=group)) + agg_col()
+
+expect_equal(baz$data[["1"]]$x, letters[1:10])
+expect_equal(baz$data[["1"]]$A, 1:10)
+
+expect_error(
+  print(foo),
+  NA
+)

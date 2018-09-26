@@ -1,23 +1,36 @@
 convert2wide <- function(data, aes) {
   if (!is.null(aes$group)) {
-    return(tidyr::spread_(data, key = aes$group, value = aes$y))
-  } else {
-    return(data)
+    data <- tidyr::spread_(data, key = aes$group, value = aes$y)
   }
+  if (!is.null(aes$order)) {
+    data <- dplyr::arrange_(data, aes$order)
+    data <- dplyr::select_(data, paste0("-", aes$order))
+  }
+  return(data)
 }
 
 addbackticks <- function(x) {
   paste0("`", x, "`")
 }
 
-subsetdata <- function(data, x, y, group) {
+subsetdata <- function(data, x, y, group, order) {
   x <- addbackticks(x)
   y <- addbackticks(y)
   if (!is.null(group)) {
     group <- addbackticks(group)
-    return(dplyr::select_(data, x, y, group))
+    if (!is.null(order)) {
+      order <- addbackticks(order)
+      return(dplyr::select_(data, x, y, group, order))
+    } else {
+      return(dplyr::select_(data, x, y, group))
+    }
   } else {
-    return(dplyr::select_(data, x, y))
+    if (!is.null(order)) {
+      order <- addbackticks(order)
+      return(dplyr::select_(data, x, y, order))
+    } else {
+      return(dplyr::select_(data, x, y))
+    }
   }
 }
 
@@ -127,7 +140,7 @@ addlayertopanel <- function(gg, new, panel) {
 
   # handle data
   reorder <- !is.unsorted(new$data[[new$aes$x]]) && !is.unsorted(gg$data[[panel]][[new$aes$x]])
-  newdata <- subsetdata(new$data, new$aes$x, new$aes$y, new$aes$group)
+  newdata <- subsetdata(new$data, new$aes$x, new$aes$y, new$aes$group, new$aes$order)
   newdata <- convert2wide(newdata, new$aes)
   if (!is.null(gg$data[[panel]])) {
     # We have already added a series for this panel, so we need to merge the new data on to the old

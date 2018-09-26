@@ -412,16 +412,18 @@ agg_point <- function(aes = NULL, data = NULL, color = NULL, panel = "1") {
 #' @param y Which series are you plotting on the y axis.
 #' @param group If your data are in long form, which variable defines the groups.
 #' @param facet If you data are in long form, which variable defines the facets (facets split data across panels, see the gg-interface vignette for example)
+#' @param order Which variable to order the x-ticks by (only applies for categorical data)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
 #'
 #' @export
-agg_aes <- function(x, y, group = NULL, facet = NULL) {
+agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
   x <- as.character(deparse(substitute(x)))
   y <- as.character(deparse(substitute(y)))
   group <- as.character(deparse(substitute(group)))
   facet <- as.character(deparse(substitute(facet)))
+  order <- as.character(deparse(substitute(order)))
   if (x == "NULL" || x == "") {
     x <- NULL
   }
@@ -434,7 +436,11 @@ agg_aes <- function(x, y, group = NULL, facet = NULL) {
   if (facet == "NULL" || facet == "") {
     facet <- NULL
   }
-  return(list(type = "aes", x = x, y = y, group = group, facet = facet))
+  if (order == "NULL" || order == "") {
+    order <- NULL
+  }
+
+  return(list(type = "aes", x = x, y = y, group = group, facet = facet, order = order))
 }
 
 #' Create an arphit graph to be built using the ggplot-like interface.

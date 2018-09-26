@@ -4,7 +4,8 @@
 \alias{agg_bgshading}
 \title{Add background shading}
 \usage{
-agg_bgshading(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = NULL, panel)
+agg_bgshading(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = NULL,
+  panel)
 }
 \arguments{
 \item{x1}{The bottom left x coordinate (omit to have the shading automatically snap to the edge of the panel)}

@@ -279,9 +279,32 @@ agg_draw(p, filename = "facet-group.png")
 knitr::include_graphics("facet-group.png")
 ```
 
+### (Advanced) Order of categorical graphs
+
+By default, categorical graphs are ordered by their x-ticks if they have groups 
+(e.g. alphabetically) or will use the order in the data if there is not a group
+aesthetic. You can specify a variable to order the graph by using the `order` 
+part of the aesthetic. In this example we take data and order it by a variable
+`order` that is the reverse of the x variable.
+```{r, results = "hide"}
+order_data <- data.frame(x = rep(letters[1:10], 2),
+            y = rep(1:10, 2),
+            group = c(rep("A", 10), rep("B", 10)),
+            order = rep(letters[10:1], 2),
+            stringsAsFactors = FALSE)
+p <- arphitgg(order_data, agg_aes(x=x,y=y,group=group,order=order)) + 
+  agg_col(stacked = FALSE)
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "aes-order.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("aes-order.png")
+```
+
 ## Layers
 
-A layer is a series (or group of series) built from the same aesthetic. In `arphit`, layers must be assigned to a panel.
+A layer is a series (or group of series) built from the same aesthetic. In `arphit`, layers must be assigned to a panel. You can have more than one layer per panel.
 
 All require have four common arguments, and some layers have extra options to define their look:
   1. Data
