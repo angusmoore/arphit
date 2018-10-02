@@ -15,7 +15,9 @@ Imports:
   plyr,
   dplyr,
   tidyr,
-  devEMF
+  devEMF,
+  zoo,
+  xts
 Suggests:
   testthat,
     knitr,

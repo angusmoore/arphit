@@ -8,6 +8,10 @@ conformdata <- function(data, layout, series) {
       agg_time <- as.Date(lubridate::date_decimal(as.numeric(stats::time(tmpdata))))
       tmpdata <- tibble::as_tibble(tmpdata)
       tmpdata$agg_time <- agg_time
+    } else if (zoo::is.zoo(tmpdata) || xts::is.xts(tmpdata)) {
+      agg_time <- stats::time(tmpdata)
+      tmpdata <- tibble::as_tibble(tmpdata)
+      tmpdata$agg_time <- agg_time
     }
 
     if (!is.null(series)) {

@@ -118,6 +118,11 @@ addlayertopanel <- function(gg, new, panel) {
     new$aes$x <- "agg_time"
     new$data <- tibble::as_tibble(new$data)
     new$data$agg_time <- agg_time
+  } else if (is.null(new$aes$x) && (zoo::is.zoo(new$data) || xts::is.xts(new$data))) {
+    agg_time <- stats::time(new$data)
+    new$aes$x <- "agg_time"
+    new$data <- tibble::as_tibble(new$data)
+    new$data$agg_time <- agg_time
   }
 
   # Check for bare minimum aes
