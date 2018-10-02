@@ -345,9 +345,9 @@ agg_legend <- function(ncol = NULL) {
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
-#' @param pch A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.
-#' @param lty A line type to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.
-#' @param lwd A line width to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.
+#' @param pch A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of pch values that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.
+#' @param lty A line type to be applied to all series, or or (if your aesthetic has a group), a vector of lty values that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.
+#' @param lwd A line width to be applied to all series, or or (if your aesthetic has a group), a vector of lwd values that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
