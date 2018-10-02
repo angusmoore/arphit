@@ -14,11 +14,11 @@ agg_line(aes = NULL, data = NULL, color = NULL, pch = NULL,
 
 \item{color}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
 
-\item{pch}{A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.}
+\item{pch}{A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of pch values that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.}
 
-\item{lty}{A line type to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.}
+\item{lty}{A line type to be applied to all series, or or (if your aesthetic has a group), a vector of lty values that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.}
 
-\item{lwd}{A line width to be applied to all series, or or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.}
+\item{lwd}{A line width to be applied to all series, or or (if your aesthetic has a group), a vector of lwd values that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.}
 
 \item{panel}{(default = "1") Which panel of the graph to place this layer on.}
 }
