@@ -17,7 +17,7 @@ sanitycheckdata <- function(series, data) {
 }
 
 is.acceptable.data <- function(data) {
-  return(tibble::is_tibble(data) || is.data.frame(data) || stats::is.ts(data))
+  return(tibble::is_tibble(data) || is.data.frame(data) || stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data))
 }
 
 handledata <- function(series, data, x) {
