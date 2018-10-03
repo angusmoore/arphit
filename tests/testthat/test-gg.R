@@ -442,3 +442,25 @@ expect_error(
   print(foo),
   NA
 )
+
+# ordering by y variable (#168)
+foo <- tibble(x=letters[1:15],y=rnorm(15)) %>%
+  arphitgg(agg_aes(x=x,y=y,order=y)) + agg_col()
+expect_true("y" %in% colnames(foo$data[["1"]]))
+
+# Order by the value of one of the groups, rather than a separate variable (#162)
+expect_error({
+  foo <- tibble(
+    x = rep(1:10, 2),
+    y = c(1:10, 10:1),
+    group = c(rep("A", 10), rep("B", 10))
+  ) %>%
+    arphitgg(agg_aes(
+      x = x,
+      y = y,
+      group = group,
+      order = A
+    )) + agg_line()
+},
+NA)
+expect_true(!is.unsorted(foo$data[["1"]]$A))
