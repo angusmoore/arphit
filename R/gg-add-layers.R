@@ -1,10 +1,14 @@
 convert2wide <- function(data, aes) {
   if (!is.null(aes$group)) {
+    groups <- unique(data[[aes$group]])
     data <- tidyr::spread_(data, key = aes$group, value = aes$y)
   }
   if (!is.null(aes$order)) {
     data <- dplyr::arrange_(data, aes$order)
-    data <- dplyr::select_(data, paste0("-", aes$order))
+    # now check whether the order variable is one we want to plot (in wihch case, keep it, or a variable included purely to order the data)
+    if (aes$order != aes$x && aes$order != aes$y && (is.null(aes$group) || !(aes$order %in% groups))) {
+      data <- dplyr::select_(data, paste0("-",aes$order))
+    }
   }
   return(data)
 }
@@ -18,7 +22,7 @@ subsetdata <- function(data, x, y, group, order) {
   y <- addbackticks(y)
   if (!is.null(group)) {
     group <- addbackticks(group)
-    if (!is.null(order)) {
+    if (!is.null(order) && order %in% colnames(data)) {
       order <- addbackticks(order)
       return(dplyr::select_(data, x, y, group, order))
     } else {
