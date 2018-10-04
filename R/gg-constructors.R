@@ -454,12 +454,13 @@ agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
 #' @param showallxlabels (optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.
 #' @param joined (default TRUE) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE).
 #' @param plotsize (optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE
+#' @param log_scale (optional) Set one or both of y and x axes as log scales? Use "y" for just y axis, "x" for just x and "xy" for both
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
 #'
 #' @export
-arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE, srt = 0, showallxlabels = NULL, joined = TRUE, plotsize = LANDSCAPESIZE) {
+arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE, srt = 0, showallxlabels = NULL, joined = TRUE, plotsize = LANDSCAPESIZE, log_scale = "") {
   gg <- list(data = list(parent = data),
              aes = aes,
              x = list(),
@@ -497,7 +498,8 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              showallxlabels = showallxlabels,
              joined = joined,
              plotsize = plotsize,
-             enable_autolabeller = FALSE)
+             enable_autolabeller = FALSE,
+             log_scale = log_scale)
 
   class(gg) <- "arphit.gg"
   return(gg)

@@ -1,5 +1,5 @@
 
-agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL, enable_autolabeller = FALSE) {
+agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, shading = NULL, title = NULL, subtitle = NULL, paneltitles = NULL, panelsubtitles = NULL, yaxislabels = NULL, xaxislabels = NULL, footnotes = NULL, sources = NULL, yunits = NULL, xunits = NULL, labels = NULL, arrows = NULL, bgshading = NULL, lines = NULL, col = NULL, pch = NULL, lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, plotsize = LANDSCAPESIZE, portrait = FALSE, bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0, showallxlabels = NULL, enable_autolabeller = FALSE, log_scale = "") {
 
   out <- handledata(series, data, x)
   data <- out$data
@@ -21,8 +21,14 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
   # Units and scales
   yunits <- handleunits(panels, yunits, layout)
   xunits <- handlexunits(panels, xunits)
+  if (length(ylim)==0 && (log_scale == "y" || log_scale == "xy")) {
+    stop("You must manually set y axis limits for log scale plots.")
+  }
   ylim <- ylimconform(panels, ylim, data, layout)
   yticks <- handleticks(data, panels, ylim)
+  if (length(xlim)==0 && (log_scale == "x" || log_scale == "xy")) {
+    stop("You must manually set x axis limits for log scale plots.")
+  }
   xlim <- xlimconform(panels, xlim, xvals, data)
   xlabels <- handlexlabels(panels, xlim, xvals, data, layout, showallxlabels)
   yaxislabels <- handleaxislabels(yaxislabels, panels)
@@ -93,7 +99,8 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
       bar.stacked,
       dropxlabel,
       joined,
-      srt
+      srt,
+      log_scale
     )
   }
 

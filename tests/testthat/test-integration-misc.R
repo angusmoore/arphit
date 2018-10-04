@@ -39,5 +39,51 @@ expect_error(
   NA
 )
 
+# Log scales (#161)
+
+expect_error({
+  p <- data.frame(x = 1:10,
+                  y = c(11, 20, 40, 90, 11, 14, 90, 15, 15, 16)) %>%
+    arphitgg(agg_aes(x = x, y = y), log_scale = "xy") + agg_line() + agg_ylim(10, 90, 5) + agg_xlim(1,10)
+  print(p)
+},
+NA)
+
+expect_error({
+  p <- data.frame(x = 1:10,
+                  y = c(11, 20, 40, 90, 11, 14, 90, 15, 15, 16)) %>%
+    arphitgg(agg_aes(x = x, y = y), log_scale = "y") + agg_line() + agg_ylim(10, 90, 5)
+  print(p)
+},
+NA)
+
+expect_error({
+  p <- data.frame(x = c(10, 100, 60), y = c(11, 20, 40)) %>%
+    arphitgg(agg_aes(x = x, y = y), log_scale = "xy") + agg_line() + agg_ylim(10, 90, 5) + agg_xlim(10, 100)
+  print(p)
+},
+NA)
+
+expect_error({
+  p <- data.frame(x = c(10, 100, 60), y = c(11, 20, 40)) %>%
+    arphitgg(agg_aes(x = x, y = y), log_scale = "x") + agg_line() + agg_xlim(10, 100)
+  print(p)
+},
+NA)
+
+expect_error({
+  p <- data.frame(x = c(10, 100, 60), y = c(11, 20, 40)) %>%
+    arphitgg(agg_aes(x = x, y = y), log_scale = "x") + agg_line()
+  print(p)
+},
+"You must manually set x axis limits for log scale plots.")
+
+expect_error({
+  p <- data.frame(x = c(10, 100, 60), y = c(11, 20, 40)) %>%
+    arphitgg(agg_aes(x = x, y = y), log_scale = "y") + agg_line()
+  print(p)
+},
+"You must manually set y axis limits for log scale plots.")
+
 graphics.off()
 

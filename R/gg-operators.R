@@ -46,6 +46,7 @@ agg_draw <- function(gg, filename = NULL) {
          joined = gg$joined,
          plotsize = gg$plotsize,
          enable_autolabeller = gg$enable_autolabeller,
+         log_scale = gg$log_scale,
          filename = filename)
 }
 
