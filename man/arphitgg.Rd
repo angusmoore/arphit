@@ -5,8 +5,8 @@
 \title{Create an arphit graph to be built using the ggplot-like interface.}
 \usage{
 arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
-  dropxlabel = FALSE, srt = 0, showallxlabels = NULL, joined = TRUE,
-  plotsize = LANDSCAPESIZE)
+  dropxlabel = FALSE, srt = 0, showallxlabels = NULL,
+  joined = TRUE, plotsize = LANDSCAPESIZE, log_scale)
 }
 \arguments{
 \item{data}{(Optional) Data to be used for the plot. Can be left blank, but must then be supplied for each layer.}
@@ -26,6 +26,8 @@ arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
 \item{joined}{(default TRUE) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE).}
 
 \item{plotsize}{(optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE}
+
+\item{log_scale}{(optional) Set one or both of y and x axes as log scales? Use "y" for just y axis, "x" for just x and "xy" for both}
 }
 \description{
 Create an arphit graph to be built using the ggplot-like interface.
