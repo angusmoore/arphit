@@ -59,12 +59,13 @@ convert2perpanel <- function(values) {
   }
 }
 
-handleattributes <- function(panels, colin, pchin, ltyin, lwdin, barcolin) {
+handleattributes <- function(panels, colin, pchin, ltyin, lwdin, barcolin, pointsizein) {
   colin <- convert2perpanel(colin)
   pchin <- convert2perpanel(pchin)
   ltyin <- convert2perpanel(ltyin)
   lwdin <- convert2perpanel(lwdin)
   barcolin <- convert2perpanel(barcolin)
+  pointsizein <- convert2perpanel(pointsizein)
 
   attributes <- list()
   for (p in names(panels)) {
@@ -73,7 +74,8 @@ handleattributes <- function(panels, colin, pchin, ltyin, lwdin, barcolin) {
   	lty <- handleattribute(panels[[p]], ltyin[[p]], DEFAULTLTY)
   	lwd <- handleattribute(panels[[p]], lwdin[[p]], DEFAULTLWD)
   	barcol <- handleattribute(panels[[p]], barcolin[[p]], DEFAULTBARCOL)
-  	attributes[[p]] <- list(col = col, pch = pch, lty = lty, lwd = lwd, barcol = barcol)
+  	pointsize <- handleattribute(panels[[p]], pointsizein[[p]], 1)
+  	attributes[[p]] <- list(col = col, pch = pch, lty = lty, lwd = lwd, barcol = barcol, pointsize = pointsize)
   }
   return(attributes)
 }

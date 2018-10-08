@@ -5,7 +5,7 @@
 \title{Add a line layer to an arphit plot.}
 \usage{
 agg_line(aes = NULL, data = NULL, color = NULL, pch = NULL,
-  lty = NULL, lwd = NULL, panel = "1")
+  lty = NULL, lwd = NULL, pointsize = 1, panel = "1")
 }
 \arguments{
 \item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
@@ -19,6 +19,8 @@ agg_line(aes = NULL, data = NULL, color = NULL, pch = NULL,
 \item{lty}{A line type to be applied to all series, or or (if your aesthetic has a group), a vector of lty values that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.}
 
 \item{lwd}{A line width to be applied to all series, or or (if your aesthetic has a group), a vector of lwd values that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.}
+
+\item{pointsize}{Scale the size of the points? (default 1)}
 
 \item{panel}{(default = "1") Which panel of the graph to place this layer on.}
 }

@@ -348,6 +348,7 @@ agg_legend <- function(ncol = NULL) {
 #' @param pch A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of pch values that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.
 #' @param lty A line type to be applied to all series, or or (if your aesthetic has a group), a vector of lty values that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.
 #' @param lwd A line width to be applied to all series, or or (if your aesthetic has a group), a vector of lwd values that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.
+#' @param pointsize Scale the size of the points? (default 1)
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -359,8 +360,8 @@ agg_legend <- function(ncol = NULL) {
 #' arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NULL, lwd = NULL, panel = "1") {
-  return(list(type = "line", data = data, aes = aes, color = color, pch = pch, lty = lty, lwd = lwd, panel = as.character(panel)))
+agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NULL, lwd = NULL, pointsize = 1, panel = "1") {
+  return(list(type = "line", data = data, aes = aes, color = color, pch = pch, lty = lty, lwd = lwd, pointsize = pointsize, panel = as.character(panel)))
 }
 
 #' Add a col layer to an arphit plot.
@@ -390,6 +391,7 @@ agg_col <- function(aes = NULL, data = NULL, color = NULL, barcol = NULL, panel 
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
+#' @param pointsize Scale the size of the points? (default 1)
 #' @param panel (default = "1") Which panel of the graph to place this layer on.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -400,8 +402,19 @@ agg_col <- function(aes = NULL, data = NULL, color = NULL, barcol = NULL, panel 
 #' arphitgg(data) + agg_point(aes = agg_aes(x = x, y = y), panel = "1")
 #'
 #' @export
-agg_point <- function(aes = NULL, data = NULL, color = NULL, panel = "1") {
-  return(list(type = "point", data = data, aes = aes, color = color, panel = as.character(panel)))
+agg_point <- function(aes = NULL, data = NULL, color = NULL, pointsize = 1, panel = "1") {
+  return(
+    list(
+      type = "line",
+      data = data,
+      aes = aes,
+      color = color,
+      pointsize = pointsize,
+      pch = 16,
+      lty = 0,
+      panel = as.character(panel)
+    )
+  )
 }
 
 #' Define an aesthetic for a graph, or a graph layer.
@@ -485,6 +498,7 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              pch = list(),
              lty = list(),
              lwd = list(),
+             pointsize = list(),
              barcol = list(),
              labels = list(),
              arrows = list(),
