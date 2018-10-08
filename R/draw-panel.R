@@ -316,6 +316,7 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined, 
       } else {
         plotx <- x
       }
+      graphics::par(cex = attributes$pointsize[[s]])
       graphics::plot(
         plotx,
         y,
@@ -331,6 +332,7 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined, 
         lwd = attributes$lwd[[s]],
         log = log_scale
       )
+      graphics::par(cex = 1)
     }
   }
 }
@@ -342,10 +344,6 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
     bp <- apply(bp, 2, mean)
   }
   last <- nrow(bp.data)
-  if (is.null(last)) {
-    # only one series in the TS, which mean nrow doesn't work
-    last <- length(bp.data)
-  }
   points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(x[1], x[last]))
   fit <- stats::lm(as.x ~ time, data = points)
 

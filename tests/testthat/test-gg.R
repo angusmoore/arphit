@@ -464,3 +464,20 @@ expect_error({
 },
 NA)
 expect_true(!is.unsorted(foo$data[["1"]]$A))
+
+## Specify a plot marker scale (#167)
+p <- tibble(x=rnorm(15),y=rnorm(15),z=rnorm(15)) %>%
+  arphitgg(agg_aes(x=x,y=y))+
+  agg_point(pointsize = 2) +
+  agg_point(agg_aes(y=z))
+expect_equal(p$pointsize[["1"]]$y, 2)
+expect_equal(p$pointsize[["1"]]$z, 1)
+expect_error(print(p), NA)
+
+p <- tibble(x=rnorm(15),y=rnorm(15),z=rnorm(15)) %>%
+  arphitgg(agg_aes(x=x,y=y))+
+  agg_line(pointsize = 2) +
+  agg_line(agg_aes(y=z))
+expect_equal(p$pointsize[["1"]]$y, 2)
+expect_equal(p$pointsize[["1"]]$z, 1)
+expect_error(print(p), NA)
