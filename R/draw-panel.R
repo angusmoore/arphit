@@ -380,8 +380,8 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
     # Split into positive and negative (R doesn't stack well across axes)
     bardata_p <- bardata
     bardata_n <- bardata
-    bardata_p[bardata[, ] > 0] <- 0
-    bardata_n[bardata[, ] <= 0] <- 0
+    bardata_p[bardata <= 0] <- 0
+    bardata_n[bardata > 0] <- 0
 
     xlim <- as.barplot.x(data[, barcolumns], x, xlim, bar.stacked)
     graphics::par(mfg = l)

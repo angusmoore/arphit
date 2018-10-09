@@ -24,7 +24,7 @@ agg_draw_internal <- function(data, series = NULL, x = NULL, layout = "1", bars 
   if (length(ylim)==0 && (log_scale == "y" || log_scale == "xy")) {
     stop("You must manually set y axis limits for log scale plots.")
   }
-  ylim <- ylimconform(panels, ylim, data, layout)
+  ylim <- ylimconform(panels, ylim, data, bars, layout)
   yticks <- handleticks(data, panels, ylim)
   if (length(xlim)==0 && (log_scale == "x" || log_scale == "xy")) {
     stop("You must manually set x axis limits for log scale plots.")
