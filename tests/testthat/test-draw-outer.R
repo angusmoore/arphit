@@ -13,22 +13,26 @@ os_attr <- handleattributes(onesided,
                             list(a = 1, b = 2),
                             list(a = 3, b = 4),
                             list(a = 5, b = 6),
-                            list(a = 7, b = 8))
+                            list(a = 7, b = 8),
+                            list(a = 1, b = 1))
 ts_attr <- handleattributes(twosided,
                             list(a = "red", b = "green", c = "blue", d = "black"),
                             list(a = 1, b = 2, c = 1, d = 2),
                             list(a = 3, b = 4, c = 3, d = 4),
                             list(a = 5, b = 6, c = 5, d = 6),
-                            list(a = 7, b = 8, a = 7, b = 8))
+                            list(a = 7, b = 8, c = 7, d = 8),
+                            list(a = 1, b = 1, c = 1, d = 1))
 dup_attr <- handleattributes(duplicate,
                              list(a = "red", b = "green", d = "black"),
                              list(a = 1, b = 2, d = 2),
                              list(a = 3, b = 4, d = 4),
                              list(a = 5, b = 6, d = 6),
-                             list(a = 7, b = 8, b = 8))
+                             list(a = 7, b = 8, d = 8),
+                             list(a = 1, b = 1, d = 1))
 dup_diff_attr <- handleattributes(duplicate,
                                  list("1" = list(a = "red", b = "green"),
                                       "2" = list(a = "blue", d = "black")),
+                                 list(),
                                  list(),
                                  list(),
                                  list(),

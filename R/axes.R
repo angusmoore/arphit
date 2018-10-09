@@ -19,9 +19,36 @@ testscaleoptions <- function(significand, minval, maxval, permittedsteps) {
   return(jointdeviation)
 }
 
-defaultscale <- function(data,permittedsteps=PERMITTEDSTEPS) {
-  maxval <- max(data,na.rm=TRUE)
-  minval <- min(data,na.rm=TRUE)
+get_data_max_min <- function(data, bars) {
+  series_data <- data[!colnames(data) %in% bars]
+  bardata <- data[colnames(data) %in% bars]
+
+  if (ncol(series_data) > 0 && ncol(bardata) > 0) {
+    bardata_p <- bardata
+    bardata_n <- bardata
+    bardata_p[bardata < 0] <- 0
+    bardata_n[bardata >= 0] <- 0
+    maxval <- max(max(series_data,na.rm=TRUE),max(apply(bardata_p, 1, sum),na.rm=TRUE))
+    minval <- min(min(series_data,na.rm=TRUE),min(apply(bardata_n, 1, sum),na.rm=TRUE))
+  } else if (ncol(series_data) > 0) {
+    maxval <- max(series_data,na.rm=TRUE)
+    minval <- min(series_data,na.rm=TRUE)
+  } else {
+    bardata_p <- bardata
+    bardata_n <- bardata
+    bardata_p[bardata < 0] <- 0
+    bardata_n[bardata >= 0] <- 0
+    maxval <- max(apply(bardata_p, 1, sum),na.rm=TRUE)
+    minval <- min(apply(bardata_n, 1, sum),na.rm=TRUE)
+  }
+  return(list(maxval=maxval,minval=minval))
+}
+
+defaultscale <- function(data,bars,permittedsteps=PERMITTEDSTEPS) {
+  # Split bars and series apart
+  out <- get_data_max_min(data,bars)
+  maxval <- out$maxval
+  minval <- out$minval
   span <- maxval-minval
 
   significand <- floor(log10(span/min(permittedsteps)))
@@ -136,53 +163,42 @@ handlexunits <- function(panels, xunits) {
   conformscale(panels, xunits)
 }
 
-ylimconform <- function(panels, ylim, data, layout) {
+ylimconform <- function(panels, ylim, data, bars, layout) {
   ylim_list <- list()
-  if (is.null(ylim)) {
+  if ("min" %in% names(ylim) || "max" %in% names(ylim) || "nsteps" %in% names(ylim)) {
+    # have supplied a single list to apply to all
+    if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
+      stop("You must supply nsteps > 2 for the y limit.")
+    }
+    if (is.null(ylim$min)) {
+      stop("You did not supply a min ylimit.")
+    }
+    if (is.null(ylim$max)) {
+      stop("You did not supply a max ylimit.")
+    }
     for (p in names(panels)) {
-      paneldf <- data[[p]][, panels[[p]], drop = FALSE]
-      if (!is.null(paneldf) && any(!is.na(paneldf)) && is.finite(max(paneldf, na.rm = TRUE)) && is.finite(min(paneldf, na.rm = TRUE))) {
-        ylim_list[[p]] <- defaultscale(paneldf)
-      } else {
-        ylim_list[[p]] <- EMPTYSCALE
-      }
+      ylim_list[[p]] <- ylim
     }
   } else {
-    if ("min" %in% names(ylim) || "max" %in% names(ylim) || "nsteps" %in% names(ylim)) {
-      # have supplied a single list to apply to all
-      if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
-        stop("You must supply nsteps > 2 for the y limit.")
-      }
-      if (is.null(ylim$min)) {
-        stop("You did not supply a min ylimit.")
-      }
-      if (is.null(ylim$max)) {
-        stop("You did not supply a max ylimit.")
-      }
-      for (p in names(panels)) {
-        ylim_list[[p]] <- ylim
-      }
-    } else {
-      # have supplied lims for each
-      for (p in names(panels)) {
-        if (p %in% names(ylim)) {
-          ylim_list[[p]] <- ylim[[p]]
-          if (is.null(ylim[[p]]) || ylim[[p]]$nsteps < 2) {
-            stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points (or you forgot to supply nsteps).", sep = ""))
-          }
-          if (is.null(ylim[[p]]$max)) {
-            stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
-          }
-          if (is.null(ylim[[p]]$min)) {
-            stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
-          }
+    # have supplied check if we've supplied lims for each panel, if not, assign default
+    for (p in names(panels)) {
+      if (p %in% names(ylim)) {
+        ylim_list[[p]] <- ylim[[p]]
+        if (is.null(ylim[[p]]) || ylim[[p]]$nsteps < 2) {
+          stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points (or you forgot to supply nsteps).", sep = ""))
+        }
+        if (is.null(ylim[[p]]$max)) {
+          stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
+        }
+        if (is.null(ylim[[p]]$min)) {
+          stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
+        }
+      } else {
+        paneldf <- data[[p]][, panels[[p]], drop = FALSE]
+        if (!is.null(paneldf) && ncol(paneldf) > 0) {
+          ylim_list[[p]] <- defaultscale(paneldf, bars[[p]])
         } else {
-          paneldf <- data[[p]][, panels[[p]], drop = FALSE]
-          if (!is.null(paneldf) && ncol(paneldf) > 0) {
-            ylim_list[[p]] <- defaultscale(paneldf)
-          } else {
-            ylim_list[[p]] <- EMPTYSCALE
-          }
+          ylim_list[[p]] <- EMPTYSCALE
         }
       }
     }
@@ -273,7 +289,7 @@ xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
 }
 
 xlabels.scatter <- function(xlim, xvalues) {
-  scale <- defaultscale(c(xlim[1],xlim[2]-(xlim[2]-xlim[1])/10000))
+  scale <- defaultscale(data.frame(x=c(xlim[1],xlim[2]-(xlim[2]-xlim[1])/10000)),NULL)
   scale <- createscale(scale$min,scale$max,scale$nsteps)
   return(list(at = scale, labels = scale, ticks = scale))
 }
@@ -340,7 +356,7 @@ defaultxscale <- function(xvars, xscales, data, ists) {
     if (is.numeric(xvars) && ists) {
       return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
     } else if (is.scatter(xvars)) {
-      scale <- defaultscale(xvars)
+      scale <- defaultscale(data.frame(x=xvars), NULL)
       return(c(scale$min,scale$max))
     } else {
       # Handle numerical categories

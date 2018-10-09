@@ -316,6 +316,7 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined, 
       } else {
         plotx <- x
       }
+      graphics::par(cex = attributes$pointsize[[s]])
       graphics::plot(
         plotx,
         y,
@@ -331,6 +332,7 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined, 
         lwd = attributes$lwd[[s]],
         log = log_scale
       )
+      graphics::par(cex = 1)
     }
   }
 }
@@ -370,6 +372,7 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
   if (length(barcolumns) > 0) {
     bardata <- data[, barcolumns, drop = FALSE]
     if (!is.null(freq)) {
+      
       # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
       bardata$x <- x
       equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))
@@ -382,8 +385,8 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
     # Split into positive and negative (R doesn't stack well across axes)
     bardata_p <- bardata
     bardata_n <- bardata
-    bardata_p[bardata[, ] > 0] <- 0
-    bardata_n[bardata[, ] <= 0] <- 0
+    bardata_p[bardata <= 0] <- 0
+    bardata_n[bardata > 0] <- 0
 
     xlim <- as.barplot.x(data[barcolumns], x, xlim, bar.stacked)
     graphics::par(mfg = l)

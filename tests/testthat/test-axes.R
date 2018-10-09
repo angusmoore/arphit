@@ -19,47 +19,69 @@ twosided_oneeachdata <- handledata(list("1" = "a", "2" = "b"),
 
 context("Y-axes scale")
 shouldbe <- list("1" = list("min" = 0, "max" = 12, "nsteps" = 5), "2" = list("min" = 0, "max" = 12, "nsteps" = 5))
-expect_that(ylimconform(onesided, NULL, fakedata, "1"), equals(shouldbe))
+expect_that(ylimconform(onesided, NULL, fakedata, list(), "1"), equals(shouldbe))
 
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
-expect_that(ylimconform(onesided, list("1" = sublist), fakedata, "1"), equals(list("1" = sublist, "2" = sublist)))
+expect_that(ylimconform(onesided, list("1" = sublist), fakedata, list(), "1"), equals(list("1" = sublist, "2" = sublist)))
 
 should_be <- list("1" = sublist, "2" = list(min = 0, max = 12, nsteps = 5))
-expect_that(ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, "1"), equals(should_be))
+expect_that(ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, list(), "1"), equals(should_be))
 
-ylim <- ylimconform(onesided, NULL, fakedata, "1")
+ylim <- ylimconform(onesided, NULL, fakedata, list(), "1")
 expect_that(handleticks(fakedata, onesided, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
 panel2b2 <- handlepanels(list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), "2b2")
 
 # Test for passing in a single ylim to apply to all axes
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
 largerdata <-  ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
-expect_that(ylimconform(panel2b2, sublist, largerdata, "2b2"), equals(list("1" = sublist, "2" = sublist, "3" = sublist, "4" = sublist)))
+expect_that(ylimconform(panel2b2, sublist, largerdata, list(), "2b2"), equals(list("1" = sublist, "2" = sublist, "3" = sublist, "4" = sublist)))
 
 # Check that sanity checks fail if pass in bad values
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "nsteps" = 3)), fakedata, "1"))
-expect_error(ylimconform(onesided, list("min" = 1, "nsteps" = 3), fakedata, "1"))
-expect_error(ylimconform(onesided, list("1" = list("max" = 1, "nsteps" = 3)), fakedata, "1"))
-expect_error(ylimconform(onesided, list("max" = 1, "nsteps" = 3), fakedata, "1"))
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 3)), fakedata, "1"))
-expect_error(ylimconform(onesided, list("min" = 1, "max" = 3), fakedata, "1"))
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 2, "nsteps" = 1)), fakedata, "1"))
+expect_error(ylimconform(onesided, list("1" = list("min" = 1, "nsteps" = 3)), fakedata, list(), "1"))
+expect_error(ylimconform(onesided, list("min" = 1, "nsteps" = 3), fakedata, list(), "1"))
+expect_error(ylimconform(onesided, list("1" = list("max" = 1, "nsteps" = 3)), fakedata, list(), "1"))
+expect_error(ylimconform(onesided, list("max" = 1, "nsteps" = 3), fakedata, list(), "1"))
+expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 3)), fakedata, list(), "1"))
+expect_error(ylimconform(onesided, list("min" = 1, "max" = 3), fakedata, list(), "1"))
+expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 2, "nsteps" = 1)), fakedata, list(), "1"))
 
 context("Default scale")
 # Test that scale create the right thing
 expect_that(createscale(0,3,4), equals(0:3))
 expect_that(createscale(0,4,3), equals(c(0,2,4)))
 
-# Test that default scales are sensible
+# Test that default scales are sensible for line series
 for (i in 1:100) {
   # Just do this 100 times to get lots of different scales and check they are all fine
-  data <- rnorm(10)
-  scale <- defaultscale(data)
+  data <- data.frame(y=rnorm(10))
+  scale <- defaultscale(data, NULL)
   expect_that(scale$min <= min(data),is_true())
   expect_that(scale$max >= max(data),is_true())
   expect_that(scale$nsteps <= max(PERMITTEDSTEPS),is_true())
   expect_that(scale$nsteps >= min(PERMITTEDSTEPS),is_true())
 }
+
+# Check that default scales are sensible for _bar_ series (#147)
+
+# With line series
+data <- data.frame(x=rep(1:5),y=1:5,z=6:10)
+scale <- defaultscale(data, c("y","z"))
+expect_true(scale$min <= 0)
+expect_true(scale$max >= 15)
+data <- data.frame(x=rep(1:5),y=-1:-5,z=-6:-10)
+scale <- defaultscale(data, c("y","z"))
+expect_true(scale$max >= 5)
+expect_true(scale$min <= -15)
+
+# Without line series
+data <- data.frame(y=1:5,z=6:10)
+scale <- defaultscale(data, c("y","z"))
+expect_true(scale$min <= 0)
+expect_true(scale$max >= 15)
+data <- data.frame(y=-1:-5,z=-6:-10)
+scale <- defaultscale(data, c("y","z"))
+expect_true(scale$max >= 0)
+expect_true(scale$min <= -15)
 
 context("X-axes scale")
 # Check x lim conforming for time series data
@@ -156,7 +178,7 @@ data <- data.frame(x = rnorm(10), y = 100*rnorm(10))
 data[4, "y"] <- NA
 nadata <- handledata(NULL, list("1" = data), NULL)$data
 napanels <- handlepanels("y", "1")
-expect_false(isTRUE(all.equal(ylimconform(napanels, NULL, nadata, "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
+expect_false(isTRUE(all.equal(ylimconform(napanels, NULL, nadata, list(), "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
 
 # Correct placement of y labels when ticks lead to more decimal places (#44)
 expect_equal(createscale(0.15, 0.25, 5), c(0.15, 0.175, 0.2, 0.225, 0.25))

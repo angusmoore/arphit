@@ -363,6 +363,7 @@ There are 7 options for line layers:
 * Point markers for the series (`pch`)
 * The line type - e.g. solid or dashed - for the sereis (`lty`)
 * The linewidth of the lines (`lwd`)
+* The size of the point markers (`pointsize`). Only has any effect if `pch` is not NA.
 * Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 
 ### Column/bar layers
@@ -378,9 +379,9 @@ There are 7 options for line layers:
 
 ### Point/scatter layers
 
-`agg_point` layers are just a wrapper around `agg_line` that set the line to NA, and the point marker (`pch`) to `19` for solid dots. Naturally, these are best for scatter graphs, as they quicker and easier than constructing your own `agg_line` layer.
+`agg_point` layers are just a wrapper around `agg_line` that set the line to NA, and the point marker (`pch`) to `19` for solid dots. Naturally, this layer type is best for scatter graphs, as they quicker and easier than constructing your own `agg_line` layer.
 
-`agg_point` has only four arguments. Data (`data`), aesthetic (`aes`), panel (`panel`) and colour for the markers (`color`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
+`agg_point` has only five arguments. Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`color`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
 
 # Series colours and other attributes
 
@@ -492,6 +493,22 @@ agg_draw(p, filename = "barcol.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("barcol.png")
+```
+
+## Point size
+
+`pointsize` lets change the size of plot markers on `agg_line` or `agg_point` layers. By default, this is 1, meaning the default size. These are specified like colours (setting one will apply it to all series in the layer, a vector will be cycled through).
+```{r, results = "hide"}
+p <- arphitgg(data.frame(x=rnorm(15),y=rnorm(15))) + 
+  agg_point(agg_aes(x = x, y = y), pointsize = 2) + 
+  agg_point(agg_aes(x = x, y = y))
+  
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "pointsize.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("pointsize.png")
 ```
 
 # Titles and subtitles

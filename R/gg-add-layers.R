@@ -232,6 +232,9 @@ applylineattributes <- function(gg, newline, panel, newseriesnames) {
   if (!is.null(newline$lwd)) {
     gg <- applyattribute(gg, "lwd", panel, newseriesnames, newline$lwd)
   }
+  if (!is.null(newline$pointsize)) {
+    gg <- applyattribute(gg, "pointsize", panel, newseriesnames, newline$pointsize)
+  }
   return(gg)
 }
 
@@ -248,13 +251,6 @@ addlineseries <- function(gg, newline) {
     }
   }
   return(gg)
-}
-
-addpointseries <- function(gg, newpoint) {
-  # Just create a line series with PCH and LTY set
-  newpoint$pch <- 16
-  newpoint$lty <- 0
-  return(addlineseries(gg, newpoint))
 }
 
 applycolattributes <- function(gg, panel, newcol, newcolnames) {
