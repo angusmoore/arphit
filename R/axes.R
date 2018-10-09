@@ -270,7 +270,11 @@ xlabels.categorical <- function(xlim, xvar, layout, showall) {
 }
 
 xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
-  step <- min(diff(xvar))
+  if (length(xvar) > 1) {
+    step <- min(diff(xvar))
+  } else {
+    step <- 1
+  }
   start <- xlim[1]
   end <- xlim[2] - step
   at <- seq(from = start, to = end, by = step) + 0.5*step
@@ -340,7 +344,7 @@ is.scatter <- function(x) {
     if (any(is.na(x))) {
       return(TRUE) # Assume is a scatter if NA in x value
     } else {
-      return(!all(diff(x) == max(diff(x))))
+      return(length(x) != 1 && (!all(diff(x) == max(diff(x)))))
     }
   } else {
     return(FALSE)
@@ -357,7 +361,11 @@ defaultxscale <- function(xvars, xscales, data, ists) {
     } else {
       # Handle numerical categories
       if (is.numeric(xvars)) {
-        return(c(xvars[1], xvars[length(xvars)]+min(diff(xvars))))
+        if (length(xvars) > 1) {
+          return(c(xvars[1], xvars[length(xvars)]+min(diff(xvars))))
+        } else {
+          return(c(xvars,xvars+1))
+        }
       } else {
         return (c(1, length(xvars)+1))
       }

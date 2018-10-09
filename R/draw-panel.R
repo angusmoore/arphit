@@ -338,19 +338,23 @@ drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined, 
 }
 
 as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
-  bp <- graphics::barplot(t(as.matrix(bp.data)), plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
-  if (!bar.stacked) {
-    # We get a matrix, with rows for each data series. Need to collapse
-    bp <- apply(bp, 2, mean)
+  if (nrow(bp.data) > 1) {
+    bp <- graphics::barplot(t(as.matrix(bp.data)), plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
+    if (!bar.stacked) {
+      # We get a matrix, with rows for each data series. Need to collapse to just the centre of the x points
+      bp <- apply(bp, 2, mean)
+    }
+
+    points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(x[1], x[nrow(bp.data)]))
+    fit <- stats::lm(as.x ~ time, data = points)
+
+    x1 <- stats::predict(fit, data.frame(time = c(xlim[1])))
+    x2 <- stats::predict(fit, data.frame(time = c(xlim[2])))
+
+    return(c(x1,x2))
+  } else {
+    return(c(0,1.4))
   }
-  last <- nrow(bp.data)
-  points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(x[1], x[last]))
-  fit <- stats::lm(as.x ~ time, data = points)
-
-  x1 <- stats::predict(fit, data.frame(time = c(xlim[1])))
-  x2 <- stats::predict(fit, data.frame(time = c(xlim[2])))
-
-  return(c(x1,x2))
 }
 
 drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, ylim, bar.stacked, log_scale) {
@@ -368,6 +372,7 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
   if (length(barcolumns) > 0) {
     bardata <- data[, barcolumns, drop = FALSE]
     if (!is.null(freq)) {
+      
       # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
       bardata$x <- x
       equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))
@@ -383,7 +388,7 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
     bardata_p[bardata <= 0] <- 0
     bardata_n[bardata > 0] <- 0
 
-    xlim <- as.barplot.x(data[, barcolumns], x, xlim, bar.stacked)
+    xlim <- as.barplot.x(data[barcolumns], x, xlim, bar.stacked)
     graphics::par(mfg = l)
     graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
     graphics::par(mfg = l)
@@ -397,7 +402,11 @@ getxvals <- function(data, ists, xvals) {
     return(xvals)
   } else if (!is.null(xvals)) {
     if (is.numeric(xvals)) {
-      return(xvals + 0.5*min(diff(xvals)))
+      if (length(xvals) > 1) {
+        return(xvals + 0.5*min(diff(xvals)))
+      } else {
+        return(xvals + 0.5)
+      }
     } else {
       # Categorical data, offset by half
       return(1:length(xvals) + 0.5)

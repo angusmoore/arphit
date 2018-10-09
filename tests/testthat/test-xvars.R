@@ -169,3 +169,53 @@ expect_error(
   print(p),
   NA
 )
+
+# Test #171 - poor handling of singleton column graphs
+foo <-
+  data.frame(
+    x = "z",
+    y = rnorm(3),
+    group = c("a", "b", "c"),
+    stringsAsFactors = FALSE
+  )
+expect_warning({
+  p <- arphitgg(foo, agg_aes(x = x, y = y, group = group)) + agg_col()
+  print(p)
+},
+NA)
+
+# Test for singleton numeric
+foo <-
+  data.frame(
+    x = 4,
+    y = rnorm(3),
+    group = c("a", "b", "c"),
+    stringsAsFactors = FALSE
+  )
+expect_warning({
+  p <- arphitgg(foo, agg_aes(x = x, y = y, group = group)) + agg_col()
+  print(p)
+},
+NA)
+
+# Test for singleton date
+foo <-
+  data.frame(
+    x = as.Date("2016-06-01"),
+    y = rnorm(3),
+    group = c("a", "b", "c"),
+    stringsAsFactors = FALSE
+  )
+expect_warning({
+  p <- arphitgg(foo, agg_aes(x = x, y = y, group = group)) + agg_col()
+  print(p)
+},
+NA)
+
+# Similar to 171 (though different cause), failure for singleton numeric x categories
+foo <- data.frame(x=1,y=rnorm(3),group=c("a","b","c"),stringsAsFactors = FALSE)
+expect_error({
+  arphitgg(foo, agg_aes(x = x, y = y, group = group)) + agg_point()
+  print(p)
+},
+NA)
