@@ -8,11 +8,6 @@ dfdata <- list("1" = data.frame(date = seq.Date(from = as.Date("2000-01-01"),
 tsdata <- conformdata(ts(dfdata[["1"]], start = c(2000,1), frequency = 4), "1", NULL)
 tibbledata <- list("1" = tibble::as_tibble(dfdata[["1"]]))
 
-
-dfdata <- handledata(NULL, dfdata, NULL)$data
-tsdata <- handledata(NULL, tsdata, NULL)$data
-tibbledata <- handledata(NULL, tibbledata, NULL)$data
-
 # Throw error if no x supplied for df or tibble
 expect_error(get_x_values(dfdata, NULL),
              "Have not supplied an x variable for panel 1 and cannot guess it because it is not a time series.")
@@ -80,10 +75,8 @@ dfdata2 <-
     x4 = rnorm(12, sd = 5)
   )
 
-multidata <-
-  handledata(NULL, list("1" = dfdata, "2" = dfdata2), NULL)$data
 expect_equal(
-  get_x_values(multidata, x = list("1" = "date", "2" = "date2")),
+  get_x_values(list("1"=dfdata,"2"=dfdata2), x = list("1" = "date", "2" = "date2")),
   list(
     "1" = offsetdates,
     "1ts" = TRUE,
@@ -100,7 +93,7 @@ data2 <- data.frame(x1 = 1:10, x4 = rnorm(10))
 expect_error(agg_qplot(data = list("1" = data1, "2" = data2), x = "x1"), NA)
 
 # categorical x data
-catdata <- handledata(NULL, list("1" = data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE)), NULL)$data
+catdata <- list("1" = data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE))
 expect_that(get_x_values(catdata, list("1" = "x")), equals(list("1" = letters[1:5])))
 
 # Frequency guessing
@@ -116,8 +109,9 @@ expect_equal(frequencyof(years), 1)
 # Test old bug from old frequency guessing causing incorrect labels with irregularly spaced data
 data <- data.frame(year = c(1991, 2001, 2006, 2011, 2016), y = rnorm(5))
 data$year <- as.Date(paste0(data$year, "-01-01"))
-expect_that(get_x_values(handledata(NULL, list("1" = data), list("1" = "year"))$data, list("1" = "year"))[["1"]],
+expect_that(get_x_values(list("1" = data), list("1" = "year"))[["1"]],
             equals(c(1991.5, 2001.5, 2006.5, 2011.5, 2016.5)))
+
 # Test if don't specify x variable for qplot
 expect_error(
   agg_qplot(data.frame(y=1:10)),

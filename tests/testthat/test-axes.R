@@ -1,25 +1,53 @@
 context("Axes")
 
 # needed set up
-fakeseries1 <- c("a","b")
-fakeseries2 <- c("c","d")
-onesided <- handlepanels(fakeseries1, "1")
-twosided <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "1")
-twosided_oneeach <- handlepanels(list("1" = "a", "2" = "b"), "1")
-fakedata <- handledata(NULL, list("1" = data.frame(agg_time = seq.Date(from = as.Date("2000-01-01"), by = "year", length = 10), "a" = 1:10, "b" = 1:10)), NULL)$data
-twosideddata <- handledata(
-  list("1" = fakeseries1, "2" = fakeseries2),
-  list("1" = data.frame(agg_time = seq.Date(from = as.Date("2000-01-01"), by = "year", length = 1),
-                      "a" = 1:10, "b" = 1:10, "c" = 1:10, "d" = 1:10),
-       "2" = data.frame(agg_time = seq.Date(from = as.Date("2000-01-01"), by = "year", length = 1),
-                        "a" = 1:10, "b" = 1:10, "c" = 1:10, "d" = 1:10)), NULL)$data
-twosided_oneeachdata <- handledata(list("1" = "a", "2" = "b"),
-                                   list("1" = (data.frame("a" = 1:10, "b" = 1:10)),
-                                        "2" = (data.frame("a" = 1:10, "b" = 1:10))), NULL)$data
+fakeseries1 <- c("a", "b")
+fakeseries2 <- c("c", "d")
+onesided <- list("1" = fakeseries1, "2" = NULL)
+twosided <- list("1" = fakeseries1, "2" = fakeseries2)
+twosided_oneeach <- list("1" = "a", "2" = "b")
+fakedata <-
+  list("1" = data.frame(
+    agg_time = seq.Date(
+      from = as.Date("2000-01-01"),
+      by = "year",
+      length = 10
+    ),
+    "a" = 1:10,
+    "b" = 1:10
+  ))
+twosideddata <-
+  list(
+    "1" = data.frame(
+      agg_time = seq.Date(
+        from = as.Date("2000-01-01"),
+        by = "year",
+        length = 1
+      ),
+      "a" = 1:10,
+      "b" = 1:10,
+      "c" = 1:10,
+      "d" = 1:10
+    ),
+    "2" = data.frame(
+      agg_time = seq.Date(
+        from = as.Date("2000-01-01"),
+        by = "year",
+        length = 1
+      ),
+      "a" = 1:10,
+      "b" = 1:10,
+      "c" = 1:10,
+      "d" = 1:10
+    )
+  )
+twosided_oneeachdata <-
+  list("1" = (data.frame("a" = 1:10, "b" = 1:10)),
+       "2" = (data.frame("a" = 1:10, "b" = 1:10)))
 
 context("Y-axes scale")
 shouldbe <- list("1" = list("min" = 0, "max" = 12, "nsteps" = 5), "2" = list("min" = 0, "max" = 12, "nsteps" = 5))
-expect_that(ylimconform(onesided, NULL, fakedata, list(), "1"), equals(shouldbe))
+expect_that(ylimconform(onesided, list(), fakedata, "1"), equals(shouldbe))
 
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
 expect_that(ylimconform(onesided, list("1" = sublist), fakedata, list(), "1"), equals(list("1" = sublist, "2" = sublist)))
@@ -27,14 +55,161 @@ expect_that(ylimconform(onesided, list("1" = sublist), fakedata, list(), "1"), e
 should_be <- list("1" = sublist, "2" = list(min = 0, max = 12, nsteps = 5))
 expect_that(ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, list(), "1"), equals(should_be))
 
-ylim <- ylimconform(onesided, NULL, fakedata, list(), "1")
-expect_that(handleticks(fakedata, onesided, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
-panel2b2 <- handlepanels(list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")), "2b2")
+ylim <- ylimconform(onesided, list(), fakedata, "1")
+expect_that(handleticks(fakedata, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
+panel2b2 <- list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4"))
 
 # Test for passing in a single ylim to apply to all axes
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
 largerdata <-  ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
 expect_that(ylimconform(panel2b2, sublist, largerdata, list(), "2b2"), equals(list("1" = sublist, "2" = sublist, "3" = sublist, "4" = sublist)))
+
+# Matching other side axis
+expect_equal(ylimconform(
+  list("1" = NULL, "2" = "x1"),
+  list("2" = list(
+    min = -10,
+    max = 10,
+    nsteps = 3
+  )),
+  list("2" = largerdata),
+  "1"
+)[["1"]],
+list(
+  min = -10,
+  max = 10,
+  nsteps = 3
+))
+
+expect_equal(ylimconform(
+  list(
+    "1" = NULL,
+    "2" = NULL,
+    "3" = NULL,
+    "4" = "x1"
+  ),
+  list("4" = list(
+    min = -10,
+    max = 10,
+    nsteps = 3
+  )),
+  list("4" = largerdata),
+  "2h"
+)[["3"]],
+list(
+  min = -10,
+  max = 10,
+  nsteps = 3
+))
+
+expect_equal(ylimconform(
+  list(
+    "1" = NULL,
+    "2" = NULL,
+    "3" = NULL,
+    "4" = NULL,
+    "5" = NULL,
+    "6" = "x1"
+  ),
+  list("6" = list(
+    min = -10,
+    max = 10,
+    nsteps = 3
+  )),
+  list("6" = largerdata),
+  "3b2"
+)[["5"]],
+list(
+  min = -10,
+  max = 10,
+  nsteps = 3
+))
+
+expect_equal(ylimconform(
+  list(
+    "1" = NULL,
+    "2" = NULL,
+    "3" = NULL,
+    "4" = NULL,
+    "5" = NULL,
+    "6" = NULL,
+    "7" = "x1",
+    "8" = NULL
+  ),
+  list("7" = list(
+    min = -10,
+    max = 10,
+    nsteps = 3
+  )),
+  list("7" = largerdata),
+  "4b2"
+)[["8"]],
+list(
+  min = -10,
+  max = 10,
+  nsteps = 3
+))
+
+expect_equal(ylimconform(
+  list(
+    "1" = NULL,
+    "2" = NULL,
+    "3" = NULL,
+    "4" = NULL,
+    "5" = NULL,
+    "6" = NULL,
+    "7" = NULL,
+    "8" = "x1"
+  ),
+  list("8" = list(
+    min = -10,
+    max = 10,
+    nsteps = 3
+  )),
+  list("8" = largerdata),
+  "4h"
+)[["7"]],
+list(
+  min = -10,
+  max = 10,
+  nsteps = 3
+))
+
+expect_equal(ylimconform(
+  list("1" = NULL,
+       "2" = NULL,
+       "3" = "x1"),
+  list("3" = list(
+    min = -10,
+    max = 10,
+    nsteps = 3
+  )),
+  list("3" = largerdata),
+  "3v"
+)[["2"]],
+list(
+  min = -10,
+  max = 10,
+  nsteps = 3
+))
+
+expect_equal(ylimconform(
+  list("1" = "x1",
+       "2" = NULL,
+       "3" = NULL),
+  list("1" = list(
+    min = -10,
+    max = 10,
+    nsteps = 3
+  )),
+  list("1" = largerdata),
+  "3v"
+)[["2"]],
+list(
+  min = -10,
+  max = 10,
+  nsteps = 3
+))
 
 # Check that sanity checks fail if pass in bad values
 expect_error(ylimconform(onesided, list("1" = list("min" = 1, "nsteps" = 3)), fakedata, list(), "1"))
@@ -85,9 +260,8 @@ expect_true(scale$min <= -15)
 
 context("X-axes scale")
 # Check x lim conforming for time series data
-fakedata <- handledata(NULL, fakedata, NULL)$data
 xvars <- get_x_values(fakedata, list("1" = "agg_time"))
-expect_that(xlimconform(onesided, NULL, xvars, fakedata), equals(list("1" = c(2000,2010), "2" = c(2000,2010))))
+expect_that(xlimconform(onesided, list(), xvars, fakedata), equals(list("1" = c(2000,2010), "2" = c(2000,2010))))
 
 expect_equal(xlimconform(onesided, c(-10,0), xvars, fakedata), list("1" = c(-10,0), "2" = c(-10,0)))
 
@@ -115,15 +289,14 @@ for (end in 1991:2050) {
 }
 
 # Check x lim conforming for categorical data
-catdata <- handledata(NULL, list("1" = data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE)), list("1" = "x"))$data
-catpanels <- handlepanels(c("y"), "1")
+catdata <- list("1" = data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = FALSE))
+catpanels <- list("1" = c("y"), "2" = NULL)
 xvar <- get_x_values(catdata, list("1" = "x"))
 expect_equal(xlimconform(catpanels, NULL, xvar, catdata), list("1" = c(1, 6), "2" = c(1, 6)))
 
 # Check x lim conforming for numerical categorical data
-catpanels <- handlepanels(c("y"), "1")
-catdata1 <- handledata(NULL, list("1" = data.frame(x = 2001:2005, y = 1:5)), list("1" = "x"))$data
-catdata2 <- handledata(NULL, list("1" = data.frame(x = c(2,4,6,8,10), y = 1:5)), list("1" = "x"))$data
+catdata1 <- list("1" = data.frame(x = 2001:2005, y = 1:5))
+catdata2 <- list("1" = data.frame(x = c(2,4,6,8,10), y = 1:5))
 xvar1 <- get_x_values(catdata1, list("1" = "x"))
 xvar2 <- get_x_values(catdata2, list("1" = "x"))
 xlim1 <- xlimconform(catpanels, NULL, xvar1, catdata1)
@@ -140,11 +313,11 @@ expect_that(xlabs2[["1"]]$labels, equals(c(2,4,6,8,10)))
 expect_that(xlabs2[["1"]]$ticks, equals(c(2,4,6,8,10)))
 
 # Restricting x labels for categorical graphs
-catdata1 <- handledata(NULL, list("1" = data.frame(x = 1:10, y = 1:10)), list("1" = "x"))$data
+catdata1 <- list("1" = data.frame(x = 1:10, y = 1:10))
 xvar1 <- get_x_values(catdata1, list("1" = "x"))
 xlim1 <- xlimconform(catpanels, NULL, xvar1, catdata1)
 
-catdata2 <- handledata(NULL, list("1" = data.frame(x = letters[1:10], y = 1:10, stringsAsFactors = FALSE)), list("1" = "x"))$data
+catdata2 <- list("1" = data.frame(x = letters[1:10], y = 1:10, stringsAsFactors = FALSE))
 xvar2 <- get_x_values(catdata2, list("1" = "x"))
 xlim2 <- xlimconform(catpanels, NULL, xvar2, catdata2)
 
@@ -160,9 +333,9 @@ expect_equal(xlabs2[["1"]]$labels, c("b","d","f","h","j"))
 
 # X lim conforming for scatter graph data
 scatter <- data.frame(x = runif(100), y = runif(100))
-scatter <- handledata(NULL, list("1" = scatter), list("1" ="x"))$data
+scatter <- list("1" = scatter)
 xvar <- get_x_values(scatter, list("1" = "x"))
-scatterpanels <- handlepanels(c("y"), "1")
+scatterpanels <- list("1" = "y", "2" = NULL)
 expect_that(xlimconform(scatterpanels, NULL, xvar, scatter), equals(list("1" = c(0,1), "2" = c(0,1))))
 
 context("Unit handling")
@@ -176,9 +349,9 @@ expect_that(handleunits(twosided, list("1" = "foo"), "1"), equals(list("1" = "fo
 # Ensure y-scale creator works even if NAs in data (#39)
 data <- data.frame(x = rnorm(10), y = 100*rnorm(10))
 data[4, "y"] <- NA
-nadata <- handledata(NULL, list("1" = data), NULL)$data
-napanels <- handlepanels("y", "1")
-expect_false(isTRUE(all.equal(ylimconform(napanels, NULL, nadata, list(), "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
+nadata <- list("1" = data)
+napanels <- list("1" = "y", "2" = NULL)
+expect_false(isTRUE(all.equal(ylimconform(napanels, list(), nadata, "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
 
 # Correct placement of y labels when ticks lead to more decimal places (#44)
 expect_equal(createscale(0.15, 0.25, 5), c(0.15, 0.175, 0.2, 0.225, 0.25))
@@ -188,7 +361,7 @@ context("x axis units")
 expect_equal(handlexunits(onesided, NULL), list("1" = "%", "2" = "%"))
 expect_equal(handlexunits(onesided, list("1" = "index")), list("1" = "index", "2" = "%"))
 expect_equal(handlexunits(onesided, "index"), list("1" = "index", "2" = "index"))
-panels2b2 <- handlepanels(fakeseries1, "2b2")
+panels2b2 <- list("1" = "a","2"="c","3"="b","4"=c("d","e"))
 expect_equal(handlexunits(panels2b2, "index"), list("1" = "index", "2" = "index", "3" = "index", "4" = "index"))
 
 # Axis labels

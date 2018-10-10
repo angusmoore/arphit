@@ -477,7 +477,6 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
   gg <- list(data = list(parent = data),
              aes = aes,
              x = list(),
-             series = list(),
              layout = as.character(layout),
              bars = list(),
              title = NULL,

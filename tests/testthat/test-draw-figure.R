@@ -57,7 +57,7 @@ for (suffix in c("png","pdf","emf","svg")) {
 
 # tests for bottom spacing
 fakeseries1 <- c("a","b")
-onesided <- handlepanels(fakeseries1, "1")
+onesided <- list("1" = fakeseries1, "2" = NULL)
 expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 1.8)
 expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 3.5)
 

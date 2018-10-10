@@ -411,8 +411,6 @@ getxvals <- function(data, ists, xvals) {
       # Categorical data, offset by half
       return(1:length(xvals) + 0.5)
     }
-  } else {
-    return(xvals)
   }
 }
 

@@ -165,6 +165,7 @@ handlexunits <- function(panels, xunits) {
 
 ylimconform <- function(panels, ylim, data, bars, layout) {
   ylim_list <- list()
+  if (!is.list(ylim)) stop("Ylim should be a list")
   if ("min" %in% names(ylim) || "max" %in% names(ylim) || "nsteps" %in% names(ylim)) {
     # have supplied a single list to apply to all
     if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
@@ -180,7 +181,7 @@ ylimconform <- function(panels, ylim, data, bars, layout) {
       ylim_list[[p]] <- ylim
     }
   } else {
-    # have supplied check if we've supplied lims for each panel, if not, assign default
+    # have supplied lims for each (or none)
     for (p in names(panels)) {
       if (p %in% names(ylim)) {
         ylim_list[[p]] <- ylim[[p]]
@@ -188,10 +189,10 @@ ylimconform <- function(panels, ylim, data, bars, layout) {
           stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points (or you forgot to supply nsteps).", sep = ""))
         }
         if (is.null(ylim[[p]]$max)) {
-          stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
+          stop(paste0("You did not supply a max ylimit for panel ", p, "."))
         }
         if (is.null(ylim[[p]]$min)) {
-          stop(paste("You did not supply a max ylimit for panel ", p, ".", step = ""))
+          stop(paste0("You did not supply a min ylimit for panel ", p, "."))
         }
       } else {
         paneldf <- data[[p]][, panels[[p]], drop = FALSE]
@@ -207,9 +208,9 @@ ylimconform <- function(panels, ylim, data, bars, layout) {
   return(ylim_list)
 }
 
-handleticks <- function(data, panels, ylim) {
+handleticks <- function(data, ylim) {
   ticks <- list()
-  for (p in names(panels)) {
+  for (p in names(ylim)) {
     if (!is.null(ylim[[p]])) {
       ticks[[p]] <- createscale(ylim[[p]]$min, ylim[[p]]$max, ylim[[p]]$nsteps)
     }
@@ -223,7 +224,7 @@ findlabelstep <- function(start, end, layout_factor, exponent = 1) {
       return(i*exponent)
     }
   }
-  # haven't found one, increase exponent (with tial recursion to keep increasing it)
+  # haven't found one, increase exponent (with recursion to keep increasing it)
   return(findlabelstep(start, end, layout_factor, exponent*10))
 }
 
@@ -378,24 +379,17 @@ defaultxscale <- function(xvars, xscales, data, ists) {
 }
 
 xlimconform <- function(panels, xlim, xvars, data) {
+  if(!is.list(xlim) && length(xlim) > 0) {
+    xlim <- lapply(panels, function(x) xlim)
+  }
+
   out <- list()
-  if (!is.list(xlim)) {
-    for (p in names(panels)) {
-      if (is.null(xlim)) {
-        ists <- !is.null(xvars[[paste0(p, "ts")]])
-        out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
-      } else {
-        out[[p]] <- xlim
-      }
-    }
-  } else {
-    for (p in names(panels)) {
-      if (p %in% names(xlim)) {
-        out[[p]] <- xlim[[p]]
-      } else {
-        ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
-        out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
-      }
+  for (p in names(panels)) {
+    if (p %in% names(xlim)) {
+      out[[p]] <- xlim[[p]]
+    } else {
+      ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
+      out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
     }
   }
   # have a check for non-matching xlimits

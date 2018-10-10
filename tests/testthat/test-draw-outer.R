@@ -3,9 +3,9 @@ context("draw outer")
 # Legend
 
 # Set up panels
-onesided <- handlepanels(c("a","b"), "1")
-twosided <- handlepanels(list("1" = c("a","b"), "2" = c("c","d")), "1")
-duplicate <- handlepanels(list("1" = c("a","b"), "2" = c("a","d")), "1")
+onesided <- list("1" = c("a","b"), "2" = NULL)
+twosided <- list("1" = c("a","b"), "2" = c("c","d"))
+duplicate <- list("1" = c("a","b"), "2" = c("a","d"))
 
 # Set attributes
 os_attr <- handleattributes(onesided,
