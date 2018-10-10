@@ -69,7 +69,11 @@ handleattributes <- function(panels, colin, pchin, ltyin, lwdin, barcolin, point
 
   attributes <- list()
   for (p in names(panels)) {
-    col <- handleattribute(panels[[p]], colin[[p]], DEFAULTCOLORS)
+    if (is.null(getOption("arphit.user_colors"))) {
+      col <- handleattribute(panels[[p]], colin[[p]], DEFAULTCOLORS)
+    } else {
+      col <- handleattribute(panels[[p]], colin[[p]], getOption("arphit.user_colors"))
+    }
   	pch <- handleattribute(panels[[p]], pchin[[p]], DEFAULTPCH)
   	lty <- handleattribute(panels[[p]], ltyin[[p]], DEFAULTLTY)
   	lwd <- handleattribute(panels[[p]], lwdin[[p]], DEFAULTLWD)
