@@ -226,6 +226,7 @@ expect_error(ylimconform(onesided, list("max" = 1, "nsteps" = 3), fakedata, list
 expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 3)), fakedata, list(), "1"))
 expect_error(ylimconform(onesided, list("min" = 1, "max" = 3), fakedata, list(), "1"))
 expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 2, "nsteps" = 1)), fakedata, list(), "1"))
+expect_error(agg_qplot(data.frame(x=1:10,y=1:10), ylim = c(0,10,5), x="x"), "Ylim should be a list")
 
 context("Default scale")
 # Test that scale create the right thing
