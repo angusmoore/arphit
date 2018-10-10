@@ -669,6 +669,22 @@ agg_draw(p, filename = "x-axis-lim.png")
 knitr::include_graphics("x-axis-lim.png")
 ```
 
+## Log axes
+
+You can make either or both of the `y` and `x` axes log scales (`x` only makes sense for scatter graphs.) Use the `log_scale` option to `arphitgg` and specify one of `"x"`, `"y"` or `"xy"`, which behave as you'd expect.
+```{r, results = "hide"}
+log_scale_data <- data.frame(x = 1:10, y = c(11, 20, 40, 90, 11, 14, 90, 15, 15, 16))
+p <- arphitgg(log_scale_data, agg_aes(x = x, y = y), log_scale = "y") + 
+  agg_line() + 
+  agg_ylim(10, 90, 5)
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "logscale.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("logscale.png")
+```
+
 # Shading between series
 
 You can shade the area between series by adding `agg_shading`. 
