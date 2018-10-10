@@ -197,3 +197,11 @@ expect_that(handleattributes(
   list("1" = list(x1 = 5), "2" = list(x1 = 10))
 ),
 equals(shouldbe))
+
+# Setting user colours (#176, which changed to using R's options, instead of my earlier awful hack)
+options(arphit.user_colors = c(RBA["Red1"],RBA["Blue10"],RBA["Olive1"]))
+expect_equal(handleattributes(onesided, NULL, NULL, NULL, NULL, NULL, NULL)[["1"]]$col,
+             list(x1 = unname(RBA["Red1"]), x2 = unname(RBA["Blue10"])))
+options(arphit.user_colors = NULL)
+expect_equal(handleattributes(onesided, NULL, NULL, NULL, NULL, NULL, NULL)[["1"]]$col,
+             list(x1 = unname(RBA["Default1"]), x2 = unname(RBA["Default2"])))

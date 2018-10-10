@@ -437,7 +437,10 @@ If you don't specify colours, arphit cycles through a set of default colours. Sh
 
 ### (Advanced) Defining your own default colors
 
-If you want to define your own set of default colors to be used define a vector called `ARPHIT_USERCOLORS` before you load `arphit`. Putting this into your `.Rprofile` is sensible.
+If you want to define your own set of default colors to be used set the option `arphit.user_colors` with a vector of colours. Putting this into your `.Rprofile` is sensible.
+```{r, eval=FALSE}
+options(arphit.user_colors = c(RBA["Red1"],RBA["Blue10"],RBA["Olive1"]))
+```
 
 ## Line markers
 
