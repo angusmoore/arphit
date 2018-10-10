@@ -187,7 +187,7 @@ startdevice <- function(filename, device, figsize) {
   } else if (device == "pdf") {
     grDevices::pdf(file = filename, width = figsize$width, height = figsize$height)
   } else if (device == "emf") {
-    devEMF::emf(file = filename, width = figsize$width, height = figsize$height)
+    devEMF::emf(file = filename, width = figsize$width, height = figsize$height, emfPlus = FALSE)
   }
 }
 
