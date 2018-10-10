@@ -47,7 +47,7 @@ twosided_oneeachdata <-
 
 context("Y-axes scale")
 shouldbe <- list("1" = list("min" = 0, "max" = 12, "nsteps" = 5), "2" = list("min" = 0, "max" = 12, "nsteps" = 5))
-expect_that(ylimconform(onesided, list(), fakedata, "1"), equals(shouldbe))
+expect_that(ylimconform(onesided, list(), fakedata, list(), "1"), equals(shouldbe))
 
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
 expect_that(ylimconform(onesided, list("1" = sublist), fakedata, list(), "1"), equals(list("1" = sublist, "2" = sublist)))
@@ -55,7 +55,7 @@ expect_that(ylimconform(onesided, list("1" = sublist), fakedata, list(), "1"), e
 should_be <- list("1" = sublist, "2" = list(min = 0, max = 12, nsteps = 5))
 expect_that(ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, list(), "1"), equals(should_be))
 
-ylim <- ylimconform(onesided, list(), fakedata, "1")
+ylim <- ylimconform(onesided, list(), fakedata, list(), "1")
 expect_that(handleticks(fakedata, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
 panel2b2 <- list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4"))
 
@@ -73,6 +73,7 @@ expect_equal(ylimconform(
     nsteps = 3
   )),
   list("2" = largerdata),
+  list(),
   "1"
 )[["1"]],
 list(
@@ -94,6 +95,7 @@ expect_equal(ylimconform(
     nsteps = 3
   )),
   list("4" = largerdata),
+  list(),
   "2h"
 )[["3"]],
 list(
@@ -117,6 +119,7 @@ expect_equal(ylimconform(
     nsteps = 3
   )),
   list("6" = largerdata),
+  list(),
   "3b2"
 )[["5"]],
 list(
@@ -142,6 +145,7 @@ expect_equal(ylimconform(
     nsteps = 3
   )),
   list("7" = largerdata),
+  list(),
   "4b2"
 )[["8"]],
 list(
@@ -167,6 +171,7 @@ expect_equal(ylimconform(
     nsteps = 3
   )),
   list("8" = largerdata),
+  list(),
   "4h"
 )[["7"]],
 list(
@@ -185,6 +190,7 @@ expect_equal(ylimconform(
     nsteps = 3
   )),
   list("3" = largerdata),
+  list(),
   "3v"
 )[["2"]],
 list(
@@ -203,6 +209,7 @@ expect_equal(ylimconform(
     nsteps = 3
   )),
   list("1" = largerdata),
+  list(),
   "3v"
 )[["2"]],
 list(
@@ -351,7 +358,7 @@ data <- data.frame(x = rnorm(10), y = 100*rnorm(10))
 data[4, "y"] <- NA
 nadata <- list("1" = data)
 napanels <- list("1" = "y", "2" = NULL)
-expect_false(isTRUE(all.equal(ylimconform(napanels, list(), nadata, "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
+expect_false(isTRUE(all.equal(ylimconform(napanels, list(), nadata, list(), "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
 
 # Correct placement of y labels when ticks lead to more decimal places (#44)
 expect_equal(createscale(0.15, 0.25, 5), c(0.15, 0.175, 0.2, 0.225, 0.25))
