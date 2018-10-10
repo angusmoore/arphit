@@ -6,7 +6,6 @@ panels2h <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "2h")
 
 expect_equal(conformpaneltitles(panels2h, list("1" = "Foo", "3" = "Bar"), "1", LANDSCAPESIZE[2]), list("1" = "Foo", "2" = NULL, "3" = "Bar", "4" = NULL))
 expect_equal(conformpaneltitles(panels1, list("1" = "Foo"), "1", LANDSCAPESIZE[2]), list("1" = "Foo", "2" = NULL))
-expect_equal(conformpaneltitles(panels1, "Baz", "1", LANDSCAPESIZE[2]), list("1" = "Baz", "2" = "Baz"))
 
 context("Format sources")
 expect_that(formatsrcs("ABS", LANDSCAPESIZE[2] - WIDTHSPACESSOURCES), equals(list(text = "ABS", plural = FALSE)))
@@ -30,3 +29,5 @@ expect_error(
             paneltitles = list("1" = "And also a very long panel title to break across lines as well")),
   NA
 )
+
+expect_error(agg_qplot(data, paneltitles = "FOo bar"), "`paneltitles` must be a list.")

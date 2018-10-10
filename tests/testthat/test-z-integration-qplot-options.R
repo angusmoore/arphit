@@ -102,9 +102,6 @@ expect_error(
 expect_error(
   agg_qplot(data),
   NA)
-expect_error(
-  agg_qplot(data, portrait = TRUE),
-  NA)
 
 # BAR GRAPHS =================
 
@@ -192,23 +189,6 @@ expect_error(
             series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
             ylim = list(min = -10, max = 10, nsteps = 5)),
   NA)
-expect_error(
-  agg_qplot(data,
-            layout = "2b2",
-            series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
-            dropxlabel = TRUE),
-  NA)
-
-# JOINING AND MISSING VALUES ==============
-
-graphics.off()
-joining_data <- ts(data.frame(y = c(1,2,NA,3,4)), start = 2000, frequency = 1)
-expect_error(
-  agg_qplot(joining_data, joined = TRUE),
-  NA)
-expect_error(
-  agg_qplot(joining_data, joined = FALSE),
-  NA)
 
 # ADDING A LEGEND =============
 
@@ -216,3 +196,10 @@ graphics.off()
 expect_error(
   agg_qplot(data, legend = TRUE),
   NA)
+
+# ERROR IF PASS VECTOR TO SERIES ==============
+
+expect_error(
+  agg_qplot(data, series = "x1"),
+  "`series` must be a list mapping panel names to vector of series to be included in that panel."
+)

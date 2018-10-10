@@ -1,4 +1,5 @@
 context("gg interface")
+library(dplyr)
 data  <- data.frame(unemployment = rnorm(20), employment = rnorm(20), employmentYE = rnorm(20), state = c(rep("A", 5), rep("B", 5), rep("C", 5), rep("D", 5)), date = seq.Date(from = as.Date("2017-01-10"), length.out = 10, by = "quarter"))
 
 # Unrename merged data

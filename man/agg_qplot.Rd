@@ -5,13 +5,11 @@
 \title{RBA-style graphs in R}
 \usage{
 agg_qplot(data, series = NULL, x = NULL, layout = "1", bars = NULL,
-  filename = NULL, title = NULL, subtitle = NULL,
-  paneltitles = NULL, panelsubtitles = NULL, footnotes = NULL,
-  sources = NULL, yunits = NULL, col = NULL, pch = NULL,
-  lty = NULL, lwd = NULL, barcol = NULL, xlim = NULL,
-  ylim = NULL, legend = FALSE, legend.ncol = NA, portrait = FALSE,
-  bar.stacked = TRUE, dropxlabel = FALSE, joined = TRUE, srt = 0,
-  showallxlabels = NULL)
+  filename = NULL, title = NULL, subtitle = NULL, paneltitles = list(),
+  panelsubtitles = list(), footnotes = c(), sources = c(),
+  yunits = NULL, col = list(), pch = list(), lty = list(),
+  lwd = list(), xlim = list(), ylim = list(), legend = FALSE,
+  legend.ncol = NA, bar.stacked = TRUE)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
@@ -51,8 +49,6 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 
 \item{lwd}{(optional) A list of string -> numeric pairs. The keys should be series names, and the values line width, relative to default, for each series. Defaults to 1. Can be supplied as list, or a single value (which will be applied to all series).}
 
-\item{barcol}{(optional) A list of string -> misc pairs.  The keys should be series names, and the values outline colours for each bar series (any colour accepted by R is fine.) You need not supply colours for all series. Bar series without assigned colours are given no outline by default. Alternatively, you can supply a single value to apply to all series.}
-
 \item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).}
 
 \item{ylim}{(optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).}
@@ -61,17 +57,7 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 
 \item{legend.ncol}{How many columns do you want the legend to have (if NA, which is the default, arphit will guess for you).}
 
-\item{portrait}{(optional) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).}
-
 \item{bar.stacked}{(optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).}
-
-\item{dropxlabel}{(optional) Logical indicating whether the first xlabel of right hand panels in 2v , 3v, 2b2, 3b2, and 4b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.}
-
-\item{joined}{(optiona) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE). TRUE by default.}
-
-\item{srt}{(default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.}
-
-\item{showallxlabels}{(optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.}
 }
 \description{
 Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).

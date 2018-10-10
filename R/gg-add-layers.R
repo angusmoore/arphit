@@ -199,6 +199,11 @@ addlayer <- function(gg, new, panel) {
     }
   }
 
+  # Error if data is weird
+  if (!is.acceptable.data(new$data)) {
+    stop(paste0("Data is of unsupported type (you passed in ", class(new$data),")"))
+  }
+
   if (is.null(new$aes$facet)) {
     out <- addlayertopanel(gg, new, panel)
     gg <- out$gg

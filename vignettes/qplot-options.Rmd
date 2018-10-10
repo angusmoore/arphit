@@ -310,19 +310,6 @@ agg_qplot(data, filename = "layout_default.png")
 knitr::include_graphics("layout_default.png")
 ```
 
-## Portrait size
-
-If you want a larger, portrait size layout, simply pass in `portait = TRUE`. This works with any of the layouts.
-```{r, eval = FALSE}
-agg_qplot(data, portrait = TRUE)
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data, portrait = TRUE, filename = "layout_portrait.png")
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("layout_portrait.png")
-```
-
 # Bar graphs
 
 You can make any of your series display as bars instead of a line using the `bar` argument. This is simply a vector of series that should be bars. If you do not pass this argument (or pass in an empty `bar` argument, all  will be plotted as series). Everything else is the same - i.e. which panel/axis is determined by the `series` argument.
@@ -603,69 +590,6 @@ knitr::include_graphics("y-uniform.png")
 X-limits are controlled similar to y-limits. However, only a minimum and maximum is required. For time series graphs, you can use part years if desired by adding decimal places (e.g. `2000.5`). As with the y-axis you can provide a list giving `c(minimum,maximum)` pairs for each panel, or just pass a single pair to apply to all panels. The latter method is strongly recommended - there are not many cases where you need different x-axes for different panels.
 
 Fine-grained control of x-ticks is not currently possible; only the limits can be set, the ticks are determined automatically.
-
-For layouts with vertical division (e.g. "2v", "2b2" etc), you can drop the the first tick of the right hand panel by setting `dropxlabel = TRUE`. This prevents the last label of the left hand panel overlapping the first of the right hand panel.
-
-```{r, eval = FALSE}
-agg_qplot(data,
-          layout = "2b2",
-          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
-          dropxlabel = TRUE)
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(data,
-          layout = "2b2",
-          series = list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4")),
-          dropxlabel = TRUE,
-          filename = "dropxlabel.png")
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("dropxlabel.png")
-```
-
-# Rotating x ticks
-
-You can rotate x ticks using the `srt` option. It represents the rotation (in degrees):
-```{r, eval = FALSE}
-agg_qplot(categoricaldata, x = "categoryname", srt = 45)
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(categoricaldata, x = "categoryname", srt = 45, filename = "xlabel-rotation.png")
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("xlabel-rotation.png")
-```
-
-# Joining and missing values
-
-The `joined` argument controls how your graph behaves with missing values. When `joined = TRUE` (which is the default) the series will ignore the missing value and connect to the next non-missing value. When `joined = FALSE` the series will break.
-
-For instance, let's use this series, with the middle observation missing:
-```{r}
-joining_data <- ts(data.frame(y = c(1,2,NA,3,4)), start = 2000, frequency = 1)
-```
-
-With `joined = TRUE`, the series continues straight across the missing value for 2002.
-```{r, eval = FALSE}
-agg_qplot(joining_data, joined = TRUE)
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(joining_data, joined = TRUE, filename = "joined.png")
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("joined.png")
-```
-
-But when we set `joined = FALSE`, the series does not connect over the missing observation:
-```{r, eval = FALSE}
-agg_qplot(joining_data, joined = FALSE)
-```
-```{r, echo = FALSE, results = "hide"}
-agg_qplot(joining_data, joined = FALSE, filename = "unjoined.png")
-```
-```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("unjoined.png")
-```
 
 # Adding a legend
 

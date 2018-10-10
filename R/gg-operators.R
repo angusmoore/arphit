@@ -10,45 +10,7 @@
 agg_draw <- function(gg, filename = NULL) {
   # Here we call the arphit drawing function
   gg$data[["parent"]] <- NULL
-  agg_draw_internal(data = gg$data,
-         x = gg$x,
-         layout = gg$layout,
-         bars = gg$bars,
-         title = gg$title,
-         subtitle = gg$subtitle,
-         paneltitles = gg$paneltitles,
-         panelsubtitles = gg$panelsubtitles,
-         yaxislabels = gg$yaxislabels,
-         xaxislabels = gg$xaxislabels,
-         footnotes = gg$footnotes,
-         sources = gg$sources,
-         yunits = gg$yunits,
-         xunits = gg$xunits,
-         ylim = gg$ylim,
-         xlim = gg$xlim,
-         legend = gg$legend,
-         legend.ncol = gg$legend.ncol,
-         col = gg$col,
-         pch = gg$pch,
-         lty = gg$lty,
-         lwd = gg$lwd,
-         pointsize = gg$pointsize,
-         barcol = gg$barcol,
-         labels = gg$labels,
-         arrows = gg$arrows,
-         lines = gg$lines,
-         bgshading = gg$bgshading,
-         shading = gg$shading,
-         portrait = gg$portrait,
-         dropxlabel = gg$dropxlabel,
-         bar.stacked = gg$stacked,
-         srt = gg$srt,
-         showallxlabels = gg$showallxlabels,
-         joined = gg$joined,
-         plotsize = gg$plotsize,
-         enable_autolabeller = gg$enable_autolabeller,
-         log_scale = gg$log_scale,
-         filename = filename)
+  agg_draw_internal(gg, filename)
 }
 
 #' Draw a defined graph
