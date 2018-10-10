@@ -622,3 +622,18 @@ agg_qplot(data, filename = "my_filename.emf")
 agg_qplot(data, filename = "my_filename.svg")
 agg_qplot(data, filename = "my_filename.pdf")
 ```
+
+You can also use the newer `EMFplus` format by using extention `.emf+`. This will still write an `emf` file, but
+it is encoded as the newer EMF+ format.
+```{r, eval = FALSE}
+agg_qplot(data, filename = "my_filename.emf+")
+```
+
+## A note about EMF files
+
+EMF files are problematic:
+
+* EMF+ files do not render in paint or windows photo viewer properly, but will import fine into Word or PowerPoint (and looks fine when exported to PDF from Word).
+* EMF files  will _not_ render if exported from Word to PDF; EMF+ will.
+
+Additionally, only EMF+ files support partial transparency; EMF files do not.

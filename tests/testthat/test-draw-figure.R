@@ -41,6 +41,7 @@ expect_error(finddevice("abc.xyz"))
 expect_that(finddevice("abc.png"), equals("png"))
 expect_that(finddevice("abc.pdf"), equals("pdf"))
 expect_that(finddevice("abc.emf"), equals("emf"))
+expect_that(finddevice("abc.emf+"), equals("emf+"))
 expect_that(finddevice("abc.svg"), equals("svg"))
 expect_that(finddevice(NULL), equals(NULL))
 
@@ -54,6 +55,10 @@ for (suffix in c("png","pdf","emf","svg")) {
   # remove
   file.remove(file)
 }
+# Special case EMF+, because we change the file extension
+agg_qplot(randomdata, filename = "foo.emf+")
+expect_that(file.exists("foo.emf"), is_true())
+file.remove(file)
 
 # tests for bottom spacing
 fakeseries1 <- c("a","b")
