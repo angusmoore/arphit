@@ -164,6 +164,10 @@ p <- arphitgg(simple_data, agg_aes(x=date, y=y1)) +
   agg_line() +
   agg_xlim(1998, 2008)
 expect_error(print(p), NA)
+p <- arphitgg(simple_data, agg_aes(x=date, y=y1), layout = "2v", dropxlabel = TRUE) +
+  agg_line(panel = "1") +
+  agg_line(panel = "2")
+expect_error(print(p), NA)
 
 # SHADING BETWEEN SERIES ============
 
