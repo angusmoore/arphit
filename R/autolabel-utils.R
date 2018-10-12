@@ -33,13 +33,6 @@ createlabels <- function(data, panels, p, layout) {
   return(series)
 }
 
-convertaxis <- function(x, fromaxis, toaxis) {
-  fromspan <- fromaxis$max - fromaxis$min
-  tospan <- toaxis$max - toaxis$min
-  y <- (x - fromaxis$min) / fromspan * tospan  + toaxis$min
-  return(y)
-}
-
 rhs_axes <- function(p, layout) {
   if ((layout == "1" || layout == "2h" || layout == "3h" || layout == "4h")) {
     if (p == "1") {
@@ -56,26 +49,6 @@ rhs_axes <- function(p, layout) {
     return(otherp)
   } else {
     return(NULL)
-  }
-}
-
-convertdata.axes <- function(data, panels, p, layout, ylim_list) {
-  otherp <- rhs_axes(p, layout)
-  if (!is.null(otherp)) {
-    # need to convert the RHS to LHS so the labeller can correctly do the collisions etc
-    toaxis <- ylim_list[[p]]
-    fromaxis <- ylim_list[[otherp]]
-    otherdata <- data[[otherp]]
-    for (s in panels[[otherp]]) {
-      otherdata[, s] <- convertaxis(data[[otherp]][, s], fromaxis, toaxis)
-    }
-    if (!is.null(otherdata)) {
-      return(dplyr::full_join(data[[p]], otherdata))
-    } else {
-      return(data[[p]])
-    }
-  } else {
-    return(data[[p]])
   }
 }
 
@@ -98,25 +71,4 @@ notRHS <- function(p, layout) {
   } else {
     return(TRUE)
   }
-}
-
-merge_colours <- function(attributes, p, layout) {
-  otherp <- rhs_axes(p, layout)
-  if (!is.null(otherp)) {
-    return(append(attributes[[p]]$col, attributes[[otherp]]$col))
-  } else {
-    return(attributes[[p]]$col)
-  }
-}
-
-formatlabels <- function(locations, labelsmap, attributes, p, layout) {
-  col <- merge_colours(attributes, p, layout)
-  formatted <- list()
-  for (label in names(locations)) {
-    x <- locations[[label]][1]
-    y <- locations[[label]][2]
-    thislabel <- list(x = x, y = y, text = labelsmap[[label]], panel = p, color = col[[label]])
-    formatted <- append(formatted, list(thislabel))
-  }
-  return(formatted)
 }
