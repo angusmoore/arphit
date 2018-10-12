@@ -8,6 +8,7 @@ get_underlay_bitmap <- function(gg, margins) {
   agg_draw(gg, filename = paste0(tempdir(), "\\autolabel-temp.png"))
   image <- magick::image_read(paste0(tempdir(), "\\autolabel-temp.png"))
   file.remove(paste0(tempdir(), "\\autolabel-temp.png"))
+  grDevices::dev.set(plot_device)
 
   # Crop off the outer material
   top <- as.integer(CSI*margins$top*PNGDPI)
@@ -18,13 +19,16 @@ get_underlay_bitmap <- function(gg, margins) {
   crop_height <- magick::image_info(image)$height - top - bottom
   image <- magick::image_crop(image, paste0(crop_width,"x",crop_height,"+",left,"+",top))
 
-  grDevices::dev.set(plot_device)
-  convert_image_non_white(image)
+  # Convert to a logical matrix, true for non-white
+  image_map <- magick::image_data(image, "gray")
+  image_map <- drop(image_map)
+  white_raw <- as.raw(255)
+  return(image_map != white_raw)
 }
 
 create_text_bitmap <- function(x,y,text,xlim,ylim,layout,log_scale,dim) {
-  x_start <- seq(from = xlim[1], to = xlim[2], length.out = dim[2] + 1)[1:dim[2]]
-  y_start <- seq(from = ylim$max, to = ylim$min, length.out = dim[1] + 1)[2:(dim[1]+1)]
+  x_start <- seq(from = xlim[1], to = xlim[2], length.out = dim[1] + 1)[1:dim[1]]
+  y_start <- seq(from = ylim$max, to = ylim$min, length.out = dim[2] + 1)[2:(dim[2]+1)]
 
   top <- y + 0.5*strheight(text)
   bottom <- y - 0.5*strheight(text)
@@ -38,7 +42,7 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,layout,log_scale,dim) {
 }
 
 test_collision <- function(underlay, x_indices, y_indices) {
-  any(underlay[y_indices, x_indices])
+  any(underlay[x_indices, y_indices])
 }
 
 distanceininches <- function(x, y, a, b) {
