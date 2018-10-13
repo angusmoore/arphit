@@ -17,7 +17,8 @@ Imports:
   tidyr,
   devEMF,
   zoo,
-  xts
+  xts,
+  magick
 Suggests:
   testthat,
     knitr,
