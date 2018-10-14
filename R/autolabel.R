@@ -1,13 +1,9 @@
-convert_image_non_white <- function(image) {
-  t(drop(magick::image_data(image, "gray") != "ff"))
-}
-
 get_underlay_bitmap <- function(gg, margins) {
   plot_device <- grDevices::dev.cur()
   gg$enable_autolabeller <- FALSE
-  agg_draw(gg, filename = paste0(tempdir(), "\\autolabel-temp.png"))
-  image <- magick::image_read(paste0(tempdir(), "\\autolabel-temp.png"))
-  file.remove(paste0(tempdir(), "\\autolabel-temp.png"))
+  agg_draw(gg, filename = paste0(tempdir(), "/autolabel-temp.png"))
+  image <- magick::image_read(paste0(tempdir(), "/autolabel-temp.png"))
+  suppressWarnings(file.remove(paste0(tempdir(), "/autolabel-temp.png")))
   grDevices::dev.set(plot_device)
 
   # Crop off the outer material
@@ -79,20 +75,24 @@ point_line_distance <- function(x, y, series.x, series.y) {
   y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
   x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
 
-  tibble::tibble(x1=series.x[1:(length(series.x)-1)],y1=series.y[1:(length(series.x)-1)],
-         x2=series.x[2:length(series.x)],y2=series.y[2:length(series.x)]) %>%
-    dplyr::mutate(dot = (x-x1)*(x2-x1) + (y-y1)*(y2-y1),
-           len_sq = (x2-x1)^2 + (y2-y1)^2,
-           param = dplyr::if_else(len_sq == 0, -1, dot / len_sq)) %>%
-    dplyr::mutate(xx = dplyr::case_when(param < 0 ~ x1,
-                          param > 0 ~ x2,
-                          TRUE ~ x1 + param*(x2-x1)),
-           yy = dplyr::case_when(param < 0 ~ y1,
-                          param > 0 ~ y2,
-                          TRUE ~ y1 + param*(y2-y1))) %>%
-    dplyr::mutate(distance = sqrt(((xx-x)*x_inches_conversion)^2+((yy-y)*y_inches_conversion)^2)) %>%
-    dplyr::select(xx, yy, distance) %>%
-    dplyr::filter(rank(.$distance, ties.method = "first") == 1)
+  distance <- tibble::tibble(x1=series.x[1:(length(series.x)-1)],y1=series.y[1:(length(series.x)-1)],
+         x2=series.x[2:length(series.x)],y2=series.y[2:length(series.x)])
+  distance$dot <- (x-distance$x1)*(distance$x2-distance$x1) + (y-distance$y1)*(distance$y2-distance$y1)
+  distance$len_sq <- (distance$x2-distance$x1)^2 + (distance$y2-distance$y1)^2
+  distance$param <- dplyr::if_else(distance$len_sq == 0, -1, distance$dot / distance$len_sq)
+
+  distance$xx <- dplyr::case_when(distance$param < 0 ~ distance$x1,
+                                  distance$param > 0 ~ distance$x2,
+                                  TRUE ~ distance$x1 + distance$param*(distance$x2-distance$x1))
+
+  distance$yy <- dplyr::case_when(distance$param < 0 ~ distance$y1,
+                                  distance$param > 0 ~ distance$y2,
+                                  TRUE ~ distance$y1 + distance$param*(distance$y2-distance$y1))
+
+  distance$distance <- sqrt(((distance$xx-x)*x_inches_conversion)^2+((distance$yy-y)*y_inches_conversion)^2)
+
+  distance <- distance[c("xx", "yy", "distance")]
+  distance[rank(distance$distance,ties.method="first")==1,]
 }
 
 get_distance <- function(a, b, data, series.x, series.y, otherseries) {
