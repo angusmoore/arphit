@@ -134,7 +134,7 @@ agg_draw_internal <- function(gg, filename) {
 
   if (gg$enable_autolabeller) {
     # Finally, if desired, run the autolabeller
-    autolabel(gg, panels, xlim, ylim, margins, labels, xvals, data, attributes)
+    autolabel(gg, panels, xlim, ylim, margins, labels, xvals, data, attributes, gg$bars[[p]])
   }
 
   if (!is.null(device)) {

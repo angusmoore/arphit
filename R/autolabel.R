@@ -71,6 +71,16 @@ lineofsight <- function(x, y, a, b, xvar, data, otherseries) {
   return(los)
 }
 
+point_point_distance <- function(x, y, series.x, series.y) {
+  y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
+  x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
+
+  distance <- tibble::tibble(xx=series.x,yy=series.y)
+  distance$distance <- sqrt(((distance$xx-x)*x_inches_conversion)^2+((distance$yy-y)*y_inches_conversion)^2)
+
+  distance[rank(distance$distance,ties.method="first")==1,]
+}
+
 point_line_distance <- function(x, y, series.x, series.y) {
   y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
   x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
@@ -95,42 +105,54 @@ point_line_distance <- function(x, y, series.x, series.y) {
   distance[rank(distance$distance,ties.method="first")==1,]
 }
 
-get_distance <- function(a, b, data, series.x, series.y, otherseries) {
-  result <- point_line_distance(a,b,series.x,series.y)
+get_distance_series_type <- function(x, y, series.x, series.y, series_type) {
+  if (series_type == "line") {
+    return(point_line_distance(x, y, series.x, series.y))
+  } else if (series_type == "point") {
+    return(point_point_distance(x, y, series.x, series.y))
+  } else if (series_type == "bar") {
+    stop("Bar distance not implemented")
+  } else {
+    stop("Unknown series type.")
+  }
+}
+
+get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries, series_types) {
+  result <- get_distance_series_type(a,b,series.x,series.y, series_types[[thisseries]])
   los <- lineofsight(result$xx, result$yy, a, b, series.x, data, otherseries)
-  next_closest <- sapply(otherseries, function(series) point_line_distance(a,b,series.x,data[[series]])$distance)
+  next_closest <- sapply(otherseries, function(series) get_distance_series_type(a,b,series.x,data[[series]],series_types[[series]])$distance)
 
   return(list(distance = result$distance, los = los, next_closest = min(next_closest)))
 }
 
-evaluate_candidate <- function(x, y, label, otherseries, data, xvals, yvals, xlim, ylim, p, underlay_bitmap) {
+evaluate_candidate <- function(x, y, label, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, p, underlay_bitmap) {
   indices <- create_text_bitmap(x,y,label,xlim,ylim,dim(underlay_bitmap))
   if (!test_collision(underlay_bitmap, indices$x, indices$y)) {
-    distance <- get_distance(x, y, data, xvals, yvals, otherseries)
+    distance <- get_distance(x, y, data, xvals, yvals, series, otherseries, series_types)
     return(data.frame(x=x,y=y,distance=distance$distance,los=distance$los,next_closest=distance$next_closest))
   } else {
     return(data.frame(x=x,y=y,distance=Inf,los=FALSE,next_closest=NA))
   }
 }
 
-candidate_from_x_anchor <- function(x, label, otherseries, data, xvals, yvals, xlim, ylim, p, log_scale, underlay_bitmap) {
+candidate_from_x_anchor <- function(x, label, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, p, log_scale, underlay_bitmap) {
   cat(".")
   step <- (ylim$max - ylim$min)/AUTOLABEL_YSTEPS
   points_to_try <- seq(from = ylim$min+step, by = step, length.out = AUTOLABEL_YSTEPS-1)
 
-  candidates <- lapply(points_to_try, function(y) evaluate_candidate(x, y, label, otherseries, data, xvals, yvals, xlim, ylim, p,  underlay_bitmap))
+  candidates <- lapply(points_to_try, function(y) evaluate_candidate(x, y, label, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, p,  underlay_bitmap))
 
   do.call(rbind, candidates)
 }
 
-find_best_candidate <- function(label, plot_bitmap, x, y, otherseries, data, xlim, ylim, p, log_scale, underlay_bitmap) {
+find_best_candidate <- function(label, plot_bitmap, x, y, series, otherseries, series_types, data, xlim, ylim, p, log_scale, underlay_bitmap) {
 
   step <- (xlim[2] - xlim[1])/AUTOLABEL_XSTEPS
   x_anchors <- seq(from = xlim[1] + 1.5*step, by = step, length.out = AUTOLABEL_XSTEPS-2)
 
   candidate_closure <-
     function(x_anchor)
-      candidate_from_x_anchor(x_anchor, label, otherseries, data, x, y, xlim, ylim, p, log_scale, underlay_bitmap)
+      candidate_from_x_anchor(x_anchor, label, series, otherseries, series_types, data, x, y, xlim, ylim, p, log_scale, underlay_bitmap)
 
   label_options <-
     lapply(FUN = candidate_closure,
@@ -143,7 +165,24 @@ find_best_candidate <- function(label, plot_bitmap, x, y, otherseries, data, xli
   return(best_fit)
 }
 
-autolabel_series <- function(series, label, p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, layout, log_scale) {
+get_series_type <- function(series, bars, lty) {
+  if (series %in% bars) {
+    return("bar")
+  } else if (lty[[series]] == 0) {
+    return("point")
+  } else {
+    return("line")
+  }
+}
+
+get_series_types <- function(series_list, attributes, bars) {
+  series_types <- lapply(series_list, function(x) get_series_type(x, bars, attributes$lty))
+  names(series_types) <- series_list
+  return(series_types)
+}
+
+autolabel_series <- function(series, label, p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars, layout, log_scale) {
+  series_types <- get_series_types(panels[[p]], attributes[[p]], bars)
   cat(paste0("Finding location for ", series, " ."))
   found_location <-
     find_best_candidate(
@@ -151,7 +190,9 @@ autolabel_series <- function(series, label, p, plot_bitmap, panels, xlim, ylim, 
       plot_bitmap,
       getxvals(data[[p]], !is.null(xvals[[paste0(p, "ts")]]), xvals[[p]]),
       data[[p]][[series]],
+      series,
       panels[[p]][panels[[p]]!=series],
+      series_types,
       data[[p]],
       xlim[[p]],
       ylim[[p]],
@@ -180,7 +221,7 @@ autolabel_series <- function(series, label, p, plot_bitmap, panels, xlim, ylim, 
   }
 }
 
-autolabel <- function(gg, panels, xlim, ylim, margins, labels, xvals, data, attributes) {
+autolabel <- function(gg, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars) {
   if (any(sapply(names(panels), function(p) notalreadylabelled(p, labels)))) {
     plot_bitmap <- get_underlay_bitmap(gg, margins)
   }
@@ -188,7 +229,7 @@ autolabel <- function(gg, panels, xlim, ylim, margins, labels, xvals, data, attr
     if (notalreadylabelled(p, labels)) {
       labelsmap <- createlabels(data[[p]], panels, p, gg$layout)
       for (series in names(labelsmap)) {
-        new_label <- autolabel_series(series, labelsmap[[series]], p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, gg$layout, gg$log_scale)
+        new_label <- autolabel_series(series, labelsmap[[series]], p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars, gg$layout, gg$log_scale)
         # Add it to the gg object, so that the mask includes it for the next series
         if (!is.null(new_label)) {
           # Mask out the new label in the bitmap
