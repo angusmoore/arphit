@@ -181,7 +181,7 @@ get_series_types <- function(series_list, attributes, bars) {
   return(series_types)
 }
 
-autolabel_series <- function(series, label, p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars, layout, log_scale) {
+autolabel_series <- function(series, label, otherseries, p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars, layout, log_scale) {
   series_types <- get_series_types(panels[[p]], attributes[[p]], bars)
   cat(paste0("Finding location for ", series, " ."))
   found_location <-
@@ -191,7 +191,7 @@ autolabel_series <- function(series, label, p, plot_bitmap, panels, xlim, ylim, 
       getxvals(data[[p]], !is.null(xvals[[paste0(p, "ts")]]), xvals[[p]]),
       data[[p]][[series]],
       series,
-      panels[[p]][panels[[p]]!=series],
+      otherseries,
       series_types,
       data[[p]],
       xlim[[p]],
@@ -229,7 +229,25 @@ autolabel <- function(gg, panels, xlim, ylim, margins, labels, xvals, data, attr
     if (notalreadylabelled(p, labels)) {
       labelsmap <- createlabels(data[[p]], panels, p, gg$layout)
       for (series in names(labelsmap)) {
-        new_label <- autolabel_series(series, labelsmap[[series]], p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars, gg$layout, gg$log_scale)
+        new_label <-
+          autolabel_series(
+            series,
+            labelsmap[[series]],
+            names(labelsmap)[names(labelsmap) != series],
+            p,
+            plot_bitmap,
+            panels,
+            xlim,
+            ylim,
+            margins,
+            labels,
+            xvals,
+            data,
+            attributes,
+            bars,
+            gg$layout,
+            gg$log_scale
+          )
         # Add it to the gg object, so that the mask includes it for the next series
         if (!is.null(new_label)) {
           # Mask out the new label in the bitmap
