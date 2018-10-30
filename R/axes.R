@@ -19,34 +19,38 @@ testscaleoptions <- function(significand, minval, maxval, permittedsteps) {
   return(jointdeviation)
 }
 
-get_data_max_min <- function(data, bars) {
+get_data_max_min <- function(data, bars, stacked) {
   series_data <- data[!colnames(data) %in% bars]
   bardata <- data[colnames(data) %in% bars]
-
-  if (ncol(series_data) > 0 && ncol(bardata) > 0) {
+  if (length(bardata) > 0) {
+    bardata[is.na(bardata)] <- 0
     bardata_p <- bardata
     bardata_n <- bardata
     bardata_p[bardata < 0] <- 0
     bardata_n[bardata >= 0] <- 0
+  }
+
+  if (ncol(series_data) > 0 && ncol(bardata) > 0 && stacked) {
     maxval <- max(max(series_data,na.rm=TRUE),max(apply(bardata_p, 1, sum),na.rm=TRUE))
     minval <- min(min(series_data,na.rm=TRUE),min(apply(bardata_n, 1, sum),na.rm=TRUE))
-  } else if (ncol(series_data) > 0) {
-    maxval <- max(series_data,na.rm=TRUE)
-    minval <- min(series_data,na.rm=TRUE)
+  } else if (ncol(series_data) > 0 || !stacked) {
+    maxval <- max(data,na.rm=TRUE)
+    minval <- min(data,na.rm=TRUE)
+    if (ncol(bardata) > 0) {
+      # Include zero if we have bars
+      minval <- min(0, minval)
+      maxval <- max(0, maxval)
+    }
   } else {
-    bardata_p <- bardata
-    bardata_n <- bardata
-    bardata_p[bardata < 0] <- 0
-    bardata_n[bardata >= 0] <- 0
     maxval <- max(apply(bardata_p, 1, sum),na.rm=TRUE)
     minval <- min(apply(bardata_n, 1, sum),na.rm=TRUE)
   }
   return(list(maxval=maxval,minval=minval))
 }
 
-defaultscale <- function(data,bars,permittedsteps=PERMITTEDSTEPS) {
+defaultscale <- function(data,bars,stacked,permittedsteps=PERMITTEDSTEPS) {
   # Split bars and series apart
-  out <- get_data_max_min(data,bars)
+  out <- get_data_max_min(data,bars,stacked)
   maxval <- out$maxval
   minval <- out$minval
   span <- maxval-minval
@@ -163,7 +167,7 @@ handlexunits <- function(panels, xunits) {
   conformscale(panels, xunits)
 }
 
-ylimconform <- function(panels, ylim, data, bars, layout) {
+ylimconform <- function(panels, ylim, data, bars, layout, stacked) {
   ylim_list <- list()
   if (!is.list(ylim)) stop("Ylim should be a list")
   if ("min" %in% names(ylim) || "max" %in% names(ylim) || "nsteps" %in% names(ylim)) {
@@ -197,7 +201,7 @@ ylimconform <- function(panels, ylim, data, bars, layout) {
       } else {
         paneldf <- data[[p]][, panels[[p]], drop = FALSE]
         if (!is.null(paneldf) && ncol(paneldf) > 0) {
-          ylim_list[[p]] <- defaultscale(paneldf, bars[[p]])
+          ylim_list[[p]] <- defaultscale(paneldf, bars[[p]], stacked)
         } else {
           ylim_list[[p]] <- EMPTYSCALE
         }
@@ -290,7 +294,7 @@ xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
 }
 
 xlabels.scatter <- function(xlim, xvalues) {
-  scale <- defaultscale(data.frame(x=c(xlim[1],xlim[2]-(xlim[2]-xlim[1])/10000)),NULL)
+  scale <- defaultscale(data.frame(x=c(xlim[1],xlim[2]-(xlim[2]-xlim[1])/10000)),NULL,FALSE)
   scale <- createscale(scale$min,scale$max,scale$nsteps)
   return(list(at = scale, labels = scale, ticks = scale))
 }
@@ -357,7 +361,7 @@ defaultxscale <- function(xvars, xscales, data, ists) {
     if (is.numeric(xvars) && ists) {
       return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
     } else if (is.scatter(xvars)) {
-      scale <- defaultscale(data.frame(x=xvars), NULL)
+      scale <- defaultscale(data.frame(x=xvars), NULL, FALSE)
       return(c(scale$min,scale$max))
     } else {
       # Handle numerical categories
