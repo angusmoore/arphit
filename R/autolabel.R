@@ -193,7 +193,7 @@ autolabel_series <- function(series, label, otherseries, p, plot_bitmap, panels,
       plot_bitmap
     )
   cat("\n")
-  if (is.finite(found_location$x)) {
+  if (!is.null(found_location)) {
     newlabel <- list(
       text = label,
       color = attributes[[p]]$col[[series]],
