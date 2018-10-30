@@ -77,3 +77,27 @@ expect_error(
   print(p),
   NA
 )
+
+# Multipanels
+foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
+p <- arphitgg(foo, agg_aes(x=year), layout = "2b2") +
+  agg_line(agg_aes(y=y), panel = "3") +
+  agg_line(agg_aes(y=y2), panel = "3") +
+  agg_line(agg_aes(y=y), panel = "4") +
+  agg_line(agg_aes(y=y2), panel = "4") +
+  agg_autolabel()
+expect_error(
+  print(p),
+  NA
+)
+
+# Left-right axes
+foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
+p <- arphitgg(foo, agg_aes(x=year), layout = "1") +
+  agg_line(agg_aes(y=y), panel = "1") +
+  agg_line(agg_aes(y=y2), panel = "2") +
+  agg_autolabel()
+expect_error(
+  print(p),
+  NA
+)

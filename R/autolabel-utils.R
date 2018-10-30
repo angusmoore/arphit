@@ -1,51 +1,49 @@
-createlabels <- function(data, panels, p, layout) {
-  series <- list()
-  if (layout == "1" || layout == "2h") {
-    # also need to handle RHS series
-    primary <- panels[[p]]
-    if (p == "1") {
-      secondary <- panels[["2"]]
-    } else if (p == "3") {
-      secondary <- panels[["4"]]
-    } else {
-      secondary <- list() # Shouldn't be called
-    }
+createlabels <- function(panels, bars, attributes, layout) {
+  legend <- getlegendentries(panels, bars, attributes)
 
-    for (s in primary) {
-      if (length(secondary) > 0) {
-        series[[s]] <- paste(s, "\n(LHS)", sep = "")
-      } else {
-        series[[s]] <- s
+  # match each entry to which panels it appears in
+  series_to_panels <- list()
+  for (entry in legend) {
+    for (p in names(panels)) {
+      if ((entry$name %in% panels[[p]]) &&
+          (entry$col == attributes[[p]]$col[[entry$name]])) {
+        series_to_panels[[entry$name]] <- append(series_to_panels[[entry$name]], p)
       }
-    }
-    for (s in secondary) {
-      if (length(secondary) > 0) {
-        series[[s]] <- paste(s, "\n(RHS)", sep = "")
-      } else {
-        series[[s]] <- s
-      }
-    }
-  } else {
-    for (s in panels[[p]]) {
-      series[[s]] <- s
     }
   }
-  return(series)
+
+  # if is a RHS axes, add annotations
+  series_to_labels <- list()
+  for (series in names(series_to_panels)) {
+    if (layout == "1" || layout == "2h" || layout == "3h" || layout == "4h") {
+      if (length(panels[[other_axes(series_to_panels[[series]][1], layout)]]) > 0) { # This isn't handling all possible corner cases, because it could be that there aren't RHS on this panel but are on subsequent ones where the series also appears. Seems like a very unlikely to occur corner case.
+        if (any(c("1","3","5","7") %in% series_to_panels[[series]])) {
+          series_to_labels[[series]] <- paste0(series,"\n(LHS)")
+        } else {
+          series_to_labels[[series]] <- paste0(series,"\n(RHS)")
+        }
+      } else {
+        series_to_labels[[series]] <- series
+      }
+    } else {
+      series_to_labels[[series]] <- series
+    }
+  }
+
+  list(series_to_labels = series_to_labels, series_to_panels = series_to_panels)
 }
 
-rhs_axes <- function(p, layout) {
+other_axes <- function(p, layout) {
   if ((layout == "1" || layout == "2h" || layout == "3h" || layout == "4h")) {
-    if (p == "1") {
-      otherp <- "2"
-    } else if (p == "3") {
-      otherp <- "4"
-    } else if (p == "5") {
-      otherp <- "6"
-    } else if (p == "7") {
-      otherp <- "8"
-    } else {
-      return(NULL)
-    }
+    otherp <- switch(p,
+                     "1" = "2",
+                     "2" = "1",
+                     "3" = "4",
+                     "4" = "3",
+                     "5" = "6",
+                     "6" = "5",
+                     "7" = "8",
+                     "8" = "7")
     return(otherp)
   } else {
     return(NULL)
