@@ -237,32 +237,32 @@ expect_that(createscale(0,4,3), equals(c(0,2,4)))
 for (i in 1:100) {
   # Just do this 100 times to get lots of different scales and check they are all fine
   data <- data.frame(y=rnorm(10))
-  scale <- defaultscale(data, NULL)
+  scale <- defaultscale(data, NULL, FALSE)
   expect_that(scale$min <= min(data),is_true())
   expect_that(scale$max >= max(data),is_true())
   expect_that(scale$nsteps <= max(PERMITTEDSTEPS),is_true())
   expect_that(scale$nsteps >= min(PERMITTEDSTEPS),is_true())
 }
 
-# Check that default scales are sensible for _bar_ series (#147)
+# Check that default scales are sensible for stacked _bar_ series (#147)
 
 # With line series
 data <- data.frame(x=rep(1:5),y=1:5,z=6:10)
-scale <- defaultscale(data, c("y","z"))
+scale <- defaultscale(data, c("y","z"), TRUE)
 expect_true(scale$min <= 0)
 expect_true(scale$max >= 15)
 data <- data.frame(x=rep(1:5),y=-1:-5,z=-6:-10)
-scale <- defaultscale(data, c("y","z"))
+scale <- defaultscale(data, c("y","z"), TRUE)
 expect_true(scale$max >= 5)
 expect_true(scale$min <= -15)
 
 # Without line series
 data <- data.frame(y=1:5,z=6:10)
-scale <- defaultscale(data, c("y","z"))
+scale <- defaultscale(data, c("y","z"), TRUE)
 expect_true(scale$min <= 0)
 expect_true(scale$max >= 15)
 data <- data.frame(y=-1:-5,z=-6:-10)
-scale <- defaultscale(data, c("y","z"))
+scale <- defaultscale(data, c("y","z"), TRUE)
 expect_true(scale$max >= 0)
 expect_true(scale$min <= -15)
 
