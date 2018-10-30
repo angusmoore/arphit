@@ -58,7 +58,7 @@ for (suffix in c("png","pdf","emf","svg")) {
 # Special case EMF+, because we change the file extension
 agg_qplot(randomdata, filename = "foo.emf+")
 expect_that(file.exists("foo.emf"), is_true())
-file.remove(file)
+file.remove("foo.emf")
 
 # tests for bottom spacing
 fakeseries1 <- c("a","b")
