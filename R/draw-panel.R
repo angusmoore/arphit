@@ -353,7 +353,12 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
 
     return(c(x1,x2))
   } else {
-    return(c(0,1.4))
+    if (length(bp.data) == 1) {
+      return(c(0,1.4))
+    } else {
+      bp <- graphics::barplot(t(as.matrix(bp.data)), plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
+      return(c(0,max(bp)+min(bp)))
+    }
   }
 }
 
@@ -372,7 +377,7 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
   if (length(barcolumns) > 0) {
     bardata <- data[, barcolumns, drop = FALSE]
     if (!is.null(freq)) {
-      
+
       # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
       bardata$x <- x
       equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))

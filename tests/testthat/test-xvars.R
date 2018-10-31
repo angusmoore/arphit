@@ -206,6 +206,22 @@ expect_warning({
 },
 NA)
 
+# Test for singleton without groups
+foo <- data.frame(x = 4, y = rnorm(1))
+expect_warning({
+  p <- arphitgg(foo, agg_aes(x = x, y = y)) + agg_col()
+  print(p)
+},
+NA)
+
+foo <- data.frame(x = "A", y = rnorm(1), stringsAsFactors = FALSE)
+expect_warning({
+  p <- arphitgg(foo, agg_aes(x = x, y = y)) + agg_col()
+  print(p)
+},
+NA)
+
+
 # Similar to 171 (though different cause), failure for singleton numeric x categories
 foo <- data.frame(x=1,y=rnorm(3),group=c("a","b","c"),stringsAsFactors = FALSE)
 expect_error({
