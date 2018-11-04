@@ -101,3 +101,23 @@ expect_error(
   print(p),
   NA
 )
+
+# Fail to find candidate with standard grid, requiring fallback
+
+# No viable candidate at all for y.y
+foo <- data.frame(x=rep(1:20,30),y=sort(rep(1:30,20)))
+expect_warning({
+  p <- arphitgg(foo, agg_aes(x = x, y = y)) +  agg_point() + agg_point() +
+    agg_autolabel() + agg_xlim(0, 20.5) + agg_ylim(0, 30, 5)
+  print(p)
+}, "Unable to find location for label for series y.y")
+
+# Grid points structured so as to defeat standard autolabeller, but fallback succeeds easily
+foo <- data.frame(x=1,y=1)
+expect_error({
+  p <- arphitgg(foo, agg_aes(x = x, y = y)) + agg_point() + agg_point() +
+    agg_xlim(0, 2) +
+    agg_ylim(0, 48, 13) +
+    agg_autolabel()
+  print(p)
+}, NA)

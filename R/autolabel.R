@@ -22,7 +22,7 @@ get_underlay_bitmap <- function(gg, margins) {
   return(image_map != white_raw)
 }
 
-create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p) {
+create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLABEL_PADDING) {
   x_scale <- graphics::par("mfrow")[2]
   x_shift <- round(dim[1]/x_scale) * (getlocation(p, layout)[2] - 1)
   y_scale <- graphics::par("mfrow")[1]
@@ -31,10 +31,10 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p) {
   x_start <- seq(from = xlim[1], to = xlim[2], length.out = round(dim[1]/x_scale) + 1)[1:round(dim[1]/x_scale)]
   y_start <- seq(from = ylim$max, to = ylim$min, length.out = round(dim[2]/y_scale) + 1)[2:(round(dim[2]/y_scale)+1)]
 
-  top <- y + 0.5*graphics::strheight(text) + AUTOLABEL_PADDING / grDevices::dev.size()[2]*(ylim$max-ylim$min)
-  bottom <- y - 0.5*graphics::strheight(text) - AUTOLABEL_PADDING / grDevices::dev.size()[2]*(ylim$max-ylim$min)
-  left <- x - 0.5*graphics::strwidth(text) - AUTOLABEL_PADDING / grDevices::dev.size()[1]*(xlim[2]-xlim[1])
-  right <- x + 0.5*graphics::strwidth(text) + AUTOLABEL_PADDING / grDevices::dev.size()[1]*(xlim[2]-xlim[1])
+  top <- y + 0.5*graphics::strheight(text) + padding / grDevices::dev.size()[2]*(ylim$max-ylim$min)
+  bottom <- y - 0.5*graphics::strheight(text) - padding / grDevices::dev.size()[2]*(ylim$max-ylim$min)
+  left <- x - 0.5*graphics::strwidth(text) - padding / grDevices::dev.size()[1]*(xlim[2]-xlim[1])
+  right <- x + 0.5*graphics::strwidth(text) + padding / grDevices::dev.size()[1]*(xlim[2]-xlim[1])
 
   x_indices <- which(x_start < right & (x_start + x_start[2]-x_start[1]) > left) + x_shift
   y_indices <- which(y_start < top & (y_start + y_start[2]-y_start[1]) > bottom) + y_shift
@@ -172,6 +172,27 @@ get_series_types <- function(series_list, attributes, bars) {
   return(series_types)
 }
 
+autolabel_fallback <- function(label, xlim, ylim, underlay_bitmap, layout, p) {
+  x_up <- seq(from = mean(xlim), to = max(xlim), length.out = AUTOLABEL_FALLBACK_STEPS)
+  x_down <- seq(from = mean(xlim), to = min(xlim), length.out = AUTOLABEL_FALLBACK_STEPS)
+  y_up <- seq(from = mean(c(ylim$min,ylim$max)), to = ylim$max, length.out = AUTOLABEL_FALLBACK_STEPS)
+  y_down <- seq(from = mean(c(ylim$min,ylim$max)), to = ylim$min, length.out = AUTOLABEL_FALLBACK_STEPS)
+
+  x_steps <- c(rbind(x_up,x_down))
+  y_steps <- c(rbind(y_up,y_down))
+
+  for (x in x_steps) {
+    cat("x")
+    for (y in y_steps) {
+      indices <- create_text_bitmap(x,y,label,xlim,ylim,dim(underlay_bitmap),layout,p,padding=AUTOLABEL_FALLBACK_PADDING)
+      if (!test_collision(underlay_bitmap, indices$x, indices$y)) {
+        return(data.frame(x=x,y=y,distance=0,los=FALSE,next_closest=Inf))
+      }
+    }
+  }
+  return(NULL)
+}
+
 autolabel_series <- function(series, label, otherseries, p, plot_bitmap, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars, layout, log_scale) {
   series_types <- get_series_types(panels[[p]], attributes[[p]], bars)
   cat(paste0("Finding location for ", series, " ."))
@@ -192,6 +213,9 @@ autolabel_series <- function(series, label, otherseries, p, plot_bitmap, panels,
       log_scale,
       plot_bitmap
     )
+  if (is.null(found_location)) {
+    found_location <- autolabel_fallback(label, xlim[[p]], ylim[[p]], plot_bitmap, layout, p)
+  }
   cat("\n")
   if (!is.null(found_location)) {
     newlabel <- list(
