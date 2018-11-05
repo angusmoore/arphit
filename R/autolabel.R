@@ -22,6 +22,24 @@ get_underlay_bitmap <- function(gg, margins) {
   return(image_map != white_raw)
 }
 
+draw_bitmask <- function(bitmask) {
+  image <- magick::image_read(array(as.numeric(t(bitmask)), dim = c(dim(t(bitmask)),1)))
+  return(image)
+}
+
+line_y_indices <- function(text, y, ylim, y_start, padding, line_n, total_lines, total_height) {
+  lheight <- total_height / total_lines
+  line_offset <- 0.5*total_height - (0.5+line_n-1)*lheight
+
+  top <- y + 0.5*getstrheight(text, units = "user") + line_offset
+  bottom <- y - 0.5*getstrheight(text, units = "user") + line_offset
+
+  if (line_n == 1)  top <- top + padding / (graphics::par("pin")[2])*(ylim$max-ylim$min)
+  if (line_n == total_lines) bottom <- bottom - padding / (graphics::par("pin")[2])*(ylim$max-ylim$min)
+
+  which(y_start < top & (y_start + y_start[2]-y_start[1]) > bottom)
+}
+
 create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLABEL_PADDING) {
   x_scale <- graphics::par("mfrow")[2]
   x_shift <- round(dim[1]/x_scale) * (getlocation(p, layout)[2] - 1)
@@ -31,14 +49,25 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLAB
   x_start <- seq(from = xlim[1], to = xlim[2], length.out = round(dim[1]/x_scale) + 1)[1:round(dim[1]/x_scale)]
   y_start <- seq(from = ylim$max, to = ylim$min, length.out = round(dim[2]/y_scale) + 1)[2:(round(dim[2]/y_scale)+1)]
 
-  top <- y + 0.5*graphics::strheight(text) + padding / grDevices::dev.size()[2]*(ylim$max-ylim$min)
-  bottom <- y - 0.5*graphics::strheight(text) - padding / grDevices::dev.size()[2]*(ylim$max-ylim$min)
-  left <- x - 0.5*graphics::strwidth(text) - padding / grDevices::dev.size()[1]*(xlim[2]-xlim[1])
-  right <- x + 0.5*graphics::strwidth(text) + padding / grDevices::dev.size()[1]*(xlim[2]-xlim[1])
-
+  left <- x - 0.5*getstrwidth(text, units = "user") - padding / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
+  right <- x + 0.5*getstrwidth(text, units = "user") + padding / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
   x_indices <- which(x_start < right & (x_start + x_start[2]-x_start[1]) > left) + x_shift
-  y_indices <- which(y_start < top & (y_start + y_start[2]-y_start[1]) > bottom) + y_shift
 
+  lines <- stringr::str_split(text, stringr::fixed("\n"))[[1]]
+
+  y_indices <-
+    do.call(c, lapply(seq_along(lines), function(line_n)
+      line_y_indices(
+        lines[[line_n]],
+        y,
+        ylim,
+        y_start,
+        padding,
+        line_n,
+        length(lines),
+        getstrheight(text, units = "user")
+      )))
+  y_indices <- y_indices + y_shift
 
   list(x=x_indices,y=y_indices)
 }

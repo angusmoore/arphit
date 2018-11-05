@@ -121,3 +121,19 @@ expect_error({
     agg_autolabel()
   print(p)
 }, NA)
+
+# Multi line labels
+expect_error({
+  foo <-
+    tibble::tibble(
+      x = 1:30,
+      `foo\nbar` = rnorm(30),
+      `foo\nbar\nbaz` = rnorm(30)
+    )
+  p <- arphitgg(foo) +
+    agg_line(agg_aes(x = x, y = `foo\nbar\nbaz`)) +
+    agg_line(agg_aes(x = x, y = `foo\nbar`)) +
+    agg_autolabel()
+  print(p)
+},
+NA)
