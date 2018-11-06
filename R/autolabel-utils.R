@@ -1,12 +1,12 @@
-createlabels <- function(panels, bars, attributes, layout) {
+createlabels <- function(panels, bars, attributes, layout, labels) {
   legend <- getlegendentries(panels, bars, attributes)
 
   # match each entry to which panels it appears in
   series_to_panels <- list()
   for (entry in legend) {
     for (p in names(panels)) {
-      if ((entry$name %in% panels[[p]]) &&
-          (entry$col == attributes[[p]]$col[[entry$name]])) {
+      if (notalreadylabelled(p, labels) && (entry$name %in% panels[[p]]) &&
+          (entry$col == attributes[[p]]$col[[entry$name]] || entry$fill == attributes[[p]]$col[[entry$name]])) {
         series_to_panels[[entry$name]] <- append(series_to_panels[[entry$name]], p)
       }
     }
@@ -59,14 +59,19 @@ notalreadylabelled <- function(p, labels) {
   return(TRUE)
 }
 
-notRHS <- function(p, layout) {
-  if (layout == "1" || layout == "2h" || layout == "3h" || layout == "4h") {
-    if (p == "2" || p == "4" || p == "6" || p == "8") {
-      return(FALSE)
-    } else {
-      return(TRUE)
-    }
+
+get_series_type <- function(series, bars, lty) {
+  if (series %in% bars) {
+    return("bar")
+  } else if (lty[[series]] == 0) {
+    return("point")
   } else {
-    return(TRUE)
+    return("line")
   }
+}
+
+get_series_types <- function(series_list, attributes, bars) {
+  series_types <- lapply(series_list, function(x) get_series_type(x, bars, attributes$lty))
+  names(series_types) <- series_list
+  return(series_types)
 }

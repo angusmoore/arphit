@@ -117,7 +117,7 @@ foo <- data.frame(x=1,y=1)
 expect_error({
   p <- arphitgg(foo, agg_aes(x = x, y = y)) + agg_point() + agg_point() +
     agg_xlim(0, 2) +
-    agg_ylim(0, 48, 13) +
+    agg_ylim(0, 60, 16) +
     agg_autolabel()
   print(p)
 }, NA)
@@ -137,3 +137,6 @@ expect_error({
   print(p)
 },
 NA)
+
+# Distance for bars
+
