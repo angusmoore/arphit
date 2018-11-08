@@ -25,7 +25,7 @@ point_line_distance <- function(x, y, series.x, series.y) {
   distance$xx <- distance$x1 + distance$t*(distance$x2-distance$x1)
   distance$yy <- distance$y1 + distance$t*(distance$y2-distance$y1)
 
-  distance$distance <- sqrt((x - distance$xx)^2 + (y - distance$yy)^2)
+  distance$distance <- sqrt(((distance$xx-x)*x_inches_conversion)^2+((distance$yy-y)*y_inches_conversion)^2)
 
   distance <- distance[c("xx", "yy", "distance")]
   distance[rank(distance$distance,ties.method="first")==1,]
@@ -47,8 +47,7 @@ point_bar_distance_ <- function(x, y, series.x, y1, y2) {
   distance$xx <- distance$x
   distance$yy <- distance$y1 + distance$t*(distance$y2-distance$y1)
 
-  distance$distance <- sqrt((x - distance$xx)^2 + (y - distance$yy)^2)
-
+  distance$distance <- sqrt(((distance$xx-x)*x_inches_conversion)^2+((distance$yy-y)*y_inches_conversion)^2)
   distance <- distance[c("xx", "yy", "distance")]
   distance[rank(distance$distance,ties.method="first")==1,]
 }
@@ -80,7 +79,7 @@ point_bar_distance <- function(x, y, series.x, series.y, data, bars, bars.stacke
         y1 <- bardata_n[1,]
       }
       y2 <- colSums(bardata_n[1:row_n,])
-      distance <- cbind(distance, point_bar_distance_(x, y, series.x, y1, y2))
+      distance <- rbind(distance, point_bar_distance_(x, y, series.x, y1, y2))
       return(distance[rank(distance$distance,ties.method="first")==1,])
     }
   }
@@ -99,9 +98,18 @@ get_distance_series_type <- function(x, y, series.x, series.y, series_type, data
   }
 }
 
-get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries, series_types, bars, bars.stacked) {
+get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries, series_types, bars, bars.stacked, los_mask, xlim, ylim) {
   result <- get_distance_series_type(a,b,series.x,series.y, series_types[[thisseries]], data, bars, bars.stacked)
-  los <- lineofsight(result$xx, result$yy, a, b, series.x, data, otherseries)
+  los <-
+    lineofsight(
+      result$xx,
+      result$yy,
+      a,
+      b,
+      los_mask,
+      xlim,
+      ylim
+    )
   next_closest <-
     sapply(otherseries, function(series)
       get_distance_series_type(a, b, series.x, data[[series]], series_types[[series]], data, bars, bars.stacked)$distance)
@@ -110,5 +118,5 @@ get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries
     # TODO: Find a way of measuring distance to series on RHS panels
     next_closest <- Inf
   }
-  return(list(distance = result$distance, los = los, next_closest = min(next_closest)))
+  return(list(distance = result$distance, los = los, next_closest = min(next_closest), xx = result$xx, yy = result$yy))
 }

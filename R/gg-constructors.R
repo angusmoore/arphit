@@ -170,6 +170,8 @@ agg_label <- function(text, color, x, y, panel) {
 
 #' Add automatically placed label
 #'
+#' @param quiet (logical, default FALSE) Do not output progress of autolabeller
+#'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
 #'
@@ -181,8 +183,8 @@ agg_label <- function(text, color, x, y, panel) {
 #'   agg_autolabel()
 #'
 #' @export
-agg_autolabel <- function() {
-  return(list(type = "autolabel"))
+agg_autolabel <- function(quiet = FALSE) {
+  return(list(type = "autolabel", quiet = quiet))
 }
 
 
@@ -515,6 +517,7 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              joined = joined,
              plotsize = plotsize,
              enable_autolabeller = FALSE,
+             autolabel_quiet = FALSE,
              log_scale = log_scale)
 
   class(gg) <- "arphit.gg"

@@ -4,7 +4,6 @@ get_underlay_bitmap <- function(gg, margins) {
   agg_draw(gg, filename = paste0(tempdir(), "/autolabel-temp.png"))
   image <- magick::image_read(paste0(tempdir(), "/autolabel-temp.png"))
   suppressWarnings(file.remove(paste0(tempdir(), "/autolabel-temp.png")))
-  grDevices::dev.set(plot_device)
 
   # Crop off the outer material
   top <- as.integer(CSI*margins$top*PNGDPI)
@@ -19,6 +18,10 @@ get_underlay_bitmap <- function(gg, margins) {
   image_map <- magick::image_data(image, "gray")
   image_map <- drop(image_map)
   white_raw <- as.raw(255)
+
+  # reset the active device
+  grDevices::dev.set(plot_device)
+
   return(image_map != white_raw)
 }
 

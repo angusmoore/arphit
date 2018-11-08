@@ -75,3 +75,18 @@ get_series_types <- function(series_list, attributes, bars) {
   names(series_types) <- series_list
   return(series_types)
 }
+
+add_arrow <- function(found_location, color) {
+  if (!found_location$los || found_location$distance > 1.5) {
+    newarrow <- list(tail.x = found_location$x,
+                     tail.y = found_location$y,
+                     head.x = found_location$xx,
+                     head.y = found_location$yy,
+                     color = color,
+                     panel = p)
+    drawarrow(newarrow)
+  } else {
+    newarrow <- NULL
+  }
+  return(newarrow)
+}

@@ -113,7 +113,8 @@ addlegend <- function(gg, legend) {
   return(gg)
 }
 
-enableautolabel <- function(gg) {
+enableautolabel <- function(gg, quiet) {
   gg$enable_autolabeller <-  TRUE
+  gg$autolabel_quiet <- quiet
   return(gg)
 }
