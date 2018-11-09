@@ -49,7 +49,7 @@ los_mask_series_draw <- function(series, exclude, xvals, ists, freq, data, xlim,
   x <- getxvals(data, ists, xvals)
   colors <- as.list(rep("black",length(series)))
   barcol <- as.list(rep("white",length(series)))
-  pch <- as.list(rep(NA),length(series))
+  pch <- as.list(rep(NA,length(series)))
   names(colors) <- series
   names(barcol) <- series
   names(pch) <- series
