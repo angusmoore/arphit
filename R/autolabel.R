@@ -14,9 +14,12 @@ candidate_from_x_anchor <- function(x, label, series, otherseries, series_types,
   step <- (ylim$max - ylim$min)/AUTOLABEL_YSTEPS
   points_to_try <- seq(from = ylim$min+step, by = step, length.out = AUTOLABEL_YSTEPS-1)
 
-  candidates <- lapply(points_to_try, function(y) evaluate_candidate(x, y, label, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, layout, p,  underlay_bitmap, los_mask, bars, bars.stacked))
+  candidates <- data.frame()
+  for (y in points_to_try) {
+    candidates <- rbind(candidates, evaluate_candidate(x, y, label, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, layout, p,  underlay_bitmap, los_mask, bars, bars.stacked))
+  }
 
-  do.call(rbind, candidates)
+  return(candidates)
 }
 
 find_candidates <- function(label, plot_bitmap, x, y, series, otherseries, series_types, data, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars, bars.stacked, quiet) {
@@ -24,14 +27,33 @@ find_candidates <- function(label, plot_bitmap, x, y, series, otherseries, serie
   step <- (xlim[2] - xlim[1])/AUTOLABEL_XSTEPS
   x_anchors <- seq(from = xlim[1] + 1.5*step, by = step, length.out = AUTOLABEL_XSTEPS-2)
 
-  candidate_closure <-
-    function(x_anchor)
-      candidate_from_x_anchor(x_anchor, label, series, otherseries, series_types, data, x, y, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars, bars.stacked, quiet)
-
-  label_options <-
-    lapply(FUN = candidate_closure,
-           X = x_anchors)
-  label_options <- do.call(rbind, label_options)
+  label_options <- data.frame()
+  for (x_anchor in x_anchors) {
+    label_options <-
+      rbind(
+        label_options,
+        candidate_from_x_anchor(
+          x_anchor,
+          label,
+          series,
+          otherseries,
+          series_types,
+          data,
+          x,
+          y,
+          xlim,
+          ylim,
+          layout,
+          p,
+          log_scale,
+          underlay_bitmap,
+          los_mask,
+          bars,
+          bars.stacked,
+          quiet
+        )
+      )
+  }
   label_options <- label_options[is.finite(label_options$distance),]
   return(label_selection(label_options))
 }
@@ -98,7 +120,7 @@ autolabel_series <- function(series, label, otherseries, p, plot_bitmap, los_mas
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
     drawlabel(newlabel)
-    return(list(label=newlabel,arrow=add_arrow(found_location, attributes[[p]]$col[[series]])))
+    return(list(label=newlabel,arrow=add_arrow(found_location, attributes[[p]]$col[[series]], p)))
   } else {
     warning(paste0("Unable to find location for label for series ", series))
     return(NULL)
