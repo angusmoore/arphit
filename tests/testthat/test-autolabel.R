@@ -1,6 +1,16 @@
 context("Autolabeller")
 foo <- data.frame(x = 1:50, y = rnorm(50), y2 = rnorm(50))
-p <- arphitgg(foo) + agg_line(agg_aes(x=x,y=y)) + agg_line(agg_aes(x=x,y=y2)) + agg_autolabel(TRUE)
+p <- arphitgg(foo) +
+  agg_line(agg_aes(x=x,y=y)) +
+  agg_line(agg_aes(x=x,y=y2)) + agg_autolabel(TRUE)
+expect_error(
+  print(p),
+  NA
+)
+
+p <- arphitgg(foo) +
+  agg_line(agg_aes(x=x,y=y)) +
+  agg_line(agg_aes(x=x,y=y2)) + agg_autolabel(FALSE)
 expect_error(
   print(p),
   NA
@@ -156,7 +166,6 @@ expect_error(
 )
 
 # No line of sight
-
 data <- data.frame(x=1:10,a=1:10,b=0.5:9.5,c=1.5:10.5)
 p <- arphitgg(data, agg_aes(x=x)) +
   agg_line(agg_aes(y=a)) +
@@ -164,4 +173,15 @@ p <- arphitgg(data, agg_aes(x=x)) +
   agg_line(agg_aes(y=c)) +
   agg_xlim(1.5,10.5) +
   agg_autolabel(TRUE)
-print(p)
+expect_error({print(p)}, NA)
+
+# Labels on one panel
+data <- data.frame(x=1:10,a=1:10,b=0.5:9.5,c=1.5:10.5)
+p <- arphitgg(data,agg_aes(x=x), layout = "2v") +
+  agg_line(agg_aes(y=a), panel = "1") +
+  agg_line(agg_aes(y=b), panel = "1") +
+  agg_line(agg_aes(y=b), panel = "2") +
+  agg_line(agg_aes(y=c), panel = "2") +
+  agg_label("Test",x=2,y=4,color="black",panel="1") +
+  agg_autolabel(TRUE)
+expect_error({print(p)}, NA)

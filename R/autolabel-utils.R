@@ -6,7 +6,7 @@ createlabels <- function(panels, bars, attributes, layout, labels) {
   for (entry in legend) {
     for (p in names(panels)) {
       if (notalreadylabelled(p, labels) && (entry$name %in% panels[[p]]) &&
-          (entry$col == attributes[[p]]$col[[entry$name]] || entry$fill == attributes[[p]]$col[[entry$name]])) {
+          any(entry$col == attributes[[p]]$col[[entry$name]], entry$fill == attributes[[p]]$col[[entry$name]])) {
         series_to_panels[[entry$name]] <- append(series_to_panels[[entry$name]], p)
       }
     }
