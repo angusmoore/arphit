@@ -2,8 +2,18 @@ evaluate_candidate <- function(x, y, label, series, otherseries, series_types, d
   indices <- create_text_bitmap(x,y,label,xlim,ylim,dim(underlay_bitmap),layout,p)
   if (!test_collision(underlay_bitmap, indices$x, indices$y)) {
     distance <- get_distance(x, y, data, xvals, yvals, series, otherseries, series_types, bars, bars.stacked, los_mask, xlim, ylim)
-    result <- data.frame(x=x,y=y,distance=distance$distance,los=distance$los,next_closest=distance$next_closest,xx=distance$xx,yy=distance$yy)
-    return(assign_selection_groups(result))
+    return(
+      data.frame(
+        x = x,
+        y = y,
+        distance = distance$distance,
+        los = distance$los,
+        next_closest = distance$next_closest,
+        xx = distance$xx,
+        yy = distance$yy,
+        selection_group = assign_selection_group(distance$distance, distance$next_closest, distance$los)
+      )
+    )
   } else {
     return(data.frame(x=x,y=y,distance=Inf,los=FALSE,next_closest=NA,xx=NA,yy=NA,selection_group=10000))
   }

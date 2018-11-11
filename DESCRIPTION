@@ -18,8 +18,7 @@ Imports:
   devEMF,
   zoo,
   xts,
-  magick,
-  purrr
+  magick
 Suggests:
   testthat,
     knitr,

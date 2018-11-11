@@ -1,6 +1,9 @@
-
 lineofsight <- function(x, y, a, b, los_mask, xlim, ylim) {
-  !any(los_mask & create_arrow_bitmap(x, y, a, b, dim(los_mask), "1", "1", xlim, ylim))
+  !any(los_mask[create_arrow_bitmap(x, y, a, b, dim(los_mask), "1", "1", xlim, ylim)])
+}
+
+cartesian2linear <- function(r, c, dims) {
+  r + (c-1)*dims[1]
 }
 
 create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,layout,p,xlim,ylim) {
@@ -13,8 +16,6 @@ create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,layout,p,xlim,y
   head.x <- (head.x - xlim[1])/(xlim[2]-xlim[1])*dims[1]
   tail.y <- dims[2] - (tail.y - ylim$min)/(ylim$max-ylim$min)*dims[2]
   head.y <- dims[2] - (head.y - ylim$min)/(ylim$max-ylim$min)*dims[2]
-
-  mask <- array(FALSE, dim = dims)
 
   x_points <- floor(tail.x):ceiling(head.x)
 
@@ -29,7 +30,7 @@ create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,layout,p,xlim,y
     y_points <- head.y:tail.y
   }
 
-  purrr::walk2(x_points, y_points, function(x,y) mask[x,y] <<- TRUE)
+  linear_indices <- mapply(x_points, y_points, FUN = function(x,y) cartesian2linear(x,y,dims))
 
   # Do it for y points too - helps for very steep lines, which get poor coverage on y-points by my other method
   y_points <- floor(tail.y):ceiling(head.y)
@@ -39,10 +40,17 @@ create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,layout,p,xlim,y
     x_points <- round(m*y_points + c)
     x_points[x_points > max(head.x,tail.x)] <- max(head.x,tail.x)
     x_points[x_points < min(head.x,tail.x)] <- min(head.x,tail.x)
-    purrr::walk2(x_points, y_points, function(x,y) mask[x,y] <<- TRUE)
+    linear_indices <-
+      append(linear_indices,
+             mapply(
+               x_points,
+               y_points,
+               FUN = function(x, y)
+                 cartesian2linear(x, y, dims)
+             ))
   }
 
-  return(mask)
+  return(linear_indices)
 }
 
 los_mask_series_draw <- function(series, exclude, xvals, ists, freq, data, xlim, ylim, bars, bar.stacked, log_scale, joined) {

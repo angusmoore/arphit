@@ -1,31 +1,28 @@
-assign_selection_groups <- function(l) {
-  l$selection_group <- dplyr::case_when(
-    l$distance < 0.5 & l$next_closest > 0.5 & l$los ~ 1,
-    l$distance < 0.5 & l$next_closest > l$distance & l$los ~ 2,
-    l$distance < 0.5 & l$next_closest <= l$distance & l$los ~ 4,
-    l$distance < 0.5 & l$next_closest > 0.5 & !l$los ~ 6,
-    l$distance < 0.5 & l$next_closest > l$distance & !l$los ~ 7,
-    l$distance < 0.5 & l$next_closest <= l$distance & !l$los ~ 8,
+assign_selection_group <- function(distance, next_closest, los) {
+  if (distance < 0.5 & next_closest > 0.5 & los) return(1)
+  if (distance < 0.5 & next_closest > distance & los) return(2)
+  if (distance < 0.5 & next_closest <= distance & los) return(4)
+  if (distance < 0.5 & next_closest > 0.5 & !los) return(6)
+  if (distance < 0.5 & next_closest > distance & !los) return(7)
+  if (distance < 0.5 & next_closest <= distance & !los) return(8)
 
-    l$distance < 1 & l$next_closest > l$distance & l$los ~ 3,
-    l$distance < 1 & l$next_closest > l$distance & !l$los ~ 9,
-    l$distance < 1 & l$next_closest > 0.5 & l$next_closest <= l$distance & l$los ~ 5,
-    l$distance < 1 & l$next_closest > 0.5 & l$next_closest <= l$distance & !l$los ~ 10,
-    l$distance < 1 & l$next_closest < 0.5 ~ 12,
+  if (distance < 1 & next_closest > distance & los) return(3)
+  if (distance < 1 & next_closest > distance & !los) return(9)
+  if (distance < 1 & next_closest > 0.5 & next_closest <= distance & los) return(5)
+  if (distance < 1 & next_closest > 0.5 & next_closest <= distance & !los) return(10)
+  if (distance < 1 & next_closest < 0.5) return(12)
 
-    l$distance < 1.5 & l$next_closest > l$distance & l$los ~ 11,
-    l$distance < 1.5 & l$next_closest > 0.5 & l$los ~ 13,
-    l$distance < 1.5 & l$next_closest < 0.5 & l$los ~ 14,
-    l$distance < 1.5 & l$next_closest > l$distance & !l$los ~ 15,
-    l$distance < 1.5 & l$next_closest > 0.5 & !l$los ~ 16,
-    l$distance < 1.5 & l$next_closest < 0.5 & !l$los ~ 17,
+  if (distance < 1.5 & next_closest > distance & los) return(11)
+  if (distance < 1.5 & next_closest > 0.5 & los) return(13)
+  if (distance < 1.5 & next_closest < 0.5 & los) return(14)
+  if (distance < 1.5 & next_closest > distance & !los) return(15)
+  if (distance < 1.5 & next_closest > 0.5 & !los) return(16)
+  if (distance < 1.5 & next_closest < 0.5 & !los) return(17)
 
-    l$distance > 1.5 & l$next_closest > l$distance & l$los ~ 18,
-    l$distance > 1.5 & l$next_closest > l$distance & !l$los ~ 19,
-    l$distance > 1.5 & l$next_closest > 0.5 ~ 20,
-    l$distance > 1.5 & l$next_closest < 0.5 ~ 21
-  )
-  return(l)
+  if (distance > 1.5 & next_closest > distance & los) return(18)
+  if (distance > 1.5 & next_closest > distance & !los) return(19)
+  if (distance > 1.5 & next_closest > 0.5) return(20)
+  if (distance > 1.5 & next_closest < 0.5) return(21)
 }
 
 

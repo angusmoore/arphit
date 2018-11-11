@@ -3,9 +3,8 @@ point_point_distance <- function(x, y, series.x, series.y) {
   y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
   x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
 
-  distance <- tibble::tibble(xx=series.x,yy=series.y)
-  distance$distance <- sqrt(((distance$xx-x)*x_inches_conversion)^2+((distance$yy-y)*y_inches_conversion)^2)
-
+  distance <- sqrt(((series.x-x)*x_inches_conversion)^2+((series.y-y)*y_inches_conversion)^2)
+  distance <- data.frame(xx=series.x,yy=series.y,distance=distance)
   distance[rank(distance$distance,ties.method="first")==1,]
 }
 
@@ -13,42 +12,41 @@ point_line_distance <- function(x, y, series.x, series.y) {
   y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
   x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
 
-  distance <- tibble::tibble(x1=series.x[1:(length(series.x)-1)],y1=series.y[1:(length(series.x)-1)],
-                             x2=series.x[2:length(series.x)],y2=series.y[2:length(series.x)])
+  x1 <- series.x[1:(length(series.x)-1)]
+  y1 <- series.y[1:(length(series.x)-1)]
+  x2 <- series.x[2:length(series.x)]
+  y2 <- series.y[2:length(series.x)]
 
-  distance$l2 <- (distance$x1-distance$x2)^2 + (distance$y1-distance$y2)^2
+  l2 <- (x1-x2)^2 + (y1-y2)^2
 
-  distance$t <- ((x - distance$x1)*(distance$x2-distance$x1) + (y-distance$y1)*(distance$y2-distance$y1))/distance$l2
-  distance$t <- dplyr::case_when(distance$t > 1 ~ 1,
-                                 distance$t < 0 ~ 0,
-                                 TRUE ~ distance$t)
-  distance$xx <- distance$x1 + distance$t*(distance$x2-distance$x1)
-  distance$yy <- distance$y1 + distance$t*(distance$y2-distance$y1)
+  t <- ((x - x1)*(x2-x1) + (y-y1)*(y2-y1))/l2
+  t <- dplyr::case_when(t > 1 ~ 1,
+                        t < 0 ~ 0,
+                        TRUE ~ t)
+  xx <- x1 + t*(x2-x1)
+  yy <- y1 + t*(y2-y1)
 
-  distance$distance <- sqrt(((distance$xx-x)*x_inches_conversion)^2+((distance$yy-y)*y_inches_conversion)^2)
+  distance <- sqrt(((xx-x)*x_inches_conversion)^2+((yy-y)*y_inches_conversion)^2)
 
-  distance <- distance[c("xx", "yy", "distance")]
+  distance <- data.frame(xx=xx,yy=yy,distance=distance)
   distance[rank(distance$distance,ties.method="first")==1,]
 }
 
 point_bar_distance_ <- function(x, y, series.x, y1, y2) {
   y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
   x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
-  distance <- tibble::tibble(x=series.x,
-                             y1=y1,
-                             y2=y2)
 
-  distance$l2 <- (distance$y1-distance$y2)^2
+  l2 <- (y1-y2)^2
 
-  distance$t <- ((y-distance$y1)*(distance$y2-distance$y1))/distance$l2
-  distance$t <- dplyr::case_when(distance$t > 1 ~ 1,
-                                 distance$t < 0 ~ 0,
-                                 TRUE ~ distance$t)
-  distance$xx <- distance$x
-  distance$yy <- distance$y1 + distance$t*(distance$y2-distance$y1)
+  t <- ((y-y1)*(y2-y1))/l2
+  t <- dplyr::case_when(t > 1 ~ 1,
+                        t < 0 ~ 0,
+                        TRUE ~ t)
+  xx <- series.x
+  yy <- y1 + t*(y2-y1)
 
-  distance$distance <- sqrt(((distance$xx-x)*x_inches_conversion)^2+((distance$yy-y)*y_inches_conversion)^2)
-  distance <- distance[c("xx", "yy", "distance")]
+  distance <- sqrt(((xx-x)*x_inches_conversion)^2+((yy-y)*y_inches_conversion)^2)
+  distance <- data.frame(xx=xx,yy=yy,distance=distance)
   distance[rank(distance$distance,ties.method="first")==1,]
 }
 
