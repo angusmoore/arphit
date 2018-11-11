@@ -40,8 +40,6 @@ expect_equal(agg_abline(x1=2000,y1=-1,x2=2001,y2=0,panel='1'),
     lty = 1,
     type = "abline"
   ))
-
-
 nopanel <- list(list(x = 2001))
 specificerror <- list(list(
   x1 = 2000,

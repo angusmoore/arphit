@@ -152,10 +152,11 @@ agg_footnote <- function(footnote) {
 #' Add a label
 #'
 #' @param text The text to display on your plot
-#' @param color The color of your text
 #' @param x The x coordinate of the center of your label
 #' @param y The y coordinate of the center of your label
 #' @param panel Which panel should the label be placed on?
+#' @param color The color of your text
+#' @param size Font size (default 20)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -164,8 +165,8 @@ agg_footnote <- function(footnote) {
 #' arphitgg(data) + agg_label("Here is a footnote", RBA["Red3"], 2003, 0.2, "1")
 #'
 #' @export
-agg_label <- function(text, color, x, y, panel) {
-  return(list(type = "label", text = text, color = color, x = x, y = y, panel = panel))
+agg_label <- function(text, x, y, panel, color = "black", size = 20) {
+  return(list(type = "label", text = text, color = color, x = x, y = y, panel = panel, cex = size / 20))
 }
 
 #' Add automatically placed label
