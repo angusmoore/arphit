@@ -37,9 +37,8 @@ agg_draw_internal <- function(gg, filename) {
   shading <- handleshading(gg$shading, panels)
 
   # handle annotations
-  labels <- sanitychecklabels(gg$labels)
-  arrows <- sanitycheckarrows(gg$arrows)
-  bgshading <- sanitycheckbgshading(gg$bgshading)
+  labels <- gg$labels
+  arrows <- gg$arrows
   lines <- sanitychecklines(gg$lines)
 
   # Get number of legend cols (if needed)
@@ -85,7 +84,7 @@ agg_draw_internal <- function(gg, filename) {
       !is.null(xvals[[paste0(p, "ts")]]),
       xvals[[paste0(p, "freq")]],
       shading[[p]],
-      bgshading,
+      gg$bgshading,
       margins,
       gg$layout,
       attributes[[p]],
@@ -132,7 +131,7 @@ agg_draw_internal <- function(gg, filename) {
         xlim,
         ylim,
         attributes,
-        bgshading,
+        gg$bgshading,
         lines,
         arrows,
         labels
