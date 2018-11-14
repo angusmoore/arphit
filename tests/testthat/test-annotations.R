@@ -52,3 +52,6 @@ specificerror <- list(list(
 
 expect_error(agg_abline(x=2001), "argument \"panel\" is missing, with no default")
 expect_error(agg_abline(x1=2000,y1=-1,y2=0,panel="1"), "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.", fixed=TRUE)
+expect_error(agg_abline(x1=2000,x2=2001,y1=-1,panel="1"), "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.", fixed=TRUE)
+expect_error(agg_abline(x2=2000,y1=-1,y2=0,panel="1"), "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.", fixed=TRUE)
+expect_error(agg_abline(x1=2000,x2=2001,y2=-1,panel="1"), "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.", fixed=TRUE)
