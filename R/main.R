@@ -39,7 +39,6 @@ agg_draw_internal <- function(gg, filename) {
   # handle annotations
   labels <- gg$labels
   arrows <- gg$arrows
-  lines <- sanitychecklines(gg$lines)
 
   # Get number of legend cols (if needed)
   if (gg$legend) {
@@ -132,7 +131,7 @@ agg_draw_internal <- function(gg, filename) {
         ylim,
         attributes,
         gg$bgshading,
-        lines,
+        gg$lines,
         arrows,
         labels
       )
@@ -147,7 +146,7 @@ agg_draw_internal <- function(gg, filename) {
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
 
-    drawannotationlines(lines, p)
+    drawannotationlines(gg$lines, p)
     drawarrows(arrows, p)
     drawlabels(labels, p)
   }

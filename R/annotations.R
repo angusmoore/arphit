@@ -1,17 +1,9 @@
 
-sanitycheck.specificline <- function(line, i) {
-  if (is.null(line$x1)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.", sep = ""))
-  }
-  if (is.null(line$y1)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.", sep = ""))
-  }
-  if (is.null(line$x2)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.", sep = ""))
-  }
-  if (is.null(line$y2)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.", sep = ""))
-  }
+sanitycheck.specificline <- function(line) {
+  if (is.null(line$x1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.")
+  if (is.null(line$x2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.")
+  if (is.null(line$y1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.")
+  if (is.null(line$y2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.")
   return(line)
 }
 
@@ -31,30 +23,14 @@ sanitycheck.vhline <- function(line, i) {
   return(line)
 }
 
-sanitychecklines <- function(linelist) {
-  if (!is.null(linelist) && length(linelist) > 0) {
-    for (i in 1:length(linelist)) {
-      line <- linelist[[i]]
+sanitycheckline <- function(line) {
       # can't use null checking, because x1 partial matches x
-      if ("x" %in% names(line) || ("y" %in% names(line))) {
-        line <- sanitycheck.vhline(line, i)
+      if (!is.null(line$x) || !is.null(line$y)) {
+        line <- sanitycheck.vhline(line)
       } else {
-        line <- sanitycheck.specificline(line, i)
+        line <- sanitycheck.specificline(line)
       }
-      if (is.null(line$panel)) {
-        stop(paste("Line ", i, " is missing panel identifier.", sep = ""))
-      }
-      if (is.null(line$color)) {
-        line$color <- "black"
-      }
-      if (is.null(line$lty)) {
-        line$lty <- 1
-      }
-
-      linelist[[i]] <- line
-    }
-  }
-  return(linelist)
+  return(line)
 }
 
 drawbgshading <- function(shading) {
