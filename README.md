@@ -54,13 +54,15 @@ install_github("angusmoore/arphit", ref = "stable", build_vignettes = TRUE)
 
 You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
 
-Installing may fail if `devtools` cannot correctly determine your proxy server. If so, you'll get the following error message when you try to install:
+Installing may fail if `devtools` cannot correctly determine your proxy server. If so, you'll get one of the following error message when you try to install:
 ```
 Installation failed: Timeout was reached: Connection timed out after 10000 milliseconds
+
+Failed to connect to api.github.com port 443: Timed out
 ```
 If you get this message, try setting your proxy server with the following command, and then running the install again:
 ```
-httr::set_config(httr::use_proxy(curl::ie_get_proxy_for_url("http://www.google.com")))
+Sys.setenv(https_proxy = curl::ie_get_proxy_for_url("https://www.google.com"))
 ```
 
 ## Getting started
