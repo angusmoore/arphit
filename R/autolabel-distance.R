@@ -1,17 +1,11 @@
 
-point_point_distance <- function(x, y, series.x, series.y) {
-  y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
-  x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
-
-  distance <- sqrt(((series.x-x)*x_inches_conversion)^2+((series.y-y)*y_inches_conversion)^2)
-  distance <- data.frame(xx=series.x,yy=series.y,distance=distance)
-  distance[rank(distance$distance,ties.method="first")==1,]
+point_point_distance <- function(x, y, series.x, series.y, inches_conversion) {
+  distance <- sqrt(((series.x-x)*inches_conversion$x)^2+((series.y-y)*inches_conversion$y)^2)
+  best <- rank(distance,ties.method="first")==1
+  return(list(xx=xx[best],yy=yy[best],distance=distance[best]))
 }
 
-point_line_distance <- function(x, y, series.x, series.y) {
-  y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
-  x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
-
+point_line_distance <- function(x, y, series.x, series.y, inches_conversion) {
   x1 <- series.x[1:(length(series.x)-1)]
   y1 <- series.y[1:(length(series.x)-1)]
   x2 <- series.x[2:length(series.x)]
@@ -20,44 +14,41 @@ point_line_distance <- function(x, y, series.x, series.y) {
   l2 <- (x1-x2)^2 + (y1-y2)^2
 
   t <- ((x - x1)*(x2-x1) + (y-y1)*(y2-y1))/l2
-  t <- dplyr::case_when(t > 1 ~ 1,
-                        t < 0 ~ 0,
-                        TRUE ~ t)
+  t[t<0] <- 0
+  t[t>1] <- 1
+
   xx <- x1 + t*(x2-x1)
   yy <- y1 + t*(y2-y1)
 
-  distance <- sqrt(((xx-x)*x_inches_conversion)^2+((yy-y)*y_inches_conversion)^2)
+  distance <- sqrt(((xx-x)*inches_conversion$x)^2+((yy-y)*inches_conversion$y)^2)
 
-  distance <- data.frame(xx=xx,yy=yy,distance=distance)
-  distance[rank(distance$distance,ties.method="first")==1,]
+  best <- distance == min(distance)
+  return(list(xx=xx[best][1],yy=yy[best][1],distance=distance[best][1]))
 }
 
-point_bar_distance_ <- function(x, y, series.x, y1, y2) {
-  y_inches_conversion <- 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2]
-  x_inches_conversion <- 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
-
+point_bar_distance_ <- function(x, y, series.x, y1, y2, inches_conversion) {
   l2 <- (y1-y2)^2
 
-  t <- ((y-y1)*(y2-y1))/l2
-  t <- dplyr::case_when(t > 1 ~ 1,
-                        t < 0 ~ 0,
-                        TRUE ~ t)
+  t <- ((x - x1)*(x2-x1) + (y-y1)*(y2-y1))/l2
+  t[t<0] <- 0
+  t[t>1] <- 1
+
   xx <- series.x
   yy <- y1 + t*(y2-y1)
 
-  distance <- sqrt(((xx-x)*x_inches_conversion)^2+((yy-y)*y_inches_conversion)^2)
-  distance <- data.frame(xx=xx,yy=yy,distance=distance)
-  distance[rank(distance$distance,ties.method="first")==1,]
+  distance <- sqrt(((xx-x)*inches_conversion$x)^2+((yy-y)*inches_conversion$y)^2)
+  best <- rank(distance,ties.method="first")==1
+  return(list(xx=xx[best],yy=yy[best],distance=distance[best]))
 }
 
-point_bar_distance <- function(x, y, series.x, series.y, data, bars, bars.stacked) {
+point_bar_distance <- function(x, y, series.x, series.y, data, bars, bars.stacked, inches_conversion) {
   if (!bars.stacked) {
-    return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y))
+    return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
   } else {
     bardata <- t(as.matrix(data[bars]))
     row_n <- which(sapply(1:nrow(bardata), function(i) identical(bardata[i,], series.y)))
     if (row_n == 1) {
-      return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y))
+      return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
     } else {
       bardata <- bardata[1:row_n,]
       bardata_p <- bardata
@@ -70,34 +61,38 @@ point_bar_distance <- function(x, y, series.x, series.y, data, bars, bars.stacke
         y1 <- bardata_p[1,]
       }
       y2 <- colSums(bardata_p[1:row_n,])
-      distance <- point_bar_distance_(x, y, series.x, y1, y2)
+      distance_below <- point_bar_distance_(x, y, series.x, y1, y2)
       if (row_n > 2) {
         y1 <- colSums(bardata_n[1:row_n-1,])
       } else {
         y1 <- bardata_n[1,]
       }
       y2 <- colSums(bardata_n[1:row_n,])
-      distance <- rbind(distance, point_bar_distance_(x, y, series.x, y1, y2))
-      return(distance[rank(distance$distance,ties.method="first")==1,])
+      distance_above <- point_bar_distance_(x, y, series.x, y1, y2)
+      if (distance_below$distance < distance_above$distance) {
+        return(distance_below)
+      } else {
+        return(distance_above)
+      }
     }
   }
 
 }
 
-get_distance_series_type <- function(x, y, series.x, series.y, series_type, data, bars, bars.stacked) {
+get_distance_series_type <- function(x, y, series.x, series.y, series_type, data, bars, bars.stacked, inches_conversion) {
   if (series_type == "line") {
-    return(point_line_distance(x, y, series.x, series.y))
+    return(point_line_distance(x, y, series.x, series.y, inches_conversion))
   } else if (series_type == "point") {
-    return(point_point_distance(x, y, series.x, series.y))
+    return(point_point_distance(x, y, series.x, series.y, inches_conversion))
   } else if (series_type == "bar") {
-    return(point_bar_distance(x, y, series.x, series.y, data, bars, bars.stacked))
+    return(point_bar_distance(x, y, series.x, series.y, data, bars, bars.stacked, inches_conversion))
   } else {
     stop("Unknown series type.")
   }
 }
 
-get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries, series_types, bars, bars.stacked, los_mask, xlim, ylim) {
-  result <- get_distance_series_type(a,b,series.x,series.y, series_types[[thisseries]], data, bars, bars.stacked)
+get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries, series_types, bars, bars.stacked, los_mask, xlim, ylim, inches_conversion) {
+  result <- get_distance_series_type(a,b,series.x,series.y, series_types[[thisseries]], data, bars, bars.stacked, inches_conversion)
   los <-
     lineofsight(
       result$xx,
@@ -110,7 +105,7 @@ get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries
     )
   next_closest <-
     sapply(otherseries, function(series)
-      get_distance_series_type(a, b, series.x, data[[series]], series_types[[series]], data, bars, bars.stacked)$distance)
+      get_distance_series_type(a, b, series.x, data[[series]], series_types[[series]], data, bars, bars.stacked, inches_conversion)$distance)
 
   if (length(otherseries) == 0) {
     # TODO: Find a way of measuring distance to series on RHS panels

@@ -68,12 +68,12 @@ los_mask_series_draw <- function(series, exclude, xvals, ists, freq, data, xlim,
 
 create_los_mask <- function(series, panels, p, data, xvals, dims, xlim, ylim, bars, bar.stacked, layout, log_scale, joined) {
   plot_device <- grDevices::dev.cur()
-  magick_device <-
-    magick::image_graph(
-      width = dims[1] / graphics::par("mfrow")[2],
-      height = dims[2] / graphics::par("mfrow")[1],
-      res = PNGDPI
-    )
+  grDevices::png(
+    filename = paste0(tempdir(), "/autolabel-los-mask.png"),
+    width = dims[1] / graphics::par("mfrow")[2],
+    height = dims[2] / graphics::par("mfrow")[1],
+    res = PNGDPI
+  )
   graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
   graphics::par(omi = c(0,0,0,0), mar = c(0,0,0,0))
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
@@ -109,10 +109,10 @@ create_los_mask <- function(series, panels, p, data, xvals, dims, xlim, ylim, ba
                          log_scale,
                          joined)
   }
-  image_map <- magick::image_data(magick_device, "gray")
-  magick_device <- grDevices::dev.cur()
+  grDevices::dev.off()
+  image <- magick::image_read(paste0(tempdir(), "/autolabel-los-mask.png"))
+  image_map <- magick::image_data(image, "gray")
   grDevices::dev.set(plot_device)
-  grDevices::dev.off(magick_device)
   image_map <- drop(image_map)
   white_raw <- as.raw(255)
   return(image_map != white_raw)

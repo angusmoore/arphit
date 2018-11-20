@@ -40,16 +40,14 @@ line_y_indices <- function(text, y, ylim, y_start, padding, line_n, total_lines,
 
 create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLABEL_PADDING) {
   x_scale <- graphics::par("mfrow")[2]
-  x_shift <- round(dim[1]/x_scale) * (getlocation(p, layout)[2] - 1)
   y_scale <- graphics::par("mfrow")[1]
-  y_shift <- round(dim[2]/x_scale) * (getlocation(p, layout)[1] - 1)
 
   x_start <- seq(from = xlim[1], to = xlim[2], length.out = round(dim[1]/x_scale) + 1)[1:round(dim[1]/x_scale)]
   y_start <- seq(from = ylim$max, to = ylim$min, length.out = round(dim[2]/y_scale) + 1)[2:(round(dim[2]/y_scale)+1)]
 
   left <- x - 0.5*getstrwidth(text, units = "user") - padding / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
   right <- x + 0.5*getstrwidth(text, units = "user") + padding / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
-  x_indices <- which(x_start < right & (x_start + x_start[2]-x_start[1]) > left) + x_shift
+  x_indices <- which(x_start < right & (x_start + x_start[2]-x_start[1]) > left)
 
   lines <- stringr::str_split(text, stringr::fixed("\n"))[[1]]
 
@@ -65,9 +63,24 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLAB
         length(lines),
         getstrheight(text, units = "user")
       )))
-  y_indices <- y_indices + y_shift
+
+  x_indices <- x_indices + round((dim[1]/x_scale) * (getlocation(p, layout)[2] - 1))
+  y_indices <- y_indices + round((dim[2]/y_scale) * (getlocation(p, layout)[1] - 1))
 
   list(x=x_indices,y=y_indices)
+}
+
+shift_text_indices <- function(indices,x,y,x_text_anchor,y_text_anchor,x_scale,y_scale,xlim,ylim,dim,layout,p) {
+  x_shift <- round((x - x_text_anchor) / (xlim[2] - xlim[1]) * (dim[1]/x_scale))
+  y_shift <- -round((y - y_text_anchor) / (ylim$max - ylim$min) * (dim[2]/y_scale))
+
+  x_indices <- indices$x + x_shift
+  y_indices <- indices$y + y_shift
+
+  x_indices <- x_indices[x_indices > 0 & x_indices <= dim[1]]
+  y_indices <- y_indices[y_indices > 0 & y_indices <= dim[2]]
+
+  return(list(x = x_indices, y = y_indices))
 }
 
 test_collision <- function(underlay, x_indices, y_indices) {
