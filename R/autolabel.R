@@ -163,7 +163,7 @@ autolabel_series <- function(series, label, otherseries, p, plot_bitmap, los_mas
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
     drawlabel(newlabel)
-    return(list(label=newlabel,arrow=add_arrow(found_location, attributes[[p]]$col[[series]], p)))
+    return(list(label=newlabel,arrow=add_arrow(found_location, newlabel$text, attributes[[p]]$col[[series]], p, inches_conversion)))
   } else {
     warning(paste0("Unable to find location for label for series ", series))
     return(NULL)
@@ -252,8 +252,6 @@ autolabel <- function(gg, panels, xlim, ylim, margins, labels, xvals, data, attr
                 new_label$arrow$head.x,
                 new_label$arrow$head.y,
                 dim(plot_bitmap),
-                gg$layout,
-                p,
                 xlim[[p]],
                 ylim[[p]]
               )

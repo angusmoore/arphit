@@ -1,17 +1,12 @@
 lineofsight <- function(x, y, a, b, los_mask, xlim, ylim) {
-  !any(los_mask[create_arrow_bitmap(x, y, a, b, dim(los_mask), "1", "1", xlim, ylim)])
+  !any(los_mask[create_arrow_bitmap(x, y, a, b, dim(los_mask), xlim, ylim)])
 }
 
 cartesian2linear <- function(r, c, dims) {
   r + (c-1)*dims[1]
 }
 
-create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,layout,p,xlim,ylim) {
-  x_scale <- graphics::par("mfrow")[2]
-  x_shift <- round(dims[1]/x_scale) * (getlocation(p, layout)[2] - 1)
-  y_scale <- graphics::par("mfrow")[1]
-  y_shift <- round(dims[2]/x_scale) * (getlocation(p, layout)[1] - 1)
-
+create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,xlim,ylim) {
   tail.x <- (tail.x - xlim[1])/(xlim[2]-xlim[1])*dims[1]
   head.x <- (head.x - xlim[1])/(xlim[2]-xlim[1])*dims[1]
   tail.y <- dims[2] - (tail.y - ylim$min)/(ylim$max-ylim$min)*dims[2]

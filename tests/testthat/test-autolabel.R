@@ -27,8 +27,8 @@ expect_error(
 )
 
 # Factors in data for auto labeller (#123)
-p <- data.frame(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10)) %>%
-  arphitgg(agg_aes(x=x,y=y,group=g)) +
+data <- data.frame(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10))
+p <- arphitgg(data, agg_aes(x=x,y=y,group=g)) +
   agg_col() +
   agg_autolabel(TRUE)
 expect_error(
@@ -55,8 +55,8 @@ expect_error(
 )
 
 # Factors in data for auto labeller (#123)
-p <- data.frame(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10)) %>%
-  arphitgg(agg_aes(x=x,y=y,group=g)) +
+data <- data.frame(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10))
+p <- arphitgg(data, agg_aes(x=x,y=y,group=g)) +
   agg_col() +
   agg_autolabel(TRUE)
 expect_error(
@@ -116,7 +116,7 @@ expect_error(
 foo <- data.frame(x=rep(1:20,30),y=sort(rep(1:30,20)))
 expect_warning({
   p <- arphitgg(foo, agg_aes(x = x, y = y)) +  agg_point() + agg_point() +
-    agg_autolabel(TRUE) + agg_xlim(0, 20.5) + agg_ylim(0, 30, 5)
+    agg_autolabel(FALSE) + agg_xlim(0, 20.5) + agg_ylim(0, 30, 5)
   print(p)
 }, "Unable to find location for label for series y.y")
 

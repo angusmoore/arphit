@@ -76,15 +76,56 @@ get_series_types <- function(series_list, attributes, bars) {
   return(series_types)
 }
 
-add_arrow <- function(found_location, color, p) {
+segment_intersection <- function(x1, y1, x2, y2, a1, b1, a2, b2) {
+  if (is.na(x1) || is.na(y1) || is.na(x2) || is.na(y2) || is.na(a1) || is.na(b1) || is.na(a2) || is.na(b2)) {
+    return(NULL)
+  }
+
+  t_a <- ((b1 - b2)*(x1 - a1) + (a2 - a1)*(y1 - b1)) / ((a2 - a1)*(y1 - y2) - (x1 - x2)*(b2 - b1))
+  t_b <- ((y1 - y2)*(x1 - a1) + (x2 - x1)*(y1 - b1)) / ((a2 - a1)*(y1 - y2) - (x1 - x2)*(b2 - b1))
+
+  if (t_a >= 0 && t_a <= 1 && t_b >= 0 && t_b <= 1) {
+    return(list(x = x1 + t_a*(x2-x1), y = y1 + t_b*(y2-y1)))
+  } else {
+    return(NULL)
+  }
+}
+
+bounding_box_intersection <- function(x,y,a,b,h,w) {
+  # Construct the bounding box segments
+  x1 <- c(x - w/2, x - w/2, x + w/2, x + w/2)
+  x2 <- c(x - w/2, x + w/2, x + w/2, x - w/2)
+  y1 <- c(y - h/2, y + h/2, y + h/2, y - h/2)
+  y2 <- c(y + h/2, y + h/2, y - h/2, y - h/2)
+
+  intersections <- mapply(x1, y1, x2, y2, FUN = function(a0, b0, a1, b1) segment_intersection(a0, b0, a1, b1, a, b, x, y))
+  return(intersections[!sapply(intersections, is.null)][[1]])
+}
+
+add_arrow <- function(found_location, text, color, p, inches_conversion) {
   if ((!found_location$los && found_location$distance > 0.1) || found_location$distance > 1.5) {
-    newarrow <- list(tail.x = found_location$x,
-                     tail.y = found_location$y,
-                     head.x = found_location$xx,
-                     head.y = found_location$yy,
-                     color = color,
-                     panel = p)
-    drawarrow(newarrow)
+    # adjust the tail to the edge of the bounding box
+    adjusted <-
+      bounding_box_intersection(
+        found_location$x,
+        found_location$y,
+        found_location$xx,
+        found_location$yy,
+        getstrheight(text, units = "user"),
+        getstrwidth(text, units = "user")
+      )
+    # Check the distance adjusted for bounding box is still long enough to warrant arrow
+    if (sqrt(((adjusted$x-found_location$xx)*inches_conversion$x)^2 + ((adjusted$y-found_location$yy)*inches_conversion$y)^2) > 0.1) {
+      newarrow <- list(tail.x = adjusted$x,
+                       tail.y = adjusted$y,
+                       head.x = found_location$xx,
+                       head.y = found_location$yy,
+                       color = color,
+                       panel = p)
+      drawarrow(newarrow)
+    } else {
+      newarrow <- NULL
+    }
   } else {
     newarrow <- NULL
   }

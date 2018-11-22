@@ -28,9 +28,8 @@ assign_selection_group <- function(distance, next_closest, los) {
 
 label_selection <- function(label_options) {
   if (any(is.finite(label_options$distance))) {
-    label_options <- dplyr::filter(label_options, label_options$selection_group == min(label_options$selection_group))
-    return(dplyr::filter(label_options,
-                         rank(label_options$distance, ties.method = "first") == 1))
+    label_options <- label_options[label_options$selection_group == min(label_options$selection_group), ]
+    return(label_options[rank(label_options$distance, ties.method = "first") == 1, ])
   } else {
     return(NULL)
   }
