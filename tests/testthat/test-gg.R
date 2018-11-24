@@ -187,12 +187,35 @@ expect_equal(foo$xunits, "foo")
 expect_equal(bar$xunits, list("2" = "bar"))
 
 # Labels
-foo <- arphitgg(data) + agg_label("Text", "red", 2002, 0.2, "1")
-bar <- arphitgg(data) + agg_label("Text", "red", 2002, 0.2, "1") + agg_label("Second label", "green", 2003, -0.2, "1")
+foo <- arphitgg(data) + agg_label("Text", 2002, 0.2, "1", "red")
+bar <- arphitgg(data) + agg_label("Text", 2002, 0.2, "1", "red") + agg_label("Second label",2003, -0.2, "1", "green", 40)
 
-expect_equal(foo$labels, list(list(text = "Text", color = "red", x = 2002, y = 0.2, panel = "1")))
-expect_equal(bar$labels, list(list(text = "Text", color = "red", x = 2002, y = 0.2, panel = "1"),
-                              list(text = "Second label", color = "green", x = 2003, y = -0.2, panel = "1")))
+expect_equal(foo$labels, list(list(
+  text = "Text",
+  color = "red",
+  x = 2002,
+  y = 0.2,
+  panel = "1",
+  cex=1
+)))
+expect_equal(bar$labels, list(
+  list(
+    text = "Text",
+    color = "red",
+    x = 2002,
+    y = 0.2,
+    panel = "1",
+    cex = 1
+  ),
+  list(
+    text = "Second label",
+    color = "green",
+    x = 2003,
+    y = -0.2,
+    panel = "1",
+    cex = 2
+  )
+))
 
 # Arrows
 foo <- arphitgg(data) + agg_arrow(2000, 0, 2001, 2, "red", "1")

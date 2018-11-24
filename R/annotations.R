@@ -1,4 +1,3 @@
-
 sanitycheck.specificline <- function(line) {
   if (is.null(line$x1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.")
   if (is.null(line$x2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.")
@@ -84,7 +83,7 @@ drawannotationlines <- function(lines, p) {
 }
 
 drawlabel <- function(label) {
-  graphics::text(label$text, x = label$x, y = label$y, adj = c(0.5, 0.5), col = label$color)
+  graphics::text(label$text, x = label$x, y = label$y, adj = c(0.5, 0.5), col = label$color, cex = label$cex)
 }
 
 drawlabels <- function(labels, p) {

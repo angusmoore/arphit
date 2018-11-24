@@ -4,18 +4,20 @@
 \alias{agg_label}
 \title{Add a label}
 \usage{
-agg_label(text, color, x, y, panel)
+agg_label(text, x, y, panel, color = "black", size = 20)
 }
 \arguments{
 \item{text}{The text to display on your plot}
-
-\item{color}{The color of your text}
 
 \item{x}{The x coordinate of the center of your label}
 
 \item{y}{The y coordinate of the center of your label}
 
 \item{panel}{Which panel should the label be placed on?}
+
+\item{color}{The color of your text}
+
+\item{size}{Font size (default 20)}
 }
 \description{
 Add a label
