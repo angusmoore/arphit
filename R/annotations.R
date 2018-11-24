@@ -1,94 +1,9 @@
-sanitychecklabels <- function(labels) {
-  if (!is.null(labels) && length(labels) > 0) {
-    for (i in 1:length(labels)) {
-      if (is.null(labels[[i]]$x)) {
-        stop(paste("Label ", i, " is missing x coordinate.", sep = ""))
-      }
-      if (is.null(labels[[i]]$y)) {
-        stop(paste("Label ", i, " is missing y coordinate.", sep = ""))
-      }
-      if (is.null(labels[[i]]$text)) {
-        stop(paste("Label ", i, " is missing text", sep = ""))
-      }
-      if (is.null(labels[[i]]$panel)) {
-        stop(paste("Label ", i, " is missing panel identifier.", sep = ""))
-      }
-      if (is.null(labels[[i]]$color)) {
-        labels[[i]]$color <- "black"
-      }
-    }
-  }
-  return(labels)
-}
 
-sanitycheckarrows <- function(arrows) {
-  if (!is.null(arrows) && length(arrows) > 0) {
-    for (i in 1:length(arrows)) {
-      if (is.null(arrows[[i]]$tail.x)) {
-        stop(paste("Arrow ", i, " is missing tail.x coordinate.", sep = ""))
-      }
-      if (is.null(arrows[[i]]$tail.y)) {
-        stop(paste("Arrow ", i, " is missing tail.y coordinate.", sep = ""))
-      }
-      if (is.null(arrows[[i]]$head.x)) {
-        stop(paste("Arrow ", i, " is missing head.x coordinate.", sep = ""))
-      }
-      if (is.null(arrows[[i]]$head.y)) {
-        stop(paste("Arrow ", i, " is missing head.y coordinate.", sep = ""))
-      }
-      if (is.null(arrows[[i]]$panel)) {
-        stop(paste("Arrow ", i, " is missing panel identifier.", sep = ""))
-      }
-      if (is.null(arrows[[i]]$lwd)) {
-        arrows[[i]]$lwd <- DEFAULTARROWLWD
-      }
-      if (is.null(arrows[[i]]$color)) {
-        arrows[[i]]$color <- "black"
-      }
-    }
-  }
-  return(arrows)
-}
-
-sanitycheckbgshading <- function(shading) {
-  if (!is.null(shading) && length(shading) > 0) {
-    for (i in 1:length(shading)) {
-      if (is.null(shading[[i]]$x1)) {
-        shading[[i]]$x1 <- NA
-      }
-      if (is.null(shading[[i]]$y1)) {
-        shading[[i]]$y1 <- NA
-      }
-      if (is.null(shading[[i]]$x2)) {
-        shading[[i]]$x2 <- NA
-      }
-      if (is.null(shading[[i]]$y2)) {
-        shading[[i]]$y2 <- NA
-      }
-      if (is.null(shading[[i]]$panel)) {
-        stop(paste("Background shading ", i, " is missing panel identifier.", sep = ""))
-      }
-      if (is.null(shading[[i]]$color)) {
-        shading[[i]]$color <- "lightgrey"
-      }
-    }
-  }
-  return(shading)
-}
-
-sanitycheck.specificline <- function(line, i) {
-  if (is.null(line$x1)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.", sep = ""))
-  }
-  if (is.null(line$y1)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.", sep = ""))
-  }
-  if (is.null(line$x2)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.", sep = ""))
-  }
-  if (is.null(line$y2)) {
-    stop(paste("Line ", i, " was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.", sep = ""))
-  }
+sanitycheck.specificline <- function(line) {
+  if (is.null(line$x1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.")
+  if (is.null(line$x2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.")
+  if (is.null(line$y1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.")
+  if (is.null(line$y2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.")
   return(line)
 }
 
@@ -108,30 +23,14 @@ sanitycheck.vhline <- function(line, i) {
   return(line)
 }
 
-sanitychecklines <- function(linelist) {
-  if (!is.null(linelist) && length(linelist) > 0) {
-    for (i in 1:length(linelist)) {
-      line <- linelist[[i]]
+sanitycheckline <- function(line) {
       # can't use null checking, because x1 partial matches x
-      if ("x" %in% names(line) || ("y" %in% names(line))) {
-        line <- sanitycheck.vhline(line, i)
+      if (!is.null(line$x) || !is.null(line$y)) {
+        line <- sanitycheck.vhline(line)
       } else {
-        line <- sanitycheck.specificline(line, i)
+        line <- sanitycheck.specificline(line)
       }
-      if (is.null(line$panel)) {
-        stop(paste("Line ", i, " is missing panel identifier.", sep = ""))
-      }
-      if (is.null(line$color)) {
-        line$color <- "black"
-      }
-      if (is.null(line$lty)) {
-        line$lty <- 1
-      }
-
-      linelist[[i]] <- line
-    }
-  }
-  return(linelist)
+  return(line)
 }
 
 drawbgshading <- function(shading) {

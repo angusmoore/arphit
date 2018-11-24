@@ -208,16 +208,14 @@ bar <- arphitgg(data) + agg_abline(y = -0.5, color = RBA["Red1"], panel = "1") +
   agg_abline(x = 2001, color = RBA["Blue1"], panel = "1")
 baz <- arphitgg(data) + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, panel = "1")
 
-expect_equal(foo$lines, list(list(x = 2001, y = NULL, x1 = NULL, y1 = NULL,
-                                  x2 = NULL, y2 = NULL, color = RBA["Blue1"], panel = "1", lwd = 1, lty = 1)))
-expect_equal(bar$lines, list(list(x = NULL, y = -0.5, x1 = NULL, y1 = NULL,
-                                  x2 = NULL, y2 = NULL, color = RBA["Red1"], panel = "1", lwd = 1, lty = 1),
-                             list(x = 2001, y = NULL, x1 = NULL, y1 = NULL,
-                                  x2 = NULL, y2 = NULL, color = RBA["Blue1"], panel = "1", lwd = 1, lty = 1)))
+expect_equal(foo$lines, list(list(x1 = 2001, y1 = NA, x2 = 2001, y2 = NA,
+                                  color = RBA["Blue1"], panel = "1", lwd = 1, lty = 1)))
+expect_equal(bar$lines, list(list(x1 = NA, y1 = -0.5, x2 = NA, y2 = -0.5,
+                                  color = RBA["Red1"], panel = "1", lwd = 1, lty = 1),
+                             list(x1 = 2001, y1 = NA, x2 = 2001, y2 = NA,
+                                  color = RBA["Blue1"], panel = "1", lwd = 1, lty = 1)))
 
-
-expect_equal(baz$lines, list(list(x = NULL, y = NULL, x1 = 2000, y1 = -0.1,
-                                  x2 = 2002, y2 = 0.5, color = NULL, panel = "1", lwd = 1, lty = 1)))
+expect_equal(baz$lines, list(list(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, color = "black", panel = "1", lwd = 1, lty = 1)))
 
 # background shading
 foo <- arphitgg(data) + agg_bgshading(x1 = 2001, x2 = 2002, panel = "1")

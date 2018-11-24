@@ -5,7 +5,7 @@
 \title{Add an AB line to your graph}
 \usage{
 agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
-  y2 = NULL, color = NULL, panel, lwd = 1, lty = 1)
+  y2 = NULL, color = "black", panel, lwd = 1, lty = 1)
 }
 \arguments{
 \item{x}{Draw a vertical line at x (omit to draw a specific AB line)}

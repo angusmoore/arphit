@@ -237,9 +237,12 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1) {
 #'              color = RBA["Blue1"], panel = "1")
 #'
 #' @export
-agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, color = NULL, panel, lwd = 1, lty = 1) {
-  return(list(type = "abline", x = x, y = y, x1 = x1, y1 = y1, x2 = x2, y2 = y2,
-              color = color, panel = panel, lwd = lwd, lty = lty))
+agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, color = "black", panel, lwd = 1, lty = 1) {
+  line <- list(x = x, y = y, x1 = x1, y1 = y1, x2 = x2, y2 = y2, color = color, panel = panel, lwd = lwd, lty = lty)
+  line <- sanitycheckline(line)
+  line$x <- NULL
+  line$y <- NULL
+  return(append(line, list(type = "abline")))
 }
 
 #' Add background shading

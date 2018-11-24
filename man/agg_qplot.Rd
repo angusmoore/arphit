@@ -5,11 +5,11 @@
 \title{RBA-style graphs in R}
 \usage{
 agg_qplot(data, series = NULL, x = NULL, layout = "1", bars = NULL,
-  filename = NULL, title = NULL, subtitle = NULL, paneltitles = list(),
-  panelsubtitles = list(), footnotes = c(), sources = c(),
-  yunits = NULL, col = list(), pch = list(), lty = list(),
-  lwd = list(), xlim = list(), ylim = list(), legend = FALSE,
-  legend.ncol = NA, bar.stacked = TRUE)
+  filename = NULL, title = NULL, subtitle = NULL,
+  paneltitles = list(), panelsubtitles = list(), footnotes = c(),
+  sources = c(), yunits = NULL, col = list(), pch = list(),
+  lty = list(), lwd = list(), xlim = list(), ylim = list(),
+  legend = FALSE, legend.ncol = NA, bar.stacked = TRUE)
 }
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
