@@ -4,7 +4,10 @@
 \alias{agg_autolabel}
 \title{Add automatically placed label}
 \usage{
-agg_autolabel()
+agg_autolabel(quiet = FALSE)
+}
+\arguments{
+\item{quiet}{(logical, default FALSE) Do not output progress of autolabeller}
 }
 \description{
 Add automatically placed label

@@ -1,43 +1,32 @@
-distancefitness <- function(candidate, series.x, data, serieslist) {
-  cost <- 0
-  for (label in names(candidate)) {
-    a <- candidate[[label]][1]
-    b <- candidate[[label]][2]
-    losdistance <- series.distance(a, b, series.x, data, serieslist, label, TRUE)$distance
-    nolosdistance <- series.distance(a, b, series.x, data, serieslist, label, FALSE)$distance
-    cost <- cost + min(losdistance, nolosdistance + LOSPENALTY)
-  }
-  return(cost)
+assign_selection_group <- function(distance, next_closest, los) {
+  if (distance < 0.5 & next_closest > 0.5 & los) return(1)
+  if (distance < 0.5 & next_closest > distance & los) return(2)
+  if (distance < 0.5 & next_closest <= distance & los) return(4)
+  if (distance < 0.5 & next_closest > 0.5 & !los) return(6)
+  if (distance < 0.5 & next_closest > distance & !los) return(7)
+  if (distance < 0.5 & next_closest <= distance & !los) return(8)
+
+  if (distance < 1 & next_closest > distance & los) return(3)
+  if (distance < 1 & next_closest > distance & !los) return(9)
+  if (distance < 1 & next_closest > 0.5 & next_closest <= distance & los) return(5)
+  if (distance < 1 & next_closest > 0.5 & next_closest <= distance & !los) return(10)
+  if (distance < 1 & next_closest < 0.5) return(12)
+
+  if (distance < 1.5 & next_closest > distance & los) return(11)
+  if (distance < 1.5 & next_closest > 0.5 & los) return(13)
+  if (distance < 1.5 & next_closest < 0.5 & los) return(14)
+  if (distance < 1.5 & next_closest > distance & !los) return(15)
+  if (distance < 1.5 & next_closest > 0.5 & !los) return(16)
+  if (distance < 1.5 & next_closest < 0.5 & !los) return(17)
+
+  if (distance > 1.5 & next_closest > distance & los) return(18)
+  if (distance > 1.5 & next_closest > distance & !los) return(19)
+  if (distance > 1.5 & next_closest > 0.5) return(20)
+  if (distance > 1.5 & next_closest < 0.5) return(21)
 }
 
-bestcandidate <- function(candidates, series.x, data, labelsmap) {
-  ncandidates <- length(candidates)
 
-  # Check which has the most labels
-  nlabels <- c()
-  for (candidate in candidates) {
-    nlabels <- append(nlabels, length(candidate))
-  }
-  lmax <- max(nlabels)
-  if (sum(nlabels == lmax) == 1) {
-    # Is a unique maximum
-    return(candidates[nlabels == lmax][[1]])
-  } else {
-    # Keep those candidates that are tied, drop others
-    candidates <- candidates[nlabels == lmax]
-  }
-
-  # Fitness by distance (with penalty for no LOS)
-  distances <- c()
-  for (candidate in candidates) {
-    distances <- append(distances, distancefitness(candidate, series.x, data, names(labelsmap)))
-  }
-  dmin <- min(distances)
-  if (sum(distances == dmin) == 1) {
-    # Is a unique maximum
-    return(candidates[distances == dmin][[1]])
-  } else {
-    # Just return the first one of those with a tie
-    return(candidates[distances == dmin][[1]])
-  }
+label_selection <- function(label_options) {
+  label_options <- label_options[label_options$selection_group == min(label_options$selection_group), ]
+  return(label_options[rank(label_options$distance, ties.method = "first") == 1, ])
 }

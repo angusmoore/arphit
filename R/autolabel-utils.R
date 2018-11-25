@@ -1,81 +1,52 @@
-createlabels <- function(data, panels, p, layout) {
-  series <- list()
-  if (layout == "1" || layout == "2h") {
-    # also need to handle RHS series
-    primary <- panels[[p]]
-    if (p == "1") {
-      secondary <- panels[["2"]]
-    } else if (p == "3") {
-      secondary <- panels[["4"]]
-    } else {
-      secondary <- list() # Shouldn't be called
-    }
+createlabels <- function(panels, bars, attributes, layout, labels) {
+  legend <- getlegendentries(panels, bars, attributes)
 
-    for (s in primary) {
-      if (length(secondary) > 0) {
-        series[[s]] <- paste(s, "\n(LHS)", sep = "")
-      } else {
-        series[[s]] <- s
+  # match each entry to which panels it appears in
+  series_to_panels <- list()
+  for (entry in legend) {
+    for (p in names(panels)) {
+      if (notalreadylabelled(p, labels) && (entry$name %in% panels[[p]]) &&
+          any(entry$col == attributes[[p]]$col[[entry$name]], entry$fill == attributes[[p]]$col[[entry$name]])) {
+        series_to_panels[[entry$name]] <- append(series_to_panels[[entry$name]], p)
       }
-    }
-    for (s in secondary) {
-      if (length(secondary) > 0) {
-        series[[s]] <- paste(s, "\n(RHS)", sep = "")
-      } else {
-        series[[s]] <- s
-      }
-    }
-  } else {
-    for (s in panels[[p]]) {
-      series[[s]] <- s
     }
   }
-  return(series)
-}
 
-convertaxis <- function(x, fromaxis, toaxis) {
-  fromspan <- fromaxis$max - fromaxis$min
-  tospan <- toaxis$max - toaxis$min
-  y <- (x - fromaxis$min) / fromspan * tospan  + toaxis$min
-  return(y)
-}
-
-rhs_axes <- function(p, layout) {
-  if ((layout == "1" || layout == "2h" || layout == "3h" || layout == "4h")) {
-    if (p == "1") {
-      otherp <- "2"
-    } else if (p == "3") {
-      otherp <- "4"
-    } else if (p == "5") {
-      otherp <- "6"
-    } else if (p == "7") {
-      otherp <- "8"
+  # if is a RHS axes, add annotations
+  series_to_labels <- list()
+  for (series in names(series_to_panels)) {
+    if (layout == "1" || layout == "2h" || layout == "3h" || layout == "4h") {
+      if (length(panels[[other_axes(series_to_panels[[series]][1], layout)]]) > 0) { # This isn't handling all possible corner cases, because it could be that there aren't RHS on this panel but are on subsequent ones where the series also appears. Seems like a very unlikely to occur corner case.
+        if (any(c("1","3","5","7") %in% series_to_panels[[series]])) {
+          series_to_labels[[series]] <- paste0(series,"\n(LHS)")
+        } else {
+          series_to_labels[[series]] <- paste0(series,"\n(RHS)")
+        }
+      } else {
+        series_to_labels[[series]] <- series
+      }
     } else {
-      return(NULL)
+      series_to_labels[[series]] <- series
     }
+  }
+
+  list(series_to_labels = series_to_labels, series_to_panels = series_to_panels)
+}
+
+other_axes <- function(p, layout) {
+  if ((layout == "1" || layout == "2h" || layout == "3h" || layout == "4h")) {
+    otherp <- switch(p,
+                     "1" = "2",
+                     "2" = "1",
+                     "3" = "4",
+                     "4" = "3",
+                     "5" = "6",
+                     "6" = "5",
+                     "7" = "8",
+                     "8" = "7")
     return(otherp)
   } else {
     return(NULL)
-  }
-}
-
-convertdata.axes <- function(data, panels, p, layout, ylim_list) {
-  otherp <- rhs_axes(p, layout)
-  if (!is.null(otherp)) {
-    # need to convert the RHS to LHS so the labeller can correctly do the collisions etc
-    toaxis <- ylim_list[[p]]
-    fromaxis <- ylim_list[[otherp]]
-    otherdata <- data[[otherp]]
-    for (s in panels[[otherp]]) {
-      otherdata[, s] <- convertaxis(data[[otherp]][, s], fromaxis, toaxis)
-    }
-    if (!is.null(otherdata)) {
-      return(dplyr::full_join(data[[p]], otherdata))
-    } else {
-      return(data[[p]])
-    }
-  } else {
-    return(data[[p]])
   }
 }
 
@@ -88,35 +59,75 @@ notalreadylabelled <- function(p, labels) {
   return(TRUE)
 }
 
-notRHS <- function(p, layout) {
-  if (layout == "1" || layout == "2h" || layout == "3h" || layout == "4h") {
-    if (p == "2" || p == "4" || p == "6" || p == "8") {
-      return(FALSE)
+
+get_series_type <- function(series, bars, lty) {
+  if (series %in% bars) {
+    return("bar")
+  } else if (lty[[series]] == 0) {
+    return("point")
+  } else {
+    return("line")
+  }
+}
+
+get_series_types <- function(series_list, attributes, bars) {
+  series_types <- lapply(series_list, function(x) get_series_type(x, bars, attributes$lty))
+  names(series_types) <- series_list
+  return(series_types)
+}
+
+segment_intersection <- function(x1, y1, x2, y2, a1, b1, a2, b2) {
+  if (is.na(x1) || is.na(y1) || is.na(x2) || is.na(y2) || is.na(a1) || is.na(b1) || is.na(a2) || is.na(b2)) {
+    return(NULL)
+  }
+
+  t_a <- ((b1 - b2)*(x1 - a1) + (a2 - a1)*(y1 - b1)) / ((a2 - a1)*(y1 - y2) - (x1 - x2)*(b2 - b1))
+  t_b <- ((y1 - y2)*(x1 - a1) + (x2 - x1)*(y1 - b1)) / ((a2 - a1)*(y1 - y2) - (x1 - x2)*(b2 - b1))
+
+  if (t_a >= 0 && t_a <= 1 && t_b >= 0 && t_b <= 1) {
+    return(list(x = x1 + t_a*(x2-x1), y = y1 + t_b*(y2-y1)))
+  } else {
+    return(NULL)
+  }
+}
+
+bounding_box_intersection <- function(x,y,a,b,h,w) {
+  # Construct the bounding box segments
+  x1 <- c(x - w/2, x - w/2, x + w/2, x + w/2)
+  x2 <- c(x - w/2, x + w/2, x + w/2, x - w/2)
+  y1 <- c(y - h/2, y + h/2, y + h/2, y - h/2)
+  y2 <- c(y + h/2, y + h/2, y - h/2, y - h/2)
+
+  intersections <- mapply(x1, y1, x2, y2, FUN = function(a0, b0, a1, b1) segment_intersection(a0, b0, a1, b1, a, b, x, y))
+  return(intersections[!sapply(intersections, is.null)][[1]])
+}
+
+add_arrow <- function(found_location, text, color, p, inches_conversion) {
+  if ((!found_location$los && found_location$distance > 0.1) || found_location$distance > 1.5) {
+    # adjust the tail to the edge of the bounding box
+    adjusted <-
+      bounding_box_intersection(
+        found_location$x,
+        found_location$y,
+        found_location$xx,
+        found_location$yy,
+        getstrheight(text, units = "user"),
+        getstrwidth(text, units = "user")
+      )
+    # Check the distance adjusted for bounding box is still long enough to warrant arrow
+    if (sqrt(((adjusted$x-found_location$xx)*inches_conversion$x)^2 + ((adjusted$y-found_location$yy)*inches_conversion$y)^2) > 0.1) {
+      newarrow <- list(tail.x = adjusted$x,
+                       tail.y = adjusted$y,
+                       head.x = found_location$xx,
+                       head.y = found_location$yy,
+                       color = color,
+                       panel = p)
+      drawarrow(newarrow)
     } else {
-      return(TRUE)
+      newarrow <- NULL
     }
   } else {
-    return(TRUE)
+    newarrow <- NULL
   }
-}
-
-merge_colours <- function(attributes, p, layout) {
-  otherp <- rhs_axes(p, layout)
-  if (!is.null(otherp)) {
-    return(append(attributes[[p]]$col, attributes[[otherp]]$col))
-  } else {
-    return(attributes[[p]]$col)
-  }
-}
-
-formatlabels <- function(locations, labelsmap, attributes, p, layout) {
-  col <- merge_colours(attributes, p, layout)
-  formatted <- list()
-  for (label in names(locations)) {
-    x <- locations[[label]][1]
-    y <- locations[[label]][2]
-    thislabel <- list(x = x, y = y, text = labelsmap[[label]], panel = p, color = col[[label]])
-    formatted <- append(formatted, list(thislabel))
-  }
-  return(formatted)
+  return(newarrow)
 }

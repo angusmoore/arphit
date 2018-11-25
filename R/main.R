@@ -119,28 +119,8 @@ agg_draw_internal <- function(gg, filename) {
   drawnotes(footnotes, sources, margins$notesstart)
   handlelayout(gg$layout) # Put the correct layout back
 
-  if (gg$enable_autolabeller) {
-    autogenlabel <-
-      autolabel(
-        xvals,
-        data,
-        panels,
-        shading,
-        gg$layout,
-        xlim,
-        ylim,
-        attributes,
-        gg$bgshading,
-        gg$lines,
-        arrows,
-        labels
-      )
-    labels <- append(labels, autogenlabel$labels)
-    arrows <- append(arrows, autogenlabel$arrows)
-  }
-
   for (p in names(panels)) {
-    # Finally, draw all the annotations
+    # Fraw all the annotations
     l <- getlocation(p ,gg$layout)
     graphics::par(mfg = l)
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
@@ -149,6 +129,12 @@ agg_draw_internal <- function(gg, filename) {
     drawannotationlines(gg$lines, p)
     drawarrows(arrows, p)
     drawlabels(labels, p)
+  }
+
+
+  if (gg$enable_autolabeller) {
+    # Finally, if desired, run the autolabeller
+    autolabel(gg, panels, xlim, ylim, margins, labels, xvals, data, attributes, gg$bars, gg$autolabel_quiet)
   }
 
   if (!is.null(device)) {
