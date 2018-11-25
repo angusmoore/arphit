@@ -185,3 +185,5 @@ p <- arphitgg(data,agg_aes(x=x), layout = "2v") +
   agg_label("Test",x=2,y=4,color="black",panel="1") +
   agg_autolabel(TRUE)
 expect_error({print(p)}, NA)
+
+graphics.off()
