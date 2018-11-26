@@ -46,15 +46,15 @@ agg_qplot(data)
 
 ## Installation
 
-Install the latest stable release of `arphit` using the R `devtools` package:
+Install the latest stable release of `arphit` using the R `remotes` package:
 ```
-library(devtools)
-install_github("angusmoore/arphit", ref = "stable", build_vignettes = TRUE)
+library(remotes)
+install_github("angusmoore/arphit", ref = "stable", build = TRUE, build_opts =  c("--no-resave-data", "--no-manual"))
 ```
 
-You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
+You may need to first install the `remotes` package if you don't already have it (`install.packages("remotes")`).
 
-Installing may fail if `devtools` cannot correctly determine your proxy server. If so, you'll get one of the following error message when you try to install:
+Installing may fail if `remotes` cannot correctly determine your proxy server. If so, you'll get one of the following error message when you try to install:
 ```
 Installation failed: Timeout was reached: Connection timed out after 10000 milliseconds
 
