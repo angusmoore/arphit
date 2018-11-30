@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg-constructors.R
 \name{arphitgg}
 \alias{arphitgg}
-\title{Create an arphit graph to be built using the ggplot-like interface.}
+\title{Create an new arphit graph}
 \usage{
 arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
   dropxlabel = FALSE, srt = 0, showallxlabels = NULL,
@@ -30,7 +30,7 @@ arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
 \item{log_scale}{(optional) Set one or both of y and x axes as log scales? Use "y" for just y axis, "x" for just x and "xy" for both}
 }
 \description{
-Create an arphit graph to be built using the ggplot-like interface.
+Create an new arphit graph
 }
 \seealso{
 \code{vignette("plotting-options", package = "arphit")} for a detailed description of

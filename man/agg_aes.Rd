@@ -13,7 +13,7 @@ agg_aes(x, y, group = NULL, facet = NULL, order = NULL)
 
 \item{group}{If your data are in long form, which variable defines the groups.}
 
-\item{facet}{If you data are in long form, which variable defines the facets (facets split data across panels, see the gg-interface vignette for example)}
+\item{facet}{If you data are in long form, which variable defines the facets (facets split data across panels)}
 
 \item{order}{Which variable to order the x-ticks by (only applies for categorical data)}
 }
