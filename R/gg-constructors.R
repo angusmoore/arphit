@@ -430,7 +430,7 @@ agg_point <- function(aes = NULL, data = NULL, color = NULL, pointsize = 1, pane
 #' @param x Which series is the x variable.
 #' @param y Which series are you plotting on the y axis.
 #' @param group If your data are in long form, which variable defines the groups.
-#' @param facet If you data are in long form, which variable defines the facets (facets split data across panels, see the gg-interface vignette for example)
+#' @param facet If you data are in long form, which variable defines the facets (facets split data across panels)
 #' @param order Which variable to order the x-ticks by (only applies for categorical data)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -462,7 +462,7 @@ agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
   return(list(type = "aes", x = x, y = y, group = group, facet = facet, order = order))
 }
 
-#' Create an arphit graph to be built using the ggplot-like interface.
+#' Create an new arphit graph
 #'
 #' @param data (Optional) Data to be used for the plot. Can be left blank, but must then be supplied for each layer.
 #' @param aes (Optional) The aesthetic that defines your graph. Can be left blank, but must then be supplied for each layer. Layers that don't specify aesthetics will inherit missing parts of aesthetic from here.

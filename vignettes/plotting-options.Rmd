@@ -283,9 +283,42 @@ knitr::include_graphics("facet-group.png")
 
 By default, categorical graphs are ordered by their x-ticks if they have groups 
 (e.g. alphabetically) or will use the order in the data if there is not a group
-aesthetic. You can specify a variable to order the graph by using the `order` 
-part of the aesthetic. In this example we take data and order it by a variable
-`order` that is the reverse of the x variable.
+aesthetic.
+
+You can instead specify a variable to order the graph by using the `order` 
+part of the aesthetic.
+
+Ordering a bar chart by value:
+```{r, results = "hide"}
+order_data <- data.frame(x=letters[1:10],
+                         y=rnorm(10))
+p <- arphitgg(order_data, agg_aes(x=x,y=y,order=y))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "aes-order-value.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("aes-order-value.png")
+```
+
+If you have groups and want to order by value, you need to specify which _group's_ 
+value you want to use as the order:
+```{r, results = "hide"}
+order_data <- data.frame(x=letters[1:10],
+                         y=rnorm(10),
+                         group = c(rep("A",5),rep("B",5)))
+p <- arphitgg(order_data, agg_aes(x=x,y=y,group=group,order=A))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "aes-order-value-group.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("aes-order-value-group.png")
+```
+
+A third alternative way is to use another variable to define the order. In this
+example we take data and order it by a variable `order` that is the reverse
+of the x variable.
 ```{r, results = "hide"}
 order_data <- data.frame(x = rep(letters[1:10], 2),
             y = rep(1:10, 2),
