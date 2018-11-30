@@ -2,7 +2,9 @@ addtitle <- function(gg, title) {
   if (is.null(title$panel)) {
     gg$title <- title$text
   } else {
-    gg$paneltitles[[title$panel]] <- title$text
+    for (p in title$panel) {
+      gg$paneltitles[[p]] <- title$text
+    }
   }
   return(gg)
 }
@@ -11,7 +13,9 @@ addsubtitle <- function(gg, subtitle) {
   if (is.null(subtitle$panel)) {
     gg$subtitle <- subtitle$text
   } else {
-    gg$panelsubtitles[[subtitle$panel]] <- subtitle$text
+    for (p in subtitle$panel) {
+      gg$panelsubtitles[[p]] <- subtitle$text
+    }
   }
   return(gg)
 }
@@ -23,7 +27,9 @@ addunits <- function(gg, units) {
     if (is.null(gg$yunits)) {
       gg$yunits <- list()
     }
-    gg$yunits[[units$panel]] <- units$units
+    for (p in units$panel) {
+      gg$yunits[[p]] <- units$units
+    }
   }
   return(gg)
 }
@@ -35,7 +41,9 @@ addxunits <- function(gg, units) {
     if (is.null(gg$xunits)) {
       gg$xunits <- list()
     }
-    gg$xunits[[units$panel]] <- units$units
+    for (p in units$panel) {
+      gg$xunits[[p]] <- units$units
+    }
   }
   return(gg)
 }
@@ -53,19 +61,25 @@ addfootnote <- function(gg, footnote) {
 addannotation <- function(gg, annotation, element) {
   type <- annotation$type
   annotation$type <- NULL
-  gg[[element]] <- append(gg[[element]], list(annotation))
+  for (p in annotation$panel) {
+    tmp <- annotation
+    tmp$panel <- p
+    gg[[element]] <- append(gg[[element]], list(tmp))
+  }
   return(gg)
 }
 
 addshading <- function(gg, shading) {
   shading$type <- NULL
   if (is.null(shading$panel)) {
-    shading$panel <- NULL
+    gg$shading <- append(gg$shading, list(shading))
+  } else {
+    for (p in shading$panel) {
+      tmp <- shading
+      tmp$panel <- p
+      gg$shading <- append(gg$shading, list(tmp))
+    }
   }
-  if (is.null(shading$color)) {
-    shading$color <- NULL
-  }
-  gg$shading <- append(gg$shading, list(shading))
   return(gg)
 }
 
@@ -75,9 +89,11 @@ addylim <- function(gg, ylim) {
     ylim$panel <- NULL
     gg$ylim <- ylim
   } else {
-    p <- ylim$panel
-    ylim$panel <- NULL
-    gg$ylim[[p]] <- ylim
+    for (p in ylim$panel) {
+      tmp <- ylim
+      tmp$panel <- NULL
+      gg$ylim[[p]] <- tmp
+    }
   }
   return(gg)
 }
@@ -88,9 +104,9 @@ addxlim <- function(gg, xlim) {
     xlim$panel <- NULL
     gg$xlim <- c(xlim$min, xlim$max)
   } else {
-    p <- xlim$panel
-    xlim$panel <- NULL
-    gg$xlim[[p]] <- c(xlim$min, xlim$max)
+    for (p in xlim$panel) {
+      gg$xlim[[p]] <- c(xlim$min, xlim$max)
+    }
   }
   return(gg)
 }
@@ -100,7 +116,9 @@ addaxislabel <- function(gg, axislabel, axis) {
   if (is.null(axislabel$panel)) {
     gg[[index]] <- axislabel$axislabel
   } else {
-    gg[[index]][[axislabel$panel]] <- axislabel$axislabel
+    for (p in axislabel$panel) {
+      gg[[index]][[p]] <- axislabel$axislabel
+    }
   }
   return(gg)
 }

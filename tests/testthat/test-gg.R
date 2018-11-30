@@ -268,7 +268,7 @@ foo <- arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), color = RBA
   agg_line(agg_aes(y = x2), color = RBA["Red4"]) +
   agg_shading(from = x1, to = x2)
 
-expect_equal(foo$shading, list(list(from = "x1", to = "x2")))
+expect_equal(foo$shading, list(list(from = "x1", to = "x2", panel = NULL, color = NULL)))
 
 # Axis labels
 ## x
@@ -503,3 +503,101 @@ p <- tibble(x=rnorm(15),y=rnorm(15),z=rnorm(15)) %>%
 expect_equal(p$pointsize[["1"]]$y, 2)
 expect_equal(p$pointsize[["1"]]$z, 1)
 expect_error(print(p), NA)
+
+## Reference multiple panels in one constructor (#191)
+
+# Line layer to multiple panels
+data1 <- tibble(x=rnorm(15),y=rnorm(15),z=rnorm(15))
+p1 <- data1 %>%
+  arphitgg(layout = "2b2")+
+  agg_line(agg_aes(x=x,y=y), panel = c("1","3"))
+
+p2 <- data1 %>%
+  arphitgg(layout = "2b2")+
+  agg_line(agg_aes(x=x,y=y), panel = "1") +
+  agg_line(agg_aes(x=x,y=y), panel = "3")
+
+expect_equal(p1, p2)
+
+# Bar layer to multiple panels
+p1 <- data1 %>%
+  arphitgg(layout = "2b2")+
+  agg_col(agg_aes(x=x,y=y), panel = c("1","3"))
+
+p2 <- data1 %>%
+  arphitgg(layout = "2b2")+
+  agg_col(agg_aes(x=x,y=y), panel = "1") +
+  agg_col(agg_aes(x=x,y=y), panel = "3")
+
+expect_equal(p1, p2)
+
+# Title
+p1 <- arphitgg() + agg_title("Foo", panel = c("1", "2"))
+p2 <- arphitgg() + agg_title("Foo", panel = "1") + agg_title("Foo", panel = "2")
+expect_equal(p1, p2)
+
+# Subtitle
+p1 <- arphitgg() + agg_subtitle("Foo", panel = c("1", "2"))
+p2 <- arphitgg() + agg_subtitle("Foo", panel = "1") + agg_subtitle("Foo", panel = "2")
+expect_equal(p1, p2)
+
+# units
+p1 <- arphitgg() + agg_units("Foo", panel = c("1", "2"))
+p2 <- arphitgg() + agg_units("Foo", panel = "1") + agg_units("Foo", panel = "2")
+expect_equal(p1, p2)
+
+# xunits
+p1 <- arphitgg() + agg_xunits("Foo", panel = c("1", "2"))
+p2 <- arphitgg() + agg_xunits("Foo", panel = "1") + agg_xunits("Foo", panel = "2")
+expect_equal(p1, p2)
+
+# label
+p1 <- arphitgg() + agg_label("Foo", x = 2000, y = 1, color = "black", panel = c("1", "2"))
+p2 <- arphitgg() +
+  agg_label("Foo", x = 2000, y = 1, color = "black", panel = "1") +
+  agg_label("Foo", x = 2000, y = 1, color = "black", panel = "2")
+expect_equal(p1, p2)
+
+# arrow
+
+p1 <- arphitgg() + agg_arrow(0,0,1,1,"black", panel = c("1","2"))
+p2 <- arphitgg() + agg_arrow(0,0,1,1,"black", panel = "1") +
+  agg_arrow(0,0,1,1,"black", panel = "2")
+expect_equal(p1, p2)
+
+# abline
+p1 <- arphitgg() + agg_abline(1,color="black",panel=c("1","2"))
+p2 <- arphitgg() + agg_abline(1,color="black",panel="1") +
+  agg_abline(1,color="black",panel="2")
+expect_equal(p1, p2)
+
+# bgshading
+p1 <- arphitgg() + agg_bgshading(0,0,1,1,"black", panel = c("1","2"))
+p2 <- arphitgg() + agg_bgshading(0,0,1,1,"black", panel = "1") +
+  agg_bgshading(0,0,1,1,"black", panel = "2")
+expect_equal(p1, p2)
+
+# shading
+p1 <- arphitgg() + agg_shading("x2","x1",panel=c("1","2"))
+p2 <- arphitgg() + agg_shading("x2","x1",panel="1") + agg_shading("x2","x1",panel="2")
+expect_equal(p1, p2)
+
+# ylim
+p1 <- arphitgg() + agg_ylim(0,1,2,panel = c("1","2"))
+p2 <- arphitgg() + agg_ylim(0,1,2,panel = "1") + agg_ylim(0,1,2,panel = "2")
+expect_equal(p1, p2)
+
+# xlim
+p1 <- arphitgg() + agg_xlim(0,1,panel = c("1","2"))
+p2 <- arphitgg() + agg_xlim(0,1,panel = "1") + agg_xlim(0,1,panel = "2")
+expect_equal(p1, p2)
+
+# yaxislabel
+p1 <- arphitgg() + agg_yaxislabel("FOO", panel = c("1","2"))
+p2 <- arphitgg() + agg_yaxislabel("FOO", panel = "1") + agg_yaxislabel("FOO", panel = "2")
+expect_equal(p1, p2)
+
+# xaxislabel
+p1 <- arphitgg() + agg_xaxislabel("FOO", panel = c("1","2"))
+p2 <- arphitgg() + agg_xaxislabel("FOO", panel = "1") + agg_xaxislabel("FOO", panel = "2")
+expect_equal(p1, p2)

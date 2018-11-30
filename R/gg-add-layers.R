@@ -243,7 +243,7 @@ applylineattributes <- function(gg, newline, panel, newseriesnames) {
   return(gg)
 }
 
-addlineseries <- function(gg, newline) {
+addlineseries_ <- function(gg, newline) {
   panel <- newline$panel
   out <- addlayer(gg, newline, panel)
   gg <- out$gg
@@ -254,6 +254,15 @@ addlineseries <- function(gg, newline) {
     for (panel in names(newseriesnames)) {
       gg <- applylineattributes(gg, newline, panel, newseriesnames[[panel]])
     }
+  }
+  return(gg)
+}
+
+addlineseries <- function(gg, newline)  {
+  for (p in newline$panel) {
+    tmp <- newline
+    tmp$panel <- p
+    gg <- addlineseries_(gg, tmp)
   }
   return(gg)
 }
@@ -270,7 +279,7 @@ applycolattributes <- function(gg, panel, newcol, newcolnames) {
   return(gg)
 }
 
-addcolseries <- function(gg, newcol) {
+addcolseries_ <- function(gg, newcol) {
   panel <- newcol$panel
   out <- addlayer(gg, newcol, panel)
   gg <- out$gg
@@ -288,5 +297,15 @@ addcolseries <- function(gg, newcol) {
     gg$stacked <- newcol$stacked
   }
 
+  return(gg)
+}
+
+
+addcolseries <- function(gg, newcol) {
+  for (p in newcol$panel) {
+    tmp <- newcol
+    tmp$panel <- p
+    gg <- addcolseries_(gg, tmp)
+  }
   return(gg)
 }
