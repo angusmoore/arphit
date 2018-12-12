@@ -122,16 +122,12 @@ expect_error({
   print(p)
 }, NA)
 
-# hourly data
+# semi annual data
 data <-
-  data.frame(time = seq.POSIXt(
-    from = ISOdate(1999, 1, 1),
-    by = "hour",
-    length.out = 100
-  ),
-  y = rnorm(100))
+  data.frame(date = as.Date(c("2000-03-01","2000-09-01","2001-03-01","2001-09-01","2002-03-1")),
+  y = rnorm(5))
 expect_error({
-  p <- arphitgg(data, agg_aes(x = time, y = y)) + agg_line()
+  p <- arphitgg(data, agg_aes(x = date, y = y)) + agg_line()
   print(p)
 }, NA)
 
