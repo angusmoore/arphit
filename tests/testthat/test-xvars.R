@@ -97,14 +97,18 @@ catdata <- list("1" = data.frame(x = letters[1:5], y = 1:5, stringsAsFactors = F
 expect_that(get_x_values(catdata, list("1" = "x")), equals(list("1" = letters[1:5])))
 
 # Frequency guessing
-days <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "day")
-months <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "month")
-quarters <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "quarter")
-years <- seq.Date(from = as.Date("2000-01-01"), to = as.Date("2010-01-01"), by = "year")
+days <- seq.Date(from = as.Date("1900-01-01"), to = as.Date("2010-01-01"), by = "day")
+months <- seq.Date(from = as.Date("1900-01-01"), to = as.Date("2010-01-01"), by = "month")
+quarters <- seq.Date(from = as.Date("1900-01-01"), to = as.Date("2010-01-01"), by = "quarter")
+years <- seq.Date(from = as.Date("1900-01-01"), to = as.Date("2010-01-01"), by = "year")
 expect_equal(frequencyof(days), 1/365)
 expect_equal(frequencyof(months), 1/12)
 expect_equal(frequencyof(quarters), 1/4)
 expect_equal(frequencyof(years), 1)
+# Bad behaviour with non recognised frequencies of data
+expect_equal(frequencyof(seq.Date(from=as.Date("2000-01-01"),by="week",length.out = 100)), 1/(365/7))
+expect_null(frequencyof(seq.POSIXt(from=ISOdate(1999,1,1),by="hour",length.out = 100)))
+expect_null(frequencyof(seq.POSIXt(from=ISOdate(1999,1,1),by="hour",length.out = 100)))
 
 # Test old bug from old frequency guessing causing incorrect labels with irregularly spaced data
 data <- data.frame(year = c(1991, 2001, 2006, 2011, 2016), y = rnorm(5))
@@ -220,7 +224,6 @@ expect_warning({
   print(p)
 },
 NA)
-
 
 # Similar to 171 (though different cause), failure for singleton numeric x categories
 foo <- data.frame(x=1,y=rnorm(3),group=c("a","b","c"),stringsAsFactors = FALSE)
