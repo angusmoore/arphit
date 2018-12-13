@@ -29,8 +29,8 @@ line_y_indices <- function(text, y, ylim, y_start, padding, line_n, total_lines,
   lheight <- total_height / total_lines
   line_offset <- 0.5*total_height - (0.5+line_n-1)*lheight
 
-  top <- y + 0.5*getstrheight(text, units = "user") + line_offset
-  bottom <- y - 0.5*getstrheight(text, units = "user") + line_offset
+  top <- y + (0.5*getstrheight(text, units = "inches") + line_offset) / (graphics::par("pin")[2])*(ylim$max-ylim$min)
+  bottom <- y + ( - 0.5*getstrheight(text, units = "inches") + line_offset) / (graphics::par("pin")[2])*(ylim$max-ylim$min)
 
   if (line_n == 1)  top <- top + padding / (graphics::par("pin")[2])*(ylim$max-ylim$min)
   if (line_n == total_lines) bottom <- bottom - padding / (graphics::par("pin")[2])*(ylim$max-ylim$min)
@@ -45,8 +45,8 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLAB
   x_start <- seq(from = xlim[1], to = xlim[2], length.out = round(dim[1]/x_scale) + 1)[1:round(dim[1]/x_scale)]
   y_start <- seq(from = ylim$max, to = ylim$min, length.out = round(dim[2]/y_scale) + 1)[2:(round(dim[2]/y_scale)+1)]
 
-  left <- x - 0.5*getstrwidth(text, units = "user") - padding / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
-  right <- x + 0.5*getstrwidth(text, units = "user") + padding / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
+  left <- x - 0.5*(getstrwidth(text, units = "inches") - padding) / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
+  right <- x + 0.5*(getstrwidth(text, units = "inches") + padding) / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
   x_indices <- which(x_start < right & (x_start + x_start[2]-x_start[1]) > left)
 
   lines <- stringr::str_split(text, stringr::fixed("\n"))[[1]]
@@ -61,13 +61,13 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLAB
         padding,
         line_n,
         length(lines),
-        getstrheight(text, units = "user")
+        getstrheight(text, units = "inches")
       )))
 
   x_indices <- x_indices + round((dim[1]/x_scale) * (getlocation(p, layout)[2] - 1))
   y_indices <- y_indices + round((dim[2]/y_scale) * (getlocation(p, layout)[1] - 1))
 
-  list(x=x_indices,y=y_indices)
+  list(x=x_indices,y=c(y_indices,max(y_indices)+1))
 }
 
 shift_text_indices <- function(indices,x,y,x_text_anchor,y_text_anchor,x_scale,y_scale,xlim,ylim,dim,layout,p) {
@@ -77,12 +77,10 @@ shift_text_indices <- function(indices,x,y,x_text_anchor,y_text_anchor,x_scale,y
   x_indices <- indices$x + x_shift
   y_indices <- indices$y + y_shift
 
-  x_indices <- x_indices[x_indices > 0 & x_indices <= dim[1]]
-  y_indices <- y_indices[y_indices > 0 & y_indices <= dim[2]]
-
   return(list(x = x_indices, y = y_indices))
 }
 
-test_collision <- function(underlay, x_indices, y_indices) {
+test_collision <- function(underlay, x_indices, y_indices, dim) {
+  any(x_indices < 0 | x_indices > dim[1] | y_indices < 0 | y_indices > dim[2]) ||
   any(underlay[x_indices, y_indices])
 }

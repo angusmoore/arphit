@@ -1,7 +1,9 @@
 evaluate_candidate <- function(x, y, text_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, layout, p, underlay_bitmap, los_mask, bars, bars.stacked, inches_conversion) {
 
-  indices <- shift_text_indices(text_indices,x,y,x_text_anchor,y_text_anchor,x_scale,y_scale,xlim,ylim,dim(underlay_bitmap),layout,p)
-  if (!test_collision(underlay_bitmap, indices$x, indices$y)) {
+  dim <- dim(underlay_bitmap)
+
+  indices <- shift_text_indices(text_indices,x,y,x_text_anchor,y_text_anchor,x_scale,y_scale,xlim,ylim,dim,layout,p)
+  if (!test_collision(underlay_bitmap, indices$x, indices$y, dim)) {
     distance <- get_distance(x, y, data, xvals, yvals, series, otherseries, series_types, bars, bars.stacked, los_mask, xlim, ylim, inches_conversion)
 
     distance$x <- x
