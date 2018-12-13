@@ -111,11 +111,12 @@ autolabel_fallback <- function(label, xlim, ylim, underlay_bitmap, layout, p, qu
   x_steps <- c(rbind(x_up,x_down))
   y_steps <- c(rbind(y_up,y_down))
 
+  dim <- dim(underlay_bitmap)
   for (x in x_steps) {
     if (!quiet) cat("x")
     for (y in y_steps) {
-      indices <- create_text_bitmap(x,y,label,xlim,ylim,dim(underlay_bitmap),layout,p,padding=AUTOLABEL_FALLBACK_PADDING)
-      if (!test_collision(underlay_bitmap, indices$x, indices$y)) {
+      indices <- create_text_bitmap(x,y,label,xlim,ylim,dim,layout,p,padding=AUTOLABEL_FALLBACK_PADDING)
+      if (!test_collision(underlay_bitmap, indices$x, indices$y, dim)) {
         return(data.frame(x=x,y=y,distance=0,los=TRUE,next_closest=Inf))
       }
     }

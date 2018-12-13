@@ -45,7 +45,7 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLAB
   x_start <- seq(from = xlim[1], to = xlim[2], length.out = round(dim[1]/x_scale) + 1)[1:round(dim[1]/x_scale)]
   y_start <- seq(from = ylim$max, to = ylim$min, length.out = round(dim[2]/y_scale) + 1)[2:(round(dim[2]/y_scale)+1)]
 
-  left <- x - 0.5*(getstrwidth(text, units = "inches") - padding) / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
+  left <- x - 0.5*(getstrwidth(text, units = "inches") + padding) / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
   right <- x + 0.5*(getstrwidth(text, units = "inches") + padding) / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
   x_indices <- which(x_start < right & (x_start + x_start[2]-x_start[1]) > left)
 
@@ -81,6 +81,6 @@ shift_text_indices <- function(indices,x,y,x_text_anchor,y_text_anchor,x_scale,y
 }
 
 test_collision <- function(underlay, x_indices, y_indices, dim) {
-  any(x_indices < 0 | x_indices > dim[1] | y_indices < 0 | y_indices > dim[2]) ||
-  any(underlay[x_indices, y_indices])
+  any(x_indices < 0) || any(x_indices > dim[1]) || any(y_indices < 0) ||
+    any(y_indices > dim[2]) || any(underlay[x_indices, y_indices])
 }
