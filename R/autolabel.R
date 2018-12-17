@@ -15,10 +15,30 @@ evaluate_candidate <- function(x, y, text_indices, x_text_anchor, y_text_anchor,
   }
 }
 
-candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars, bars.stacked, quiet, inches_conversion) {
+divide_y_axis <- function(ylim, divisor, points, axis_points, axis_step, remove_axis) {
+    new_points <- seq(from = ylim$min + axis_step/divisor, by = axis_step/divisor, to = ylim$max - axis_step/divisor)
+
+    if (remove_axis) {
+      return(setdiff(new_points, axis_points))
+    } else {
+      return(new_points)
+    }
+}
+
+autolabeller_y_points <- function(ylim, has_linebreak) {
+  axis_step <- (ylim$max - ylim$min)/(ylim$nsteps-1)
+  axis_points <- seq(from = ylim$min + axis_step, by = axis_step, to = ylim$max - axis_step)
+
+  for (divisor in seq(from = 2, by = 2, to = AUTOLABEL_YSTEPS)) {
+    candidate_points <- divide_y_axis(ylim, divisor, points, axis_points, axis_step, !has_linebreak)
+    if (length(candidate_points) > AUTOLABEL_YSTEPS) return(candidate_points)
+  }
+}
+
+candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series, otherseries, series_types, data, xvals, yvals, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars, bars.stacked, quiet, inches_conversion, has_linebreak) {
   if (!quiet) cat(".")
-  step <- (ylim$max - ylim$min)/AUTOLABEL_YSTEPS
-  points_to_try <- seq(from = ylim$min+step, by = step, length.out = AUTOLABEL_YSTEPS-1)
+
+  points_to_try <- autolabeller_y_points(ylim, has_linebreak)
 
   candidates <-
     dplyr::bind_rows(lapply(points_to_try, function(y)
@@ -89,7 +109,8 @@ find_candidates <- function(label, plot_bitmap, x, y, series, otherseries, serie
                  bars,
                  bars.stacked,
                  quiet,
-                 inches_conversion
+                 inches_conversion,
+                 stringr::str_detect(label,stringr::fixed("\n"))
                )
              ))
   }
