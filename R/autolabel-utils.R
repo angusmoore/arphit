@@ -12,6 +12,13 @@ createlabels <- function(panels, bars, attributes, layout, labels) {
     }
   }
 
+  # Remove any single-panel series if that panel has only one series (doesn't need a label!)
+  for (series in names(series_to_panels)) {
+    if (length(series_to_panels[[series]]) == 1 && length(panels[[series_to_panels[[series]]]]) == 1) {
+      series_to_panels[series] <- NULL
+    }
+  }
+
   # if is a RHS axes, add annotations
   series_to_labels <- list()
   for (series in names(series_to_panels)) {
