@@ -6,45 +6,70 @@ cartesian2linear <- function(r, c, dims) {
   r + (c-1)*dims[1]
 }
 
+create_bounded_a_points <- function(a1,a2,dim) {
+  if ((a1 <= 0 && a2 <= 0) || (a1 > dim && a2 > dim)) {
+    return(integer(0))
+  } else {
+    # Bound the points by the dimensions
+    a1 <- max(min(a1, dim), 1)
+    a2 <- max(min(a2, dim), 1)
+    a_points <- floor(a1):ceiling(a2)
+    return(a_points)
+  }
+}
+
+line_segment_points <- function(a1,a2,b1,b2,dims) {
+  a_points <- create_bounded_a_points(a1, a2 ,dims[1])
+
+  if (abs(a1 - a2) > 1e-5) {
+    m <- (b1-b2)/(a1-a2)
+    c <- b1 - m*a1
+    b_points <- round(m*a_points + c)
+    b_points[b_points > max(b2,b1)] <- max(b2,b1)
+    b_points[b_points < min(b2,b1)] <- min(b2,b1)
+  } else {
+    a_points <- round(a2)
+    b_points <- b2:b1
+  }
+
+  keep_b <- b_points > 0 & b_points <= dims[2]
+  b_points <- b_points[keep_b]
+
+  if (length(a_points) > 1) {
+    a_points <- a_points[keep_b]
+  } else if (!any(keep_b)) {
+    a_points <- integer(0)
+  }
+
+  return(list(a=a_points,b=b_points))
+}
+
 create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,xlim,ylim) {
   tail.x <- (tail.x - xlim[1])/(xlim[2]-xlim[1])*dims[1]
   head.x <- (head.x - xlim[1])/(xlim[2]-xlim[1])*dims[1]
   tail.y <- dims[2] - (tail.y - ylim$min)/(ylim$max-ylim$min)*dims[2]
   head.y <- dims[2] - (head.y - ylim$min)/(ylim$max-ylim$min)*dims[2]
 
-  x_points <- floor(tail.x):ceiling(head.x)
+  out <- line_segment_points(tail.x,head.x,tail.y,head.y,dims)
 
-  if (abs(tail.x - head.x) > 1e-5) {
-    m <- (tail.y-head.y)/(tail.x-head.x)
-    c <- tail.y - m*tail.x
-    y_points <- round(m*x_points + c)
-    y_points[y_points > max(head.y,tail.y)] <- max(head.y,tail.y)
-    y_points[y_points < min(head.y,tail.y)] <- min(head.y,tail.y)
-  } else {
-    x_points <- round(head.x)
-    y_points <- head.y:tail.y
+  linear_indices <- mapply(out$a, out$b, FUN = function(x,y) cartesian2linear(x,y,dims))
+  if (length(linear_indices) == 0) {
+    linear_indices <- c() # otherwise it's a list
   }
-
-  linear_indices <- mapply(x_points, y_points, FUN = function(x,y) cartesian2linear(x,y,dims))
 
   # Do it for y points too - helps for very steep lines, which get poor coverage on y-points by my other method
-  y_points <- floor(tail.y):ceiling(head.y)
-  if (abs(tail.y - head.y) > 1e-5) {
-    m <- (tail.x-head.x)/(tail.y-head.y)
-    c <- tail.x - m*tail.y
-    x_points <- round(m*y_points + c)
-    x_points[x_points > max(head.x,tail.x)] <- max(head.x,tail.x)
-    x_points[x_points < min(head.x,tail.x)] <- min(head.x,tail.x)
+  out <- line_segment_points(tail.y,head.y,tail.x,head.x,rev(dims))
+  if (length(out$a) > 0) {
     linear_indices <-
-      append(linear_indices,
-             mapply(
-               x_points,
-               y_points,
-               FUN = function(x, y)
-                 cartesian2linear(x, y, dims)
-             ))
+          append(linear_indices,
+                 mapply(
+                   out$b,
+                   out$a,
+                   FUN = function(x, y)
+                     cartesian2linear(x, y, dims)
+                 ))
   }
-
+if(any(is.na(linear_indices))) browser()
   return(linear_indices)
 }
 
