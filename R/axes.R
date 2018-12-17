@@ -389,11 +389,11 @@ xlimconform <- function(panels, xlim, xvars, data) {
 
   out <- list()
   for (p in names(panels)) {
+    ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
+    out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
     if (p %in% names(xlim)) {
-      out[[p]] <- xlim[[p]]
-    } else {
-      ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
-      out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
+      if (is.finite(xlim[[p]][1])) out[[p]][1] <- xlim[[p]][1]
+      if (is.finite(xlim[[p]][2])) out[[p]][2] <- xlim[[p]][2]
     }
   }
   # have a check for non-matching xlimits
