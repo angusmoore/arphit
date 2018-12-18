@@ -187,3 +187,20 @@ p <- arphitgg(data,agg_aes(x=x), layout = "2v") +
 expect_error({print(p)}, NA)
 
 graphics.off()
+
+# Creating los mask failing for series outside the axes (#202)
+data <- data.frame(x=seq(as.Date("2000-03-01"),by="month",length.out=20),y2=rnorm(20),y=1000:1019)
+
+p <- arphitgg(data) +
+  agg_line(agg_aes(x=x,y=y)) +
+  agg_line(agg_aes(x=x,y=y2)) +
+  agg_ylim(-5,5,3) +
+  agg_autolabel()
+expect_error(print(p), NA)
+
+p <- arphitgg(data) +
+  agg_line(agg_aes(x=x,y=y)) +
+  agg_line(agg_aes(x=x,y=y2)) +
+  agg_xlim(2011,2013) +
+  agg_autolabel()
+expect_error(print(p), NA)
