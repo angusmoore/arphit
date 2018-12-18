@@ -7,9 +7,9 @@
 agg_xlim(min, max, panel = NULL)
 }
 \arguments{
-\item{min}{The minimum for the x-axis}
+\item{min}{The minimum for the x-axis (can be NA to have arphit guess, based on your data)}
 
-\item{max}{The maximum}
+\item{max}{The maximum (can also be NA, as above)}
 
 \item{panel}{(optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended.}
 }
