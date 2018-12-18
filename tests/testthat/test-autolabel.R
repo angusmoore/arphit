@@ -187,3 +187,26 @@ p <- arphitgg(data,agg_aes(x=x), layout = "2v") +
 expect_error({print(p)}, NA)
 
 graphics.off()
+
+# Bug where labels were being added to single series panels incorrectly (#201)
+expect_equal(length(createlabels(
+  list("1" = "a"), c(), list("1" = list(
+    col = list(a = "red"), pch = list(a = 1)
+  )), '1', list()
+)$series_to_panels),
+0)
+
+# And now where have labels on one panel but not the other
+expect_equal(
+  names(createlabels(
+    list("1" = c("a", "b"), "2" = "c"),
+    c(),
+    list(
+      "1" = list(col = list(a = "red", b = "green"), pch = list(a = 1, b = 1)),
+      "2" = list(col = list(c = "red"), pch =
+                   list(c = 1))
+    ),
+    '2v',
+    list()
+  )$series_to_labels),
+  c("a","b"))
