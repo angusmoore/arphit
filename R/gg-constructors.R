@@ -314,8 +314,8 @@ agg_ylim <- function(min, max, nsteps, panel = NULL) {
 
 #' Specify the x limits for a graph
 #'
-#' @param min The minimum for the x-axis
-#' @param max The maximum
+#' @param min The minimum for the x-axis (can be NA to have arphit guess, based on your data)
+#' @param max The maximum (can also be NA, as above)
 #' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
