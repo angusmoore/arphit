@@ -69,7 +69,7 @@ create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,xlim,ylim) {
                      cartesian2linear(x, y, dims)
                  ))
   }
-if(any(is.na(linear_indices))) browser()
+
   return(linear_indices)
 }
 
