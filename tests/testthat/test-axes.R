@@ -516,3 +516,46 @@ unlimited <-
   )
 
 expect_lt(limited[["1"]]$max, unlimited[["1"]]$max)
+
+## Single argument x limit (#207)
+data <- data.frame(x = 1:10, y = rnorm(10))
+expect_error({
+  p <-
+    arphitgg(data, agg_aes(x = x, y = y)) + agg_line() + agg_xlim(2, NA)
+  print(p)
+}, NA)
+expect_error({
+  p <-
+    arphitgg(data, agg_aes(x = x, y = y)) + agg_line() + agg_xlim(NA, 5)
+  print(p)
+}, NA)
+
+data <- data.frame(x = letters[1:10], y = rnorm(10))
+expect_error({
+  p <-
+    arphitgg(data, agg_aes(x = x, y = y)) + agg_line() + agg_xlim(2, NA)
+  print(p)
+}, NA)
+expect_error({
+  p <-
+    arphitgg(data, agg_aes(x = x, y = y)) + agg_line() + agg_xlim(NA, 5)
+  print(p)
+}, NA)
+
+data <-
+  data.frame(x = seq(
+    from = as.Date("2000-01-01"),
+    by = "quarter",
+    length.out = 10
+  ),
+  y = rnorm(10))
+expect_error({
+  p <-
+    arphitgg(data, agg_aes(x = x, y = y)) + agg_line() + agg_xlim(2000, NA)
+  print(p)
+}, NA)
+expect_error({
+  p <-
+    arphitgg(data, agg_aes(x = x, y = y)) + agg_line() + agg_xlim(NA, 2005)
+  print(p)
+}, NA)
