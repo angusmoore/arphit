@@ -121,11 +121,12 @@ expect_warning({
 }, "Unable to find location for label for series y.y")
 
 # Grid points structured so as to defeat standard autolabeller, but fallback succeeds easily
-foo <- data.frame(x=1,y=1)
+foo <- data.frame(x=rep(c(1,2),3),y=sort(rep(1:3,2)),g=sort(rep(1:3,2)))
 expect_error({
-  p <- arphitgg(foo, agg_aes(x = x, y = y)) + agg_point() + agg_point() +
-    agg_xlim(0, 2) +
-    agg_ylim(0, 60, 16) +
+  p <- arphitgg(foo, agg_aes(x=x,y=y,group=g), layout = "2b2")+
+    agg_line() +
+    agg_xlim(1.5,2.5) +
+    agg_ylim(0.5,10.5,11) +
     agg_autolabel(TRUE)
   print(p)
 }, NA)
