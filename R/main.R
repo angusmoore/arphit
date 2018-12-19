@@ -18,20 +18,20 @@ agg_draw_internal <- function(gg, filename) {
   # Units and scales
   yunits <- handleunits(panels, gg$yunits, gg$layout)
   xunits <- handlexunits(panels, gg$xunits)
-  if (length(gg$ylim)==0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
-    stop("You must manually set y axis limits for log scale plots.")
-  }
-  ylim <- ylimconform(panels, gg$ylim, data, gg$bars, gg$layout, gg$stacked)
-  yticks <- handleticks(data, ylim)
+  yaxislabels <- handleaxislabels(gg$yaxislabels, panels)
+  xaxislabels <- handleaxislabels(gg$xaxislabels, panels)
 
   if (length(gg$xlim)==0 && (gg$log_scale == "x" || gg$log_scale == "xy")) {
     stop("You must manually set x axis limits for log scale plots.")
   }
-
   xlim <- xlimconform(panels, gg$xlim, xvals, data)
   xlabels <- handlexlabels(panels, xlim, xvals, data, gg$layout, gg$showallxlabels)
-  yaxislabels <- handleaxislabels(gg$yaxislabels, panels)
-  xaxislabels <- handleaxislabels(gg$xaxislabels, panels)
+
+  if (length(gg$ylim)==0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
+    stop("You must manually set y axis limits for log scale plots.")
+  }
+  ylim <- ylimconform(panels, gg$ylim, data, gg$bars, gg$layout, gg$stacked, xvals, xlim)
+  yticks <- handleticks(data, ylim)
 
   # Handle shading
   shading <- handleshading(gg$shading, panels)
