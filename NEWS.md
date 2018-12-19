@@ -11,4 +11,6 @@
  
 ## Bugfixes
 
+ * Automatically guessed y-limits are now based only on visible data (e.g. they now respect x-limits) ([#213](https://github.com/angusmoore/arphit/pull/213))
+
 ## Deprecated or removed

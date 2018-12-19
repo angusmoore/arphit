@@ -47,22 +47,22 @@ twosided_oneeachdata <-
 
 context("Y-axes scale")
 shouldbe <- list("1" = list("min" = 0, "max" = 12, "nsteps" = 5), "2" = list("min" = 0, "max" = 12, "nsteps" = 5))
-expect_that(ylimconform(onesided, list(), fakedata, list(), "1"), equals(shouldbe))
+expect_that(ylimconform(onesided, list(), fakedata, list(), "1", FALSE, list("1" = 1), list("1" = c(0,2))), equals(shouldbe))
 
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
-expect_that(ylimconform(onesided, list("1" = sublist), fakedata, list(), "1"), equals(list("1" = sublist, "2" = sublist)))
+expect_that(ylimconform(onesided, list("1" = sublist), fakedata, list(), "1", FALSE, list("1" = 1), list("1" = c(0,2))), equals(list("1" = sublist, "2" = sublist)))
 
 should_be <- list("1" = sublist, "2" = list(min = 0, max = 12, nsteps = 5))
-expect_that(ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, list(), "1"), equals(should_be))
+expect_that(ylimconform(twosided_oneeach, list("1" = sublist), twosided_oneeachdata, list(), "1", FALSE, list("1" = 1), list("1" = c(0,2))), equals(should_be))
 
-ylim <- ylimconform(onesided, list(), fakedata, list(), "1")
+ylim <- ylimconform(onesided, list(), fakedata, list(), "1", FALSE, list("1" = 1), list("1" = c(0,2)))
 expect_that(handleticks(fakedata, ylim), equals(list("1" = c(0,3,6,9,12), "2" = c(0,3,6,9,12))))
 panel2b2 <- list("1" = c("x1"), "2" = c("x2"), "3" = c("x3"), "4" = c("x4"))
 
-# Test for passing in a single ylim to apply to all axes
+# Test for passing in a single ylim to apply to all axes in qplot
 sublist <- list("min" = 1, "max" = 2, "nsteps" = 3)
 largerdata <-  ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
-expect_that(ylimconform(panel2b2, sublist, largerdata, list(), "2b2"), equals(list("1" = sublist, "2" = sublist, "3" = sublist, "4" = sublist)))
+expect_that(apply_ylim_to_panels(sublist), equals(list("1" = sublist, "2" = sublist, "3" = sublist, "4" = sublist, "5" = sublist, "6" = sublist, "7" = sublist, "8" = sublist)))
 
 # Matching other side axis
 expect_equal(ylimconform(
@@ -74,7 +74,8 @@ expect_equal(ylimconform(
   )),
   list("2" = largerdata),
   list(),
-  "1"
+  "1",
+  FALSE, list("1" = 1), list("1" = c(0,2))
 )[["1"]],
 list(
   min = -10,
@@ -96,7 +97,8 @@ expect_equal(ylimconform(
   )),
   list("4" = largerdata),
   list(),
-  "2h"
+  "2h",
+  FALSE, list("1" = 1), list("1" = c(0,2))
 )[["3"]],
 list(
   min = -10,
@@ -120,7 +122,8 @@ expect_equal(ylimconform(
   )),
   list("6" = largerdata),
   list(),
-  "3b2"
+  "3b2",
+  FALSE, list("1" = 1), list("1" = c(0,2))
 )[["5"]],
 list(
   min = -10,
@@ -146,7 +149,8 @@ expect_equal(ylimconform(
   )),
   list("7" = largerdata),
   list(),
-  "4b2"
+  "4b2",
+  FALSE, list("1" = 1), list("1" = c(0,2))
 )[["8"]],
 list(
   min = -10,
@@ -172,7 +176,8 @@ expect_equal(ylimconform(
   )),
   list("8" = largerdata),
   list(),
-  "4h"
+  "4h",
+  FALSE, list("1" = 1), list("1" = c(0,2))
 )[["7"]],
 list(
   min = -10,
@@ -191,7 +196,8 @@ expect_equal(ylimconform(
   )),
   list("3" = largerdata),
   list(),
-  "3v"
+  "3v",
+  FALSE, list("1" = 1), list("1" = c(0,2))
 )[["2"]],
 list(
   min = -10,
@@ -210,7 +216,8 @@ expect_equal(ylimconform(
   )),
   list("1" = largerdata),
   list(),
-  "3v"
+  "3v",
+  FALSE, list("1" = 1), list("1" = c(0,2))
 )[["2"]],
 list(
   min = -10,
@@ -219,13 +226,37 @@ list(
 ))
 
 # Check that sanity checks fail if pass in bad values
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "nsteps" = 3)), fakedata, list(), "1"))
-expect_error(ylimconform(onesided, list("min" = 1, "nsteps" = 3), fakedata, list(), "1"))
-expect_error(ylimconform(onesided, list("1" = list("max" = 1, "nsteps" = 3)), fakedata, list(), "1"))
-expect_error(ylimconform(onesided, list("max" = 1, "nsteps" = 3), fakedata, list(), "1"))
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 3)), fakedata, list(), "1"))
-expect_error(ylimconform(onesided, list("min" = 1, "max" = 3), fakedata, list(), "1"))
-expect_error(ylimconform(onesided, list("1" = list("min" = 1, "max" = 2, "nsteps" = 1)), fakedata, list(), "1"))
+expect_error(agg_qplot(largerdata, ylim = list("min" = 1, "nsteps" = 3)),
+             "You did not supply a max ylimit.")
+expect_error(agg_qplot(largerdata, ylim = list("1" = list(
+  "max" = 1, "nsteps" = 3
+))),
+"You did not supply a min ylimit.")
+expect_error(agg_qplot(largerdata, ylim = list("max" = 1, "nsteps" = 3)),
+             "You did not supply a min ylimit.")
+expect_error(
+  agg_qplot(largerdata, ylim = list("1" = list(
+    "min" = 1, "max" = 3
+  ))),
+  "The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
+  fixed = TRUE
+)
+expect_error(
+  agg_qplot(largerdata, ylim = list("min" = 1, "max" = 3)),
+  "The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
+  fixed = TRUE
+)
+
+
+expect_error(
+  agg_qplot(largerdata, ylim = list("1" = list(
+    "min" = 1,
+    "max" = 2,
+    "nsteps" = 1
+  ))),
+  "The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
+  fixed = TRUE
+)
 expect_error(agg_qplot(data.frame(x=1:10,y=1:10), ylim = c(0,10,5), x="x"), "Ylim should be a list")
 
 context("Default scale")
@@ -359,7 +390,10 @@ data <- data.frame(x = rnorm(10), y = 100*rnorm(10))
 data[4, "y"] <- NA
 nadata <- list("1" = data)
 napanels <- list("1" = "y", "2" = NULL)
-expect_false(isTRUE(all.equal(ylimconform(napanels, list(), nadata, list(), "1")[["1"]], list(min = -1, max = 2, nsteps = 4))))
+expect_false(isTRUE(all.equal(
+  ylimconform(napanels, list(), nadata, list(), "1", FALSE, list("1" = 1), list("1" = c(0,2)))[["1"]],
+  list(min = -1, max = 2, nsteps = 4)
+)))
 
 # Correct placement of y labels when ticks lead to more decimal places (#44)
 expect_equal(createscale(0.15, 0.25, 5), c(0.15, 0.175, 0.2, 0.225, 0.25))
@@ -400,3 +434,85 @@ expect_error(
   agg_draw(p),
   NA
 )
+
+## Automatic y-limits based only on visible data (#210)
+
+data_scatter <- data.frame(x=c(1,2,3,5,9,10),y=c(1000,1000,1000,4,4,4))
+data_categorical <- data.frame(x=letters[1:6],y=c(1000,1000,1000,4,4,4))
+data_time <- data.frame(x=seq.Date(as.Date("2000-06-01"), by = "quarter", length.out = 6),
+                        y=c(1000,1000,1000,4,4,4))
+
+limited <-
+  ylimconform(
+    list("1" = 'y'),
+    list(),
+    list("1" = data_scatter),
+    c(),
+    "1",
+    FALSE,
+    list("1" = data_scatter$x),
+    list('1' = c(5, 11))
+  )
+unlimited <-
+  ylimconform(
+    list("1" = 'y'),
+    list(),
+    list("1" = data_scatter),
+    c(),
+    "1",
+    FALSE,
+    list("1" = data_scatter$x),
+    list('1' = c(1, 11))
+  )
+
+expect_lt(limited[["1"]]$max, unlimited[["1"]]$max)
+
+limited <-
+  ylimconform(
+    list("1" = 'y'),
+    list(),
+    list("1" = data_categorical),
+    c(),
+    "1",
+    FALSE,
+    list("1" = data_categorical$x),
+    list('1' = c(4,7))
+  )
+unlimited <-
+  ylimconform(
+    list("1" = 'y'),
+    list(),
+    list("1" = data_categorical),
+    c(),
+    "1",
+    FALSE,
+    list("1" = data_categorical$x),
+    list('1' = c(1, 7))
+  )
+
+expect_lt(limited[["1"]]$max, unlimited[["1"]]$max)
+
+limited <-
+  ylimconform(
+    list("1" = 'y'),
+    list(),
+    list("1" = data_time),
+    c(),
+    "1",
+    FALSE,
+    list("1" = lubridate::decimal_date(data_time$x), "1ts" = TRUE),
+    list('1' = c(2001,2002))
+  )
+unlimited <-
+  ylimconform(
+    list("1" = 'y'),
+    list(),
+    list("1" = data_time),
+    c(),
+    "1",
+    FALSE,
+    list("1" = lubridate::decimal_date(data_time$x), "1ts" = TRUE),
+    list('1' = c(2000, 2002))
+  )
+
+expect_lt(limited[["1"]]$max, unlimited[["1"]]$max)

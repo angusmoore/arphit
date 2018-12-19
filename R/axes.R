@@ -167,49 +167,40 @@ handlexunits <- function(panels, xunits) {
   conformscale(panels, xunits)
 }
 
-ylimconform <- function(panels, ylim, data, bars, layout, stacked) {
-  ylim_list <- list()
+apply_ylim_to_panels <- function(ylim) {
   if (!is.list(ylim)) stop("Ylim should be a list")
   if ("min" %in% names(ylim) || "max" %in% names(ylim) || "nsteps" %in% names(ylim)) {
+    ylim_list <- list()
     # have supplied a single list to apply to all
-    if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
-      stop("You must supply nsteps > 2 for the y limit.")
-    }
-    if (is.null(ylim$min)) {
-      stop("You did not supply a min ylimit.")
-    }
-    if (is.null(ylim$max)) {
-      stop("You did not supply a max ylimit.")
-    }
-    for (p in names(panels)) {
+    sanity_check_ylim(ylim)
+    for (p in as.character(1:8)) {
       ylim_list[[p]] <- ylim
     }
   } else {
-    # have supplied lims for each (or none)
-    for (p in names(panels)) {
-      if (p %in% names(ylim)) {
-        ylim_list[[p]] <- ylim[[p]]
-        if (is.null(ylim[[p]]) || ylim[[p]]$nsteps < 2) {
-          stop(paste("The y-limit you supplied for panel ", p, " has fewer than 2 points (or you forgot to supply nsteps).", sep = ""))
-        }
-        if (is.null(ylim[[p]]$max)) {
-          stop(paste0("You did not supply a max ylimit for panel ", p, "."))
-        }
-        if (is.null(ylim[[p]]$min)) {
-          stop(paste0("You did not supply a min ylimit for panel ", p, "."))
-        }
+    lapply(ylim, sanity_check_ylim)
+    return(ylim)
+  }
+  return(ylim_list)
+}
+
+ylimconform <- function(panels, ylim, data, bars, layout, stacked, xvals, xlim) {
+  ylim <- apply_ylim_to_panels(ylim)
+  for (p in names(panels)) {
+    if (!p %in% names(ylim)) {
+      # create a default scale for this panel
+      paneldf <- data[[p]][, panels[[p]], drop = FALSE]
+      if (!is.null(paneldf) && ncol(paneldf) > 0) {
+        x <- getxvals(data[[p]], !is.null(xvals[[paste0(p, "ts")]]), xvals[[p]])
+        x_restriction <- x >= xlim[[p]][1] & x <= xlim[[p]][2]
+        if (!any(x_restriction)) x_restriction <- TRUE # if no visible x, use all the data as a fallback
+        ylim[[p]] <- defaultscale(paneldf[x_restriction, , drop = FALSE], bars[[p]], stacked)
       } else {
-        paneldf <- data[[p]][, panels[[p]], drop = FALSE]
-        if (!is.null(paneldf) && ncol(paneldf) > 0) {
-          ylim_list[[p]] <- defaultscale(paneldf, bars[[p]], stacked)
-        } else {
-          ylim_list[[p]] <- EMPTYSCALE
-        }
+        ylim[[p]] <- EMPTYSCALE
       }
     }
   }
-  ylim_list <- duplicateaxes(ylim_list, panels, layout)
-  return(ylim_list)
+  ylim <- duplicateaxes(ylim, panels, layout)
+  return(ylim)
 }
 
 handleticks <- function(data, ylim) {

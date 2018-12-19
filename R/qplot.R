@@ -54,6 +54,17 @@ conformxvariable <- function(x, data, layout) {
   return(x)
 }
 
+sanity_check_ylim <- function(ylim) {
+  if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
+    stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).")
+  }
+  if (is.null(ylim$max)) {
+    stop("You did not supply a max ylimit.")
+  }
+  if (is.null(ylim$min)) {
+    stop("You did not supply a min ylimit.")
+  }
+}
 
 handlebars <- function(data, bars) {
   if (is.logical(bars)) {
@@ -151,7 +162,7 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
       sources = sources,
       yunits = NULL,
       xunits = NULL,
-      ylim = ylim,
+      ylim = apply_ylim_to_panels(ylim),
       xlim = xlim,
       legend = legend,
       legend.ncol = legend.ncol,
