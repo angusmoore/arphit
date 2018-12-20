@@ -228,3 +228,13 @@ p <- arphitgg(data) +
   agg_xlim(2011,2013) +
   agg_autolabel()
 expect_error(print(p), NA)
+
+# Missing observations in stacked bar graphs (#217)
+
+data <- data.frame(series_name = letters[1:10], value = rnorm(10), group = sample(1:3,10,TRUE))
+expect_error({
+  p <-
+    arphitgg(data, agg_aes(x = series_name, y = value, group = group)) +
+    agg_col() + agg_autolabel()
+  print(p)
+}, NA)
