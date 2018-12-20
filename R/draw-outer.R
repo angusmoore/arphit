@@ -16,20 +16,22 @@ getlegendentries <- function(panels, bars, attributes) {
   legend <- list()
   for (p in names(panels)) {
     for (series in panels[[p]]) {
-      isbar <- series %in% bars[[p]]
-      if (isbar) {
-        entry <- list(name = series,
-                      fill = attributes[[p]]$col[[series]],
-                      border = attributes[[p]]$barcol[[series]])
-      } else {
-        entry <- list(name = series,
-                      pch = attributes[[p]]$pch[[series]],
-                      lwd = attributes[[p]]$lwd[[series]],
-                      lty = attributes[[p]]$lty[[series]],
-                      col = attributes[[p]]$col[[series]])
-      }
-      if (!(list(entry) %in% legend)) {
-        legend <- append(legend, list(entry))
+      if (!identical(series, "<NA>")) {
+        isbar <- series %in% bars[[p]]
+        if (isbar) {
+          entry <- list(name = series,
+                        fill = attributes[[p]]$col[[series]],
+                        border = attributes[[p]]$barcol[[series]])
+        } else {
+          entry <- list(name = series,
+                        pch = attributes[[p]]$pch[[series]],
+                        lwd = attributes[[p]]$lwd[[series]],
+                        lty = attributes[[p]]$lty[[series]],
+                        col = attributes[[p]]$col[[series]])
+        }
+        if (!(list(entry) %in% legend)) {
+          legend <- append(legend, list(entry))
+        }
       }
     }
   }
