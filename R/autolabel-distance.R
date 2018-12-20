@@ -55,6 +55,7 @@ point_bar_distance <- function(x, y, series.x, series.y, data, bars, bars.stacke
       return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
     } else {
       bardata <- bardata[1:row_n,]
+      bardata[is.na(bardata)] <- 0
       bardata_p <- bardata
       bardata_n <- bardata
       bardata_p[bardata <= 0] <- 0
