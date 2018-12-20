@@ -67,3 +67,6 @@ expect_error(agg_qplot(data, legend = TRUE, bars = "x1"), NA)
 expect_error(agg_qplot(data, legend = TRUE, bars = "x1", pch = list("x2" = ".")), NA)
 colnames(data) <- c(paste0(longname,1), paste0(longname,2), paste0(longname,3))
 expect_error(agg_qplot(data, legend = TRUE), NA)
+
+# Don't include series wihtout names in legends/autolabeller (#219)
+expect_equal(length(getlegendentries(list("1" = c("1", "<NA>")), list(), list())), 1)
