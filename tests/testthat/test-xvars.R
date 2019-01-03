@@ -136,6 +136,16 @@ expect_error({
   print(p)
 }, NA)
 
+# hourly data
+data <-
+  data.frame(date = seq.POSIXt(from=ISOdate(1999,1,1),by="hour",length.out = 100),
+  y = rnorm(100))
+expect_error({
+  p <- arphitgg(data, agg_aes(x = date, y = y)) + agg_line()
+  print(p)
+}, NA)
+
+
 
 # Test old bug from old frequency guessing causing incorrect labels with irregularly spaced data
 data <- data.frame(year = c(1991, 2001, 2006, 2011, 2016), y = rnorm(5))
