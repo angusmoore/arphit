@@ -39,7 +39,7 @@ get_x_values <- function(data, x) {
       if (x[[p]] %in% names(data[[p]])) {
         outx[[p]] <- data[[p]][[x[[p]]]]
         # if is dates, convert to year fractions
-        if (lubridate::is.Date(outx[[p]])) {
+        if (lubridate::is.Date(outx[[p]]) || lubridate::is.POSIXt(outx[[p]])) {
           freq <- frequencyof(outx[[p]])
           outx[[p]] <- make_decimal_date(outx[[p]], freq)
           # Add a little helper to tell other functions we have time series data
