@@ -12,5 +12,6 @@
 ## Bugfixes
 
  * Automatically guessed y-limits are now based only on visible data (e.g. they now respect x-limits) ([#213](https://github.com/angusmoore/arphit/pull/213))
+ * Corrected handling of higher frequency data (e.g. weekly, hourly) and semi-annual data ([#221](https://github.com/angusmoore/arphit/pull/221))
 
 ## Deprecated or removed
