@@ -108,6 +108,11 @@ expect_equal(frequencyof(years), 1)
 # Bad behaviour with non recognised frequencies of data
 expect_equal(frequencyof(seq.Date(from=as.Date("2000-01-01"),by="week",length.out = 100)), 1/(365/7))
 expect_null(frequencyof(seq.POSIXt(from=ISOdate(1999,1,1),by="hour",length.out = 100)))
+# duplicate dates
+duplicate_dates <- as.Date(c("2000-03-01","2000-06-01","2000-09-01","2000-09-01","2000-12-01","2001-03-01"))
+expect_equal(frequencyof(duplicate_dates), 1/4)
+# single date
+expect_equal(frequencyof(as.Date("2018-06-01")), 1)
 
 # weekly data
 data <-
@@ -165,6 +170,14 @@ expect_error(
   print(p),
   NA
 )
+
+foo <- data.frame(x = seq(from = as.Date("2000-01-01"),length.out=1000,by="day"),y=rnorm(1000))
+p <- arphitgg(foo, agg_aes(x=x,y=y))+agg_line()
+expect_error(
+  print(p),
+  NA
+)
+
 
 # Test #37
 # Error if x variable has NA values
