@@ -1,22 +1,16 @@
 frequencyof <- function(dates) {
-  dates <- lubridate::decimal_date(dates)
-  if (length(dates) > 1) {
-    smallestdiff <- min(abs(diff(dates))[abs(diff(dates)) > 0])
-    options <- c(1, 1/4, 1/12, 1/(365/7), 1/365)
-    bestchoice <- abs(log(smallestdiff) -log(options)) < 0.1
-    if (sum(bestchoice) == 1) {
-      return(options[bestchoice])
-    } else {
-      if (smallestdiff > 1) {
-        # If frequency is more than a year, just use years
-        return(1)
-      } else {
-        return(NULL)
-      }
+  # Remove duplicate dates first
+  dates <- unique(dates)
+  for (frequency in c(1, 1/2, 1/4, 1/12, 1/(365/7), 1/365)) {
+    if (!any(duplicated(make_decimal_date(dates, frequency)))) {
+      return(frequency)
     }
-  } else {
-    return(1)
   }
+  return(NULL)
+}
+
+days_in_year <- function(date) {
+  unname(lubridate::days_in_month(lubridate::make_date(lubridate::year(date), 2, 1))) + 337
 }
 
 make_decimal_date <- function(date, frequency) {
@@ -24,6 +18,8 @@ make_decimal_date <- function(date, frequency) {
     return(lubridate::decimal_date(date))
   } else if (frequency == 1) {
     return(lubridate::year(date) + 0.5)
+  } else if (frequency == 1/2) {
+    return(lubridate::year(date) + (lubridate::semester(date) - 0.5)/2)
   } else if (frequency == 1/4) {
     return(lubridate::year(date) + (lubridate::quarter(date) - 0.5)/4)
   } else if (frequency == 1/12) {
@@ -31,7 +27,7 @@ make_decimal_date <- function(date, frequency) {
   } else if (frequency == 1/(365/7)) {
     return(lubridate::year(date) + (lubridate::week(date) - 0.5)/(365/7))
   } else if (frequency == 1/365) {
-    return(lubridate::decimal_date(date) + 0.5/365)
+    return(lubridate::year(date) + (lubridate::yday(date) - 0.5)/days_in_year(date))
   }
   stop("Unknown frequency")
 }
