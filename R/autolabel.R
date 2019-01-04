@@ -147,7 +147,7 @@ autolabel_fallback <- function(label, xlim, ylim, underlay_bitmap, layout, p, qu
 
 autolabel_series <- function(series, label, otherseries, p, plot_bitmap, los_mask, panels, xlim, ylim, margins, labels, xvals, data, attributes, bars, layout, log_scale, bars.stacked, quiet, inches_conversion) {
   series_types <- get_series_types(panels[[p]], attributes[[p]], bars)
-  if (!quiet) cat(paste0("Finding location for ", series, " ."))
+  if (!quiet) cat(paste0("Finding location for ", stringr::str_replace(series, stringr::fixed("\n"), " "), " ."))
   found_location <-
     find_candidates(
       label,
