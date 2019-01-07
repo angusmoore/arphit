@@ -15,7 +15,7 @@ evaluate_candidate <- function(x, y, text_indices, x_text_anchor, y_text_anchor,
   }
 }
 
-divide_y_axis <- function(ylim, divisor, points, axis_points, axis_step, remove_axis) {
+divide_y_axis <- function(ylim, divisor, axis_points, axis_step, remove_axis) {
     new_points <- seq(from = ylim$min + axis_step/divisor, by = axis_step/divisor, to = ylim$max - axis_step/divisor)
 
     if (remove_axis) {
@@ -30,7 +30,7 @@ autolabeller_y_points <- function(ylim, has_linebreak) {
   axis_points <- seq(from = ylim$min + axis_step, by = axis_step, to = ylim$max - axis_step)
 
   for (divisor in seq(from = 2, by = 2, to = AUTOLABEL_YSTEPS)) {
-    candidate_points <- divide_y_axis(ylim, divisor, points, axis_points, axis_step, !has_linebreak)
+    candidate_points <- divide_y_axis(ylim, divisor, axis_points, axis_step, !has_linebreak)
     if (length(candidate_points) > AUTOLABEL_YSTEPS) return(candidate_points)
   }
 }
