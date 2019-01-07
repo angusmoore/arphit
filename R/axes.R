@@ -232,10 +232,15 @@ findlabelstep <- function(start, end, layout_factor, exponent = 1) {
   return(findlabelstep(start, end, layout_factor, exponent*10))
 }
 
-restrictlabels <- function(ticks, layout_factor) {
+restrictlabels <- function(ticks, layout_factor, partial_end_year = FALSE) {
   step <- findlabelstep(1, length(ticks), layout_factor)
   n <- floor((length(ticks) - 1) / step) + 1
-  return(seq(to = length(ticks), length.out = n, by = step))
+  if (!partial_end_year) {
+    to <- length(ticks)
+  } else {
+    to <- length(ticks) - 1
+  }
+  return(seq(to = to, length.out = n, by = step))
 }
 
 getlayoutfactor <- function(layout) {
@@ -250,14 +255,16 @@ getlayoutfactor <- function(layout) {
 
 xlabels.ts <- function(xlim, layout) {
   layout_factor <- getlayoutfactor(layout)
-  startyear <- xlim[1]
-  endyear <- xlim[2]
+  startyear <- floor(xlim[1])
+  endyear <- ceiling(xlim[2])
   # Create the sequence and offset the labels by half a year so that the labels are centered
   ticks <- seq(from = startyear, to = (endyear-1), by = 1)
-  keep <- restrictlabels(ticks, layout_factor)
+  keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
   labels <- ticks[keep]
   at <- labels + 0.5
-  return(list("at" = at, "labels" = labels, "ticks" = ticks))
+  # drop any labels that are outside the x limits
+  keep <- at >= xlim[1] & at <= xlim[2]
+  return(list(at = at[keep], labels = labels[keep], ticks = ticks))
 }
 
 xlabels.categorical <- function(xlim, xvar, layout, showall) {
