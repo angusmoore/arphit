@@ -559,3 +559,14 @@ expect_error({
     arphitgg(data, agg_aes(x = x, y = y)) + agg_line() + agg_xlim(NA, 2005)
   print(p)
 }, NA)
+
+# Poor handling of x labels for non-integer x limits in time series
+expect_equal(xlabels.ts(c(2008.008,2009.008), "1")$at %% 1, 0.5)
+expect_true(all((xlabels.ts(c(2008.008,2019.008), "1")$at %% 1) ==0.5))
+
+# Showing labels waaay off of panels for high frequency data
+for (i in 1:1000) {
+  x <- runif(1)
+  expect_lte(xlabels.ts(c(2008 + x, 2009 + x), "1")$at, 2009 + x)
+  expect_gte(xlabels.ts(c(2008 + x, 2009 + x), "1")$at, 2008 + x)
+}
