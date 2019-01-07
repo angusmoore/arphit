@@ -231,7 +231,7 @@ restrictlabels <- function(ticks, layout_factor, partial_end_year = FALSE) {
   } else {
     to <- length(ticks) - 1
   }
-  return(seq(to = , length.out = n, by = step))
+  return(seq(to = to, length.out = n, by = step))
 }
 
 getlayoutfactor <- function(layout) {
@@ -250,7 +250,7 @@ xlabels.ts <- function(xlim, layout) {
   endyear <- ceiling(xlim[2])
   # Create the sequence and offset the labels by half a year so that the labels are centered
   ticks <- seq(from = startyear, to = (endyear-1), by = 1)
-  keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear) # Only keep every 3rd or whatever label
+  keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
   labels <- ticks[keep]
   at <- labels + 0.5
   # drop any labels that are outside the x limits
