@@ -125,7 +125,8 @@ charwidth <- function(C) {
     "¥" = 0.2083333
   )
   if (is.null(width)) {
-    stop(paste0("No width for ", C))
+    warning(paste0("No width for ", C))
+    return(0.291666666666667)
   } else {
     return(width)
   }
