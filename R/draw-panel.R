@@ -202,10 +202,6 @@ needgrid <- function(p, layout) {
   }
 }
 
-inchesasuser <- function(x) {
-  x*graphics::strheight("AA",units="user")/graphics::strheight("AA",units="inches")
-}
-
 tickadjustment <- function(layout) {
   return(switch(layout,
                 "1" = 1,
@@ -258,7 +254,7 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
     }
 
     # Calculate what one line is in user coordinates
-    y <- inchesasuser(0.8 * CSI)
+    y <- inchesasuser_height(0.8 * CSI)
 
     if (srt == 0) {
       adj <- c(0.5, 1)

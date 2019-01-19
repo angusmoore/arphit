@@ -1,15 +1,3 @@
-getstrheight <- function(text, units = "inches", cex = 1) {
-  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, lheight = 1)
-  h <- graphics::strheight(text, units = units, cex = cex)
-  return(h)
-}
-
-getstrwidth <- function(text, units = "inches", cex = 1) {
-  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, lheight = 1)
-  h <- graphics::strwidth(text, units = units, cex = cex)
-  return(h)
-}
-
 finddevice <- function(filename) {
   if (is.null(filename)) {
     return(NULL)

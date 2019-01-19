@@ -69,7 +69,7 @@ splitoverlines <- function(s, maxsize, cex) {
         lastspace <- NULL
       }
       string <- substr(s, i-cumul, i)
-      if (graphics::strwidth(string, units = "inches", cex = cex) > maxsize && !is.null(lastspace)) {
+      if (getstrwidth(string, units = "inches", cex = cex) > maxsize && !is.null(lastspace)) {
         breakpoints <- append(breakpoints, lastspace)
         cumul <- 0
         lastspace <- NULL
