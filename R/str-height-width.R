@@ -13,8 +13,6 @@ getstrheight <- function(text, units = "inches", cex = 1) {
     return(inchesasuser_height(inch_height))
   } else if (units == "inches") {
     return(inch_height)
-  } else {
-    stop(paste0("Unknown units ", units))
   }
 }
 
@@ -148,7 +146,5 @@ getstrwidth <- function(text, units = "inches", cex = 1) {
     return(inchesasuser_width(inch_width))
   } else if (units == "inches") {
     return(inch_width)
-  } else {
-    stop(paste0("Unknown units ", units))
   }
 }
