@@ -94,7 +94,7 @@ create_los_mask <- function(series, panels, p, data, xvals, dims, xlim, ylim, ba
     height = dims[2] / graphics::par("mfrow")[1],
     res = PNGDPI
   )
-  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
+  graphics::par(family = font_family(), xaxs = "i", yaxs = "i", ps = 20, cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
   graphics::par(omi = c(0,0,0,0), mar = c(0,0,0,0))
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                  xlim = c(0,1), ylim = c(0, 1))
