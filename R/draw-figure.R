@@ -1,8 +1,8 @@
 font_family <- function() {
-  if(capabilities()[["X11"]]) {
-    return("Arial")
-  } else {
+  if(.Platform$OS.type == "windows") {
     return("sans")
+  } else {
+    return("Arial")
   }
 }
 
