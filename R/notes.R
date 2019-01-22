@@ -54,7 +54,7 @@ formatfn <- function(footnotes, width) {
 
 splitoverlines <- function(s, maxsize, cex) {
   # Set values needed to determine str widths
-  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, las = 1, lheight = 1)
+  graphics::par(family = font_family(), xaxs = "i", yaxs = "i", ps = 20, las = 1, lheight = 1)
 
   breakpoints <- c()
   if (nchar(s) > 0) {
