@@ -1,3 +1,13 @@
+font_family <- function() {
+  if (names(dev.cur()) == "pdf") {
+    return("ArialMT")
+  } else if(.Platform$OS.type == "windows") {
+    return("sans")
+  } else {
+    return("Arial")
+  }
+}
+
 finddevice <- function(filename) {
   if (is.null(filename)) {
     return(NULL)
@@ -204,6 +214,6 @@ createfigure <- function(filename, device, figsize, plotsize) {
   graphics::par(pin = plotsize, plt = plotcorners)
 
   # Misc display things
-  graphics::par(family = "sans", xaxs = "i", yaxs = "i", ps = 20, cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
+  graphics::par(family = font_family(), xaxs = "i", yaxs = "i", ps = 20, cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
   graphics::par(omi = c(figsize$bottom, figsize$left, figsize$top, figsize$right))
 }
