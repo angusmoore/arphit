@@ -1,5 +1,7 @@
 font_family <- function() {
-  if(.Platform$OS.type == "windows") {
+  if (names(dev.cur()) == "pdf") {
+    return("ArialMT")
+  } else if(.Platform$OS.type == "windows") {
     return("sans")
   } else {
     return("Arial")
