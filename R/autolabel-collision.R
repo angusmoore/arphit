@@ -1,9 +1,9 @@
 get_underlay_bitmap <- function(gg, margins) {
   plot_device <- grDevices::dev.cur()
   gg$enable_autolabeller <- FALSE
-  agg_draw(gg, filename = paste0(tempdir(), "/autolabel-temp.png"))
-  image <- magick::image_read(paste0(tempdir(), "/autolabel-temp.png"))
-  suppressWarnings(file.remove(paste0(tempdir(), "/autolabel-temp.png")))
+  agg_draw(gg, filename = paste0(tempdir(), "/autolabel-temp.pdf"))
+  image <- magick::image_read(paste0(tempdir(), "/autolabel-temp.pdf"))
+  suppressWarnings(file.remove(paste0(tempdir(), "/autolabel-temp.pdf")))
 
   # Crop off the outer material
   top <- as.integer(CSI*margins$top*PNGDPI)
