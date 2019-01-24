@@ -18,6 +18,7 @@ Imports:
   devEMF,
   zoo,
   xts,
+  pdftools,
   magick
 Suggests:
   testthat,
