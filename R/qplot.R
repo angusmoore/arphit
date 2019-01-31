@@ -34,7 +34,7 @@ conformxvariable <- function(x, data) {
     if (stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data)) {
       x <- list("1" = "agg_time")
     } else {
-      stop("You did not specify an x variable and cannot guess it because your data is not a time series.`")
+      stop("You did not specify an x variable and cannot guess it because your data is not a time series.")
     }
   }
   return(x)
@@ -126,6 +126,8 @@ agg_qplot <- function(data, series = NULL, x = NULL, bars = NULL, filename = NUL
   x <- conformxvariable(x, data)
   data <- conformdata(data, series, x[["1"]])
   bars <- handlebars(data, bars)
+  if (!is.list(ylim)) stop("ylim should be a list")
+  if (length(ylim) > 0) sanity_check_ylim(ylim)
 
   if (!x[["1"]] %in% names(data[["1"]])) {
     stop(paste0("The x variable you specified (", x[["1"]], ") is not in your data."))

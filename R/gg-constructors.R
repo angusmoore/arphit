@@ -309,6 +309,12 @@ agg_shading <- function(from, to, panel = NULL, color = RBA["Grey2"]) {
 #'
 #' @export
 agg_ylim <- function(min, max, nsteps, panel = NULL) {
+  if (!is.finite(min)) stop("ylim min is non-finite")
+  if (!is.finite(max)) stop("ylim max is non-finite")
+  if (!is.finite(nsteps)) stop("ylim nsteps is non-finite")
+  if (is.null(nsteps) || nsteps < 2) {
+    stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).")
+  }
   return(list(type = "ylim", min = min, max = max, nsteps = nsteps, panel = panel))
 }
 

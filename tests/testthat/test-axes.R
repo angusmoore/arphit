@@ -90,7 +90,7 @@ test_that("Match axes on horizontal layouts",{
 test_that("Sanity checks", {
   expect_error(agg_qplot(fakedata, x = "date", ylim = list("min" = 1, "nsteps" = 3)),
                "You did not supply a max ylimit.")
-  expect_error(agg_qplot(fakedata, x = "date", ylim = list("1" = list("max" = 1, "nsteps" = 3))),
+  expect_error(agg_qplot(fakedata, x = "date", ylim = list("max" = 1, "nsteps" = 3)),
                "You did not supply a min ylimit.")
   expect_error(agg_qplot(fakedata, x="date", ylim = list("max" = 1, "nsteps" = 3)),
                "You did not supply a min ylimit.")
@@ -119,7 +119,7 @@ test_that("Sanity checks", {
     "The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
     fixed = TRUE
   )
-  expect_error(agg_qplot(data.frame(x=1:10,y=1:10), ylim = c(0,10,5), x="x"), "Ylim should be a list")
+  expect_error(agg_qplot(data.frame(x=1:10,y=1:10), ylim = c(0,10,5), x="x"), "ylim should be a list")
 })
 
 
