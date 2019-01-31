@@ -8,15 +8,11 @@ conformpaneltitles <- function(panels, paneltitles, layout, width) {
   }
 
   out <- list()
-  if (!is.list(paneltitles)) {
-    stop("`paneltitles` must be a list.")
-  } else {
-    for (p in names(panels)) {
-      if (p %in% names(paneltitles)) {
-        out[[p]] <- splitoverlines(paneltitles[[p]], width, 18/20)
-      } else {
-        out[p] <- list(NULL)
-      }
+  for (p in names(panels)) {
+    if (p %in% names(paneltitles)) {
+      out[[p]] <- splitoverlines(paneltitles[[p]], width, 18/20)
+    } else {
+      out[p] <- list(NULL)
     }
   }
   return(out)
