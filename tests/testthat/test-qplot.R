@@ -19,12 +19,3 @@ test_that("Errors for wrong x vars", {
                fixed = TRUE)
 })
 
-test_that("Errors for paneltitles", {
-  data <- data.frame(x=1:10,y=rnorm(10))
-  expect_error(agg_qplot(data, x="x", paneltitles = "foo"),
-               "`paneltitles` must be a list.")
-
-  skip("This should throw an error but is not")
-  expect_error(agg_qplot(data, x="x", panelsubtitles = "foo"),
-               "`paneltitles` must be a list.")
-})

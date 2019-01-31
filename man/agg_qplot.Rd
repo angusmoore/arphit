@@ -5,8 +5,7 @@
 \title{RBA-style graphs in R}
 \usage{
 agg_qplot(data, series = NULL, x = NULL, layout = "1", bars = NULL,
-  filename = NULL, title = NULL, subtitle = NULL,
-  paneltitles = list(), panelsubtitles = list(), footnotes = c(),
+  filename = NULL, title = NULL, subtitle = NULL, footnotes = c(),
   sources = c(), yunits = NULL, col = list(), pch = list(),
   lty = list(), lwd = list(), xlim = list(), ylim = list(),
   legend = FALSE, legend.ncol = NA, bar.stacked = TRUE)
@@ -30,10 +29,6 @@ Alternatively if just a vector of string names is supplied, it will be assumed a
 \item{title}{(optional) A string indicating the title for the entire chart. Passing NULL (or omitting the argument) will suppress printing of title.}
 
 \item{subtitle}{(optional) A string indicating the subtitle for the entire chart. Passing NULL (or omitting the argument) will suppress printing of subtitle.}
-
-\item{paneltitles}{(optional) A list of string -> string pairs indicating panel titles. Keys must be "1", "2", etc to indicate which panel the title is for.}
-
-\item{panelsubtitles}{(optional) A list string -> string pairs indicating panel titles. See paneltitles.}
 
 \item{footnotes}{(optional) A vector strings, corresponding to the footnotes, in order.}
 
