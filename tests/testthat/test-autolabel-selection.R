@@ -11,11 +11,14 @@ test_candidates <- function(a_tibble, b_d, b_other, b_los) {
 loop_los <- function(a_tibble, b_d, b_other) sapply(los, function(b_los) test_candidates(a_tibble,b_d,b_other,b_los))
 loop_other <- function(a_tibble, b_d) sapply(distance, function(b_other) loop_los(a_tibble, b_d, b_other))
 
-for (a_d in distance) {
-  for (a_other in distance) {
-    for (a_los in los) {
-      a_tibble <- tibble::tibble(x="a",y="a",distance=a_d,los=a_los,next_closest=a_other,selection_group=assign_selection_group(a_d,a_other,a_los))
-      sapply(distance, function(b_d) loop_other(a_tibble, b_d))
+test_that("Fuzzing autolabel selection", {
+  for (a_d in distance) {
+    for (a_other in distance) {
+      for (a_los in los) {
+        a_tibble <- tibble::tibble(x="a",y="a",distance=a_d,los=a_los,next_closest=a_other,selection_group=assign_selection_group(a_d,a_other,a_los))
+        sapply(distance, function(b_d) loop_other(a_tibble, b_d))
+      }
     }
   }
-}
+
+})
