@@ -71,7 +71,7 @@ drawannotationline <- function(line) {
   if (is.na(line$y2)) {
     line$y2 <- graphics::par("usr")[4]
   }
-  graphics::segments(line$x1, line$y1, line$x2, line$y2, col = line$color, lty = line$lty)
+  graphics::segments(line$x1, line$y1, line$x2, line$y2, col = line$color, lty = line$lty, lwd = line$lwd)
 }
 
 drawannotationlines <- function(lines, p) {

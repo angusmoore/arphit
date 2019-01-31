@@ -44,7 +44,6 @@ test_that("AB lines", {
   expect_true(check_graph(foo, "annotations-ablines1"))
   expect_true(check_graph(bar, "annotations-ablines2"))
   expect_true(check_graph(baz, "annotations-ablines3"))
-  skip("Setting line width not working #231")
   expect_true(check_graph(p, "annotations-set-lty-lwd"))
 })
 
