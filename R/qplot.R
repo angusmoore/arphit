@@ -116,8 +116,7 @@ handlebars <- function(data, bars) {
 #' T <- 24
 #' randomdata <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10),
 #'   x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
-#' agg_qplot(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
-#'   bars = c("x3","x4"), layout = "2v", title = "A Title", subtitle = "A subtitle",
+#' agg_qplot(randomdata, title = "A Title", subtitle = "A subtitle",
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
