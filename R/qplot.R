@@ -113,8 +113,6 @@ handlebars <- function(data, bars) {
 #' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
 #' @param title (optional) A string indicating the title for the entire chart. Passing NULL (or omitting the argument) will suppress printing of title.
 #' @param subtitle (optional) A string indicating the subtitle for the entire chart. Passing NULL (or omitting the argument) will suppress printing of subtitle.
-#' @param paneltitles (optional) A list of string -> string pairs indicating panel titles. Keys must be "1", "2", etc to indicate which panel the title is for.
-#' @param panelsubtitles (optional) A list string -> string pairs indicating panel titles. See paneltitles.
 #' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
 #' @param yunits (optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.
@@ -140,15 +138,11 @@ handlebars <- function(data, bars) {
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, title = NULL, subtitle = NULL, paneltitles = list(), panelsubtitles = list(), footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = list(), ylim = list(), legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
+agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = list(), ylim = list(), legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
 
   data <- conformdata(data, layout, series)
   x <- conformxvariable(x, data, layout)
   bars <- handlebars(data, bars)
-
-  if (!is.list(paneltitles)) {
-    stop("`paneltitles` must be a list.")
-  }
 
   agg_draw_internal(
     list(
@@ -158,8 +152,8 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
       bars = bars,
       title = title,
       subtitle = subtitle,
-      paneltitles = paneltitles,
-      panelsubtitles = panelsubtitles,
+      paneltitles = list(),
+      panelsubtitles = list(),
       yaxislabels = list(),
       xaxislabels = list(),
       footnotes = footnotes,
