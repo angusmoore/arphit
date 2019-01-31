@@ -1,14 +1,19 @@
 language: r
+dist: xenial
 warnings_are_errors: true
 sudo: false
 cache: packages
 r_github_packages:
   - jimhester/covr
 
+addons:
+  apt:
+    update: true
+    packages:
+      - libmagick++-dev
+
 before_install:
   - chmod 755 ./.push_gh_pages.sh
-  - sudo apt-get update
-  - sudo apt-get install -y libmagick++-dev
 
 after_success:
   - Rscript -e 'covr::coveralls()'
