@@ -4,7 +4,7 @@
 \alias{agg_shading}
 \title{Add shading between series}
 \usage{
-agg_shading(from, to, panel = NULL, color = NULL)
+agg_shading(from, to, panel = NULL, color = RBA["Grey2"])
 }
 \arguments{
 \item{from}{The series name to shade from (if you have no group aesthetic, it will be the name of the y variable); if you have groups, it will (usually) be the group identifier. This can get more complicated if you have duplicate group names. If so, arphit appends .y to the group names, so try that.)}

@@ -27,10 +27,9 @@ test_that("Background shading", {
   bar <- arphitgg() + agg_bgshading(y1 = 0.5, y2 = -0.5, panel = "1")
   baz <- arphitgg() + agg_bgshading(x1 = 2001, x2 = 2002, y1 = 0.5, y2 = -0.5, color = "red", panel = "1")
 
-  expect_true(check_graph(baz, "annotations-bgshading3"))
-  skip("Background shading default not working #232")
   expect_true(check_graph(foo, "annotations-bgshading1"))
   expect_true(check_graph(bar, "annotations-bgshading2"))
+  expect_true(check_graph(baz, "annotations-bgshading3"))
 })
 
 ## AB lines ================

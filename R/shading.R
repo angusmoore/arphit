@@ -39,9 +39,6 @@ handleshading <- function(shading, panels) {
     shadingsanity(s$to, s$from, panels, s$panel)
 
     i <- length(out[[s$panel]]) + 1
-    if (is.null(s$color)) {
-      s$color <- DEFAULTSHADINGCOLOR
-    }
     out[[s$panel]][[i]] <- s
     # Don't need the panel identifier (since it is in the list)
     out[[s$panel]][[i]]$panel <- NULL
