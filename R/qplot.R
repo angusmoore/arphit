@@ -146,6 +146,10 @@ agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, 
   x <- conformxvariable(x, data, layout)
   bars <- handlebars(data, bars)
 
+  if (!is.list(paneltitles)) {
+    stop("`paneltitles` must be a list.")
+  }
+
   agg_draw_internal(
     list(
       data = data,

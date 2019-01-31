@@ -4,5 +4,7 @@
 .Ruserdata
 inst/doc
 *.png
+!tests/testdata/linux/*.png
+!tests/testdata/windows/*.png
 *.html
 *.pdf

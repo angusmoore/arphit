@@ -1,93 +1,63 @@
 context("Draw figure")
-
-height <- 10 + (10 + 20)*CSI
-width <- 20 + (30 + 40)*CSI
-expect_equal(getfigsize(c(10,20), 10, 20, 30, 40)$height, height)
-expect_equal(getfigsize(c(10,20), 10, 20, 30, 40)$width, width)
-
-height <- 10 + (1 + 2)*CSI
-width <- 20 + 2*MINIMUMSIDEPADDING
-expect_equal(getfigsize(c(10,20), 1, 2, 0.3, 0.4)$height, height)
-expect_equal(getfigsize(c(10,20), 1, 2, 0.3, 0.4)$width, width)
-
-height <- 10 + (1 + 2)*CSI
-width <- 20 + MINIMUMSIDEPADDING + 6*CSI
-expect_equal(getfigsize(c(10,20), 1, 2, 1, 6)$height, height)
-expect_equal(getfigsize(c(10,20), 1, 2, 1, 6)$width, width)
-
-expect_error(handlelayout("sdf"))
-
-expect_equal(countfnlines(NULL), 0)
-expect_that(countfnlines("asdf"), equals(1.1))
-expect_that(countfnlines(list("asdf","asdf")), equals(2.2))
-expect_that(countfnlines(list("asdf","as\ndf")), equals(3.3))
-expect_that(countfnlines(list("as\ndf","as\ndf")), equals(4.4))
-
-expect_that(counttitlelines("foo", NULL), equals(2.7))
-expect_that(counttitlelines(NULL, NULL), equals(0.99))
-expect_that(counttitlelines(NULL, "foo"), equals(2.14))
-expect_that(counttitlelines("Foo", "foo"), equals(3.85))
-expect_that(counttitlelines("Foo\nbar", "foo"), equals(5.75))
-expect_that(counttitlelines("Foo\nbar", "foo\nbar"), equals(7.55))
-
-expect_that(countsrclines(list(text = "ASDF", plural = FALSE)), equals(1.7))
-expect_that(countsrclines(list(text = "ASDF, Foo, Bar", plural = TRUE)), equals(1.7))
-expect_that(countsrclines(list(text = "ASDF, FoA\no, Bar", plural = TRUE)), equals(2.8))
-
-expect_that(is.even(2), is_true())
-expect_that(is.even(3), is_false())
-
-expect_error(finddevice("abc.xyz"))
-expect_that(finddevice("abc.png"), equals("png"))
-expect_that(finddevice("abc.pdf"), equals("pdf"))
-expect_that(finddevice("abc.emf"), equals("emf"))
-expect_that(finddevice("abc.emf+"), equals("emf+"))
-expect_that(finddevice("abc.svg"), equals("svg"))
-expect_that(finddevice(NULL), equals(NULL))
-
-# test that each of the filenames output the right type of file
+set.seed(42)
 randomdata <- ts(data.frame(x1 = rnorm(12)), start = c(2000,1), frequency = 4)
-for (suffix in c("png","pdf","emf","svg")) {
-  file <- paste("foo.", suffix, sep = "")
-  agg_qplot(randomdata, filename = file)
-  # test exists
-  expect_that(file.exists(file), is_true())
-  # remove
-  file.remove(file)
-}
-# Special case EMF+, because we change the file extension
-agg_qplot(randomdata, filename = "foo.emf+")
-expect_that(file.exists("foo.emf"), is_true())
-file.remove("foo.emf")
 
-# tests for bottom spacing
-fakeseries1 <- c("a","b")
-onesided <- list("1" = fakeseries1, "2" = NULL)
-expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 1.8)
-expect_equal(figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "test"), 0, LANDSCAPESIZE, FALSE, "1", 0)$notesstart, 3.5)
+test_that("Filetypes", {
+  # test that each of the filenames output the right type of file
+  for (suffix in c("png","pdf","emf","svg")) {
+    file <- paste("foo.", suffix, sep = "")
+    agg_qplot(randomdata, filename = file)
+    # test exists
+    expect_that(file.exists(file), is_true())
+    # remove
+    file.remove(file)
+  }
 
-# tests for extra margins when have y axis labels
-noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE, "1", 0)$left
-yaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list("1" = "foo"), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$left
-expect_that(yaxislabelmargin, is_more_than(noaxislabelmargin))
+  # Special case EMF+, because we change the file extension
+  agg_qplot(randomdata, filename = "foo.emf+")
+  expect_that(file.exists("foo.emf"), is_true())
+  file.remove("foo.emf")
 
-# tests for extra margins when have x axis labels
-noaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)$bottom
-xaxislabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list("1" = "foo"), 0, LANDSCAPESIZE, FALSE, "1", 0)$bottom
-expect_that(xaxislabelmargin, is_more_than(noaxislabelmargin))
+  p <- arphitgg()
+  expect_error(agg_draw(p, "foo.foo"), "Unsupported file type foo.")
+})
 
-# tests for extra margins with legends
-nolegendlabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0,  LANDSCAPESIZE, FALSE, "1", 0)$bottom
-legendlabelmargin <- figuresetup("", NULL, onesided, list(), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 1,  LANDSCAPESIZE, FALSE, "1", 0)$left
-expect_that(legendlabelmargin, is_more_than(nolegendlabelmargin))
+test_that("Margins", {
+  # tests for bottom spacing
+  p <- arphitgg() + agg_xaxislabel("FOO")
+  expect_true(check_graph(p, "draw-figure-with-extra-bottom-spacing"))
 
-# rotated x labels should have larger bottom padding
-norotation <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 0)
-rotated45 <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 45)
-rotated90 <- figuresetup("", NULL, onesided, list("1" = list("labels" = "abcdefghijklmnop")), list(), list("1" = "%"), NULL, NULL, NULL, list(text = "", plural = FALSE), list(), list(), 0, LANDSCAPESIZE, FALSE, "1", 90)
+  # tests for extra margins when have y axis labels
+  p <- arphitgg() + agg_yaxislabel("FOO")
+  expect_true(check_graph(p, "draw-figure-with-extra-left-spacing"))
 
-expect_that(rotated45$bottom, is_more_than(norotation$bottom))
-expect_that(rotated90$bottom, is_more_than(rotated45$bottom))
+  # tests for extra margins with legends
+  p <- arphitgg(randomdata, agg_aes(y=x1))+agg_line()+agg_point()+agg_legend()
+  expect_true(check_graph(p, "draw-figure-legend-spacing"))
 
-expect_that(rotated45$bottom, is_more_than(norotation$xtickmargin))
-expect_that(rotated90$bottom, is_more_than(rotated45$xtickmargin))
+  # rotated x labels should have larger bottom padding
+  p <- arphitgg(randomdata, agg_aes(y=x1), srt = 45)+agg_line()
+  expect_true(check_graph(p, "draw-figure-srt-45"))
+  p <- arphitgg(randomdata, agg_aes(y=x1), srt = 90)+agg_line()
+  expect_true(check_graph(p, "draw-figure-srt-90"))
+})
+
+## Manual plotsize ================
+
+test_that("Plotsize", {
+  foo <- data.frame(x=1:10, y = 1:10)
+  p <- arphitgg(foo, agg_aes(x=x,y=y), plotsize=c(2,5)) + agg_line()
+  expect_true(check_graph(p, "draw-figure-manual-plotsize"))
+
+  p <- arphitgg(foo, agg_aes(x=x,y=y), portrait = TRUE) + agg_line()
+  expect_true(check_graph(p, "draw-figure-portrait"))
+})
+
+test_that("Layouts", {
+  for (layout in c("1","2h","2v","3h","3v","3b2","4h","4b2")) {
+    p <- arphitgg(layout = layout)
+    expect_true(check_graph(p, paste0("draw-figure-", layout)))
+  }
+
+  expect_error(print(arphitgg(layout = "foo")), "Unknown layout option foo. Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4b2.")
+})

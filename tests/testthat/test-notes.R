@@ -1,33 +1,85 @@
-context("Panel titles")
-fakeseries1 <- c("a", "b")
-fakeseries2 <- c("c", "d")
-panels1 <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "1")
-panels2h <- handlepanels(list("1" = fakeseries1, "2" = fakeseries2), "2h")
+context("Notes ")
 
-expect_equal(conformpaneltitles(panels2h, list("1" = "Foo", "3" = "Bar"), "1", LANDSCAPESIZE[2]), list("1" = "Foo", "2" = NULL, "3" = "Bar", "4" = NULL))
-expect_equal(conformpaneltitles(panels1, list("1" = "Foo"), "1", LANDSCAPESIZE[2]), list("1" = "Foo", "2" = NULL))
+## Title ===================
 
-context("Format sources")
-expect_that(formatsrcs("ABS", LANDSCAPESIZE[2] - WIDTHSPACESSOURCES), equals(list(text = "ABS", plural = FALSE)))
-expect_that(formatsrcs(c("ABS"), LANDSCAPESIZE[2] - WIDTHSPACESSOURCES), equals(list(text = "ABS", plural = FALSE)))
-expect_that(formatsrcs(c("ABS","RBA"), LANDSCAPESIZE[2] - WIDTHSPACESSOURCES), equals(list(text = "ABS; RBA", plural = TRUE)))
+test_that("Title", {
+  p <- arphitgg() + agg_title("Test")
+  expect_true(check_graph(p, "notes-title"))
 
-context("Format footnotes")
-foo <- c("A footnote", "B footnote")
-expect_that(formatfn(foo, LANDSCAPESIZE[2] - WIDTHSPACESNOTES), equals(foo))
-# This also checks split over lines
-foo <- c("A footnote", "A veeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines")
-expect_that(stringr::str_count(formatfn(foo, LANDSCAPESIZE[2] - WIDTHSPACESNOTES)[2], "\n"), equals(1))
-foo2 <- c("A footnote", "An already split\nveeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines")
-expect_that(stringr::str_count(formatfn(foo2, LANDSCAPESIZE[2] - WIDTHSPACESNOTES)[2], "\n"), equals(2))
+  p <- arphitgg(layout = "2b2") + agg_title("Test", panel = "1") + agg_title("Test 3", panel = "3")
+  expect_true(check_graph(p, "notes-paneltitles"))
 
-context("Plotting long titles")
-data <- ts(data.frame(x1 = rnorm(12), x2 = rnorm(12), x3 = rnorm(12, sd = 10), x4 = rnorm(12, sd = 5)), start = c(2000,1), frequency = 4)
-expect_error(
-  agg_qplot(data,
-            title = "This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines",
-            paneltitles = list("1" = "And also a very long panel title to break across lines as well")),
-  NA
-)
+  skip("Linebreaks not working right (#233)")
+  p <- arphitgg() +
+    agg_title("This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines") +
+    agg_title("This is a veeeeeerrrrrryy loooooooooonnnnnnngg panel title too", panel = "1")
+  expect_true(check_graph(p, "notes-long-title"))
 
-expect_error(agg_qplot(data, paneltitles = "FOo bar"), "`paneltitles` must be a list.")
+  p <- arphitgg() +
+    agg_title("This is a veeeeeerrrrrryy\nloooooooooonnnnnnngg title\nwith manual line breaks") +
+    agg_title("And manual\nline\nbreaks in a veeeeeeeeeeeeeeeeeeeeeerrrrrrryyyyy loong title", panel = "1")
+  expect_true(check_graph(p, "notes-long-title-manual-breaks"))
+})
+
+
+## Subtitle ===================
+
+test_that("Subtitle", {
+  p <- arphitgg() + agg_subtitle("Test")
+  expect_true(check_graph(p, "notes-subtitle"))
+
+  p <- arphitgg(layout = "2b2") + agg_subtitle("Test", panel = "1") + agg_subtitle("Test 3", panel = "3")
+  expect_true(check_graph(p, "notes-panelsubtitles"))
+
+  skip("Linebreaks not working right (#233)")
+  p <- arphitgg() +
+    agg_subtitle("This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines") +
+    agg_subtitle("This is a veeeeeerrrrrryy loooooooooonnnnnnngg panel title too", panel = "1")
+  expect_true(check_graph(p, "notes-long-subtitle"))
+
+  p <- arphitgg() +
+    agg_subtitle("This is a veeeeeerrrrrryy\nloooooooooonnnnnnngg title\nwith manual line breaks") +
+    agg_subtitle("And manual\nline\nbreaks in a veeeeeeeeeeeeeeeeeeeeeerrrrrrryyyyy loong title", panel = "1")
+  expect_true(check_graph(p, "notes-long-subtitle-manual-breaks"))
+})
+
+test_that("Subtitle and title", {
+  skip("Linebreaks not working right (#233)")
+  p <- arphitgg() +
+    agg_title("Here's a title, and some other stuff") +
+    agg_subtitle("Now a subtitle, which is fun") +
+    agg_title("Here's a title, and some other stuff", panel = "1") +
+    agg_subtitle("Now a subtitle, which is fun", panel = "1")
+  expect_true(check_graph(p, "notes-title-and-subtitle"))
+})
+
+## Footnotes ===================
+
+test_that("Footnotes", {
+  p <- arphitgg() + agg_footnote("This is a footnote") + agg_footnote("second footnote")
+  expect_true(check_graph(p, "notes-footnotes"))
+  p <- arphitgg() + agg_footnote(c("This is a footnote", "second footnote"))
+  expect_true(check_graph(p, "notes-footnotes2"))
+  p <- arphitgg() + agg_footnote("Just one footnote this time")
+  expect_true(check_graph(p, "notes-footnote"))
+
+  skip("Linebreaks not working right (#233)")
+  p <- arphitgg() +
+    agg_footnote(c("A footnote", "A veeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines"))
+  expect_true(check_graph(p, "notes-footnote-long"))
+
+  p <- arphitgg() +
+    agg_footnote(c("A footnote", "An already split\nveeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines"))
+  expect_true(check_graph(p, "notes-footnote-long-manual-breaks"))
+})
+
+## Source ===================
+
+test_that("Sources", {
+  p <- arphitgg() + agg_source("One source")
+  expect_true(check_graph(p, "notes-source"))
+  p <- arphitgg() + agg_source(c("One source", "Two source"))
+  expect_true(check_graph(p, "notes-sources"))
+  p <- arphitgg() + agg_source("One source") + agg_source("Three source")
+  expect_true(check_graph(p, "notes-sources2"))
+})
