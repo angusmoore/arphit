@@ -265,7 +265,7 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
 #' arphitgg(data) + agg_bgshading(y1 = 0.5, y2 = -0.5, panel = "1")
 #'
 #' @export
-agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = NULL, panel) {
+agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = RBA["Grey2"], panel) {
   return(list(type = "bgshading", x1 = x1, y1 = y1, x2 = x2, y2 = y2, color = color, panel = panel))
 }
 
@@ -287,7 +287,7 @@ agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = NULL, pane
 #'    agg_shading(from = x1, to = x2)
 #'
 #' @export
-agg_shading <- function(from, to, panel = NULL, color = NULL) {
+agg_shading <- function(from, to, panel = NULL, color = RBA["Grey2"]) {
   from <- as.character(deparse(substitute(from)))
   to <- as.character(deparse(substitute(to)))
   return(list(type = "shading", from = from, to = to, panel = panel, color = color))
