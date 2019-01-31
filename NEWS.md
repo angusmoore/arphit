@@ -12,7 +12,7 @@
  * `agg_qplot` now only supports single panel, single sided layout. As a result, 
 the arguments `series` and `x` are now just a vector and string respectively,
 instead of lists. And `paneltitle` and `panelsubtitle` are no longer accepted
-arguments ([#](https://github.com/angusmoore/arphit/pull/)).
+arguments ([#242](https://github.com/angusmoore/arphit/pull/242)).
  
 ## Bugfixes
 
