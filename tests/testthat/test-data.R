@@ -33,7 +33,7 @@ test_that("Errors", {
   },
   "Data is of unsupported type (you passed in function)",
   fixed = TRUE)
-  expect_error(agg_qplot(utils::data),
+  expect_error(agg_qplot(utils::data, x = "x"),
                "Data is of unsupported type (you passed in function)",
                fixed = TRUE)
 
@@ -42,12 +42,6 @@ test_that("Errors", {
   expect_error(
     print(p),
     "Invalid index in data sets. Indexes must correspond to panel numbers between 1 and 8."
-  )
-
-  # not passing a list for the series list
-  expect_error(
-    agg_qplot(data, series = ("1" = "x1")),
-    "`series` must be a list mapping panel names to vector of series to be included in that panel."
   )
 
   # Passing in non-finite values

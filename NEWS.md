@@ -8,6 +8,11 @@
  * Can supply only upper or lower bound in `agg_xlim` by setting the other to NA ([#207](https://github.com/angusmoore/arphit/pull/207))
 
 ## Breaking changes
+
+ * `agg_qplot` now only supports single panel, single sided layout. As a result, 
+the arguments `series` and `x` are now just a vector and string respectively,
+instead of lists. And `paneltitle` and `panelsubtitle` are no longer accepted
+arguments ([#](https://github.com/angusmoore/arphit/pull/)).
  
 ## Bugfixes
 

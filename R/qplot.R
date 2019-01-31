@@ -1,4 +1,4 @@
-conformdata <- function(data, layout, series) {
+conformdata <- function(data, series, x) {
   if (is.acceptable.data(data)) {
     # Only a single data set, not a list of data is accepted for qplot
     tmpdata <- data
@@ -15,40 +15,26 @@ conformdata <- function(data, layout, series) {
     }
 
     if (!is.null(series)) {
-      if (!is.list(series)) stop("`series` must be a list mapping panel names to vector of series to be included in that panel.")
-      for (p in names(series)) {
-        names_to_keep <- series[[p]]
-        if ("agg_time" %in% colnames(tmpdata)) {
-          names_to_keep <- c("agg_time", names_to_keep)
-        }
-        data[[as.character(p)]] <- tmpdata[names_to_keep]
-      }
+      data[["1"]] <- tmpdata[c(x, series)]
     } else {
       data[["1"]] <- tmpdata
     }
 
-  } else if (!is.list(data)) {
+  } else {
     stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
   }
   return(data)
 }
 
-conformxvariable <- function(x, data, layout) {
-  if (!is.list(x) && !is.null(x)) {
-    tmpx <- x
-    x <- list()
-    for (p in 1:maxpanels(layout)) {
-      x[[as.character(p)]] <- tmpx
-    }
+conformxvariable <- function(x, data) {
+  if (!is.null(x)) {
+    x <- list("1" = x)
   } else if (is.null(x)) {
     # Check for if we gave a time series, and need to make agg_time
-    x <- list()
-    for (p in names(data)) {
-      if ("agg_time" %in% colnames(data[[p]])) {
-        x[[p]] <- "agg_time"
-      } else {
-        stop(paste("You did not specify an x variable for panel", p))
-      }
+    if (stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data)) {
+      x <- list("1" = "agg_time")
+    } else {
+      stop("You did not specify an x variable and cannot guess it because your data is not a time series.`")
     }
   }
   return(x)
@@ -103,12 +89,9 @@ handlebars <- function(data, bars) {
 #' Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
 #'
 #' @param data Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.
-#' @param series (optional) A list of vectors of string names of the series from data you wish to plot. The keys in the list must be "1", "2", etc to indicate which panel the series should be plotted on.
-#'   Panel numbers are sequential left-to-right, top-to-bottom. For one-panel and top-and-bottom two panel, the right axis is counted as a separate panel. Thus, for a top-and-bottom, panels "1" and "2" are the top panel, left and right respectively; likewise "3" and "4" for the bottom panel.
-#'   You do not need to supply all panels. For instance, in a one-panel, there is no need to supply series for panel "2" if you want all series on the left hand side axis.
-#'   Alternatively if just a vector of string names is supplied, it will be assumed all series are being plotted in panel 1. Similarly, if series is not supplied at all, all series will be plotted in panel 1.
-#' @param x (optional) A list specifying x variables for each of your panels. ts objects passed in as data will automatically use dates.
-#' @param layout (optional) A string indicating the layout of the chart. Valid options are "1" (single panel), "2v" (side-by-side two panel), "2h" (top and bottom two panel), "2b2" (two-by-two four panel chart), "3v" (side-by-side three panel), "3h" (horizonal three panel), "3b2" (three-by-two six panel chart), "4h" (horizonal four panel) and "4b2" (four-by-two eight panel). Defaults to single panel if not supplied.
+#' @param series A vector of series names specifying which subset of series
+#' you want to plot.
+#' @param x The x variable for your plot. `ts`, `xts` and `zoo` data use the dates in the time series.
 #' @param bars (optional) Vector of string names indicating which series should be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series will plot as bars.
 #' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
 #' @param title (optional) A string indicating the title for the entire chart. Passing NULL (or omitting the argument) will suppress printing of title.
@@ -138,17 +121,21 @@ handlebars <- function(data, bars) {
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-agg_qplot <- function(data, series = NULL, x = NULL, layout = "1", bars = NULL, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = list(), ylim = list(), legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
+agg_qplot <- function(data, series = NULL, x = NULL, bars = NULL, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = list(), ylim = list(), legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
 
-  data <- conformdata(data, layout, series)
-  x <- conformxvariable(x, data, layout)
+  x <- conformxvariable(x, data)
+  data <- conformdata(data, series, x[["1"]])
   bars <- handlebars(data, bars)
+
+  if (!x[["1"]] %in% names(data[["1"]])) {
+    stop(paste0("The x variable you specified (", x[["1"]], ") is not in your data."))
+  }
 
   agg_draw_internal(
     list(
       data = data,
       x = x,
-      layout = as.character(layout),
+      layout = "1",
       bars = bars,
       title = title,
       subtitle = subtitle,
