@@ -4,7 +4,7 @@
 \alias{agg_qplot}
 \title{RBA-style graphs in R}
 \usage{
-agg_qplot(data, series = NULL, x = NULL, layout = "1", bars = NULL,
+agg_qplot(data, series = NULL, x = NULL, bars = NULL,
   filename = NULL, title = NULL, subtitle = NULL, footnotes = c(),
   sources = c(), yunits = NULL, col = list(), pch = list(),
   lty = list(), lwd = list(), xlim = list(), ylim = list(),
@@ -13,14 +13,10 @@ agg_qplot(data, series = NULL, x = NULL, layout = "1", bars = NULL,
 \arguments{
 \item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
 
-\item{series}{(optional) A list of vectors of string names of the series from data you wish to plot. The keys in the list must be "1", "2", etc to indicate which panel the series should be plotted on.
-Panel numbers are sequential left-to-right, top-to-bottom. For one-panel and top-and-bottom two panel, the right axis is counted as a separate panel. Thus, for a top-and-bottom, panels "1" and "2" are the top panel, left and right respectively; likewise "3" and "4" for the bottom panel.
-You do not need to supply all panels. For instance, in a one-panel, there is no need to supply series for panel "2" if you want all series on the left hand side axis.
-Alternatively if just a vector of string names is supplied, it will be assumed all series are being plotted in panel 1. Similarly, if series is not supplied at all, all series will be plotted in panel 1.}
+\item{series}{A vector of series names specifying which subset of series
+you want to plot.}
 
-\item{x}{(optional) A list specifying x variables for each of your panels. ts objects passed in as data will automatically use dates.}
-
-\item{layout}{(optional) A string indicating the layout of the chart. Valid options are "1" (single panel), "2v" (side-by-side two panel), "2h" (top and bottom two panel), "2b2" (two-by-two four panel chart), "3v" (side-by-side three panel), "3h" (horizonal three panel), "3b2" (three-by-two six panel chart), "4h" (horizonal four panel) and "4b2" (four-by-two eight panel). Defaults to single panel if not supplied.}
+\item{x}{The x variable for your plot. `ts`, `xts` and `zoo` data use the dates in the time series.}
 
 \item{bars}{(optional) Vector of string names indicating which series should be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series will plot as bars.}
 
@@ -61,8 +57,7 @@ Quickly creates a (potentially multipanel) graph. Supports bar and line (and com
 T <- 24
 randomdata <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10),
   x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
-agg_qplot(randomdata, series = list("1" = c("x1", "x2"), "2" = c("x3", "x4")),
-  bars = c("x3","x4"), layout = "2v", title = "A Title", subtitle = "A subtitle",
+agg_qplot(randomdata, title = "A Title", subtitle = "A subtitle",
   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 
 }

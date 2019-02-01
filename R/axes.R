@@ -168,19 +168,16 @@ handlexunits <- function(panels, xunits) {
 }
 
 apply_ylim_to_panels <- function(ylim) {
-  if (!is.list(ylim)) stop("Ylim should be a list")
   if ("min" %in% names(ylim) || "max" %in% names(ylim) || "nsteps" %in% names(ylim)) {
     ylim_list <- list()
     # have supplied a single list to apply to all
-    sanity_check_ylim(ylim)
     for (p in as.character(1:8)) {
       ylim_list[[p]] <- ylim
     }
+    return(ylim_list)
   } else {
-    lapply(ylim, sanity_check_ylim)
     return(ylim)
   }
-  return(ylim_list)
 }
 
 ylimconform <- function(panels, ylim, data, bars, layout, stacked, xvals, xlim) {

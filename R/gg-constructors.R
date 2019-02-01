@@ -309,6 +309,9 @@ agg_shading <- function(from, to, panel = NULL, color = RBA["Grey2"]) {
 #'
 #' @export
 agg_ylim <- function(min, max, nsteps, panel = NULL) {
+  if (nsteps < 2) {
+    stop("The y-limit you supplied has fewer than 2 points.")
+  }
   return(list(type = "ylim", min = min, max = max, nsteps = nsteps, panel = panel))
 }
 

@@ -90,3 +90,12 @@ test_that("Setting user default colours", {
   expect_true(check_graph(p, "attributes-reverted-defaults"))
 
 })
+
+# Error handling in qplot
+test_that("qplot attribute error handling", {
+  expect_error(
+    agg_qplot(data.frame(x=1:10,y=1:10),x="x",col = list("foo" = "red")),
+    "You have tried to set attributes for foo but it is not a series in your data."
+  )
+})
+
