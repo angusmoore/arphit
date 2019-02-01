@@ -92,21 +92,13 @@ test_that("Sanity checks", {
                "You did not supply a max ylimit.")
   expect_error(agg_qplot(fakedata, x = "date", ylim = list("max" = 1, "nsteps" = 3)),
                "You did not supply a min ylimit.")
-  expect_error(agg_qplot(fakedata, x="date", ylim = list("max" = 1, "nsteps" = 3)),
-               "You did not supply a min ylimit.")
 
   expect_error({
     p <- arphitgg() + agg_ylim(0, 5, 1)
     print(p)
   },
-  "The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
+  "The y-limit you supplied has fewer than 2 points.",
   fixed = TRUE)
-
-  expect_error(
-    agg_qplot(fakedata, x = "date", ylim = list("1" = list("min" = 1, "max" = 3))),
-    "The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
-    fixed = TRUE
-  )
 
   expect_error(
     agg_qplot(fakedata, x = "date", ylim = list("min" = 1, "max" = 3)),
@@ -114,11 +106,6 @@ test_that("Sanity checks", {
     fixed = TRUE
   )
 
-  expect_error(
-    agg_qplot(fakedata, x = "date", ylim = list("1" = list("min" = 1, "max" = 2, "nsteps" = 1))),
-    "The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
-    fixed = TRUE
-  )
   expect_error(agg_qplot(data.frame(x=1:10,y=1:10), ylim = c(0,10,5), x="x"), "ylim should be a list")
 })
 

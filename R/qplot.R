@@ -83,6 +83,12 @@ handlebars <- function(data, bars) {
   return(newbars)
 }
 
+check_attribute_series_names <- function(attr, series_names) {
+  if (any(!names(attr) %in% series_names)) {
+    name <- names(attr)[!names(attr) %in% series_names]
+    stop(paste0("You have tried to set attributes for ", name, " but it is not a series in your data."))
+  }
+}
 
 #' RBA-style graphs in R
 #'
@@ -131,6 +137,16 @@ agg_qplot <- function(data, series = NULL, x = NULL, bars = NULL, filename = NUL
   if (!x[["1"]] %in% names(data[["1"]])) {
     stop(paste0("The x variable you specified (", x[["1"]], ") is not in your data."))
   }
+
+  check_attribute_series_names(col, names(data[["1"]]))
+  check_attribute_series_names(pch, names(data[["1"]]))
+  check_attribute_series_names(lty, names(data[["1"]]))
+  check_attribute_series_names(lwd, names(data[["1"]]))
+
+  col <- list("1" = col)
+  pch <- list("1" = pch)
+  lty <- list("1" = lty)
+  lwd <- list("1" = lwd)
 
   agg_draw_internal(
     list(
