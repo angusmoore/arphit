@@ -94,26 +94,44 @@ check_attribute_series_names <- function(attr, series_names) {
 #'
 #' Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
 #'
-#' @param data Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.
+#' @param data Object containing the series you want to plot. Can be a `data.frame`,
+#' `tibble`, `zoo`, `xts` or `ts`.
 #' @param series A vector of series names specifying which subset of series
 #' you want to plot.
-#' @param x The x variable for your plot. `ts`, `xts` and `zoo` data use the dates in the time series.
-#' @param bars (optional) Vector of string names indicating which series should be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series will plot as bars.
-#' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
-#' @param title (optional) A string indicating the title for the entire chart. Passing NULL (or omitting the argument) will suppress printing of title.
-#' @param subtitle (optional) A string indicating the subtitle for the entire chart. Passing NULL (or omitting the argument) will suppress printing of subtitle.
+#' @param x The x variable for your plot. Not required for `ts`, `xts` and `zoo`
+#' data because they use the dates in the time series.
+#' @param bars (optional) Vector of string names indicating which series should
+#' be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series
+#' will plot as bars.
+#' @param filename (optional) If specified, save image to filename instead of
+#' displaying in R. Supports svg, pdf, emf, emf+ and png extensions.
+#' @param title (optional) A string indicating the title for the graph. Passing
+#' `NULL` (or omitting the argument) will suppress printing of title.
+#' @param subtitle (optional) A string indicating the subtitle for the graph.
+#' Passing `NULL` (or omitting the argument) will suppress printing of subtitle.
 #' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
-#' @param yunits (optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.
-#' @param col (optional) A list of string -> misc pairs. The keys should be series names, and the values colours for each series (any colour accepted by R is fine.) You need not supply colours for all series. Default colours will be assigned  (cycling through) to series without assigned colours. Alternatively, you can supply a single value to apply to all series.
-#' @param pch (optional) A list of string -> int pairs. The keys should be series names, and the values markers (pch values) for each series. Defaults to none (NA). Can be supplied as list, or a single value (which will be applied to all series).
-#' @param lty (optional) A list of string -> int pairs. The keys should be series names, and the values line types (lty values) for each series. Defaults to solid (1). Can be supplied as list, or a single value (which will be applied to all series).
-#' @param lwd (optional) A list of string -> numeric pairs. The keys should be series names, and the values line width, relative to default, for each series. Defaults to 1. Can be supplied as list, or a single value (which will be applied to all series).
-#' @param xlim (optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).
-#' @param ylim (optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).
+#' @param yunits (optional) A string indicating the units to be used. If not
+#' supplied, a % sign will be used.
+#' @param col (optional) A list of string -> misc pairs. The keys should be
+#' series names, and the values colours for each series (any colour accepted by
+#' R is fine.) You need not supply colours for all series. Default colours will
+#' be assigned  (cycling through) to series without assigned colours.
+#' Alternatively, you can supply a single value to apply to all series.
+#' @param pch (optional) Markers for your series. Passed as with `col`.
+#' Defaults to none (NA).
+#' @param lty (optional) Line types for each series.  Passed as with `col`.
+#' Defaults to solid (1).
+#' @param lwd (optional) Line width, relative to default, for each series.
+#' Passed as with `col`.
+#' @param xlim (optional) c(numeric, numeric) Gives the x limits (in years) for the graph.
+#' @param ylim (optional) A list(min = numeric, max = numeric, nsteps int).
+#' If unsupplied, a suitable default is chosen.
 #' @param legend A logical indicating whether to add a legend to the graph (default FALSE).
-#' @param legend.ncol How many columns do you want the legend to have (if NA, which is the default, arphit will guess for you).
-#' @param bar.stacked (optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).
+#' @param legend.ncol (optional) How many columns do you want the legend to have (if NA,
+#' which is the default, arphit will guess for you).
+#' @param bar.stacked (optional) Logical indicating whether the bar series should
+#' be stacked (TRUE, default) or side-by-side (FALSE).
 #'
 #' @seealso \code{vignette("qplot-options", package = "arphit")} for a detailed description of
 #' all the plotting options and how they affect the output.
