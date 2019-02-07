@@ -81,7 +81,8 @@ test_that("Time series graphs at different frequencies", {
 test_that("Error handling", {
   expect_error(
     agg_qplot(data.frame(y=1:10)),
-    "You did not specify an x variable and cannot guess it because your data is not a time series."
+    "Cannot add layer. You have not specified an x aesthetic (and there was not one to inherit).",
+    fixed = TRUE
   )
 })
 
