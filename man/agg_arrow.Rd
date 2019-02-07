@@ -4,7 +4,8 @@
 \alias{agg_arrow}
 \title{Add an arrow}
 \usage{
-agg_arrow(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1)
+agg_arrow(tail.x, tail.y, head.x, head.y, color = "black", panel,
+  lwd = 1)
 }
 \arguments{
 \item{tail.x}{The x coordinate of the arrow tail}

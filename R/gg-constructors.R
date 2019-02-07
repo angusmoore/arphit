@@ -208,7 +208,7 @@ agg_autolabel <- function(quiet = FALSE) {
 #'             color = RBA["Blue1"], panel = "1")
 #'
 #' @export
-agg_arrow <- function(tail.x, tail.y, head.x, head.y, color, panel, lwd = 1) {
+agg_arrow <- function(tail.x, tail.y, head.x, head.y, color = "black", panel, lwd = 1) {
   return(list(type = "arrow", tail.x = tail.x, tail.y = tail.y, head.x = head.x,
               head.y = head.y, color = color, panel = panel, lwd = lwd))
 }
