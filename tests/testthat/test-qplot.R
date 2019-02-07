@@ -12,10 +12,10 @@ test_that("Simple smoke tests of qplot", {
 test_that("Errors for wrong x vars", {
   data <- data.frame(x=1:10,y=rnorm(10))
   expect_error(agg_qplot(data, x="x1"),
-               "The x variable you specified (x1) is not in your data.",
+               "x1 is not in your data for panel 1",
                fixed = TRUE)
   expect_error(agg_qplot(data),
-               "You did not specify an x variable and cannot guess it because your data is not a time series.",
+               "Cannot add layer. You have not specified an x aesthetic (and there was not one to inherit).",
                fixed = TRUE)
 })
 

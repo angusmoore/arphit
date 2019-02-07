@@ -1,46 +1,5 @@
-conformdata <- function(data, series, x) {
-  if (is.acceptable.data(data)) {
-    # Only a single data set, not a list of data is accepted for qplot
-    tmpdata <- data
-    data <- list()
-
-    if (stats::is.ts(tmpdata)) {
-      agg_time <- as.Date(lubridate::date_decimal(as.numeric(stats::time(tmpdata))))
-      tmpdata <- tibble::as_tibble(tmpdata)
-      tmpdata$agg_time <- agg_time
-    } else if (zoo::is.zoo(tmpdata) || xts::is.xts(tmpdata)) {
-      agg_time <- stats::time(tmpdata)
-      tmpdata <- tibble::as_tibble(tmpdata)
-      tmpdata$agg_time <- agg_time
-    }
-
-    if (!is.null(series)) {
-      data[["1"]] <- tmpdata[c(x, series)]
-    } else {
-      data[["1"]] <- tmpdata
-    }
-
-  } else {
-    stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
-  }
-  return(data)
-}
-
-conformxvariable <- function(x, data) {
-  if (!is.null(x)) {
-    x <- list("1" = x)
-  } else if (is.null(x)) {
-    # Check for if we gave a time series, and need to make agg_time
-    if (stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data)) {
-      x <- list("1" = "agg_time")
-    } else {
-      stop("You did not specify an x variable and cannot guess it because your data is not a time series.")
-    }
-  }
-  return(x)
-}
-
 sanity_check_ylim <- function(ylim) {
+  if (!is.list(ylim)) stop("ylim should be a list")
   if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
     stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).")
   }
@@ -50,37 +9,6 @@ sanity_check_ylim <- function(ylim) {
   if (is.null(ylim$min)) {
     stop("You did not supply a min ylimit.")
   }
-}
-
-handlebars <- function(data, bars) {
-  if (is.logical(bars)) {
-    # Everything is a bar!
-    bars <- list()
-    for (p in names(data)) {
-      bars[[p]] <- colnames(data[[p]])
-    }
-    return(bars)
-  }
-
-  if (!is.list(bars)) {
-    # Haven't supplied bars as a per panel thing. This is fine, but may be an issue
-    oldbar <- bars
-    bars <- list()
-    for (p in names(data)) {
-      bars[[p]] <- oldbar
-    }
-  }
-
-  newbars <- list()
-  for (p in names(data)) {
-    newbars[[p]] <- c()
-    for (s in colnames(data[[p]])) {
-      if (s %in% bars[[p]]) {
-        newbars[[p]] <- append(newbars[[p]], s)
-      }
-    }
-  }
-  return(newbars)
 }
 
 check_attribute_series_names <- function(attr, series_names) {
@@ -144,67 +72,49 @@ check_attribute_series_names <- function(attr, series_names) {
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-agg_qplot <- function(data, series = NULL, x = NULL, bars = NULL, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = list(), ylim = list(), legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
+agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
 
-  x <- conformxvariable(x, data)
-  data <- conformdata(data, series, x[["1"]])
-  bars <- handlebars(data, bars)
-  if (!is.list(ylim)) stop("ylim should be a list")
-  if (length(ylim) > 0) sanity_check_ylim(ylim)
+  if (!is.acceptable.data(data)) stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
 
-  if (!x[["1"]] %in% names(data[["1"]])) {
-    stop(paste0("The x variable you specified (", x[["1"]], ") is not in your data."))
+  # Create the basics
+  p <- arphitgg(data) + agg_title(title) + agg_subtitle(subtitle) +
+    agg_footnote(footnotes) + agg_source(sources) +
+    agg_units(yunits)
+
+  if (!is.null(ylim)) {
+    sanity_check_ylim(ylim)
+    p <- p + agg_ylim(ylim$min, ylim$max, ylim$nsteps)
   }
 
-  check_attribute_series_names(col, names(data[["1"]]))
-  check_attribute_series_names(pch, names(data[["1"]]))
-  check_attribute_series_names(lty, names(data[["1"]]))
-  check_attribute_series_names(lwd, names(data[["1"]]))
+  if (!is.null(xlim)) {
+    p <- p + agg_xlim(xlim[1], xlim[2])
+  }
 
-  col <- list("1" = col)
-  pch <- list("1" = pch)
-  lty <- list("1" = lty)
-  lwd <- list("1" = lwd)
+  if (legend) {
+    p <- p + agg_legend(ncol = legend.ncol)
+  }
 
-  agg_draw_internal(
-    list(
-      data = data,
-      x = x,
-      layout = "1",
-      bars = bars,
-      title = title,
-      subtitle = subtitle,
-      paneltitles = list(),
-      panelsubtitles = list(),
-      yaxislabels = list(),
-      xaxislabels = list(),
-      footnotes = footnotes,
-      sources = sources,
-      yunits = NULL,
-      xunits = NULL,
-      ylim = apply_ylim_to_panels(ylim),
-      xlim = xlim,
-      legend = legend,
-      legend.ncol = legend.ncol,
-      col = col,
-      pch = pch,
-      lty = lty,
-      lwd = lwd,
-      pointsize = list(),
-      labels = list(),
-      arrows = list(),
-      lines = list(),
-      bgshading = list(),
-      shading = list(),
-      portrait = FALSE,
-      dropxlabel = FALSE,
-      stacked = bar.stacked,
-      srt = 0,
-      showallxlabels = NULL,
-      joined = TRUE,
-      plotsize = LANDSCAPESIZE,
-      enable_autolabeller = FALSE,
-      log_scale = ""
-    ),
-    filename = filename)
+  # Now add each series as a layer
+  if (is.null(series)) {
+    series <- colnames(data)
+    if (!is.null(x)) {
+      series <- series[series != x]
+    }
+  }
+
+  check_attribute_series_names(col, series)
+  check_attribute_series_names(pch, series)
+  check_attribute_series_names(lty, series)
+  check_attribute_series_names(lwd, series)
+
+  for (y in series) {
+    aes <- list(type = "aes", x = x, y = y, group = NULL, facet = NULL, order = x)
+    if ((is.logical(bars) && bars) || (y %in% bars)) {
+      p <- p + agg_col(aes = aes, col = col[[y]])
+    } else {
+      p <- p + agg_line(aes = aes, col = col[[y]], pch = pch[[y]], lty = pch[[y]], lwd = lwd[[y]])
+    }
+  }
+
+  agg_draw(p, filename = filename)
 }
