@@ -34,3 +34,19 @@ create_test <- function(p, filename) {
   }
   agg_draw(p, filename = reference_loc)
 }
+
+delete_test <- function(filename) {
+  reference_loc_w <- paste0("tests/testdata/windows/", filename, ".png")
+  reference_loc_l <- paste0("tests/testdata/linux/", filename, ".png")
+  file.remove(reference_loc_w)
+  file.remove(reference_loc_l)
+}
+
+show_reference <- function(filename) {
+  if (.Platform$OS.type == "windows") {
+    reference_loc <- paste0("tests/testdata/windows/", filename, ".png")
+  } else {
+    reference_loc <- paste0("tests/testdata/linux/", filename, ".png")
+  }
+  magick::image_read(reference_loc)
+}
