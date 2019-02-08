@@ -18,9 +18,19 @@ check_attribute_series_names <- function(attr, series_names) {
   }
 }
 
-#' RBA-style graphs in R
-#'
-#' Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
+qplot_get_attribute <- function(att, y) {
+  if (!is.null(att)) {
+    if (!is.list(att)) {
+      return(att)
+    } else {
+      return(att[[y]])
+    }
+  } else {
+    return(NULL)
+  }
+}
+
+#' Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).
 #'
 #' @param data Object containing the series you want to plot. Can be a `data.frame`,
 #' `tibble`, `zoo`, `xts` or `ts`.
@@ -110,9 +120,13 @@ agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NU
   for (y in series) {
     aes <- list(type = "aes", x = x, y = y, group = NULL, facet = NULL, order = x)
     if ((is.logical(bars) && bars) || (y %in% bars)) {
-      p <- p + agg_col(aes = aes, col = col[[y]])
+      p <- p + agg_col(aes = aes, color = qplot_get_attribute(col, y))
     } else {
-      p <- p + agg_line(aes = aes, col = col[[y]], pch = pch[[y]], lty = pch[[y]], lwd = lwd[[y]])
+      p <- p + agg_line(aes = aes,
+                        color = qplot_get_attribute(col, y),
+                        pch = qplot_get_attribute(pch, y),
+                        lty = qplot_get_attribute(pch, y),
+                        lwd = qplot_get_attribute(lwd, y))
     }
   }
 
