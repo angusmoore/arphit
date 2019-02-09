@@ -2,7 +2,7 @@
 % Please edit documentation in R/qplot.R
 \name{agg_qplot}
 \alias{agg_qplot}
-\title{Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).}
+\title{RBA-style graphs in R}
 \usage{
 agg_qplot(data, series = NULL, x = NULL, bars = NULL,
   filename = NULL, title = NULL, subtitle = NULL, footnotes = c(),
@@ -51,7 +51,7 @@ you want to plot.}
 \item{bar.stacked}{(optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).}
 }
 \description{
-Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).
+Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
 }
 \examples{
 T <- 24
