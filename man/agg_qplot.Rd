@@ -4,69 +4,51 @@
 \alias{agg_qplot}
 \title{Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).}
 \usage{
-agg_qplot(data, series = NULL, x = NULL, bars = FALSE,
+agg_qplot(data, series = NULL, x = NULL, bars = NULL,
   filename = NULL, title = NULL, subtitle = NULL, footnotes = c(),
   sources = c(), yunits = NULL, col = list(), pch = list(),
-  lty = list(), lwd = list(), xlim = NULL, ylim = NULL,
+  lty = list(), lwd = list(), xlim = list(), ylim = list(),
   legend = FALSE, legend.ncol = NA, bar.stacked = TRUE)
 }
 \arguments{
-\item{data}{Object containing the series you want to plot. Can be a `data.frame`,
-`tibble`, `zoo`, `xts` or `ts`.}
+\item{data}{Object containing the series you want to plot. Can be a data.frame, tibble or ts. Can also be a list of the above, with separate for each panel.}
 
 \item{series}{A vector of series names specifying which subset of series
 you want to plot.}
 
-\item{x}{The x variable for your plot. Not required for `ts`, `xts` and `zoo`
-data because they use the dates in the time series.}
+\item{x}{The x variable for your plot. `ts`, `xts` and `zoo` data use the dates in the time series.}
 
-\item{bars}{(optional) Vector of string names indicating which series should
-be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series
-will plot as bars.}
+\item{bars}{(optional) Vector of string names indicating which series should be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series will plot as bars.}
 
-\item{filename}{(optional) If specified, save image to filename instead of
-displaying in R. Supports svg, pdf, emf, emf+ and png extensions.}
+\item{filename}{(optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.}
 
-\item{title}{(optional) A string indicating the title for the graph. Passing
-`NULL` (or omitting the argument) will suppress printing of title.}
+\item{title}{(optional) A string indicating the title for the entire chart. Passing NULL (or omitting the argument) will suppress printing of title.}
 
-\item{subtitle}{(optional) A string indicating the subtitle for the graph.
-Passing `NULL` (or omitting the argument) will suppress printing of subtitle.}
+\item{subtitle}{(optional) A string indicating the subtitle for the entire chart. Passing NULL (or omitting the argument) will suppress printing of subtitle.}
 
 \item{footnotes}{(optional) A vector strings, corresponding to the footnotes, in order.}
 
 \item{sources}{(optional) A vector of strings, one entry for each source.}
 
-\item{yunits}{(optional) A string indicating the units to be used. If not
-supplied, a % sign will be used.}
+\item{yunits}{(optional) A list of string -> string pairs indicating the units to be used on each panel (/axes, see notes to series for explanation on how right-hand-side axes are treated). Alternatively, providing just a string will assign that to all panels. If not supplied, a per cent sign will be used.}
 
-\item{col}{(optional) A list of string -> misc pairs. The keys should be
-series names, and the values colours for each series (any colour accepted by
-R is fine.) You need not supply colours for all series. Default colours will
-be assigned  (cycling through) to series without assigned colours.
-Alternatively, you can supply a single value to apply to all series.}
+\item{col}{(optional) A list of string -> misc pairs. The keys should be series names, and the values colours for each series (any colour accepted by R is fine.) You need not supply colours for all series. Default colours will be assigned  (cycling through) to series without assigned colours. Alternatively, you can supply a single value to apply to all series.}
 
-\item{pch}{(optional) Markers for your series. Passed as with `col`.
-Defaults to none (NA).}
+\item{pch}{(optional) A list of string -> int pairs. The keys should be series names, and the values markers (pch values) for each series. Defaults to none (NA). Can be supplied as list, or a single value (which will be applied to all series).}
 
-\item{lty}{(optional) Line types for each series.  Passed as with `col`.
-Defaults to solid (1).}
+\item{lty}{(optional) A list of string -> int pairs. The keys should be series names, and the values line types (lty values) for each series. Defaults to solid (1). Can be supplied as list, or a single value (which will be applied to all series).}
 
-\item{lwd}{(optional) Line width, relative to default, for each series.
-Passed as with `col`.}
+\item{lwd}{(optional) A list of string -> numeric pairs. The keys should be series names, and the values line width, relative to default, for each series. Defaults to 1. Can be supplied as list, or a single value (which will be applied to all series).}
 
-\item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for the graph.}
+\item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for the graph. Alternatively, you can supply a list to provide different x limits for each panel (not recommended). If unsupplied, a suitable default is chosen (recommended).}
 
-\item{ylim}{(optional) A list(min = numeric, max = numeric, nsteps int).
-If unsupplied, a suitable default is chosen.}
+\item{ylim}{(optional) A list of string -> list(min = numeric, max = numeric, nsteps int) pairs. Keys are panel names (e.g. "1", "2", etc). Values are the scale, provided as a list with the keys min, max and nsteps. If unsupplied, a suitable default is chosen (recommended, but will not work well for multipanels).}
 
 \item{legend}{A logical indicating whether to add a legend to the graph (default FALSE).}
 
-\item{legend.ncol}{(optional) How many columns do you want the legend to have (if NA,
-which is the default, arphit will guess for you).}
+\item{legend.ncol}{How many columns do you want the legend to have (if NA, which is the default, arphit will guess for you).}
 
-\item{bar.stacked}{(optional) Logical indicating whether the bar series should
-be stacked (TRUE, default) or side-by-side (FALSE).}
+\item{bar.stacked}{(optional) Logical indicating whether the bar series should be stacked (TRUE, default) or side-by-side (FALSE).}
 }
 \description{
 Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).
