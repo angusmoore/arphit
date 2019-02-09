@@ -38,7 +38,7 @@ Passing `NULL` (or omitting the argument) will suppress printing of subtitle.}
 \item{sources}{(optional) A vector of strings, one entry for each source.}
 
 \item{yunits}{(optional) A string indicating the units to be used. If not
-supplied, a % sign will be used.}
+supplied, a \% sign will be used.}
 
 \item{col}{(optional) A list of string -> misc pairs. The keys should be
 series names, and the values colours for each series (any colour accepted by

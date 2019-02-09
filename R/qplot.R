@@ -50,7 +50,7 @@ qplot_get_attribute <- function(att, y) {
 #' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
 #' @param yunits (optional) A string indicating the units to be used. If not
-#' supplied, a % sign will be used.
+#' supplied, a \% sign will be used.
 #' @param col (optional) A list of string -> misc pairs. The keys should be
 #' series names, and the values colours for each series (any colour accepted by
 #' R is fine.) You need not supply colours for all series. Default colours will
