@@ -1,46 +1,5 @@
-conformdata <- function(data, series, x) {
-  if (is.acceptable.data(data)) {
-    # Only a single data set, not a list of data is accepted for qplot
-    tmpdata <- data
-    data <- list()
-
-    if (stats::is.ts(tmpdata)) {
-      agg_time <- as.Date(lubridate::date_decimal(as.numeric(stats::time(tmpdata))))
-      tmpdata <- tibble::as_tibble(tmpdata)
-      tmpdata$agg_time <- agg_time
-    } else if (zoo::is.zoo(tmpdata) || xts::is.xts(tmpdata)) {
-      agg_time <- stats::time(tmpdata)
-      tmpdata <- tibble::as_tibble(tmpdata)
-      tmpdata$agg_time <- agg_time
-    }
-
-    if (!is.null(series)) {
-      data[["1"]] <- tmpdata[c(x, series)]
-    } else {
-      data[["1"]] <- tmpdata
-    }
-
-  } else {
-    stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
-  }
-  return(data)
-}
-
-conformxvariable <- function(x, data) {
-  if (!is.null(x)) {
-    x <- list("1" = x)
-  } else if (is.null(x)) {
-    # Check for if we gave a time series, and need to make agg_time
-    if (stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data)) {
-      x <- list("1" = "agg_time")
-    } else {
-      stop("You did not specify an x variable and cannot guess it because your data is not a time series.")
-    }
-  }
-  return(x)
-}
-
 sanity_check_ylim <- function(ylim) {
+  if (!is.list(ylim)) stop("ylim should be a list")
   if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
     stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).")
   }
@@ -52,37 +11,6 @@ sanity_check_ylim <- function(ylim) {
   }
 }
 
-handlebars <- function(data, bars) {
-  if (is.logical(bars)) {
-    # Everything is a bar!
-    bars <- list()
-    for (p in names(data)) {
-      bars[[p]] <- colnames(data[[p]])
-    }
-    return(bars)
-  }
-
-  if (!is.list(bars)) {
-    # Haven't supplied bars as a per panel thing. This is fine, but may be an issue
-    oldbar <- bars
-    bars <- list()
-    for (p in names(data)) {
-      bars[[p]] <- oldbar
-    }
-  }
-
-  newbars <- list()
-  for (p in names(data)) {
-    newbars[[p]] <- c()
-    for (s in colnames(data[[p]])) {
-      if (s %in% bars[[p]]) {
-        newbars[[p]] <- append(newbars[[p]], s)
-      }
-    }
-  }
-  return(newbars)
-}
-
 check_attribute_series_names <- function(attr, series_names) {
   if (any(!names(attr) %in% series_names)) {
     name <- names(attr)[!names(attr) %in% series_names]
@@ -90,9 +18,19 @@ check_attribute_series_names <- function(attr, series_names) {
   }
 }
 
-#' RBA-style graphs in R
-#'
-#' Quickly creates a (potentially multipanel) graph. Supports bar and line (and combinations of).
+qplot_get_attribute <- function(att, y) {
+  if (!is.null(att)) {
+    if (!is.list(att)) {
+      return(att)
+    } else {
+      return(att[[y]])
+    }
+  } else {
+    return(NULL)
+  }
+}
+
+#' Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).
 #'
 #' @param data Object containing the series you want to plot. Can be a `data.frame`,
 #' `tibble`, `zoo`, `xts` or `ts`.
@@ -112,7 +50,7 @@ check_attribute_series_names <- function(attr, series_names) {
 #' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
 #' @param yunits (optional) A string indicating the units to be used. If not
-#' supplied, a % sign will be used.
+#' supplied, a \% sign will be used.
 #' @param col (optional) A list of string -> misc pairs. The keys should be
 #' series names, and the values colours for each series (any colour accepted by
 #' R is fine.) You need not supply colours for all series. Default colours will
@@ -144,67 +82,53 @@ check_attribute_series_names <- function(attr, series_names) {
 #'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
 #'
 #' @export
-agg_qplot <- function(data, series = NULL, x = NULL, bars = NULL, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = list(), ylim = list(), legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
+agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
 
-  x <- conformxvariable(x, data)
-  data <- conformdata(data, series, x[["1"]])
-  bars <- handlebars(data, bars)
-  if (!is.list(ylim)) stop("ylim should be a list")
-  if (length(ylim) > 0) sanity_check_ylim(ylim)
+  if (!is.acceptable.data(data)) stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
 
-  if (!x[["1"]] %in% names(data[["1"]])) {
-    stop(paste0("The x variable you specified (", x[["1"]], ") is not in your data."))
+  # Create the basics
+  p <- arphitgg(data) + agg_title(title) + agg_subtitle(subtitle) +
+    agg_footnote(footnotes) + agg_source(sources) +
+    agg_units(yunits)
+
+  if (!is.null(ylim)) {
+    sanity_check_ylim(ylim)
+    p <- p + agg_ylim(ylim$min, ylim$max, ylim$nsteps)
   }
 
-  check_attribute_series_names(col, names(data[["1"]]))
-  check_attribute_series_names(pch, names(data[["1"]]))
-  check_attribute_series_names(lty, names(data[["1"]]))
-  check_attribute_series_names(lwd, names(data[["1"]]))
+  if (!is.null(xlim)) {
+    p <- p + agg_xlim(xlim[1], xlim[2])
+  }
 
-  col <- list("1" = col)
-  pch <- list("1" = pch)
-  lty <- list("1" = lty)
-  lwd <- list("1" = lwd)
+  if (legend) {
+    p <- p + agg_legend(ncol = legend.ncol)
+  }
 
-  agg_draw_internal(
-    list(
-      data = data,
-      x = x,
-      layout = "1",
-      bars = bars,
-      title = title,
-      subtitle = subtitle,
-      paneltitles = list(),
-      panelsubtitles = list(),
-      yaxislabels = list(),
-      xaxislabels = list(),
-      footnotes = footnotes,
-      sources = sources,
-      yunits = NULL,
-      xunits = NULL,
-      ylim = apply_ylim_to_panels(ylim),
-      xlim = xlim,
-      legend = legend,
-      legend.ncol = legend.ncol,
-      col = col,
-      pch = pch,
-      lty = lty,
-      lwd = lwd,
-      pointsize = list(),
-      labels = list(),
-      arrows = list(),
-      lines = list(),
-      bgshading = list(),
-      shading = list(),
-      portrait = FALSE,
-      dropxlabel = FALSE,
-      stacked = bar.stacked,
-      srt = 0,
-      showallxlabels = NULL,
-      joined = TRUE,
-      plotsize = LANDSCAPESIZE,
-      enable_autolabeller = FALSE,
-      log_scale = ""
-    ),
-    filename = filename)
+  # Now add each series as a layer
+  if (is.null(series)) {
+    series <- colnames(data)
+    if (!is.null(x)) {
+      series <- series[series != x]
+    }
+  }
+
+  check_attribute_series_names(col, series)
+  check_attribute_series_names(pch, series)
+  check_attribute_series_names(lty, series)
+  check_attribute_series_names(lwd, series)
+
+  for (y in series) {
+    aes <- list(type = "aes", x = x, y = y, group = NULL, facet = NULL, order = x)
+    if ((is.logical(bars) && bars) || (y %in% bars)) {
+      p <- p + agg_col(aes = aes, color = qplot_get_attribute(col, y))
+    } else {
+      p <- p + agg_line(aes = aes,
+                        color = qplot_get_attribute(col, y),
+                        pch = qplot_get_attribute(pch, y),
+                        lty = qplot_get_attribute(pch, y),
+                        lwd = qplot_get_attribute(lwd, y))
+    }
+  }
+
+  agg_draw(p, filename = filename)
 }
