@@ -58,6 +58,12 @@ test_that("Aesthetic inheritance", {
   expect_true(check_graph(qux, "gg-layer-line-grouped")) # should exactly match the above test for layer-line-grouped
 })
 
+test_that("Grouping by x variable",{
+  data <- data.frame(x=rep(letters[1:10],3),y=1:30)
+  p <- arphitgg(data, agg_aes(x=x,y=y,group=x))+agg_line(pch = 19)
+  expect_true(check_graph(p, "gg-layer-group-by-x"))
+})
+
 ## Facets ====================
 ## data
 facet_data <- data.frame(x=c(1,2,3,4,5,1,2,3,4,5),y=1:10,group=c("a","a","b","b","a","a","a","b","b","b"),facet=c("c","c","c","c","c","d","d","d","d","d"), stringsAsFactors = FALSE)
@@ -80,12 +86,10 @@ test_that("Facet aesthetic inheritance", {
   bar <- arphitgg(facet_data) + agg_line(agg_aes(x=x,y=y,facet=facet))
   baz <- arphitgg(facet_data, agg_aes(x=x,facet=facet)) + agg_line(agg_aes(y=y))
   qux <- arphitgg(facet_data, agg_aes(x=x,y=y)) + agg_line(agg_aes(facet=facet))
-  expect_equal(foo$data, bar$data)
-  expect_equal(foo$col, bar$col)
-  expect_equal(foo$data, baz$data)
-  expect_equal(foo$col, baz$col)
-  expect_equal(foo$data, qux$data)
-  expect_equal(foo$col, qux$col)
+  expect_true(check_graph(foo, "gg-facet-aes-inheritance"))
+  expect_true(check_graph(bar, "gg-facet-aes-inheritance"))
+  expect_true(check_graph(baz, "gg-facet-aes-inheritance"))
+  expect_true(check_graph(qux, "gg-facet-aes-inheritance"))
 })
 
 ## auto facet layouts
@@ -164,6 +168,37 @@ test_that("Error messages", {
 
   # error without data
   expect_error(arphitgg()+agg_line(), "You have not supplied data for series")
+
+  # variable not in data
+  data <- data.frame(x=1:10,y=1:10)
+  expect_error(
+    print(arphitgg(data, agg_aes(x=x,y=y1)) + agg_line()),
+    "y1 is not in your data for panel 1",
+    fixed = TRUE
+  )
+  expect_error(
+    print(arphitgg(data, agg_aes(x=x1,y=y)) + agg_line()),
+    "x1 is not in your data for panel 1",
+    fixed = TRUE
+  )
+  expect_error(
+    print(arphitgg(data, agg_aes(x=x,y=y,group=group)) + agg_line()),
+    "group is not in your data for panel 1",
+    fixed = TRUE
+  )
+
+  # different classes of x variable
+  data <- data.frame(x=1:10,y=1:10)
+  data1 <- data.frame(x=letters[1:10],y=1:10, stringsAsFactors = FALSE)
+  expect_error(
+    print(
+      arphitgg(aes = agg_aes(x = x, y = y)) +
+        agg_line(data = data) +
+        agg_line(data = data1)
+    ),
+    "Do not know how to join together x values character and integer (panel 1)",
+    fixed = TRUE
+  )
 })
 
 ## Ordering ====================
@@ -199,13 +234,25 @@ test_that("Ordering", {
     y = c(1:10, 10:1),
     group = c(rep("A", 10), rep("B", 10))
   ) %>%
-    arphitgg(agg_aes(
-      x = x,
-      y = y,
-      group = group,
-      order = A
-    )) + agg_line()
+    arphitgg(agg_aes(x = x, y = y, group = group, order = A)) + agg_line()
   expect_true(check_graph(foo, "gg-ordered-group-value"))
+
+  foo <- tibble::tibble(
+    x = rep(1:10, 2),
+    y = c(1:10, 10:1),
+    group = c(rep("A", 10), rep("B", 10))
+  ) %>%
+    arphitgg(agg_aes(x = x, y = y, group = group, order = B)) + agg_line()
+  expect_true(check_graph(foo, "gg-ordered-group-value-reversed"))
+
+  # what if the ordering group doesn't have all x values
+  foo <- tibble::tibble(
+    x = c(1:10, 1:9),
+    y = c(1:10, 10:2),
+    group = c(rep("A", 10), rep("B", 9))
+  )
+  expect_error(arphitgg(foo, agg_aes(x=x,y=y,group=group,order=B)) + agg_col(),
+               "Ordering is ambiguous - some x values associate with multiple values of the ordering variable, or there are no observations of the ordering variable for some x values.")
 })
 
 ## Reference multiple panels in one constructor (#191) ======================

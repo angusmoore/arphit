@@ -1,4 +1,6 @@
-## Constructors
+check_panel <- function(panel) {
+  if (!all(panel %in% as.character(1:8))) stop(paste0("Panel identifier '", panel, "' is invalid. Panels must be between 1 and 8."))
+}
 
 #' Add a title or panel title
 #'
@@ -17,6 +19,7 @@ agg_title <- function(text, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
   }
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "title", text = text, panel = panel))
 }
 
@@ -37,6 +40,7 @@ agg_subtitle <- function(text, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
   }
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "subtitle", text = text, panel = panel))
 }
 
@@ -57,6 +61,7 @@ agg_units <- function(units, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
   }
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "units", units = units, panel = panel))
 }
 
@@ -76,6 +81,7 @@ agg_xunits <- function(units, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
   }
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "xunits", units = units, panel = panel))
 }
 
@@ -95,6 +101,7 @@ agg_yaxislabel <- function(axislabel, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
   }
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "yaxislabel", axislabel = axislabel, panel = panel))
 }
 
@@ -114,6 +121,7 @@ agg_xaxislabel <- function(axislabel, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
   }
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "xaxislabel", axislabel = axislabel, panel = panel))
 }
 
@@ -166,6 +174,7 @@ agg_footnote <- function(footnote) {
 #'
 #' @export
 agg_label <- function(text, x, y, panel, color = "black", size = 20) {
+  check_panel(panel)
   return(list(type = "label", text = text, color = color, x = x, y = y, panel = panel, cex = size / 20))
 }
 
@@ -209,6 +218,7 @@ agg_autolabel <- function(quiet = FALSE) {
 #'
 #' @export
 agg_arrow <- function(tail.x, tail.y, head.x, head.y, color = "black", panel, lwd = 1) {
+  check_panel(panel)
   return(list(type = "arrow", tail.x = tail.x, tail.y = tail.y, head.x = head.x,
               head.y = head.y, color = color, panel = panel, lwd = lwd))
 }
@@ -245,6 +255,7 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
   line <- sanitycheckline(line)
   line$x <- NULL
   line$y <- NULL
+  check_panel(panel)
   return(append(line, list(type = "abline")))
 }
 
@@ -266,6 +277,7 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
 #'
 #' @export
 agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = RBA["Grey2"], panel) {
+  check_panel(panel)
   return(list(type = "bgshading", x1 = x1, y1 = y1, x2 = x2, y2 = y2, color = color, panel = panel))
 }
 
@@ -290,6 +302,7 @@ agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, color = RBA["Grey2
 agg_shading <- function(from, to, panel = NULL, color = RBA["Grey2"]) {
   from <- as.character(deparse(substitute(from)))
   to <- as.character(deparse(substitute(to)))
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "shading", from = from, to = to, panel = panel, color = color))
 }
 
@@ -312,6 +325,7 @@ agg_ylim <- function(min, max, nsteps, panel = NULL) {
   if (nsteps < 2) {
     stop("The y-limit you supplied has fewer than 2 points.")
   }
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "ylim", min = min, max = max, nsteps = nsteps, panel = panel))
 }
 
@@ -330,6 +344,7 @@ agg_ylim <- function(min, max, nsteps, panel = NULL) {
 #'
 #' @export
 agg_xlim <- function(min, max, panel = NULL) {
+  if (!is.null(panel)) check_panel(panel)
   return(list(type = "xlim", min = min, max = max, panel = panel))
 }
 
@@ -370,7 +385,20 @@ agg_legend <- function(ncol = NULL) {
 #'
 #' @export
 agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NULL, lwd = NULL, pointsize = 1, panel = "1") {
-  return(list(type = "line", data = data, aes = aes, color = color, pch = pch, lty = lty, lwd = lwd, pointsize = pointsize, panel = as.character(panel)))
+  check_panel(panel)
+  return(
+    list(
+      type = "line",
+      data = data,
+      aes = aes,
+      color = color,
+      pch = pch,
+      lty = lty,
+      lwd = lwd,
+      pointsize = pointsize,
+      panel = as.character(panel)
+    )
+  )
 }
 
 #' Add a col layer to an arphit plot.
@@ -392,8 +420,19 @@ agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NU
 #'
 #' @export
 agg_col <- function(aes = NULL, data = NULL, color = NULL, barcol = NULL, panel = "1", stacked = TRUE) {
-  return(list(type = "col", data = data, aes = aes, color = color, barcol = barcol, panel = as.character(panel), stacked = stacked))
-}
+    check_panel(panel)
+    return(
+      list(
+        type = "col",
+        data = data,
+        aes = aes,
+        color = color,
+        barcol = barcol,
+        panel = as.character(panel),
+        stacked = stacked
+      )
+    )
+  }
 
 #' Add a scatter layer to an arphit plot.
 #'
@@ -412,6 +451,7 @@ agg_col <- function(aes = NULL, data = NULL, color = NULL, barcol = NULL, panel 
 #'
 #' @export
 agg_point <- function(aes = NULL, data = NULL, color = NULL, pointsize = 1, panel = "1") {
+  check_panel(panel)
   return(
     list(
       type = "line",
@@ -459,7 +499,7 @@ agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
     facet <- NULL
   }
   if (order == "NULL" || order == "") {
-    order <- NULL
+    order <- x
   }
 
   return(list(type = "aes", x = x, y = y, group = group, facet = facet, order = order))
