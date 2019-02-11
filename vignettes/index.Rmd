@@ -69,8 +69,8 @@ knitr::include_graphics("qplot.png")
 
 Install the latest stable release of `arphit` using the R `devtools` package:
 ```{r, eval = FALSE}
-library(devtools)
-install_github("angusmoore/arphit", ref = "stable", build_vignettes = TRUE)
+library(remotes)
+install_github("angusmoore/arphit", ref = "stable", build = TRUE, build_opts =  c("--no-resave-data", "--no-manual"))
 ```
 
 You may need to first install the `devtools` package if you don't already have it (`install.packages("devtools")`).
@@ -78,10 +78,12 @@ You may need to first install the `devtools` package if you don't already have i
 Installing may fail if `devtools` cannot correctly determine your proxy server. If so, you'll get the following error message when you try to install:
 ```{r, eval = FALSE}
 Installation failed: Timeout was reached: Connection timed out after 10000 milliseconds
+
+Failed to connect to api.github.com port 443: Timed out
 ```
 If you get this message, try setting your proxy server with the following command, and then running the install again:
 ```{r, eval = FALSE}
-httr::set_config(httr::use_proxy(curl::ie_get_proxy_for_url("http://www.google.com")))
+Sys.setenv(https_proxy = curl::ie_get_proxy_for_url("https://www.google.com"))
 ```
 
 ## Getting started
