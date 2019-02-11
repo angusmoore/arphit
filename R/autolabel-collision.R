@@ -1,7 +1,7 @@
 get_underlay_bitmap <- function(gg, margins) {
   plot_device <- grDevices::dev.cur()
   gg$enable_autolabeller <- FALSE
-  agg_draw(gg, filename = paste0(tempdir(), "/autolabel-temp.png"))
+  agg_draw_internal(gg, filename = paste0(tempdir(), "/autolabel-temp.png"))
   image <- magick::image_read(paste0(tempdir(), "/autolabel-temp.png"))
   suppressWarnings(file.remove(paste0(tempdir(), "/autolabel-temp.png")))
 
@@ -83,4 +83,35 @@ shift_text_indices <- function(indices,x,y,x_text_anchor,y_text_anchor,x_scale,y
 test_collision <- function(underlay, x_indices, y_indices, dim) {
   any(x_indices < 0) || any(x_indices > dim[1]) || any(y_indices < 0) ||
     any(y_indices > dim[2]) || any(underlay[x_indices, y_indices])
+}
+
+add_new_label_to_mask <- function(plot_bitmap, new_label, ylim, xlim, p, layout) {
+  # Mask out the new label in the bitmap
+  indices <-
+    create_text_bitmap(
+      new_label$label$x,
+      new_label$label$y,
+      new_label$label$text,
+      xlim,
+      ylim,
+      dim(plot_bitmap),
+      layout,
+      p
+    )
+  plot_bitmap[indices$x, indices$y] <- TRUE
+  if (!is.null(new_label$arrow)) {
+    # Mask out the new label in the bitmap too if needed
+    arrow_mask <-
+      create_arrow_bitmap(
+        new_label$arrow$tail.x,
+        new_label$arrow$tail.y,
+        new_label$arrow$head.x,
+        new_label$arrow$head.y,
+        dim(plot_bitmap),
+        xlim,
+        ylim
+      )
+    plot_bitmap[arrow_mask] <- TRUE
+  }
+  return(plot_bitmap)
 }

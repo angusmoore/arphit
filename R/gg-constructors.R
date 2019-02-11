@@ -181,6 +181,9 @@ agg_label <- function(text, x, y, panel, color = "black", size = 20) {
 #' Add automatically placed label
 #'
 #' @param quiet (logical, default FALSE) Do not output progress of autolabeller
+#' @param arrow_bars (logical, default FALSE) Add arrows between labels and bar series
+#' if there isn't line of sight between the label and the series. Line series always
+#' have arrows (if there isn't line of sight).
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -193,8 +196,8 @@ agg_label <- function(text, x, y, panel, color = "black", size = 20) {
 #'   agg_autolabel()
 #'
 #' @export
-agg_autolabel <- function(quiet = FALSE) {
-  return(list(type = "autolabel", quiet = quiet))
+agg_autolabel <- function(quiet = FALSE, arrow_bars = FALSE) {
+  return(list(type = "autolabel", quiet = quiet, arrow_bars = arrow_bars))
 }
 
 
