@@ -19,40 +19,68 @@ testscaleoptions <- function(significand, minval, maxval, permittedsteps) {
   return(jointdeviation)
 }
 
-get_data_max_min <- function(data, bars, stacked) {
-  series_data <- data[!colnames(data) %in% bars]
-  bardata <- data[colnames(data) %in% bars]
-  if (length(bardata) > 0) {
+get_stacked_max_min <- function(data, xlim) {
+  bardata <- data.frame(x = data$x, stringsAsFactors = FALSE)
+  for (i in seq_along(data$series)) {
+    s <- data$series[[i]]
+    if (s$bar) {
+      series_data <- data.frame(x = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
+      names(series_data) <- c("x", i)
+      bardata <- dplyr::left_join(bardata, series_data, by = "x")
+    }
+  }
+  x <- get_x_plot_locations(bardata$x, data)
+  x_restriction <- x >= xlim[1] & x <= xlim[2]
+  bardata <- dplyr::select_(bardata, "-x")
+  bardata <- bardata[x_restriction,,drop = FALSE]
+  if (ncol(bardata) > 0) {
     bardata[is.na(bardata)] <- 0
     bardata_p <- bardata
     bardata_n <- bardata
     bardata_p[bardata < 0] <- 0
     bardata_n[bardata >= 0] <- 0
-  }
-
-  if (ncol(series_data) > 0 && ncol(bardata) > 0 && stacked) {
-    maxval <- max(max(series_data,na.rm=TRUE),max(apply(bardata_p, 1, sum),na.rm=TRUE))
-    minval <- min(min(series_data,na.rm=TRUE),min(apply(bardata_n, 1, sum),na.rm=TRUE))
-  } else if (ncol(series_data) > 0 || !stacked) {
-    maxval <- max(data,na.rm=TRUE)
-    minval <- min(data,na.rm=TRUE)
-    if (ncol(bardata) > 0) {
-      # Include zero if we have bars
-      minval <- min(0, minval)
-      maxval <- max(0, maxval)
-    }
+    return(list(max = max(apply(bardata_p, 1, sum),na.rm=TRUE),
+                min = min(apply(bardata_n, 1, sum),na.rm=TRUE)))
   } else {
-    maxval <- max(apply(bardata_p, 1, sum),na.rm=TRUE)
-    minval <- min(apply(bardata_n, 1, sum),na.rm=TRUE)
+    return(list(min = Inf, max = -Inf))
   }
-  return(list(maxval=maxval,minval=minval))
 }
 
-defaultscale <- function(data,bars,stacked,permittedsteps=PERMITTEDSTEPS) {
-  # Split bars and series apart
-  out <- get_data_max_min(data,bars,stacked)
-  maxval <- out$maxval
-  minval <- out$minval
+get_series_max_min <- function(series, data, xlim) {
+  x <- get_x_plot_locations(series$x, data)
+  x_restriction <- x >= xlim[1] & x <= xlim[2]
+  if (!any(x_restriction)) x_restriction <- TRUE # if no visible x, use all the data as a fallback
+  list(max=max(series$y[x_restriction],na.rm=TRUE),
+       min=min(series$y[x_restriction],na.rm=TRUE))
+}
+
+get_data_max_min <- function(data, xlim, stacked) {
+  if (any(sapply(data$series, function(x) x$bar))) {
+    minval <- 0 # bound by zero if we have bars, since we want them to start there
+    maxval <- 0
+  } else {
+    minval <- Inf
+    maxval <- -Inf
+  }
+
+  # Find smallest and largest series value
+  for (s in data$series) {
+    if (!s$bar || !stacked) {
+      out <- get_series_max_min(s, data, xlim)
+      minval <- min(minval, out$min, na.rm = TRUE)
+      maxval <- max(maxval, out$max, na.rm = TRUE)
+    }
+  }
+
+  if (stacked) {
+    out <- get_stacked_max_min(data, xlim)
+    minval <- min(minval, out$min, na.rm = TRUE)
+    maxval <- max(maxval, out$max, na.rm = TRUE)
+  }
+  return(list(min = minval, max = maxval))
+}
+
+defaultscale <- function(maxval, minval, permittedsteps=PERMITTEDSTEPS) {
   span <- maxval-minval
 
   significand <- floor(log10(span/min(permittedsteps)))
@@ -92,46 +120,81 @@ createscale <- function(minscale,maxscale,nsteps) {
   return(scale)
 }
 
-duplicateaxes <- function(toduplicate, panels, layout) {
-  if (is.null(panels[["1"]]) && !is.null(panels[["2"]])) {
+duplicateaxes <- function(toduplicate, data, layout) {
+  if (is_empty(data[["1"]])  && !is_empty(data[["2"]])) {
     toduplicate[["1"]] <- toduplicate[["2"]]
   }
-  if (is.null(panels[["2"]]) && !is.null(panels[["1"]])) {
+  if (is_empty(data[["2"]]) && !is_empty(data[["1"]])) {
     toduplicate[["2"]] <- toduplicate[["1"]]
   }
   if (layout == "2b2" || layout == "2h" || layout == "3h" || layout == "3b2" || layout == "4h" || layout == "4b2") {
-    if (is.null(panels[["3"]]) && !is.null(panels[["4"]])) {
+    if (is_empty(data[["3"]]) && !is_empty(data[["4"]])) {
       toduplicate[["3"]] <- toduplicate[["4"]]
     }
-    if (is.null(panels[["4"]]) && !is.null(panels[["3"]])) {
+    if (is_empty(data[["4"]]) && !is_empty(data[["3"]])) {
       toduplicate[["4"]] <- toduplicate[["3"]]
     }
   }
   if (layout == "3h" || layout == "3b2" || layout == "4h" || layout == "4b2") {
-    if (is.null(panels[["5"]]) && !is.null(panels[["6"]])) {
+    if (is_empty(data[["5"]]) && !is_empty(data[["6"]])) {
       toduplicate[["5"]] <- toduplicate[["6"]]
     }
-    if (is.null(panels[["6"]]) && !is.null(panels[["5"]])) {
+    if (is_empty(data[["6"]]) && !is_empty(data[["5"]])) {
       toduplicate[["6"]] <- toduplicate[["5"]]
     }
   }
   if (layout == "4h" || layout == "4b2") {
-    if (is.null(panels[["7"]]) && !is.null(panels[["8"]])) {
+    if (is_empty(data[["7"]]) && !is_empty(data[["8"]])) {
       toduplicate[["7"]] <- toduplicate[["8"]]
     }
-    if (is.null(panels[["8"]]) && !is.null(panels[["7"]])) {
+    if (is_empty(data[["8"]]) && !is_empty(data[["7"]])) {
       toduplicate[["8"]] <- toduplicate[["7"]]
     }
   }
   if (layout == "3v") {
-    if (is.null(panels[["2"]]) && !is.null(panels[["1"]])) {
+    if (is_empty(data[["2"]]) && !is_empty(data[["1"]])) {
       toduplicate[["2"]] <- toduplicate[["1"]]
     }
-    if (is.null(panels[["2"]]) && !is.null(panels[["3"]])) {
+    if (is_empty(data[["2"]]) && !is_empty(data[["3"]])) {
       toduplicate[["2"]] <- toduplicate[["3"]]
     }
   }
+  return(toduplicate)
+}
 
+apply_nonempty <- function(toduplicate, data, nonempty) {
+  for (p in names(data)) {
+    if (is_empty(data[[p]])) {
+      toduplicate[[p]] <- nonempty
+    }
+  }
+  return(toduplicate)
+}
+
+duplicateaxes_vertical <- function(toduplicate, data, layout) {
+  if (layout != "2v" && layout != "3v") {
+    rhs <- names(data)[seq(from = 2, to = length(data), by = 2)]
+    lhs <- names(data)[seq(from = 1, to = length(data), by = 2)]
+    rhs_nonempty <- names(data[rhs])[!sapply(data[rhs], is_empty)]
+    lhs_nonempty <- names(data[lhs])[!sapply(data[lhs], is_empty)]
+    if (length(rhs_nonempty) > 0) {
+      rhs_nonempty <- rhs_nonempty[[1]]
+    } else {
+      rhs_nonempty <- lhs_nonempty[[1]]
+    }
+
+    if (length(lhs_nonempty) > 0) {
+      lhs_nonempty <- lhs_nonempty[[1]]
+    } else {
+      lhs_nonempty <- rhs_nonempty[[1]]
+    }
+
+    toduplicate <- apply_nonempty(toduplicate, data[lhs], toduplicate[[lhs_nonempty]])
+    toduplicate <- apply_nonempty(toduplicate, data[rhs], toduplicate[[rhs_nonempty]])
+  } else {
+    nonempty <- names(data)[!sapply(data, is_empty)][[1]]
+    toduplicate <- apply_nonempty(toduplicate, data, toduplicate[[nonempty]])
+  }
   return(toduplicate)
 }
 
@@ -142,11 +205,11 @@ conformscale <- function(panels, scaleunits) {
 
   out <- list()
   if(!is.list(scaleunits)) {
-    for (p in names(panels)) {
+    for (p in panels) {
       out[[p]] <- scaleunits
     }
   } else {
-    for (p in names(panels)) {
+    for (p in panels) {
       if (p %in% names(scaleunits)) {
         out[[p]] <- scaleunits[[p]]
       } else {
@@ -157,9 +220,9 @@ conformscale <- function(panels, scaleunits) {
   return(out)
 }
 
-handleunits <- function(panels, scaleunits, layout) {
-  out <- conformscale(panels, scaleunits)
-  out <- duplicateaxes(out, panels, layout)
+handleunits <- function(data, scaleunits, layout) {
+  out <- conformscale(names(data), scaleunits)
+  out <- duplicateaxes(out, data, layout)
   return(out)
 }
 
@@ -180,23 +243,20 @@ apply_ylim_to_panels <- function(ylim) {
   }
 }
 
-ylimconform <- function(panels, ylim, data, bars, layout, stacked, xvals, xlim) {
+ylimconform <- function(ylim, data, layout, stacked, xlim) {
   ylim <- apply_ylim_to_panels(ylim)
-  for (p in names(panels)) {
+  for (p in names(data)) {
     if (!p %in% names(ylim)) {
       # create a default scale for this panel
-      paneldf <- data[[p]][, panels[[p]], drop = FALSE]
-      if (!is.null(paneldf) && ncol(paneldf) > 0) {
-        x <- getxvals(data[[p]], !is.null(xvals[[paste0(p, "ts")]]), xvals[[p]])
-        x_restriction <- x >= xlim[[p]][1] & x <= xlim[[p]][2]
-        if (!any(x_restriction)) x_restriction <- TRUE # if no visible x, use all the data as a fallback
-        ylim[[p]] <- defaultscale(paneldf[x_restriction, , drop = FALSE], bars[[p]], stacked)
+      if (!is_empty(data[[p]])) {
+        out <- get_data_max_min(data[[p]],xlim[[p]],stacked)
+        ylim[[p]] <- defaultscale(out$max, out$min)
       } else {
         ylim[[p]] <- EMPTYSCALE
       }
     }
   }
-  ylim <- duplicateaxes(ylim, panels, layout)
+  ylim <- duplicateaxes(ylim, data, layout)
   return(ylim)
 }
 
@@ -266,70 +326,57 @@ xlabels.categorical <- function(xlim, xvar, layout, showall) {
     at <- at[keep]
     labels <- labels[keep]
   }
-  return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = 1)))
-}
 
-xlabels.numericcategorical <- function(xlim, xvar, layout, showall) {
-  if (length(xvar) > 1) {
-    step <- min(diff(xvar))
-  } else {
-    step <- 1
-  }
-  start <- xlim[1]
-  end <- xlim[2] - step
-  at <- seq(from = start, to = end, by = step) + 0.5*step
-  labels <- seq(from = start, to = end, by = step)
-  if (is.null(showall) || !showall) {
-    layout_factor <- getlayoutfactor(layout)
-    keep <- restrictlabels(labels, layout_factor)
-    at <- at[keep]
-    labels <- labels[keep]
-  }
-  return(list("at" = at, "labels" = labels, "ticks" = seq(from = start, to = end, by = step)))
+  # drop any labels that are outside the x limits
+  keep <- at >= xlim[1] & at <= xlim[2]
+  labels <- labels[keep]
+  at <- at[keep]
+
+  ticks <- seq(from = start, to = end, by = 1)
+  keep <- ticks >= xlim[1] & ticks <= xlim[2]
+  ticks <- ticks[keep]
+
+  return(list(at = at, labels = labels, ticks = ticks))
 }
 
 xlabels.scatter <- function(xlim, xvalues) {
-  scale <- defaultscale(data.frame(x=c(xlim[1],xlim[2]-(xlim[2]-xlim[1])/10000)),NULL,FALSE)
+  scale <- defaultscale(xlim[2]-(xlim[2]-xlim[1])/10000, xlim[1])
   scale <- createscale(scale$min,scale$max,scale$nsteps)
   return(list(at = scale, labels = scale, ticks = scale))
 }
 
-xlabels <- function(xlim, xvar, data, ists, layout, showall) {
-  if (!is.null(ists)) {
+xlabels <- function(xlim, xvar, ists, layout, showall) {
+  if (ists) {
     return(xlabels.ts(xlim, layout))
   } else if (is.scatter(xvar)) {
     return(xlabels.scatter(xlim, xvar))
-  } else if (!is.null(xvar)) {
-    if (is.numeric(xvar)) {
-      return(xlabels.numericcategorical(xlim, xvar, layout, showall))
-    } else {
-      return(xlabels.categorical(xlim, xvar, layout, showall))
-    }
   } else {
-    # Empty plot, if we're using the empty scale, that's a TS
-    if (identical(xlim, EMPTYXSCALE)) {
-      return(xlabels.ts(xlim, layout))
-    } else {
-      xlabels.scatter(xlim, xlim) # Seems least worse choice?
-    }
+    return(xlabels.categorical(xlim, xvar, layout, showall))
   }
 }
 
-handlexlabels <- function(panels, xlim, xvars, data, layout, showall) {
+handlexlabels <- function(data, xlim, layout, showall) {
   out <- list()
-  for (p in names(panels)) {
-    if (!is.null(data[[p]])) {
-      ists <- xvars[[paste(p,"ts",sep="")]]
-      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout, showall)
-    } else {
-      ists <- xvars[["1ts"]]
-      out[[p]] <- xlabels(xlim[[p]], xvars[[p]], data[[p]], ists, layout, showall)
+  for (p in names(data)) {
+    if (!is_empty(data[[p]])) {
+      out[[p]] <- xlabels(xlim[[p]], data[[p]]$x, data[[p]]$ts, layout, showall)
     }
+  }
+  if (length(out) == 0) {
+    # empty graph
+    for (p in names(data)) {
+      out[[p]] <-  xlabels(xlim[[p]], NULL, TRUE, layout, showall)
+    }
+  } else {
+    # This duplicates horizontal
+    out <- duplicateaxes(out, data, layout)
+    # Now duplicate vertical
+    out <- duplicateaxes_vertical(out, data, layout)
   }
   return(out)
 }
 
-warnifxdiff <- function(panels, xlim) {
+warnifxdiff <- function(xlim) {
   for (p in names(xlim)) {
     for (q in names(xlim)) {
       if (all(xlim[[p]] != xlim[[q]])) {
@@ -351,48 +398,48 @@ is.scatter <- function(x) {
   }
 }
 
-defaultxscale <- function(xvars, xscales, data, ists) {
-  if (!is.null(xvars)) {
-    if (is.numeric(xvars) && ists) {
-      return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
-    } else if (is.scatter(xvars)) {
-      scale <- defaultscale(data.frame(x=xvars), NULL, FALSE)
-      return(c(scale$min,scale$max))
-    } else {
-      # Handle numerical categories
-      if (is.numeric(xvars)) {
-        if (length(xvars) > 1) {
-          return(c(xvars[1], xvars[length(xvars)]+min(diff(xvars))))
-        } else {
-          return(c(xvars,xvars+1))
-        }
-      } else {
-        return (c(1, length(xvars)+1))
-      }
-    }
-  } else if (!is.null(xscales[["1"]])) {
-    return(xscales[["1"]])
+defaultxscale <- function(xvars, ists) {
+  if (is.numeric(xvars) && ists) {
+    return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
+  } else if (is.scatter(xvars)) {
+    scale <- defaultscale(max(xvars, na.rm =TRUE), min(xvars, na.rm =TRUE))
+    return(c(scale$min,scale$max))
   } else {
-    return(EMPTYXSCALE)
+    # Categorical
+    return (c(1, length(xvars)+1))
   }
 }
 
-xlimconform <- function(panels, xlim, xvars, data) {
+xlimconform <- function(xlim, data, layout) {
+  panels <- names(data)
   if(!is.list(xlim) && length(xlim) > 0) {
-    xlim <- lapply(panels, function(x) xlim)
+    xlim <- as.list(rep(list(xlim), length(panels)))
+    names(xlim) <- panels
   }
 
   out <- list()
-  for (p in names(panels)) {
-    ists <- !is.null(xvars[[paste(p,"ts",sep="")]])
-    out[[p]] <- defaultxscale(xvars[[p]], out, data[[p]], ists)
-    if (p %in% names(xlim)) {
-      if (is.finite(xlim[[p]][1])) out[[p]][1] <- xlim[[p]][1]
-      if (is.finite(xlim[[p]][2])) out[[p]][2] <- xlim[[p]][2]
+  for (p in panels) {
+    if (!is_empty(data[[p]])) {
+      out[[p]] <- defaultxscale(data[[p]]$x, data[[p]]$ts)
+      if (p %in% names(xlim)) {
+        if (is.finite(xlim[[p]][1])) out[[p]][1] <- xlim[[p]][1]
+        if (is.finite(xlim[[p]][2])) out[[p]][2] <- xlim[[p]][2]
+      }
     }
   }
+
+  if (length(out) == 0) {
+    # empty graph
+    for (p in names(data)) {
+      out[[p]] <-  EMPTYXSCALE
+    }
+  } else {
+    out <- duplicateaxes(out, data, layout)
+    out <- duplicateaxes_vertical(out, data, layout)
+  }
+
   # have a check for non-matching xlimits
-  warnifxdiff(panels, out)
+  warnifxdiff(out)
   return(out)
 }
 
@@ -401,7 +448,7 @@ handleaxislabels <- function(labels, panels) {
     return(labels)
   } else {
     out <- list()
-    for (p in names(panels)) {
+    for (p in panels) {
       out[[p]] <- labels
     }
     return(out)

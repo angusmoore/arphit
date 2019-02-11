@@ -12,23 +12,40 @@ drawtitle <- function(title, subtitle) {
   }
 }
 
-getlegendentries <- function(panels, bars, attributes) {
+col_legend_entry <- function(name, fill, border) {
+  entry <- list(name = name,
+       fill = fill,
+       border = border)
+  class(entry) <- "col_legend_entry"
+  return(entry)
+}
+
+line_legend_entry <- function(name, col, pch, lwd, lty) {
+  entry <- list(name = name,
+                col = col,
+                pch = pch,
+                lwd = lwd,
+                lty = lty)
+  class(entry) <- "line_legend_entry"
+  return(entry)
+}
+
+legend_entry <- function(series) {
+  if (series$bar) {
+    entry <- col_legend_entry(series$name, series$attributes$col, series$attributes$barcol)
+  } else {
+    entry <- line_legend_entry(series$name, series$attributes$col, series$attributes$pch,
+                               series$attributes$lwd, series$attributes$lty)
+  }
+  return(entry)
+}
+
+getlegendentries <- function(data) {
   legend <- list()
-  for (p in names(panels)) {
-    for (series in panels[[p]]) {
-      if (!identical(series, "<NA>")) {
-        isbar <- series %in% bars[[p]]
-        if (isbar) {
-          entry <- list(name = series,
-                        fill = attributes[[p]]$col[[series]],
-                        border = attributes[[p]]$barcol[[series]])
-        } else {
-          entry <- list(name = series,
-                        pch = attributes[[p]]$pch[[series]],
-                        lwd = attributes[[p]]$lwd[[series]],
-                        lty = attributes[[p]]$lty[[series]],
-                        col = attributes[[p]]$col[[series]])
-        }
+  for (p in names(data)) {
+    for (series in data[[p]]$series) {
+      if (!identical(series$name, "<NA>")) {
+        entry <- legend_entry(series)
         if (!(list(entry) %in% legend)) {
           legend <- append(legend, list(entry))
         }
@@ -52,8 +69,8 @@ rowchars <- function(row, names, ncol) {
   return(sum(nchar(names[start:end])))
 }
 
-determinelegendcols <- function(panels, ncol) {
-  series <- getlegendentries(panels, list(), list())
+determinelegendcols <- function(data, ncol) {
+  series <- getlegendentries(data)
   names <- sapply(series, FUN = extract_item, item = "name")
 
   if (!is.na(ncol)) {
@@ -71,8 +88,8 @@ determinelegendcols <- function(panels, ncol) {
   return(list(r = nrow, c = ncol))
 }
 
-drawlegend <- function(panels, bars, attributes, ncol, xtickmargin, hasaxislabel) {
-  series <- getlegendentries(panels, bars, attributes)
+drawlegend <- function(data, ncol, xtickmargin, hasaxislabel) {
+  series <- getlegendentries(data)
 
   pch <- sapply(series, FUN = extract_item, item = "pch")
   lty <- sapply(series, FUN = extract_item, item = "lty")

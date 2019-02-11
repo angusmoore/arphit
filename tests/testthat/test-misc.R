@@ -4,7 +4,7 @@ library(dplyr)
 ## Log scales =====================
 test_that("Log scales",{
   # Log scales (#161)
-  p <- data.frame(x = 1:10,
+  p <- data.frame(x = c(1.5,2,3,4,4.5,5,6,7,8,9),
                   y = c(11, 20, 40, 90, 11, 14, 90, 15, 15, 16)) %>%
     arphitgg(agg_aes(x = x, y = y), log_scale = "xy") + agg_line() + agg_ylim(10, 90, 5) + agg_xlim(1,10)
   expect_true(check_graph(p, "misc-log-scale-both"))

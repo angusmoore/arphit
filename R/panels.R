@@ -16,29 +16,9 @@ maxpanels <- function(layout) {
   return(maxnp)
 }
 
-checklayout <- function(series, layout) {
+permitted_panels <- function(layout) {
   maxnp <- maxpanels(layout)
   permittedpanels <- as.character(1:maxnp)
-  for (i in names(series)) {
-    if (!(i %in% permittedpanels)) {
-      stop(paste("Your chosen layout (", layout, ") does not have a panel ", i, ".", sep = ""))
-    }
-  }
   return(permittedpanels)
 }
 
-handlepanels <- function(series, layout) {
-  # Sense check layout
-  permittedpanels <- checklayout(series, layout)
-
-  panels <- list()
-  for (p in permittedpanels) {
-    if (!is.null(series[[p]])) {
-      panels[[p]] <- series[[p]]
-    } else {
-      panels[p] <- list(NULL)
-    }
-  }
-
-  return(panels)
-}
