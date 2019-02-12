@@ -60,7 +60,6 @@ test_that("Footnotes", {
   p <- arphitgg() + agg_footnote("Just one footnote this time")
   expect_true(check_graph(p, "notes-footnote"))
 
-  skip("Linebreaks not working right (#233)")
   p <- arphitgg() +
     agg_footnote(c("A footnote", "A veeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines"))
   expect_true(check_graph(p, "notes-footnote-long"))
