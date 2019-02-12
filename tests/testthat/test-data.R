@@ -38,10 +38,9 @@ test_that("Errors", {
                fixed = TRUE)
 
   # Non-existent panel
-  p <- arphitgg(data, agg_aes(x=agg_time,y=x1))+agg_line(panel="foo")
   expect_error(
-    print(p),
-    "Invalid index in data sets. Indexes must correspond to panel numbers between 1 and 8."
+      arphitgg(data, agg_aes(x=agg_time,y=x1))+agg_line(panel="foo"),
+      "Panel identifier 'foo' is invalid. Panels must be between 1 and 8."
   )
 
   # Passing in non-finite values
@@ -51,20 +50,27 @@ test_that("Errors", {
                x2 = rnorm(10))
   infinitedata[4, "x1"] <- Inf
   expect_error(agg_qplot(infinitedata, x = "cat"),
-               "Series x1 in panel 1 contains non-finite values")
+               "Series x1 contains non-finite values")
   infinitets <-
     ts(data.frame(x1 = rnorm(10), x2 = rnorm(10)),
        start = c(2000, 1),
        frequency = 4)
   infinitets[4, "x2"] <- Inf
   expect_error(agg_qplot(infinitets),
-               "Series x2 in panel 1 contains non-finite values")
+               "Series x2 contains non-finite values")
 
   # Error if pass in data with no rows (#86)
   foo <- data.frame(x = numeric(), y = numeric())
-  expect_error(agg_qplot(foo, x = "x"), "Data in panel 1 has no rows.")
-  bar <- arphitgg(foo, agg_aes(x = x, y = y)) + agg_line()
-  expect_error(print(bar), "Data in panel 1 has no rows")
+  expect_error(agg_qplot(foo, x = "x"), "Series y has no observations.")
+  expect_error(arphitgg(foo, agg_aes(x = x, y = y)) + agg_line(), "Series y has no observations.")
+
+  # Bar graph with duplicate x
+  data <- data.frame(x=c(1,2,2,3),y=c(1,2,3,4))
+  expect_error(
+    print(arphitgg(data, agg_aes(x=x,y=y))+agg_col()),
+    "Series y invalid. Bar graphs cannot have duplicate entries for x values.",
+    fixed = TRUE
+  )
 })
 
 ## Zoo and XTS data (#129) =================

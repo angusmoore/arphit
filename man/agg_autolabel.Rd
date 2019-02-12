@@ -4,10 +4,14 @@
 \alias{agg_autolabel}
 \title{Add automatically placed label}
 \usage{
-agg_autolabel(quiet = FALSE)
+agg_autolabel(quiet = FALSE, arrow_bars = FALSE)
 }
 \arguments{
 \item{quiet}{(logical, default FALSE) Do not output progress of autolabeller}
+
+\item{arrow_bars}{(logical, default FALSE) Add arrows between labels and bar series
+if there isn't line of sight between the label and the series. Line series always
+have arrows (if there isn't line of sight).}
 }
 \description{
 Add automatically placed label

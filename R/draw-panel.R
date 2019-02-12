@@ -291,41 +291,46 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
   graphics::axis(3, c(xlim[1], xlim[2]), tck = 0, labels = FALSE, lwd = 1)
 }
 
-drawshading <- function(shading, data, x) {
+drawshading <- function(shading, data) {
   for (s in shading) {
-    shading_data <- data.frame(x = c(x,rev(x)),
-                               y = c(data[, s$to, drop = TRUE],rev(data[, s$from, drop = TRUE])))
+    x_to <- get_x_plot_locations(series_x_values(data, which(series_names(data) == s$to)), data)
+    x_from <- get_x_plot_locations(series_x_values(data, which(series_names(data) == s$from)), data)
+    y_to <- series_values(data, which(series_names(data) == s$to))
+    y_from <- series_values(data, which(series_names(data) == s$from))
+    shading_data <- data.frame(x = c(x_to,rev(x_from)),
+                               y = c(y_to,rev(y_from)))
     shading_data <- shading_data[!is.na(shading_data$x) & !is.na(shading_data$y), ]
     graphics::polygon(shading_data$x,shading_data$y,col = s$color, border = NA)
   }
 }
 
-drawlines <- function(l, series, bars, data, x, attributes, xlim, ylim, joined, log_scale) {
-  for (s in series) {
-    if (!(s %in% bars)) {
+drawlines <- function(l, data, xlim, ylim, joined, log_scale) {
+  for (i in seq_along(data$series)) {
+    s <- data$series[[i]]
+    x <- get_x_plot_locations(s$x, data)
+    if (!s$bar) {
       graphics::par(mfg = l)
-      y <- data[[s]]
       if (joined) {
-        nas <- is.na(x) | is.na(y)
+        nas <- is.na(x) | is.na(s$y)
         plotx <- x[!nas]
-        y <- y[!nas]
+        s$y <- s$y[!nas]
       } else {
         plotx <- x
       }
-      graphics::par(cex = attributes$pointsize[[s]])
+      graphics::par(cex = s$attributes$pointsize)
       graphics::plot(
         plotx,
-        y,
+        s$y,
         type = "o",
-        col = attributes$col[[s]],
+        col = s$attributes$col,
         xlim = xlim,
         ylim = c(ylim$min, ylim$max),
         axes = FALSE,
         xlab = "",
         ylab = "",
-        pch = attributes$pch[[s]],
-        lty = attributes$lty[[s]],
-        lwd = attributes$lwd[[s]],
+        pch = s$attributes$pch,
+        lty = s$attributes$lty,
+        lwd = s$attributes$lwd,
         log = log_scale
       )
       graphics::par(cex = 1)
@@ -358,38 +363,18 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
   }
 }
 
-drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, ylim, bar.stacked, log_scale) {
-  barcolumns <- c()
-  colors <- c()
-  bordercol <- c()
+drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
+  out <- get_bar_data(data)
+  bardata <- out$bardata
+  colors <- out$colors
+  bordercol <- out$bordercol
 
-  for (s in series) {
-    if (s %in% bars) {
-      barcolumns <- append(barcolumns, s)
-      colors <- append(colors, attributes$col[[s]])
-      bordercol <- append(bordercol, attributes$barcol[[s]])
-    }
-  }
-  if (length(barcolumns) > 0) {
-    bardata <- data[, barcolumns, drop = FALSE]
-    if (!is.null(freq)) {
+  if (ncol(bardata) > 0) {
+    out <- convert_to_plot_bardata(bardata, data)
+    bardata_p <- out$p
+    bardata_n <- out$n
 
-      # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
-      bardata$x <- x
-      equal_spaced <- data.frame(x = seq(from = min(x), to = max(x), by = freq))
-      x <- seq(from = min(x), to = max(x), by = freq) # and replace x
-      bardata <- dplyr::arrange_(dplyr::full_join(bardata, equal_spaced, by = "x"), "x")
-      bardata <- dplyr::select_(bardata, "-x")
-    }
-    bardata <- t(as.matrix(bardata))
-    bardata[is.na(bardata)] <- 0 # singletons don't show otherwise (#82)
-    # Split into positive and negative (R doesn't stack well across axes)
-    bardata_p <- bardata
-    bardata_n <- bardata
-    bardata_p[bardata <= 0] <- 0
-    bardata_n[bardata > 0] <- 0
-
-    xlim <- as.barplot.x(data[barcolumns], x, xlim, bar.stacked)
+    xlim <- as.barplot.x(bardata, get_x_plot_locations(data$x, data), xlim, bar.stacked)
     graphics::par(mfg = l)
     graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
     graphics::par(mfg = l)
@@ -397,34 +382,13 @@ drawbars <- function(l, series, bars, data, x, ists, freq, attributes, xlim, yli
   }
 }
 
-getxvals <- function(data, ists, xvals) {
-  if (ists || is.scatter(xvals) || is.null(data)) {
-    # time series or scatter
-    return(xvals)
-  } else if (!is.null(xvals)) {
-    if (is.numeric(xvals)) {
-      if (length(xvals) > 1) {
-        return(xvals + 0.5*min(diff(xvals)))
-      } else {
-        return(xvals + 0.5)
-      }
-    } else {
-      # Categorical data, offset by half
-      return(1:length(xvals) + 0.5)
-    }
-  }
-}
-
-drawpanel <- function(p, series, bars, data, xvals, ists, freq, shading, bgshadings, margins, layout, attributes, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, log_scale) {
+drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, log_scale) {
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
 
-  # Handling the x variables
-  x <- getxvals(data, ists, xvals)
-
   # Do we need an x unit
-  if (ists || !is.scatter(xvals) || is.null(data)) {
+  if (data$ts || !is.scatter(data$x) || is.null(data)) {
     xunits <- NULL
   }
 
@@ -446,7 +410,7 @@ drawpanel <- function(p, series, bars, data, xvals, ists, freq, shading, bgshadi
 
   gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt)
 
-  drawbars(l, series, bars, data, x, ists, freq, attributes, xlim, ylim, bar.stacked, log_scale)
+  if (!is_empty(data)) drawbars(l, data, xlim, ylim, bar.stacked, log_scale)
 
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
   graphics::par(mfg = l)
@@ -461,8 +425,11 @@ drawpanel <- function(p, series, bars, data, xvals, ists, freq, shading, bgshadi
     ylim = c(ylim$min, ylim$max),
     log = log_scale
   )
-  drawshading(shading, data, x)
-  drawlines(l, series, bars, data, x, attributes, xlim, ylim, joined, log_scale)
+
+  if(!is_empty(data)) {
+    drawshading(shading, data)
+    drawlines(l, data, xlim, ylim, joined, log_scale)
+  }
 
   drawpaneltitle(paneltitle, panelsubtitle)
   drawaxislabels(yaxislabel, xaxislabel, p, layout, margins$xtickmargin, margins$left)

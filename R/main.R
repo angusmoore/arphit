@@ -1,40 +1,46 @@
 
 agg_draw_internal <- function(gg, filename) {
 
-  series <- get_series_names(gg$data, gg$x)
+  if (any(!names(gg$data) %in% permitted_panels(gg$layout))) {
+    inval_panel <-  names(gg$data)[!names(gg$data) %in% permitted_panels(gg$layout)]
+    stop(paste0("Your chosen layout (", gg$layout,") does not have a panel ", inval_panel, "."))
+  }
 
-  # Determine the x values for each panel
-  xvals <- get_x_values(gg$data, gg$x)
-  out <- arrange_data(gg$data, gg$x, xvals)
-  data <- out$data
-  xvals <- out$xvals
+  data <- convert_ts_to_decimal_date(gg$data)
 
-  # Handle panels
-  panels <- handlepanels(series, gg$layout)
+  for (p in permitted_panels(gg$layout)) {
+    if (is.null(data[[p]])) {
+      # Empty plot, so create a null entry
+      data[[p]] <- new_panel_data(TRUE, 1)
+    }
+  }
+
+  # Make sure the list is ordered in panel order
+  data <- data[order(names(data))]
 
   # handle series attributes
-  attributes <- handleattributes(panels, gg$col, gg$pch, gg$lty, gg$lwd, gg$barcol, gg$pointsize)
+  data <- handleattributes(data)
 
   # Units and scales
-  yunits <- handleunits(panels, gg$yunits, gg$layout)
-  xunits <- handlexunits(panels, gg$xunits)
-  yaxislabels <- handleaxislabels(gg$yaxislabels, panels)
-  xaxislabels <- handleaxislabels(gg$xaxislabels, panels)
+  yunits <- handleunits(data, gg$yunits, gg$layout)
+  xunits <- handlexunits(names(data), gg$xunits)
+  yaxislabels <- handleaxislabels(gg$yaxislabels, names(data))
+  xaxislabels <- handleaxislabels(gg$xaxislabels, names(data))
 
   if (length(gg$xlim)==0 && (gg$log_scale == "x" || gg$log_scale == "xy")) {
     stop("You must manually set x axis limits for log scale plots.")
   }
-  xlim <- xlimconform(panels, gg$xlim, xvals, data)
-  xlabels <- handlexlabels(panels, xlim, xvals, data, gg$layout, gg$showallxlabels)
+  xlim <- xlimconform(gg$xlim, data, gg$layout)
+  xlabels <- handlexlabels(data, xlim, gg$layout, gg$showallxlabels)
 
   if (length(gg$ylim)==0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
     stop("You must manually set y axis limits for log scale plots.")
   }
-  ylim <- ylimconform(panels, gg$ylim, data, gg$bars, gg$layout, gg$stacked, xvals, xlim)
+  ylim <- ylimconform(gg$ylim, data, gg$layout, gg$stacked, xlim)
   yticks <- handleticks(data, ylim)
 
   # Handle shading
-  shading <- handleshading(gg$shading, panels)
+  shading <- handleshading(gg$shading, data)
 
   # handle annotations
   labels <- gg$labels
@@ -42,7 +48,7 @@ agg_draw_internal <- function(gg, filename) {
 
   # Get number of legend cols (if needed)
   if (gg$legend) {
-    legend.cr <- determinelegendcols(panels, gg$legend.ncol)
+    legend.cr <- determinelegendcols(data, gg$legend.ncol)
     legend.nrow <- legend.cr$r
     legend.ncol <- legend.cr$c
   } else {
@@ -64,29 +70,23 @@ agg_draw_internal <- function(gg, filename) {
   }
 
   # Conform panel titles
-  paneltitles <- conformpaneltitles(panels, gg$paneltitles, gg$layout, gg$plotsize[2])
-  panelsubtitles <- conformpaneltitles(panels, gg$panelsubtitles, gg$layout, gg$plotsize[2])
+  paneltitles <- conformpaneltitles(names(data), gg$paneltitles, gg$layout, gg$plotsize[2])
+  panelsubtitles <- conformpaneltitles(names(data), gg$panelsubtitles, gg$layout, gg$plotsize[2])
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, panels, xlabels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, gg$plotsize, gg$portrait, gg$layout, gg$srt)
+  margins <- figuresetup(filename, device, names(data), xlabels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, gg$plotsize, gg$portrait, gg$layout, gg$srt)
   handlelayout(gg$layout)
 
   # Plot each panel
-  for (p in names(panels)) {
+  for (p in names(data)) {
     drawpanel(
       p,
-      panels[[p]],
-      gg$bars[[p]],
       data[[p]],
-      xvals[[p]],
-      !is.null(xvals[[paste0(p, "ts")]]),
-      xvals[[paste0(p, "freq")]],
       shading[[p]],
       gg$bgshading,
       margins,
       gg$layout,
-      attributes[[p]],
       yunits[[p]],
       xunits[[p]],
       yticks[[p]],
@@ -111,15 +111,15 @@ agg_draw_internal <- function(gg, filename) {
   graphics::par(mfg = c(1,1))
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                  xlim = c(0,1), ylim = c(0, 1))
-  drawtitle(title, subtitle)
-  if (gg$legend) {
 
-    drawlegend(panels, gg$bars, attributes, legend.ncol, margins$xtickmargin, length(xaxislabels)>0)
-  }
+  drawtitle(title, subtitle)
   drawnotes(footnotes, sources, margins$notesstart)
+  if (gg$legend) {
+    drawlegend(data, legend.ncol, margins$xtickmargin, length(xaxislabels)>0)
+  }
   handlelayout(gg$layout) # Put the correct layout back
 
-  for (p in names(panels)) {
+  for (p in names(data)) {
     # Fraw all the annotations
     l <- getlocation(p ,gg$layout)
     graphics::par(mfg = l)
@@ -134,7 +134,7 @@ agg_draw_internal <- function(gg, filename) {
 
   if (gg$enable_autolabeller) {
     # Finally, if desired, run the autolabeller
-    autolabel(gg, panels, xlim, ylim, margins, labels, xvals, data, attributes, gg$bars, gg$autolabel_quiet)
+    autolabel(gg, data, xlim, ylim, margins, labels, gg$autolabel_quiet, gg$arrow_bars)
   }
 
   if (!is.null(device)) {

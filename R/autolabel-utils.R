@@ -1,51 +1,76 @@
-createlabels <- function(panels, bars, attributes, layout, labels) {
-  legend <- getlegendentries(panels, bars, attributes)
-
-  # match each entry to which panels it appears in
-  series_to_panels <- list()
-  for (entry in legend) {
-    for (p in names(panels)) {
-      if (notalreadylabelled(p, labels) && (entry$name %in% panels[[p]]) &&
-          any(entry$col == attributes[[p]]$col[[entry$name]], entry$fill == attributes[[p]]$col[[entry$name]])) {
-        series_to_panels[[entry$name]] <- append(series_to_panels[[entry$name]], p)
-      }
-    }
+panel_has_multiple_series <- function(p, data, layout) {
+  other_p <- other_axes(p, layout)
+  n_series <- length(data[[p]]$series)
+  if (!is.null(other_p)) {
+    n_series <- n_series + length(data[[other_p]]$series)
   }
+  return(n_series > 1)
+}
 
-  # Remove any single-panel series if that panel has only one series (doesn't need a label!)
-  for (series in names(series_to_panels)) {
-    if (length(series_to_panels[[series]]) == 1 && length(panels[[series_to_panels[[series]]]]) == 1) {
-      # check there aren't series on alternative axes
-      other_p <- other_axes(series_to_panels[[series]], layout)
-      if (!is.null(other_p)) {
-        if(!length(panels[[other_p]]) > 0) {
-          series_to_panels[series] <- NULL
+convert_series_to_label <- function(series_entry, ylim, layout) {
+  p <- series_entry$panels[1]
+  other_p <- other_axes(p, layout)
+  if (!is.null(other_p) && !identical(ylim[[p]], ylim[[other_p]])) {
+    series_entry$label <- paste0(series_entry$name,"\n",ifelse(is.even(p),"(RHS)","(LHS)"))
+  } else {
+    series_entry$label <- series_entry$name
+  }
+  return(series_entry)
+}
+
+series_appears_in_panels <- function(series_entry, data, layout, labels) {
+  panels <- NULL
+  for (p in names(data)) {
+    if (panel_has_multiple_series(p, data, layout) && notalreadylabelled(p, labels)) {
+      for (series in data[[p]]$series) {
+        if (identical(legend_entry(series), series_entry)) {
+          if (is.null(panels)) {
+            panels <- c(p)
+          } else {
+            panels <- append(panels, p)
+          }
         }
-      } else {
-        series_to_panels[series] <- NULL
       }
     }
   }
+  return(panels)
+}
 
-  # if is a RHS axes, add annotations
-  series_to_labels <- list()
-  for (series in names(series_to_panels)) {
-    if (layout == "1" || layout == "2h" || layout == "3h" || layout == "4h") {
-      if (length(panels[[other_axes(series_to_panels[[series]][1], layout)]]) > 0) { # This isn't handling all possible corner cases, because it could be that there aren't RHS on this panel but are on subsequent ones where the series also appears. Seems like a very unlikely to occur corner case.
-        if (any(c("1","3","5","7") %in% series_to_panels[[series]])) {
-          series_to_labels[[series]] <- paste0(series,"\n(LHS)")
-        } else {
-          series_to_labels[[series]] <- paste0(series,"\n(RHS)")
+get_series_objects <- function(series_entry, data, layout, labels) {
+  for (p in names(data)) {
+    if (panel_has_multiple_series(p, data, layout) && notalreadylabelled(p, labels)) {
+      for (series in data[[p]]$series) {
+        if (identical(legend_entry(series), series_entry)) {
+          return(series)
         }
-      } else {
-        series_to_labels[[series]] <- series
       }
-    } else {
-      series_to_labels[[series]] <- series
     }
   }
+}
 
-  list(series_to_labels = series_to_labels, series_to_panels = series_to_panels)
+createlabels <- function(data, layout, labels, ylim) {
+  unique_labels <- getlegendentries(data) # This gets us all unique series
+
+  # Now we match each unique series to the panels it appears in
+  panels <- lapply(unique_labels, series_appears_in_panels, data = data, layout = layout, labels = labels)
+  matching_series <- lapply(unique_labels, get_series_objects, data = data, layout = layout, labels = labels)
+
+  # Merge that panel data in (we do it this way, so it doesn't ruin the comparison)
+  for (i in seq_along(unique_labels)) {
+    unique_labels[[i]]$panels <- panels[[i]]
+    unique_labels[[i]]$series <- matching_series[[i]]
+  }
+  unique_labels <- unique_labels[!is.null(panels)]
+
+  # go through and add annotations - if necessary and (LHS) and (RHS)
+  unique_labels <- lapply(unique_labels, convert_series_to_label, ylim = ylim, layout = layout)
+
+  # Add in series types
+  for (i in seq_along(unique_labels)) {
+    unique_labels[[i]]$series_type <- get_series_type(unique_labels[[i]])
+  }
+
+  return(unique_labels)
 }
 
 other_axes <- function(p, layout) {
@@ -75,24 +100,19 @@ notalreadylabelled <- function(p, labels) {
 }
 
 
-get_series_type <- function(series, bars, lty) {
-  if (series %in% bars) {
+get_series_type <- function(series) {
+  if (!is.null(series$fill)) {
     return("bar")
-  } else if (lty[[series]] == 0) {
+  } else if (series$lty == 0) {
     return("point")
   } else {
     return("line")
   }
 }
 
-get_series_types <- function(series_list, attributes, bars) {
-  series_types <- lapply(series_list, function(x) get_series_type(x, bars, attributes$lty))
-  names(series_types) <- series_list
-  return(series_types)
-}
-
 segment_intersection <- function(x1, y1, x2, y2, a1, b1, a2, b2) {
-  if (is.na(x1) || is.na(y1) || is.na(x2) || is.na(y2) || is.na(a1) || is.na(b1) || is.na(a2) || is.na(b2)) {
+  if (is.na(x1) || is.na(y1) || is.na(x2) || is.na(y2) || is.na(a1) ||
+      is.na(b1) || is.na(a2) || is.na(b2)) {
     return(NULL)
   }
 

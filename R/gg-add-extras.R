@@ -131,8 +131,9 @@ addlegend <- function(gg, legend) {
   return(gg)
 }
 
-enableautolabel <- function(gg, quiet) {
+enableautolabel <- function(gg, quiet, arrow_bars) {
   gg$enable_autolabeller <-  TRUE
   gg$autolabel_quiet <- quiet
+  gg$arrow_bars <- arrow_bars
   return(gg)
 }

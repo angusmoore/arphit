@@ -55,7 +55,7 @@ print.arphit.gg <- function(x, ...) {
          "yaxislabel" = addaxislabel(gg, element, "y"),
          "xaxislabel" = addaxislabel(gg, element, "x"),
          "legend" = addlegend(gg, element),
-         "autolabel" = enableautolabel(gg, element$quiet),
+         "autolabel" = enableautolabel(gg, element$quiet, element$arrow_bars),
          stop("Unknown element type for arphit.gg"))
   return(gg)
 }

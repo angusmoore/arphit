@@ -32,20 +32,32 @@ make_decimal_date <- function(date, frequency) {
   stop("Unknown frequency")
 }
 
-get_x_values <- function(data, x) {
-  outx <- list()
+
+get_x_plot_locations <- function(x, data) {
+  if (data$ts || is.scatter(data$x) || is.null(data)) {
+    # time series or scatter
+    return(x)
+  } else if (!is.null(data$x)) {
+    # Categorical data, offset by half
+    return(match(x, data$x) + 0.5)
+  }
+}
+
+convert_ts_to_decimal_date <- function(data) {
   for (p in names(data)) {
-    if (x[[p]] %in% names(data[[p]])) {
-      outx[[p]] <- data[[p]][[x[[p]]]]
-      # if is dates, convert to year fractions
-      if (lubridate::is.Date(outx[[p]]) || lubridate::is.POSIXt(outx[[p]])) {
-        freq <- frequencyof(outx[[p]])
-        outx[[p]] <- make_decimal_date(outx[[p]], freq)
-        # Add a little helper to tell other functions we have time series data
-        outx[[paste0(p, "ts")]] <- TRUE
-        outx[[paste0(p, "freq")]] <- freq
+    # if is dates, convert to year fractions
+    if (lubridate::is.Date(data[[p]]$x) || lubridate::is.POSIXt(data[[p]]$x)) {
+      freq <- frequencyof(data[[p]]$x)
+      data[[p]]$x <- make_decimal_date(data[[p]]$x, freq)
+      for (i in seq_along(data[[p]]$series)) {
+        data[[p]]$series[[i]]$x <- make_decimal_date(data[[p]]$series[[i]]$x, freq)
       }
+      # Add a little helper to tell other functions we have time series data
+      data[[p]]$ts <- TRUE
+      data[[p]]$freq <- freq
+    } else {
+      data[[p]]$ts <- FALSE
     }
   }
-  return(outx)
+  return(data)
 }

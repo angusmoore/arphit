@@ -45,21 +45,20 @@ point_bar_distance_ <- function(x, y, series.x, y1, y2, inches_conversion) {
   return(list(xx=xx[best][1],yy=yy[best][1],distance=distance[best][1]))
 }
 
-point_bar_distance <- function(x, y, series.x, series.y, data, bars, bars.stacked, inches_conversion) {
+point_bar_distance <- function(x, y, series.x, series.y, data, bars.stacked, inches_conversion) {
   if (!bars.stacked) {
     return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
   } else {
-    bardata <- t(as.matrix(data[bars]))
-    row_n <- which(sapply(1:nrow(bardata), function(i) identical(bardata[i,], series.y)))
+    bardata <- get_bar_data(data)$bardata
+    row_n <- which(sapply(seq_along(bardata), function(i) identical(bardata[[i]][!is.na(bardata[[i]])], series.y)))
+    # I use !is.na because bardata has been widened to all x observations, while series.y hasn't
     if (row_n == 1) {
       return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
     } else {
-      bardata <- bardata[1:row_n,]
-      bardata[is.na(bardata)] <- 0
-      bardata_p <- bardata
-      bardata_n <- bardata
-      bardata_p[bardata <= 0] <- 0
-      bardata_n[bardata > 0] <- 0
+      series.x <- get_x_plot_locations(data$x, data) # We have to widen the bar data to the full plot x
+      out <- convert_to_plot_bardata(bardata, data)
+      bardata_p <- out$p
+      bardata_n <- out$n
       if (row_n > 2) {
         y1 <- colSums(bardata_p[1:row_n-1,])
       } else {
@@ -81,38 +80,14 @@ point_bar_distance <- function(x, y, series.x, series.y, data, bars, bars.stacke
       }
     }
   }
-
 }
 
-get_distance_series_type <- function(x, y, series.x, series.y, series_type, data, bars, bars.stacked, inches_conversion) {
+get_distance_series_type <- function(x, y, series.x, series.y, series_type, data, bars.stacked, inches_conversion) {
   if (series_type == "line") {
     return(point_line_distance(x, y, series.x, series.y, inches_conversion))
   } else if (series_type == "point") {
     return(point_point_distance(x, y, series.x, series.y, inches_conversion))
   } else if (series_type == "bar") {
-    return(point_bar_distance(x, y, series.x, series.y, data, bars, bars.stacked, inches_conversion))
+    return(point_bar_distance(x, y, series.x, series.y, data, bars.stacked, inches_conversion))
   }
-}
-
-get_distance <- function(a, b, data, series.x, series.y, thisseries, otherseries, series_types, bars, bars.stacked, los_mask, xlim, ylim, inches_conversion) {
-  result <- get_distance_series_type(a,b,series.x,series.y, series_types[[thisseries]], data, bars, bars.stacked, inches_conversion)
-  los <-
-    lineofsight(
-      result$xx,
-      result$yy,
-      a,
-      b,
-      los_mask,
-      xlim,
-      ylim
-    )
-  next_closest <-
-    sapply(otherseries, function(series)
-      get_distance_series_type(a, b, series.x, data[[series]], series_types[[series]], data, bars, bars.stacked, inches_conversion)$distance)
-
-  if (length(otherseries) == 0) {
-    # TODO: Find a way of measuring distance to series on RHS panels
-    next_closest <- Inf
-  }
-  return(list(distance = result$distance, los = los, next_closest = min(next_closest), xx = result$xx, yy = result$yy))
 }

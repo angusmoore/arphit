@@ -21,7 +21,7 @@ arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
 
 \item{srt}{(default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.}
 
-\item{showallxlabels}{(optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.}
+\item{showallxlabels}{(optional) (Only for categorical graphs) Force all x labels to show? By default, this is TRUE.}
 
 \item{joined}{(default TRUE) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE).}
 

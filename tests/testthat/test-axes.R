@@ -161,7 +161,7 @@ test_that("Default scale", {
   for (i in 1:100) {
     # Just do this 100 times to get lots of different scales and check they are all fine
     data <- data.frame(y=rnorm(10))
-    scale <- defaultscale(data, NULL, FALSE)
+    scale <- defaultscale(max(data), min(data))
     expect_that(scale$min <= min(data),is_true())
     expect_that(scale$max >= max(data),is_true())
     expect_that(scale$nsteps <= max(PERMITTEDSTEPS),is_true())
@@ -171,23 +171,15 @@ test_that("Default scale", {
   # Check that default scales are sensible for stacked _bar_ series (#147)
   # With line series
   data <- data.frame(x=rep(1:5),y=1:5,z=6:10)
-  scale <- defaultscale(data, c("y","z"), TRUE)
-  expect_true(scale$min <= 0)
-  expect_true(scale$max >= 15)
-  data <- data.frame(x=rep(1:5),y=-1:-5,z=-6:-10)
-  scale <- defaultscale(data, c("y","z"), TRUE)
-  expect_true(scale$max >= 5)
-  expect_true(scale$min <= -15)
+  p <- arphitgg(data, agg_aes(x=x))+agg_col(agg_aes(y=y))+agg_col(agg_aes(y=z), stacked = TRUE)
+  expect_true(
+    check_graph(p, "axes-stacked-bar")
+  )
 
-  # Without line series
-  data <- data.frame(y=1:5,z=6:10)
-  scale <- defaultscale(data, c("y","z"), TRUE)
-  expect_true(scale$min <= 0)
-  expect_true(scale$max >= 15)
-  data <- data.frame(y=-1:-5,z=-6:-10)
-  scale <- defaultscale(data, c("y","z"), TRUE)
-  expect_true(scale$max >= 0)
-  expect_true(scale$min <= -15)
+  p <- p + agg_line(agg_aes(y=z))
+  expect_true(
+    check_graph(p, "axes-stacked-w-line")
+  )
 })
 
 ## X-axes scale ================
@@ -373,20 +365,20 @@ test_that("Axis duplication", {
     agg_line(panel = "3") +
     agg_line(panel = "5") +
     agg_line(panel = "7")
-  expect_true(suppressWarnings(check_graph(p, "axes-duplicate-left-to-right")))
+  expect_true(check_graph(p, "axes-duplicate-left-to-right"))
   p <- arphitgg(data, agg_aes(x=x,y=y), layout = "4b2") +
     agg_line(panel = "2") +
     agg_line(panel = "4") +
     agg_line(panel = "6") +
     agg_line(panel = "8")
-  expect_true(suppressWarnings(check_graph(p, "axes-duplicate-right-to-left")))
+  expect_true(check_graph(p, "axes-duplicate-right-to-left"))
   p <- arphitgg(data, agg_aes(x=x,y=y), layout = "3v") +
     agg_line(panel = "1")
-  expect_true(suppressWarnings(check_graph(p, "axes-duplicate-3v-left")))
+  expect_true(check_graph(p, "axes-duplicate-3v-left"))
   p <- arphitgg(data, agg_aes(x=x,y=y), layout = "3v") +
     agg_line(panel = "2")
-  expect_true(suppressWarnings(check_graph(p, "axes-duplicate-3v-center")))
+  expect_true(check_graph(p, "axes-duplicate-3v-center"))
   p <- arphitgg(data, agg_aes(x=x,y=y), layout = "3v") +
     agg_line(panel = "3")
-  expect_true(suppressWarnings(check_graph(p, "axes-duplicate-3v-right")))
+  expect_true(check_graph(p, "axes-duplicate-3v-right"))
 })

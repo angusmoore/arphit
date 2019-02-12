@@ -15,7 +15,7 @@ agg_aes(x, y, group = NULL, facet = NULL, order = NULL)
 
 \item{facet}{If you data are in long form, which variable defines the facets (facets split data across panels)}
 
-\item{order}{Which variable to order the x-ticks by (only applies for categorical data)}
+\item{order}{Which variable to order the x-ticks by}
 }
 \description{
 If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.

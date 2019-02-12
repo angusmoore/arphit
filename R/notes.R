@@ -8,7 +8,7 @@ conformpaneltitles <- function(panels, paneltitles, layout, width) {
   }
 
   out <- list()
-  for (p in names(panels)) {
+  for (p in panels) {
     if (p %in% names(paneltitles)) {
       out[[p]] <- splitoverlines(paneltitles[[p]], width, 18/20)
     } else {

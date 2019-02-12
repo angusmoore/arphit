@@ -41,6 +41,12 @@ test_that("Error handling", {
   p <- arphitgg(data)  +
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) +
+    agg_shading(y, y3, panel = "1")
+  expect_error(print(p), "Series y3 from your shading options is not a recognised series in panel 1.")
+
+  p <- arphitgg(data)  +
+    agg_line(agg_aes(x=x,y=y)) +
+    agg_line(agg_aes(x=x,y=y2)) +
     agg_shading(y, y3)
   expect_error(print(p), "Cannot shade with series y3 because it does not exist in any panel.")
 })

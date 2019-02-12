@@ -1,20 +1,20 @@
 context("Autolabel")
-set.seed(42)
 
 test_that("Simple labels", {
+  set.seed(42)
   foo <- data.frame(x = 1:50, y = rnorm(50), y2 = rnorm(50))
-  p <- arphitgg(foo) +
+  p <- arphitgg(foo, showallxlabels = FALSE) +
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) + agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-simple-line")
   )
 
-  p <- arphitgg(foo) +
+  p <- arphitgg(foo, showallxlabels = FALSE) +
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) + agg_autolabel(FALSE)
   expect_true(
-    check_graph(p, "autolabel-simple-line-verbose")
+    check_graph(p, "autolabel-simple-line")
   )
 
   # Non-numeric anchor point (#122)
@@ -36,9 +36,10 @@ test_that("Simple labels", {
   )
 
   # NAs in data for autolabeller (#126)
+  set.seed(42)
   foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
   foo$y[1:10] <- NA
-  p <- arphitgg(foo, agg_aes(x=year)) +
+  p <- arphitgg(foo, agg_aes(x=year), showallxlabels = FALSE) +
     agg_line(agg_aes(y=y)) +
     agg_line(agg_aes(y=y2)) +
     agg_autolabel(TRUE)
@@ -46,6 +47,8 @@ test_that("Simple labels", {
     check_graph(p, "autolabel-nas-in-data")
   )
 
+  # TS data
+  set.seed(42)
   foo <- ts(data.frame(x1=rnorm(10),x2=rnorm(10)),start=c(2000,1),frequency=4)
   p <- arphitgg(foo) +
     agg_line(agg_aes(y=x1)) +
@@ -56,8 +59,9 @@ test_that("Simple labels", {
   )
 
   # Multipanels
+  set.seed(42)
   foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
-  p <- arphitgg(foo, agg_aes(x=year), layout = "2b2") +
+  p <- arphitgg(foo, agg_aes(x=year), layout = "2b2", showallxlabels = FALSE) +
     agg_line(agg_aes(y=y), panel = "3") +
     agg_line(agg_aes(y=y2), panel = "3") +
     agg_line(agg_aes(y=y), panel = "4") +
@@ -68,18 +72,31 @@ test_that("Simple labels", {
   )
 
   # Left-right axes
+  set.seed(42)
   foo <- tibble::tibble(year = 2000:2020, y = rnorm(21),y2=rnorm(21))
-  p <- arphitgg(foo, agg_aes(x=year), layout = "1") +
+  p <- arphitgg(foo, agg_aes(x=year), layout = "1", showallxlabels = FALSE) +
     agg_line(agg_aes(y=y), panel = "1") +
     agg_line(agg_aes(y=y2), panel = "2") +
+    agg_ylim(-5,5,3,"1") +
+    agg_ylim(-10,10,3,"2") +
     agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-left-right-axes")
   )
+
+  # Two series with same attributes in the one panel
+  foo <- tibble::tibble(year = 2000:2020, y = 1:21)
+  foo2 <- tibble::tibble(year = 2000:2020, y = 2:22)
+  p <- arphitgg(aes = agg_aes(x=year,y=y), layout = "1", showallxlabels = FALSE) +
+    agg_line(data = foo, panel = "1", color = "red") +
+    agg_line(data = foo2, panel = "1", color = "red") +
+    agg_autolabel(TRUE)
+  expect_true(check_graph(p, "autolabel-same-series-one-panel"))
 })
 
 test_that("Autolabel with bars", {
   # bars
+  set.seed(42)
   data <- tibble::tibble(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10))
   p <- arphitgg(data, agg_aes(x=x,y=y,group=g)) +
     agg_col(stacked = FALSE) +
@@ -87,16 +104,44 @@ test_that("Autolabel with bars", {
   expect_true(
     check_graph(p, "autolabel-bars")
   )
+
+  set.seed(42)
+  data <- tibble::tibble(x = sort(rep(letters[1:5],3)), g = rep(letters[1:3],5), y = rnorm(15))
+  p <-  arphitgg(data, agg_aes(x=x,y=y,group=g)) +
+    agg_col() +
+    agg_autolabel(TRUE)
+  expect_true(
+    check_graph(p, "autolabel-bars2")
+  )
+
+  data <- data.frame(x=1:10,y=1,y2=-0.5,y3=2)
+  p <- arphitgg(data) +
+    agg_col(agg_aes(x=x,y=y)) +
+    agg_col(agg_aes(x=x,y=y2)) +
+    agg_col(agg_aes(x=x,y=y3)) +
+    agg_autolabel(quiet = TRUE, arrow_bars = TRUE)
+  expect_true(check_graph(p, "autolabel-arrow-bars"))
+})
+
+test_that("Autolabel with points", {
+  set.seed(42)
+  data <- data.frame(x=rnorm(20),y=rnorm(20),z=rnorm(20))
+  p <- arphitgg(data) +
+    agg_point(agg_aes(x=x,y=y)) +
+    agg_point(agg_aes(x=x,y=z)) +
+    agg_autolabel(TRUE)
+  expect_true(check_graph(p, "autolabel-scatter"))
 })
 
 ## Auto label fall back ====================
 # Fail to find candidate with standard grid, requiring fallback
 test_that("Autolabel fallback", {
   # No viable candidate at all for y.y
-  foo <- data.frame(x=rep(1:20,30),y=sort(rep(1:30,20)))
+  foo <- data.frame(x=rep(1:20,30),y=sort(rep(1:30,20)),`y.y`=sort(rep(1:30,20)))
   expect_warning({
-    p <- arphitgg(foo, agg_aes(x = x, y = y)) +  agg_point() + agg_point() +
-      agg_autolabel(FALSE) + agg_xlim(0, 20.5) + agg_ylim(0, 30, 5)
+    p <- arphitgg(foo, agg_aes(x = x), showallxlabels = FALSE) +
+      agg_point(agg_aes(y=y)) + agg_point(agg_aes(y=`y.y`)) +
+      agg_autolabel(FALSE) + agg_xlim(1, 21) + agg_ylim(0, 30, 5)
     print(p)
   }, "Unable to find location for label for series y.y")
 
@@ -116,36 +161,28 @@ test_that("Autolabel fallback", {
 
 test_that("Multiline labels", {
   # Multi line labels
+  set.seed(42)
   foo <-
     tibble::tibble(
       x = 1:30,
       `foo\nbar` = rnorm(30),
       `foo\nbar\nbaz` = rnorm(30)
     )
-  p <- arphitgg(foo) +
+  p <- arphitgg(foo, showallxlabels = FALSE) +
     agg_line(agg_aes(x = x, y = `foo\nbar\nbaz`)) +
     agg_line(agg_aes(x = x, y = `foo\nbar`)) +
     agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-multiline")
   )
-
 })
-
-data <- tibble::tibble(x = sort(rep(letters[1:5],3)), g = rep(letters[1:3],5), y = rnorm(15))
-p <-  arphitgg(data, agg_aes(x=x,y=y,group=g)) +
-  agg_col() +
-  agg_autolabel(TRUE)
-expect_true(
-  check_graph(p, "autolabel-bars2")
-)
 
 ## Line of sight ====================
 
 test_that('Line of sight', {
   # No line of sight
   data <- data.frame(x=1:10,a=1:10,b=0.5:9.5,c=1.5:10.5)
-  p <- arphitgg(data, agg_aes(x=x)) +
+  p <- arphitgg(data, agg_aes(x=x), showallxlabels = FALSE) +
     agg_line(agg_aes(y=a)) +
     agg_line(agg_aes(y=b)) +
     agg_line(agg_aes(y=c)) +
@@ -156,8 +193,8 @@ test_that('Line of sight', {
   )
 
   # Creating los mask failing for series outside the axes (#202)
+  set.seed(42)
   data <- data.frame(x=seq(as.Date("2000-03-01"),by="month",length.out=20),y2=rnorm(20),y=1000:1019)
-
   p <- arphitgg(data) +
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) +
@@ -181,7 +218,7 @@ test_that('Line of sight', {
 test_that("Which panels should be autolabelled", {
   # Labels on one panel
   data <- data.frame(x=1:10,a=1:10,b=0.5:9.5,c=1.5:10.5)
-  p <- arphitgg(data,agg_aes(x=x), layout = "2v") +
+  p <- arphitgg(data,agg_aes(x=x), layout = "2v", showallxlabels = FALSE) +
     agg_line(agg_aes(y=a), panel = "1") +
     agg_line(agg_aes(y=b), panel = "1") +
     agg_line(agg_aes(y=b), panel = "2") +
@@ -191,36 +228,13 @@ test_that("Which panels should be autolabelled", {
   expect_true(
     check_graph(p, "autolabel-one-panel-labelled")
   )
-
-  # Bug where labels were being added to single series panels incorrectly (#201)
-  expect_equal(length(createlabels(
-    list("1" = "a"), c(), list("1" = list(
-      col = list(a = "red"), pch = list(a = 1)
-    )), '1', list()
-  )$series_to_panels),
-  0)
-
-  # And now where have labels on one panel but not the other
-  expect_equal(
-    names(createlabels(
-      list("1" = c("a", "b"), "2" = "c"),
-      c(),
-      list(
-        "1" = list(col = list(a = "red", b = "green"), pch = list(a = 1, b = 1)),
-        "2" = list(col = list(c = "red"), pch =
-                     list(c = 1))
-      ),
-      '2v',
-      list()
-    )$series_to_labels),
-    c("a","b"))
-
 })
 
 ## Misc tests ==================
 
 test_that("Miscellaneous tests", {
   # Missing observations in stacked bar graphs (#217)
+  set.seed(42)
   data <- data.frame(series_name = letters[1:10], value = rnorm(10), group = sample(1:3,10,TRUE))
   p <- arphitgg(data, agg_aes(x = series_name, y = value, group = group)) +
     agg_col() + agg_autolabel()

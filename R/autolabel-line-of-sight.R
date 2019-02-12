@@ -73,20 +73,25 @@ create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,xlim,ylim) {
   return(linear_indices)
 }
 
-los_mask_series_draw <- function(series, exclude, xvals, ists, freq, data, xlim, ylim, bars, bar.stacked, log_scale, joined) {
-  x <- getxvals(data, ists, xvals)
-  colors <- as.list(rep("black",length(series)))
-  barcol <- as.list(rep("white",length(series)))
-  pch <- as.list(rep(NA,length(series)))
-  names(colors) <- series
-  names(barcol) <- series
-  names(pch) <- series
-  colors[exclude] <- "white"
-  drawbars(c(1,1), series, bars, data, x, ists, freq, list(col = colors, barcol = barcol), xlim, ylim, bar.stacked, log_scale)
-  drawlines(c(1,1), series, bars, data, x, list(col = colors, pch = pch), xlim, ylim, joined, log_scale)
+los_mask_series_draw <- function(exclude, data, xlim, ylim, bar.stacked, log_scale, joined) {
+  if (!is_empty(data)) {
+    x <- get_x_plot_locations(data$x, data)
+    # overwrite the attributes
+    for (i in seq_along(data$series)) {
+      if (identical(legend_entry(data$series[[i]]), legend_entry(exclude))) {
+        data$series[[i]]$attributes$col <- "white"
+      } else {
+        data$series[[i]]$attributes$col <- "black"
+      }
+      data$series[[i]]$attributes$barcol <- "white"
+      data$series[[i]]$attributes$pch <- NA
+    }
+    drawbars(c(1,1), data, xlim, ylim, bar.stacked, log_scale)
+    drawlines(c(1,1), data, xlim, ylim, joined, log_scale)
+  }
 }
 
-create_los_mask <- function(series, panels, p, data, xvals, dims, xlim, ylim, bars, bar.stacked, layout, log_scale, joined) {
+create_los_mask <- function(series, data, p, dims, xlim, ylim, bar.stacked, layout, log_scale, joined) {
   plot_device <- grDevices::dev.cur()
   grDevices::png(
     filename = paste0(tempdir(), "/autolabel-los-mask.png"),
@@ -94,21 +99,17 @@ create_los_mask <- function(series, panels, p, data, xvals, dims, xlim, ylim, ba
     height = dims[2] / graphics::par("mfrow")[1],
     res = PNGDPI
   )
-  graphics::par(family = font_family(), xaxs = "i", yaxs = "i", ps = 20, cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
+  graphics::par(family = font_family(), xaxs = "i", yaxs = "i", ps = 20,
+                cex.main = (28/20), cex.axis = 1, las = 1, lheight = 1)
   graphics::par(omi = c(0,0,0,0), mar = c(0,0,0,0))
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                  xlim = c(0,1), ylim = c(0, 1))
 
   # draw the lines on
-  los_mask_series_draw(panels[[p]],
-                       series,
-                       xvals[[p]],
-                       !is.null(xvals[[paste0(p, "ts")]]),
-                       xvals[[paste0(p, "freq")]],
+  los_mask_series_draw(series,
                        data[[p]],
                        xlim[[p]],
                        ylim[[p]],
-                       bars[[p]],
                        bar.stacked,
                        log_scale,
                        joined)
@@ -116,15 +117,10 @@ create_los_mask <- function(series, panels, p, data, xvals, dims, xlim, ylim, ba
   # Do RHS axes if necessary
   if (!is.null(other_axes(p, layout))) {
     p <- other_axes(p, layout)
-    los_mask_series_draw(panels[[p]],
-                         series,
-                         xvals[[p]],
-                         !is.null(xvals[[paste0(p, "ts")]]),
-                         xvals[[paste0(p, "freq")]],
+    los_mask_series_draw(series,
                          data[[p]],
                          xlim[[p]],
                          ylim[[p]],
-                         bars[[p]],
                          bar.stacked,
                          log_scale,
                          joined)

@@ -31,7 +31,7 @@ is.even <- function(x) {
 leftrightpadding <- function(yticks, yunits, panels) {
   R <- 0
   L <- 0
-  for (p in names(panels)) {
+  for (p in panels) {
     nc <- max(getstrwidth(yticks[[p]]))
     nc <- max(nc, getstrwidth(yunits[[p]]))
     if (is.even(p)) {
