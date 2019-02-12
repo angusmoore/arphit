@@ -189,11 +189,12 @@ knitr::include_graphics("plotsize.png")
 
 ## Aesthetic
 
-An aesthetic is the definition of a layer. It tells arphit you to display the data.
+An aesthetic is the definition of a layer. It tells arphit how to display the data.
 
 ### `x` and `y`
 
-The `x` and `y` variables speak for themselves, and must be values in the data you supply. (`x` values can be categorical).
+The `x` and `y` variables speak for themselves, and must be columns in the data
+you supply for the layer. (`x` values can be categorical).
 ```{r, results = "hide"}
 p <- arphitgg() + 
   agg_line(data = simple_data, aes = agg_aes(x = date, y = y1))
@@ -249,6 +250,18 @@ agg_draw(p, filename = "group-aes.png")
 knitr::include_graphics("group-aes.png")
 ```
 
+```{r, results = "hide"}
+candle <- data.frame(x=rep(letters[1:10],3),y=1:30)
+p <- arphitgg() +
+  agg_line(data = candle, aes = agg_aes(x = x, y = y, group = x))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "group-by-x.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("group-by-x.png")
+```
+
 ### Facets
 
 An aesthetic can also specify a `facet` variable. `facet`s work like `group`s, except that facets are split across panels (and so layers ignore if you give them a panel).
@@ -279,11 +292,9 @@ agg_draw(p, filename = "facet-group.png")
 knitr::include_graphics("facet-group.png")
 ```
 
-### (Advanced) Order of categorical graphs
+### Ordering of graphs
 
-By default, categorical graphs are ordered by their x-ticks if they have groups 
-(e.g. alphabetically) or will use the order in the data if there is not a group
-aesthetic.
+By default, graphs are ordered by the value of their x-ticks.
 
 You can instead specify a variable to order the graph by using the `order` 
 part of the aesthetic.
@@ -334,6 +345,9 @@ agg_draw(p, filename = "aes-order.png")
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("aes-order.png")
 ```
+
+You can use an order variable with groups, but the ordering variable must uniquely
+associate with an x value; otherwise the ordering of x values is ambiguous.
 
 ## Layers
 

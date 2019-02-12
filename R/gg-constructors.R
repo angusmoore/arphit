@@ -477,7 +477,7 @@ agg_point <- function(aes = NULL, data = NULL, color = NULL, pointsize = 1, pane
 #' @param y Which series are you plotting on the y axis.
 #' @param group If your data are in long form, which variable defines the groups.
 #' @param facet If you data are in long form, which variable defines the facets (facets split data across panels)
-#' @param order Which variable to order the x-ticks by (only applies for categorical data)
+#' @param order Which variable to order the x-ticks by
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -516,7 +516,7 @@ agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
 #' @param portrait (default = FALSE) Logical indicating whether the layout should be a landscape size (FALSE, default), or a taller portrait size (TRUE).
 #' @param dropxlabel (optional) Logical indicating whether the first xlabel of right hand panels in 2v and 2b2 should be ignored (prevents overlapping of last xlabel on left panel with first on right). FALSE by default.
 #' @param srt (default 0) Orientation adjustment for xlabels. In degrees; 0 is horizontal.
-#' @param showallxlabels (optional) (Only for categorical graphs) Force all x labels to show? By default, this is false for numeric categorical and true for non-numeric categorical.
+#' @param showallxlabels (optional) (Only for categorical graphs) Force all x labels to show? By default, this is TRUE.
 #' @param joined (default TRUE) Logical indicating whether you want to join between missing observations (TRUE()), or break the series (FALSE).
 #' @param plotsize (optional) A vector of two variables specifying the height and width of your graph, respectively. (Default 5.53, 7.5). Ignored if portrait is set to TRUE
 #' @param log_scale (optional) Set one or both of y and x axes as log scales? Use "y" for just y axis, "x" for just x and "xy" for both

@@ -6,13 +6,27 @@
  * Greatly improved performance of autolabeller ([#184](https://github.com/angusmoore/arphit/pull/184))
  * Now able to reference multiple panels in constructors ([#195](https://github.com/angusmoore/arphit/pull/195))
  * Can supply only upper or lower bound in `agg_xlim` by setting the other to NA ([#207](https://github.com/angusmoore/arphit/pull/207))
+ * Can now group by the `x` variable. This means it's possible to draw candlestick
+ graphs ([#223](https://github.com/angusmoore/arphit/pull/223)).
+ * Ordering can be done by a non-plotting variable for grouped aesthetics. Previously
+ only ungrouped aesthetics could use a non-plotting variable; grouped aesthetics
+ could only use the `x` variable or the `y` values of one of the groups
+ ([#223](https://github.com/angusmoore/arphit/pull/223)).
 
 ## Breaking changes
 
  * `agg_qplot` now only supports single panel, single sided layout. As a result, 
-the arguments `series` and `x` are now just a vector and string respectively,
-instead of lists. And `paneltitle` and `panelsubtitle` are no longer accepted
-arguments ([#242](https://github.com/angusmoore/arphit/pull/242)).
+ the arguments `series` and `x` are now just a vector and string respectively,
+ instead of lists. And `paneltitle` and `panelsubtitle` are no longer accepted
+ arguments ([#242](https://github.com/angusmoore/arphit/pull/242)).
+ * Duplicate categorical `x` values in the same group are now plotted as a single
+ location, rather than at separate locations with the same x-tick ([#223](https://github.com/angusmoore/arphit/pull/223)).
+ * Numerical categorical graphs now show all x axis labels by default (i.e. `showallxlabels = TRUE`)
+ ([#233](https://github.com/angusmoore/arphit/pull/223)).
+ * All graphs are now automatically ordered by the value of the `x` variable. 
+ Previous (pre-0.3) behaviour was inconsistent. Previously, graphs with groups
+ were ordered by `x` variable,  but graphs without groups were ordered in the
+ order of the underlying data ([#233](https://github.com/angusmoore/arphit/pull/223)).
  
 ## Bugfixes
 
