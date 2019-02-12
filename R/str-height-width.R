@@ -141,7 +141,7 @@ getstrwidth <- function(text, units = "inches", cex = 1) {
   if (is.null(text) || text == "") return(0)
   lines <- stringr::str_split(text,stringr::fixed("\n"))[[1]]
   widths <- sapply(lines, getstrlinewidth, USE.NAMES = FALSE)
-  inch_width <- max(widths)
+  inch_width <- max(widths)*cex
   if (units == "user") {
     return(inchesasuser_width(inch_width))
   } else if (units == "inches") {

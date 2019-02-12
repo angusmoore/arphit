@@ -9,7 +9,6 @@ test_that("Title", {
   p <- arphitgg(layout = "2b2") + agg_title("Test", panel = "1") + agg_title("Test 3", panel = "3")
   expect_true(check_graph(p, "notes-paneltitles"))
 
-  skip("Linebreaks not working right (#233)")
   p <- arphitgg() +
     agg_title("This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines") +
     agg_title("This is a veeeeeerrrrrryy loooooooooonnnnnnngg panel title too", panel = "1")
@@ -31,7 +30,6 @@ test_that("Subtitle", {
   p <- arphitgg(layout = "2b2") + agg_subtitle("Test", panel = "1") + agg_subtitle("Test 3", panel = "3")
   expect_true(check_graph(p, "notes-panelsubtitles"))
 
-  skip("Linebreaks not working right (#233)")
   p <- arphitgg() +
     agg_subtitle("This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines") +
     agg_subtitle("This is a veeeeeerrrrrryy loooooooooonnnnnnngg panel title too", panel = "1")
@@ -44,7 +42,6 @@ test_that("Subtitle", {
 })
 
 test_that("Subtitle and title", {
-  skip("Linebreaks not working right (#233)")
   p <- arphitgg() +
     agg_title("Here's a title, and some other stuff") +
     agg_subtitle("Now a subtitle, which is fun") +
