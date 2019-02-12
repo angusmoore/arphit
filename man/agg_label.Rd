@@ -23,7 +23,7 @@ agg_label(text, x, y, panel, color = "black", size = 20)
 Add a label
 }
 \examples{
-arphitgg(data) + agg_label("Here is a footnote", RBA["Red3"], 2003, 0.2, "1")
+arphitgg() + agg_label("Here is a label", 2003, 0.2, "1", RBA["Red3"])
 
 }
 \seealso{

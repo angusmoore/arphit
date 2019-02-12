@@ -162,7 +162,7 @@ agg_footnote <- function(footnote) {
 #' all the plotting options
 #'
 #' @examples
-#' arphitgg(data) + agg_label("Here is a footnote", RBA["Red3"], 2003, 0.2, "1")
+#' arphitgg() + agg_label("Here is a label", 2003, 0.2, "1", RBA["Red3"])
 #'
 #' @export
 agg_label <- function(text, x, y, panel, color = "black", size = 20) {
