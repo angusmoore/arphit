@@ -10,7 +10,11 @@
 agg_draw <- function(gg, filename = NULL) {
   # Here we call the arphit drawing function
   gg$data[["parent"]] <- NULL
-  agg_draw_internal(gg, filename)
+  if (!is.null(finddevice(filename)) && finddevice(filename) == "xlsx") {
+    write_to_excel(gg, filename)
+  } else {
+    agg_draw_internal(gg, filename)
+  }
 }
 
 #' Draw a defined graph
