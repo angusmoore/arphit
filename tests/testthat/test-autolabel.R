@@ -241,4 +241,12 @@ test_that("Miscellaneous tests", {
   expect_true(
     check_graph(p, "autolabel-missing-stacked-bar")
   )
+
+  # Failing to remove labels on single-series panels properly (#249)
+  p <- arphitgg(data.frame(x=1:10,y=1:10,y2=11:20,y3=21:30), layout = "2h") +
+    agg_line(agg_aes(x=x,y=y), panel = "1") +
+    agg_line(agg_aes(x=x,y=y2), panel = "1") +
+    agg_line(agg_aes(x=x,y=y3), panel = "3") +
+    agg_autolabel()
+  expect_true(check_graph(p, "autolabel-remove-single-series-panel"))
 })

@@ -60,7 +60,7 @@ createlabels <- function(data, layout, labels, ylim) {
     unique_labels[[i]]$panels <- panels[[i]]
     unique_labels[[i]]$series <- matching_series[[i]]
   }
-  unique_labels <- unique_labels[!is.null(panels)]
+  unique_labels <- unique_labels[!sapply(panels, is.null)]
 
   # go through and add annotations - if necessary and (LHS) and (RHS)
   unique_labels <- lapply(unique_labels, convert_series_to_label, ylim = ylim, layout = layout)
