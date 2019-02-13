@@ -1,4 +1,4 @@
-check_graph <- function(p, filename) {
+check_graph <- function(p, filename, max_distortion = 0.97) {
   comp_location <- paste0(tempdir(), "/", filename, ".png")
   agg_draw(p, comp_location)
 
@@ -14,7 +14,7 @@ check_graph <- function(p, filename) {
     # Check that image similarity greater than 97%. The same graph exported on
     # different machines have _slight_ differences for some reason.
     dist <- magick::image_compare_dist(comparison, reference)$distortion
-    if (dist > 0.97) {
+    if (dist >= max_distortion) {
       return(TRUE)
     } else {
       cat(paste0("\n", filename, " does not match (distortion of ", round(dist,3),")\n"))
