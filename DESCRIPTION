@@ -18,7 +18,8 @@ Imports:
   devEMF,
   zoo,
   xts,
-  magick
+  magick,
+  writexl
 Suggests:
   testthat,
     knitr,

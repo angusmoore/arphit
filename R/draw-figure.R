@@ -16,7 +16,7 @@ finddevice <- function(filename) {
     if (filetype == "" && substr(filename, nchar(filename)-4,nchar(filename))==".emf+") {
       filetype <- "emf+"
     }
-    if (filetype == "png" || filetype == "pdf" || filetype == "emf" || filetype == "svg" || filetype == "emf+") {
+    if (filetype == "png" || filetype == "pdf" || filetype == "emf" || filetype == "svg" || filetype == "emf+" || filetype == "xlsx") {
       return(filetype)
     } else {
       stop(paste("Unsupported file type ", filetype, ".", sep = ""))
