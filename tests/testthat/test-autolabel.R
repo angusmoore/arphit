@@ -248,5 +248,5 @@ test_that("Miscellaneous tests", {
     agg_line(agg_aes(x=x,y=y2), panel = "1") +
     agg_line(agg_aes(x=x,y=y3), panel = "3") +
     agg_autolabel()
-  expect_true(check_graph(p, "autolabeller-remove-single-series-panels"))
+  expect_true(check_graph(p, "autolabel-remove-single-series-panels"))
 })
