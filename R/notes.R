@@ -1,4 +1,4 @@
-conformpaneltitles <- function(panels, paneltitles, layout, width) {
+conformpaneltitles <- function(panels, paneltitles, layout, width, cex) {
   if (layout == "2v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
     width <- floor(1/2 * width)
   } else if (layout == "3v") {
@@ -10,7 +10,7 @@ conformpaneltitles <- function(panels, paneltitles, layout, width) {
   out <- list()
   for (p in panels) {
     if (p %in% names(paneltitles)) {
-      out[[p]] <- splitoverlines(paneltitles[[p]], width, 18/20)
+      out[[p]] <- splitoverlines(paneltitles[[p]], width, cex)
     } else {
       out[p] <- list(NULL)
     }
@@ -49,8 +49,6 @@ formatfn <- function(footnotes, width) {
 }
 
 splitoverlines <- function(s, maxsize, cex) {
-  # Set values needed to determine str widths
-  graphics::par(family = font_family(), xaxs = "i", yaxs = "i", ps = 20, las = 1, lheight = 1)
 
   breakpoints <- c()
   if (nchar(s) > 0) {
@@ -64,7 +62,11 @@ splitoverlines <- function(s, maxsize, cex) {
         cumul <- 0
         lastspace <- NULL
       }
-      string <- substr(s, i-cumul, i)
+      if (length(breakpoints) > 0 ) {
+        string <- substr(s, max(breakpoints)+1, i)
+      } else {
+        string <- substr(s, i-cumul, i)
+      }
       if (getstrwidth(string, units = "inches", cex = cex) > maxsize && !is.null(lastspace)) {
         breakpoints <- append(breakpoints, lastspace)
         cumul <- 0

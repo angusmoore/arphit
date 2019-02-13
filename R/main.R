@@ -59,19 +59,19 @@ agg_draw_internal <- function(gg, filename) {
   footnotes <- formatfn(gg$footnotes, gg$plotsize[2] - WIDTHSPACESNOTES)
   sources <- formatsrcs(gg$sources, gg$plotsize[2] - WIDTHSPACESSOURCES)
   if (!is.null(gg$title)) {
-    title <- splitoverlines(gg$title, gg$plotsize[2]+MINIMUMSIDEPADDING, 28/20)
+    title <- splitoverlines(gg$title, gg$plotsize[2]-MINIMUMSIDEPADDING, 28/20)
   } else {
     title <- NULL
   }
   if (!is.null(gg$subtitle)) {
-    subtitle <- splitoverlines(gg$subtitle, gg$plotsize[2]+MINIMUMSIDEPADDING, 1)
+    subtitle <- splitoverlines(gg$subtitle, gg$plotsize[2]-MINIMUMSIDEPADDING, 1)
   } else {
     subtitle <- NULL
   }
 
   # Conform panel titles
-  paneltitles <- conformpaneltitles(names(data), gg$paneltitles, gg$layout, gg$plotsize[2])
-  panelsubtitles <- conformpaneltitles(names(data), gg$panelsubtitles, gg$layout, gg$plotsize[2])
+  paneltitles <- conformpaneltitles(names(data), gg$paneltitles, gg$layout, gg$plotsize[2]-MINIMUMSIDEPADDING, 1)
+  panelsubtitles <- conformpaneltitles(names(data), gg$panelsubtitles, gg$layout, gg$plotsize[2]-MINIMUMSIDEPADDING, 18/20)
 
   # Now need to start the canvas
   device <- finddevice(filename)
