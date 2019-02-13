@@ -12,12 +12,12 @@ test_that("Title", {
   p <- arphitgg() +
     agg_title("This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines") +
     agg_title("This is a veeeeeerrrrrryy loooooooooonnnnnnngg panel title too", panel = "1")
-  expect_true(check_graph(p, "notes-long-title"))
+  expect_true(check_graph(p, "notes-long-title", 0.925)) # Needs lower distortion because is text heavy
 
   p <- arphitgg() +
     agg_title("This is a veeeeeerrrrrryy\nloooooooooonnnnnnngg title\nwith manual line breaks") +
     agg_title("And manual\nline\nbreaks in a veeeeeeeeeeeeeeeeeeeeeerrrrrrryyyyy loong title", panel = "1")
-  expect_true(check_graph(p, "notes-long-title-manual-breaks"))
+  expect_true(check_graph(p, "notes-long-title-manual-breaks", 0.945)) # Needs lower distortion because is text heavy
 })
 
 
@@ -47,7 +47,7 @@ test_that("Subtitle and title", {
     agg_subtitle("Now a subtitle, which is fun") +
     agg_title("Here's a title, and some other stuff", panel = "1") +
     agg_subtitle("Now a subtitle, which is fun", panel = "1")
-  expect_true(check_graph(p, "notes-title-and-subtitle"))
+  expect_true(check_graph(p, "notes-title-and-subtitle", 0.92)) # Needs lower distortion because is text heavy
 })
 
 ## Footnotes ===================

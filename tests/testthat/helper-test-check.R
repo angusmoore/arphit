@@ -1,4 +1,4 @@
-check_graph <- function(p, filename) {
+check_graph <- function(p, filename, max_distortion = 0.97) {
   comp_location <- paste0(tempdir(), "/", filename, ".png")
   agg_draw(p, comp_location)
 
@@ -14,7 +14,7 @@ check_graph <- function(p, filename) {
     # Check that image similarity greater than 97%. The same graph exported on
     # different machines have _slight_ differences for some reason.
     dist <- magick::image_compare_dist(comparison, reference)$distortion
-    if (dist > 0.97) {
+    if (dist >= max_distortion) {
       return(TRUE)
     } else {
       cat(paste0("\n", filename, " does not match (distortion of ", round(dist,3),")\n"))
@@ -33,4 +33,20 @@ create_test <- function(p, filename) {
     reference_loc <- paste0("tests/testdata/linux/", filename, ".png")
   }
   agg_draw(p, filename = reference_loc)
+}
+
+delete_test <- function(filename) {
+  reference_loc_w <- paste0("tests/testdata/windows/", filename, ".png")
+  reference_loc_l <- paste0("tests/testdata/linux/", filename, ".png")
+  file.remove(reference_loc_w)
+  file.remove(reference_loc_l)
+}
+
+show_reference <- function(filename) {
+  if (.Platform$OS.type == "windows") {
+    reference_loc <- paste0("tests/testdata/windows/", filename, ".png")
+  } else {
+    reference_loc <- paste0("tests/testdata/linux/", filename, ".png")
+  }
+  magick::image_read(reference_loc)
 }
