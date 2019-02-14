@@ -471,38 +471,36 @@ agg_point <- function(aes = NULL, data = NULL, color = NULL, pointsize = 1, pane
 
 #' Define an aesthetic for a graph, or a graph layer.
 #'
-#' If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.
+#' If specified as part of a layer, fields left blank will be inherited from the parent.
 #'
-#' @param x Which series is the x variable.
-#' @param y Which series are you plotting on the y axis.
-#' @param group If your data are in long form, which variable defines the groups.
+#' @param x The x variable
+#' @param y The y variable
+#' @param group If your data are in long form, which variable defines the groups
 #' @param facet If you data are in long form, which variable defines the facets (facets split data across panels)
 #' @param order Which variable to order the x-ticks by
+#'
+#' @section Tidy evaluation:
+#'
+#' Aesthetics use tidy evaluation. This means any of can be expressions composed
+#' of variables in the data, rather than just variable names. For instance, you
+#' could do `order = desc(some_variable)`, or `y = my_variable^2`.
+#'
+#' The plotting options vignette provides some examples of aesthetics
+#' using tidy evaluation.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
 #'
 #' @export
 agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
-  x <- as.character(deparse(substitute(x)))
-  y <- as.character(deparse(substitute(y)))
-  group <- as.character(deparse(substitute(group)))
-  facet <- as.character(deparse(substitute(facet)))
-  order <- as.character(deparse(substitute(order)))
-  if (x == "NULL" || x == "") {
-    x <- NULL
-  }
-  if (y == "NULL" || y == "") {
-    y <- NULL
-  }
-  if (group == "NULL" || group == "") {
-    group <- NULL
-  }
-  if (facet == "NULL" || facet == "") {
-    facet <- NULL
-  }
-  if (order == "NULL" || order == "") {
+  x <- rlang::enquo(x)
+  y <- rlang::enquo(y)
+  group <- rlang::enquo(group)
+  facet <- rlang::enquo(facet)
+  if (as.character(deparse(substitute(order))) == "NULL") {
     order <- x
+  } else {
+    order <- rlang::enquo(order)
   }
 
   return(list(type = "aes", x = x, y = y, group = group, facet = facet, order = order))

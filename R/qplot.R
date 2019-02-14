@@ -118,7 +118,14 @@ agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NU
   check_attribute_series_names(lwd, series)
 
   for (y in series) {
-    aes <- list(type = "aes", x = x, y = y, group = NULL, facet = NULL, order = x)
+    y_sym <- rlang::sym(y)
+    if (!is.null(x)) {
+      x_sym <- rlang::sym(x)
+      aes <- list(type = "aes", x = rlang::enquo(x_sym), y = rlang::enquo(y_sym), order = rlang::enquo(x_sym))
+    } else {
+      aes <- list(type = "aes", y = rlang::enquo(y_sym))
+    }
+
     if ((is.logical(bars) && bars) || (y %in% bars)) {
       p <- p + agg_col(aes = aes, color = qplot_get_attribute(col, y))
     } else {

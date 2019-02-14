@@ -95,44 +95,46 @@ test_that("Facet aesthetic inheritance", {
 ## auto facet layouts
 test_that("Auto facet layouts", {
   two_facets <- data.frame(f = letters[1:2])
-  expect_equal(facetlayout(two_facets, "f", "1")$layout, "2h")
-  expect_equal(facetlayout(two_facets, "f", "1")$panels, c("1","3"))
-  expect_equal(facetlayout(two_facets, "f", "2b2")$layout, "2b2") # override
-  expect_equal(facetlayout(two_facets, "f", "2b2")$panels, c("1","2"))
+  facet <- rlang::sym("f")
+  facet <- rlang::enquo(facet)
+  expect_equal(facetlayout(two_facets, facet, "1")$layout, "2h")
+  expect_equal(facetlayout(two_facets, facet, "1")$panels, c("1","3"))
+  expect_equal(facetlayout(two_facets, facet, "2b2")$layout, "2b2") # override
+  expect_equal(facetlayout(two_facets, facet, "2b2")$panels, c("1","2"))
 
   three_facets <- data.frame(f = letters[1:3])
-  expect_equal(facetlayout(three_facets, "f", "1")$layout, "3h")
-  expect_equal(facetlayout(three_facets, "f", "1")$panels, c("1","3","5"))
-  expect_equal(facetlayout(three_facets, "f", "3v")$layout, "3v")
-  expect_equal(facetlayout(three_facets, "f", "3v")$panels, c("1","2","3"))
+  expect_equal(facetlayout(three_facets, facet, "1")$layout, "3h")
+  expect_equal(facetlayout(three_facets, facet, "1")$panels, c("1","3","5"))
+  expect_equal(facetlayout(three_facets, facet, "3v")$layout, "3v")
+  expect_equal(facetlayout(three_facets, facet, "3v")$panels, c("1","2","3"))
 
   four_facets <- data.frame(f = letters[1:4])
-  expect_equal(facetlayout(four_facets, "f", "1")$layout, "2b2")
-  expect_equal(facetlayout(four_facets, "f", "1")$panels, c("1","2","3","4"))
+  expect_equal(facetlayout(four_facets, facet, "1")$layout, "2b2")
+  expect_equal(facetlayout(four_facets, facet, "1")$panels, c("1","2","3","4"))
 
   five_facets <- data.frame(f = letters[1:5])
-  expect_equal(facetlayout(five_facets, "f", "1")$layout, "3b2")
-  expect_equal(facetlayout(five_facets, "f", "1")$panels, c("1","2","3","4","5"))
+  expect_equal(facetlayout(five_facets, facet, "1")$layout, "3b2")
+  expect_equal(facetlayout(five_facets, facet, "1")$panels, c("1","2","3","4","5"))
 
   six_facets <- data.frame(f = letters[1:6])
-  expect_equal(facetlayout(six_facets, "f", "1")$layout, "3b2")
-  expect_equal(facetlayout(six_facets, "f", "1")$panels, c("1","2","3","4","5","6"))
+  expect_equal(facetlayout(six_facets, facet, "1")$layout, "3b2")
+  expect_equal(facetlayout(six_facets, facet, "1")$panels, c("1","2","3","4","5","6"))
 
   seven_facets <- data.frame(f = letters[1:7])
-  expect_equal(facetlayout(seven_facets, "f", "1")$layout, "4b2")
-  expect_equal(facetlayout(seven_facets, "f", "1")$panels, c("1","2","3","4","5","6","7"))
+  expect_equal(facetlayout(seven_facets, facet, "1")$layout, "4b2")
+  expect_equal(facetlayout(seven_facets, facet, "1")$panels, c("1","2","3","4","5","6","7"))
 
   eight_facets <- data.frame(f = letters[1:8])
-  expect_equal(facetlayout(eight_facets, "f", "1")$layout, "4b2")
-  expect_equal(facetlayout(eight_facets, "f", "1")$panels, c("1","2","3","4","5","6","7","8"))
+  expect_equal(facetlayout(eight_facets, facet, "1")$layout, "4b2")
+  expect_equal(facetlayout(eight_facets, facet, "1")$panels, c("1","2","3","4","5","6","7","8"))
 
   nine_facets <- data.frame(f = letters[1:9])
-  expect_error(facetlayout(nine_facets, "f", "1"))
+  expect_error(facetlayout(nine_facets, facet, "1"))
 
-  expect_equal(facetlayout(three_facets, "f", "4h")$layout, "4h")
-  expect_equal(facetlayout(three_facets, "f", "4h")$panels, c("1","3","5"))
-  expect_equal(facetlayout(five_facets, "f", "4h")$layout, "4h")
-  expect_equal(facetlayout(five_facets, "f", "4h")$panels, c("1","2","3","4","5"))
+  expect_equal(facetlayout(three_facets, facet, "4h")$layout, "4h")
+  expect_equal(facetlayout(three_facets, facet, "4h")$panels, c("1","3","5"))
+  expect_equal(facetlayout(five_facets, facet, "4h")$layout, "4h")
+  expect_equal(facetlayout(five_facets, facet, "4h")$panels, c("1","2","3","4","5"))
 })
 
 test_that("Facet panel titles", {
@@ -351,6 +353,19 @@ test_that("Mutiple panel constructors", {
   p1 <- arphitgg() + agg_xaxislabel("FOO", panel = c("1","2"))
   p2 <- arphitgg() + agg_xaxislabel("FOO", panel = "1") + agg_xaxislabel("FOO", panel = "2")
   expect_equal(p1, p2)
+})
+
+## Tidy evaluation ================
+
+test_that("Tidy evaluation", {
+  # Add legends to make sure that series names are sensible
+  foo <- data.frame(x=1:10,y=1:10)
+  p <- arphitgg(foo, agg_aes(x=x,y=x^2)) + agg_line() + agg_legend()
+  expect_true(check_graph(p, "gg-tidy-x-squared"))
+
+  # Order by descending (#204)
+  p <- arphitgg(foo, agg_aes(x=x,y=y,order=desc(y))) + agg_line()
+  expect_true(check_graph(p, "gg-tidy-desc-y"))
 })
 
 ## Miscellaneous ==============

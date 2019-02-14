@@ -12,6 +12,10 @@
  only ungrouped aesthetics could use a non-plotting variable; grouped aesthetics
  could only use the `x` variable or the `y` values of one of the groups
  ([#223](https://github.com/angusmoore/arphit/pull/223)).
+ * Aesthetics now use tidy evaluation ([#251](https://github.com/angusmoore/arphit/pull/251)).
+ This means aesthetics can be _expressions_, which are evaluated within the environment
+ of the provided data, rather than  just variables in the data. This means you
+ can do things like `order = desc(variable)`, or `y = my_variable^2`.
 
 ## Breaking changes
 

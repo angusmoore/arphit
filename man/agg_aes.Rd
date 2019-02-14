@@ -7,19 +7,30 @@
 agg_aes(x, y, group = NULL, facet = NULL, order = NULL)
 }
 \arguments{
-\item{x}{Which series is the x variable.}
+\item{x}{The x variable}
 
-\item{y}{Which series are you plotting on the y axis.}
+\item{y}{The y variable}
 
-\item{group}{If your data are in long form, which variable defines the groups.}
+\item{group}{If your data are in long form, which variable defines the groups}
 
 \item{facet}{If you data are in long form, which variable defines the facets (facets split data across panels)}
 
 \item{order}{Which variable to order the x-ticks by}
 }
 \description{
-If specified as part of a agg_line or agg_col, fields left blank will be inherited from the parent.
+If specified as part of a layer, fields left blank will be inherited from the parent.
 }
+\section{Tidy evaluation}{
+
+
+Aesthetics use tidy evaluation. This means any of can be expressions composed
+of variables in the data, rather than just variable names. For instance, you
+could do `order = desc(some_variable)`, or `y = my_variable^2`.
+
+The plotting options vignette provides some examples of aesthetics
+using tidy evaluation.
+}
+
 \seealso{
 \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 all the plotting options
