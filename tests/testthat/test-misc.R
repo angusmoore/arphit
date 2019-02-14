@@ -47,3 +47,14 @@ test_that("Joined", {
   p <- arphitgg(foo, agg_aes(x=x,y=y),joined=FALSE) + agg_line()
   expect_true(check_graph(p, "misc-joined"))
 })
+
+## SRT ================
+
+test_that("srt", {
+  foo <- data.frame(x=c("a very long label","another very long label"),y=c(1,2))
+  p <- arphitgg(foo, agg_aes(x=x,y=y),srt=90)+agg_col()
+  expect_true(check_graph(p, "misc-long-rotated-x-labels-90"))
+
+  p <- arphitgg(foo, agg_aes(x=x,y=y),srt=45)+agg_col()
+  expect_true(check_graph(p, "misc-long-rotated-x-labels-45"))
+})
