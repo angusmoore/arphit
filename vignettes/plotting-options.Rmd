@@ -193,8 +193,11 @@ An aesthetic is the definition of a layer. It tells arphit how to display the da
 
 ### `x` and `y`
 
-The `x` and `y` variables speak for themselves, and must be columns in the data
-you supply for the layer. (`x` values can be categorical).
+The `x` and `y` variables speak for themselves. They must be variables
+in your dataset. (`x` values can be categorical). Aesthetics can also be
+expressions, rather than single variables - see the section on tidy evaluation
+below.
+
 ```{r, results = "hide"}
 p <- arphitgg() + 
   agg_line(data = simple_data, aes = agg_aes(x = date, y = y1))
@@ -327,6 +330,20 @@ agg_draw(p, filename = "aes-order-value-group.png")
 knitr::include_graphics("aes-order-value-group.png")
 ```
 
+You can order in descending value using the `desc` function - see the section
+on tidy evaluation below. E.g.:
+```{r, results = "hide"}
+order_data <- data.frame(x=letters[1:10],
+                         y=rnorm(10))
+p <- arphitgg(order_data, agg_aes(x=x,y=y,order=dplyr::desc(y))) + agg_col()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "aes-order-value-desc.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("aes-order-value-desc.png")
+```
+
 A third alternative way is to use another variable to define the order. In this
 example we take data and order it by a variable `order` that is the reverse
 of the x variable.
@@ -348,6 +365,60 @@ knitr::include_graphics("aes-order.png")
 
 You can use an order variable with groups, but the ordering variable must uniquely
 associate with an x value; otherwise the ordering of x values is ambiguous.
+
+### Tidy evaluation and aesthetics
+
+Aesthetics support tidy evaluation. This means that your aesthetic can actually
+be an expression, which is evaluated in the environment of your data. This means
+you can undertake _transformations_ of your data within how you define the
+aesthetic. The most common use for this is to order graphs in descending order:
+```{r, results = "hide"}
+order_data <- data.frame(x=letters[1:10],
+                         y=rnorm(10),
+                         group = c(rep("A",5),rep("B",5)))
+p <- arphitgg(order_data, agg_aes(x=x,y=y,group=group,order=desc(A)))
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+#this is created above
+knitr::include_graphics("aes-order-value-desc.png")
+```
+
+But you can use any expression you like, in any part of the aesthetic. For instance,
+we can easily create a quadratic:
+```{r, results = "hide"}
+p <- arphitgg(data.frame(x=-10:10), agg_aes(x=x,y=x^2))+agg_line()
+
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "aes-tidy-quadratic.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("aes-tidy-quadratic.png")
+```
+
+Or we could group by a combination of two variables:
+```{r}
+two_group_data <- data.frame(x=rep(c(1,2),4),
+                             y=rnorm(8),
+                             g1=c(rep("a",4),rep("b",4)),
+                             g2=rep(c(1,1,2,2),2))
+```
+
+Here `g1` and `g2` together define a unique group, so we set the group aesthetic
+to the interaction of _both_ variables:
+
+```{r, results = "hide"}
+p <- arphitgg(two_group_data, agg_aes(x=x,y=y,group=paste(g1,g2))) + 
+  agg_col(stacked = FALSE) + 
+  agg_legend()
+
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "aes-tidy-double-group.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("aes-tidy-double-group.png")
+```
 
 ## Layers
 

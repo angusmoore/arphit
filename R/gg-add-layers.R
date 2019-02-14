@@ -33,7 +33,7 @@ autolayout <- function(n) {
 }
 
 facetlayout <- function(data, facet, layout) {
-  n <- length(unique(data[[facet]]))
+  n <- length(unique(rlang::eval_tidy(facet, data)))
   maxnp <- maxpanels(layout)
   if (layout != "1" && maxnp >= n) {
     # have specified a layout and it is fine (assume that 1 is just the default and should be ignored)
@@ -55,18 +55,31 @@ facetlayout <- function(data, facet, layout) {
 }
 
 sanity_check_aesthetic <- function(aes) {
-  if (is.null(aes$x)) {
+  if (is_null_quo(aes$x)) {
     stop("Cannot add layer. You have not specified an x aesthetic (and there was not one to inherit).")
   }
-  if (is.null(aes$y)) {
+  if (is_null_quo(aes$y)) {
     stop("Cannot add layer. You have not specified a y aesthetic for at least one of your layers (and there was not one to inherit).")
   }
 }
 
+try_tidy <- function(eval, data) {
+  tryCatch({
+    ignore <- rlang::eval_tidy(eval, data)
+    return(TRUE)
+  },
+  error = function(e)
+    return(FALSE))
+}
+
+is_null_quo <- function(x) {
+  is.null(x) || rlang::quo_is_null(x) || rlang::quo_is_missing(x)
+}
+
 check_aes_in_data <- function(data, aes, panel) {
-  if (!aes$x %in% colnames(data)) stop(paste0(aes$x," is not in your data for panel ", panel))
-  if (!aes$y %in% colnames(data)) stop(paste0(aes$y," is not in your data for panel ", panel))
-  if (!is.null(aes$group) && !aes$group %in% colnames(data)) stop(paste0(aes$group," is not in your data for panel ", panel))
+  if (!try_tidy(aes$x, data)) stop(paste0(aes$x," is not in your data for panel ", panel))
+  if (!try_tidy(aes$y, data)) stop(paste0(aes$y," is not in your data for panel ", panel))
+  if (!is_null_quo(aes$group) && !try_tidy(aes$group, data)) stop(paste0(aes$group," is not in your data for panel ", panel))
 }
 
 convert_data <- function(data, aes) {
@@ -75,14 +88,15 @@ convert_data <- function(data, aes) {
     data <- dplyr::ungroup(data)
   }
   # Special case ts data
-  if (is.null(aes$x) && (stats::is.ts(data))) {
-    agg_time <- as.Date(lubridate::date_decimal(as.numeric(stats::time(data))))
-    aes$x <- "agg_time"
-    data <- tibble::as_tibble(data)
-    data$agg_time <- agg_time
-  } else if (is.null(aes$x) && (zoo::is.zoo(data) || xts::is.xts(data))) {
-    agg_time <- stats::time(data)
-    aes$x <- "agg_time"
+  if (is_null_quo(aes$x) && (stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data))) {
+    if (stats::is.ts(data)) {
+      agg_time <- as.Date(lubridate::date_decimal(as.numeric(stats::time(data))))
+    } else {
+      agg_time <- stats::time(data)
+    }
+    x_sym <- rlang::sym("agg_time")
+    aes$x <- rlang::enquo(x_sym)
+    aes$order <- rlang::enquo(x_sym)
     data <- tibble::as_tibble(data)
     data$agg_time <- agg_time
   }
@@ -91,12 +105,14 @@ convert_data <- function(data, aes) {
 
 widen_x <- function(gg, data, aes, panel) {
   # check compatible
-  new_x <- data[[aes$x]]
+  new_x <- rlang::eval_tidy(aes$x, data)
   old_x <- gg$data[[panel]]$x
   if (is.factor(new_x)) {
     new_x <- as.character(new_x)
   }
-  if (!is.null(old_x) && class(new_x) != class(old_x)) {
+  if (!is.null(old_x) && class(new_x) != class(old_x) &&
+      !((class(new_x)=="integer" && class(old_x)=="numeric") ||
+        (class(old_x)=="integer" && class(new_x)=="numeric"))) {
     stop(paste0("Do not know how to join together x values ", class(new_x), " and ", class(old_x), " (panel ", panel, ")"))
   }
   gg$data[[panel]]$x <- unique(c(new_x,old_x))
@@ -104,13 +120,13 @@ widen_x <- function(gg, data, aes, panel) {
 }
 
 assign_series <- function(gg, data, aes, panel, bar) {
-  if (is.null(aes$group)) {
-    new_series <- create_series(aes$y, data[[aes$x]], data[[aes$y]], bar)
+  if (is_null_quo(aes$group)) {
+    new_series <- create_series(rlang::quo_name(aes$y), rlang::eval_tidy(aes$x, data), rlang::eval_tidy(aes$y, data), bar)
     gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
   } else {
-    data <- split(data, data[[aes$group]])
+    data <- split(data, rlang::eval_tidy(aes$group, data))
     for (name in names(data)) {
-      new_series <- create_series(name, data[[name]][[aes$x]], data[[name]][[aes$y]], bar)
+      new_series <- create_series(name, rlang::eval_tidy(aes$x, data[[name]]), rlang::eval_tidy(aes$y, data[[name]]), bar)
       gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
     }
   }
@@ -119,20 +135,18 @@ assign_series <- function(gg, data, aes, panel, bar) {
 
 reorder_series <- function(gg, data, aes, panel) {
 
-  if (!is.null(aes$group) && aes$order %in% series_names(gg$data[[panel]])) {
+  if (!is_null_quo(aes$group) && rlang::quo_name(aes$order) %in% series_names(gg$data[[panel]])) {
     # ordering by the value of one of the series (the group subset of aes$y)
-    order_index <- which(aes$order == series_names(gg$data[[panel]]))
+    order_index <- which(rlang::quo_name(aes$order) == series_names(gg$data[[panel]]))
     new_order_mapping <- data.frame(x = gg$data[[panel]]$series[[order_index]]$x,
                                     order = series_values(gg$data[[panel]], order_index))
   } else {
-    if (aes$order %in% colnames(data)) {
-      x <- data[[aes$x]]
-      order <- data[[aes$order]]
-      if (is.factor(x)) x <- as.character(x)
-      if (is.factor(order)) order <- as.character(order)
+    x <- rlang::eval_tidy(aes$x, data)
+    order <- rlang::eval_tidy(aes$order, data)
+    if (is.factor(x)) x <- as.character(x)
+    if (is.factor(order)) order <- as.character(order)
 
-      new_order_mapping <- unique(data.frame(x = x, order = order, stringsAsFactors = FALSE))
-    }
+    new_order_mapping <- unique(data.frame(x = x, order = order, stringsAsFactors = FALSE))
   }
 
   # combine the existing order mapping with the new one and get unique entries
@@ -184,10 +198,8 @@ addlayertopanel <- function(gg, data, aes, panel, bar) {
   ## assign series
   gg <- assign_series(gg, data, aes, panel, bar)
 
-  ## now reorder if necessary
-  if (!is.null(aes$order)) {
-    gg <- reorder_series(gg, data, aes, panel)
-  }
+  ## now reorder
+  gg <- reorder_series(gg, data, aes, panel)
 
   return(list(gg = gg, new_series_indices = (existing_series+1):length(gg$data[[panel]]$series)))
 }
@@ -198,17 +210,20 @@ inherit_aes <- function(gg, aes) {
     aes <- gg$aes
   }
   # Check all the parts
-  if (is.null(aes$x) && !is.null(gg$aes$x)) {
+  if (is_null_quo(aes$x) && !is_null_quo(gg$aes$x)) {
     aes$x <- gg$aes$x
   }
-  if (is.null(aes$y) && !is.null(gg$aes$y)) {
+  if (is_null_quo(aes$y) && !is_null_quo(gg$aes$y)) {
     aes$y <- gg$aes$y
   }
-  if (is.null(aes$group) && !is.null(gg$aes$group)) {
+  if (is_null_quo(aes$group) && !is_null_quo(gg$aes$group)) {
     aes$group <- gg$aes$group
   }
-  if (is.null(aes$facet) && !is.null(gg$aes$facet)) {
+  if (is_null_quo(aes$facet) && !is_null_quo(gg$aes$facet)) {
     aes$facet <- gg$aes$facet
+  }
+  if (is_null_quo(aes$order) && !is_null_quo(gg$aes$order)) {
+    aes$order <- gg$aes$order
   }
 
   return(aes)
@@ -233,18 +248,18 @@ addlayer <- function(gg, new, panel, bar) {
     stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
   }
 
-  if (is.null(aes$facet)) {
+  if (is_null_quo(aes$facet)) {
     out <- addlayertopanel(gg, data, aes, panel, bar)
     gg <- out$gg
     newseries <- out$new_series_indices
   } else {
     layoutoverride <- facetlayout(data, aes$facet, gg$layout)
     gg$layout <- layoutoverride$layout
-    facets <- sort(unique(data[[aes$facet]]))
+    facets <- sort(unique(rlang::eval_tidy(aes$facet, data)))
     newseries <- list()
     for (i in 1:length(facets)) {
       panel <- layoutoverride$panels[[i]]
-      subset_data <- data[data[[aes$facet]] == facets[i],]
+      subset_data <- data[rlang::eval_tidy(aes$facet, data) == facets[i],]
       out <- addlayertopanel(gg, subset_data, aes, panel, bar)
       gg <- out$gg
       gg$paneltitles[[panel]] <- as.character(facets[i])
