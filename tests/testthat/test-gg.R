@@ -389,4 +389,10 @@ test_that("Miscellaneous", {
   p <- arphitgg(bar, agg_aes(x = `spaced x`, y = `spaced y`, group = `spaced group`, facet = `spaced facet`)) +
     agg_line()
   expect_true(check_graph(p, "gg-variables-spaces-group-facet"))
+
+  # NAs in the grouping variable
+  foo <- data.frame(x=1:10,y=3,g=1:10)
+  foo$g[4] <- NA
+  p <- arphitgg(foo, agg_aes(x=x,y=y,group=g)) + agg_col()
+  expect_true(check_graph(p, "gg-na-in-group"))
 })
