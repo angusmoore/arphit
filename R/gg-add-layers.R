@@ -97,7 +97,8 @@ convert_data <- function(data, aes) {
     x_sym <- rlang::sym("agg_time")
     aes$x <- rlang::enquo(x_sym)
     aes$order <- rlang::enquo(x_sym)
-    data <- tibble::as_tibble(data)
+    data <- as.data.frame(data)
+    row.names(data) <- c()
     data$agg_time <- agg_time
   }
   return(list(data = data, aes = aes))
