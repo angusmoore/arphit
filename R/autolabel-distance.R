@@ -50,7 +50,7 @@ point_bar_distance <- function(x, y, series.x, series.y, data, bars.stacked, inc
     return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
   } else {
     bardata <- get_bar_data(data)$bardata
-    row_n <- which(sapply(seq_along(bardata), function(i) identical(bardata[[i]][!is.na(bardata[[i]])], series.y)))
+    row_n <- which(sapply(seq_along(bardata), function(i) identical(bardata[[i]][!is.na(bardata[[i]])], series.y[!is.na(series.y)])))
     # I use !is.na because bardata has been widened to all x observations, while series.y hasn't
     if (row_n == 1) {
       return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
