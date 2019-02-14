@@ -249,4 +249,14 @@ test_that("Miscellaneous tests", {
     agg_line(agg_aes(x=x,y=y3), panel = "3") +
     agg_autolabel()
   expect_true(check_graph(p, "autolabel-remove-single-series-panel"))
+
+  # Error for bar charts with NAs in the data (just a smoke test, don't care about output)
+  foo <- data.frame(x=rep(1:5,2),y=rnorm(10),g=c(rep(1,5),rep(2,5)))
+  foo$y[1] <- NA
+
+  expect_error({
+    p <- arphitgg(foo, agg_aes(x = x, y = y, group = g)) + agg_col() + agg_autolabel()
+    print(p)
+  },
+  NA)
 })
