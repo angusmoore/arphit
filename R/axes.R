@@ -301,7 +301,18 @@ getlayoutfactor <- function(layout) {
   }
 }
 
-xlabels.ts <- function(xlim, layout) {
+xlabels.ts_decade <- function(xlim) {
+  startyear <- floor(xlim[1]/5)*5
+  endyear <- ceiling(xlim[2]/5)*5
+  ticks <- seq(from = startyear, to = endyear, by = 10)
+  labels <- ticks
+  at <- labels
+  # drop any labels that are outside the x limits
+  keep <- at >= xlim[1] & at <= xlim[2]
+  return(list(at = at[keep], labels = labels[keep], ticks = ticks))
+}
+
+xlabels.ts_year <- function(xlim, layout) {
   layout_factor <- getlayoutfactor(layout)
   startyear <- floor(xlim[1])
   endyear <- ceiling(xlim[2])
@@ -313,6 +324,48 @@ xlabels.ts <- function(xlim, layout) {
   # drop any labels that are outside the x limits
   keep <- at >= xlim[1] & at <= xlim[2]
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
+}
+
+xlabels.ts_quarter <- function(xlim) {
+  startquarter <- floor(xlim[1]*4)/4
+  endquarter <- ceiling(xlim[2]*4)/4
+  ticks <- seq(from = startquarter, to = (endquarter-0.25), by = 0.25)
+
+  # convert the labels to quarter names
+  qtrs <- 1 + 4*(ticks - floor(ticks))
+  labels <- month.abb[qtrs*3]
+
+  at <- ticks + 0.5 * 0.25
+
+  # drop any labels that are outside the x limits
+  keep <- at >= xlim[1] & at <= xlim[2]
+  return(list(at = at[keep], labels = labels[keep], ticks = ticks))
+}
+
+xlabels.ts_month <- function(xlim) {
+  startmonth <- floor(xlim[1]*12)/12
+  endmonth <- ceiling(xlim[2]*12)/12
+  ticks <- seq(from = startmonth, to = (endmonth-1/12), by = 1/12)
+  # convert the labels to quarter names
+  months <- seq(from = (startmonth-floor(startmonth)) * 12, length.out = length(ticks))
+  labels <- substr(month.abb[1 + (months - 1) %% 12], 1, 1)
+  at <- ticks + 0.5 * 1/12
+  # drop any labels that are outside the x limits
+  keep <- at >= xlim[1] & at <= xlim[2]
+  return(list(at = at[keep], labels = labels[keep], ticks = ticks))
+}
+
+xlabels.ts <- function(xlim, layout) {
+  layout_factor <- getlayoutfactor(layout)
+  if (xlim[2] - xlim[1] > 50*layout_factor) {
+    return(xlabels.ts_decade(xlim))
+  } else if (xlim[2] - xlim[1] > 3) {
+    return(xlabels.ts_year(xlim,layout))
+  } else if (xlim[2] - xlim[1] > 1) {
+    return(xlabels.ts_quarter(xlim))
+  } else {
+    return(xlabels.ts_month(xlim))
+  }
 }
 
 xlabels.categorical <- function(xlim, xvar, layout, showall) {

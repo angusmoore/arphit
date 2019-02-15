@@ -382,3 +382,24 @@ test_that("Axis duplication", {
     agg_line(panel = "3")
   expect_true(check_graph(p, "axes-duplicate-3v-right"))
 })
+
+## Non-year frequency x axis =================
+
+test_that("Non-year frequency x axes", {
+  # Decades
+  data <- data.frame(dates = seq.Date(as.Date("1960-03-01"),by = "quarter", length.out = 100),
+                     y = 1:100)
+  p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line() + agg_xlim(1956, 2020)
+
+  p <- arphitgg(data, agg_aes(x=dates,y=y), layout = "2v") + agg_line() + agg_xlim(1951, NA)
+
+  # Quarters
+  data <- data.frame(dates = seq.Date(as.Date("2000-03-01"),by="quarter", length.out = 10), y = 1:10)
+
+  p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line()
+
+  # Months
+  data <- data.frame(dates = seq.Date(as.Date("2000-06-01"),by="month", length.out = 10), y = 1:10)
+
+  p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line() + agg_xlim(2000.333333,2001.25)
+})
