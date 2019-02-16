@@ -334,8 +334,13 @@ xlabels.ts_quarter <- function(xlim) {
   # convert the labels to quarter names
   qtrs <- 1 + 4*(ticks - floor(ticks))
   labels <- month.abb[qtrs*3]
-
   at <- ticks + 0.5 * 0.25
+
+  # add years
+  startyear <- floor(xlim[1])
+  endyear <- floor(xlim[2])
+  labels <- c(labels, paste0("\n", seq(from = startyear, to = endyear, by = 1)))
+  at <- c(at, seq(from = startyear + 0.5, to = endyear + 0.5, by = 1))
 
   # drop any labels that are outside the x limits
   keep <- at >= xlim[1] & at <= xlim[2]
@@ -346,10 +351,18 @@ xlabels.ts_month <- function(xlim) {
   startmonth <- floor(xlim[1]*12)/12
   endmonth <- ceiling(xlim[2]*12)/12
   ticks <- seq(from = startmonth, to = (endmonth-1/12), by = 1/12)
-  # convert the labels to quarter names
-  months <- seq(from = (startmonth-floor(startmonth)) * 12, length.out = length(ticks))
+
+  # convert the labels to month letters
+  months <- seq(from = 1 + (startmonth-floor(startmonth)) * 12, length.out = length(ticks))
   labels <- substr(month.abb[1 + (months - 1) %% 12], 1, 1)
   at <- ticks + 0.5 * 1/12
+
+  # add years
+  startyear <- floor(xlim[1])
+  endyear <- floor(xlim[2])
+  labels <- c(labels, paste0("\n", seq(from = startyear, to = endyear, by = 1)))
+  at <- c(at, seq(from = startyear + 0.5, to = endyear + 0.5, by = 1))
+
   # drop any labels that are outside the x limits
   keep <- at >= xlim[1] & at <= xlim[2]
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
