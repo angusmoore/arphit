@@ -370,11 +370,11 @@ xlabels.ts_month <- function(xlim) {
 
 xlabels.ts <- function(xlim, layout) {
   layout_factor <- getlayoutfactor(layout)
-  if (xlim[2] - xlim[1] > 50*layout_factor) {
+  if (xlim[2] - xlim[1] >= 50*layout_factor) {
     return(xlabels.ts_decade(xlim))
-  } else if (xlim[2] - xlim[1] > 3) {
+  } else if (xlim[2] - xlim[1] >= 3) {
     return(xlabels.ts_year(xlim,layout))
-  } else if (xlim[2] - xlim[1] > 1) {
+  } else if (xlim[2] - xlim[1] >= 1) {
     return(xlabels.ts_quarter(xlim))
   } else {
     return(xlabels.ts_month(xlim))
