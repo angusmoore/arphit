@@ -323,7 +323,7 @@ xlabels.ts_year <- function(xlim, layout) {
   labels <- ticks[keep]
   at <- labels + 0.5
   # drop any labels that are outside the x limits
-  keep <- at >= xlim[1] & at <= xlim[2]
+  keep <- at > xlim[1] & at < xlim[2]
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
 }
 
@@ -349,7 +349,7 @@ xlabels.ts_quarter <- function(xlim) {
   at <- c(at, year_at)
 
   # drop any labels that are outside the x limits
-  keep <- at >= xlim[1] & at <= xlim[2]
+  keep <- at > xlim[1] & at < xlim[2]
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
 }
 
@@ -375,7 +375,7 @@ xlabels.ts_month <- function(xlim) {
   at <- c(at, year_at)
 
   # drop any labels that are outside the x limits
-  keep <- at >= xlim[1] & at <= xlim[2]
+  keep <- at > xlim[1] & at < xlim[2]
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
 }
 
