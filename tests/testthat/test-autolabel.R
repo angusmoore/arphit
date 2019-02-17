@@ -194,7 +194,7 @@ test_that('Line of sight', {
 
   # Creating los mask failing for series outside the axes (#202)
   set.seed(42)
-  data <- data.frame(x=seq(as.Date("2000-03-01"),by="month",length.out=20),y2=rnorm(20),y=1000:1019)
+  data <- data.frame(x=seq(as.Date("2000-03-01"),by="quarter",length.out=20),y2=rnorm(20),y=1000:1019)
   p <- arphitgg(data) +
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) +
@@ -206,7 +206,7 @@ test_that('Line of sight', {
   p <- arphitgg(data) +
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) +
-    agg_xlim(2011,2013) +
+    agg_xlim(2011,2016) +
     agg_autolabel()
   expect_true(
     check_graph(p, "autolabel-series-outside-axes-x")

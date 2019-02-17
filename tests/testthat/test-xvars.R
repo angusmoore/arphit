@@ -67,12 +67,11 @@ test_that("Time series graphs at different frequencies", {
   p <- arphitgg(foo, agg_aes(x=x,y=y))+agg_line()
   expect_true(check_graph(p, "xvars-daily3"))
 
-  skip("Hourly doesn't look any good at the moment. will be fixed by #227")
   # hourly data
   data <-
     data.frame(date = seq.POSIXt(from=ISOdate(1999,1,1),by="hour",length.out = 100),
                y = rnorm(100))
-  p <- arphitgg(data, agg_aes(x = date, y = y)) + agg_line()
+  p <- arphitgg(data, agg_aes(x = date, y = y)) + agg_line() + agg_xlim(1999,1999+1/6)
   expect_true(check_graph(p, "xvars-hourly"))
 })
 

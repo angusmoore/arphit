@@ -297,20 +297,6 @@ test_that("Miscellaneous x axis tests", {
   )
 })
 
-test_that("higher frequency x axes", {
-  # Poor handling of x labels for non-integer x limits in time series
-  expect_equal(xlabels.ts(c(2008.008,2009.008), "1")$at %% 1, 0.5)
-  expect_true(all((xlabels.ts(c(2008.008,2019.008), "1")$at %% 1) == 0.5))
-
-  # Showing labels waaay off of panels for high frequency data
-  for (i in 1:1000) {
-    x <- runif(1)
-    expect_lte(xlabels.ts(c(2008 + x, 2009 + x), "1")$at, 2009 + x)
-    expect_gte(xlabels.ts(c(2008 + x, 2009 + x), "1")$at, 2008 + x)
-  }
-
-})
-
 ## Unit handling ===============
 test_that("Units", {
   p <- arphitgg() + agg_units("foo")
@@ -390,16 +376,18 @@ test_that("Non-year frequency x axes", {
   data <- data.frame(dates = seq.Date(as.Date("1960-03-01"),by = "quarter", length.out = 100),
                      y = 1:100)
   p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line() + agg_xlim(1956, 2020)
+  expect_true(check_graph(p, "axes-x-decades"))
 
   p <- arphitgg(data, agg_aes(x=dates,y=y), layout = "2v") + agg_line() + agg_xlim(1951, NA)
+  expect_true(check_graph(p, "axes-x-decades-2v"))
 
   # Quarters
-  data <- data.frame(dates = seq.Date(as.Date("2000-03-01"),by="quarter", length.out = 10), y = 1:10)
-
+  data <- data.frame(dates = seq.Date(as.Date("2000-03-01"),by="quarter", length.out = 8), y = 1:8)
   p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line()
+  expect_true(check_graph(p, "axes-x-quarters"))
 
   # Months
   data <- data.frame(dates = seq.Date(as.Date("2000-06-01"),by="month", length.out = 10), y = 1:10)
-
   p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line() + agg_xlim(2000.333333,2001.25)
+  expect_true(check_graph(p, "axes-x-months"))
 })
