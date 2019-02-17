@@ -272,7 +272,7 @@ handleticks <- function(data, ylim) {
 
 findlabelstep <- function(start, end, layout_factor, exponent = 1) {
   for (i in c(1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90)) {
-    if ((floor((end - start) / (i*exponent)) + 1) < round(MAXXLABELS*layout_factor)) {
+    if (ceiling((end - start) / (i*exponent)) < round(MAXXLABELS*layout_factor)) {
       return(i*exponent)
     }
   }
@@ -301,11 +301,12 @@ getlayoutfactor <- function(layout) {
   }
 }
 
-xlabels.ts_decade <- function(xlim) {
+xlabels.ts_decade <- function(xlim, layout_factor) {
   startyear <- floor(xlim[1]/5)*5
   endyear <- ceiling(xlim[2]/5)*5
   ticks <- seq(from = startyear, to = endyear, by = 10)
-  labels <- ticks
+  keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
+  labels <- ticks[keep]
   at <- labels
   # drop any labels that are outside the x limits
   keep <- at >= xlim[1] & at <= xlim[2]
@@ -333,7 +334,7 @@ xlabels.ts_quarter <- function(xlim) {
 
   # convert the labels to quarter names
   qtrs <- 1 + 4*(ticks - floor(ticks))
-  labels <- month.abb[qtrs*3]
+  labels <- substr(month.abb[qtrs*3], 1, 1)
   at <- ticks + 0.5 * 0.25
 
   # add years
@@ -371,7 +372,7 @@ xlabels.ts_month <- function(xlim) {
 xlabels.ts <- function(xlim, layout) {
   layout_factor <- getlayoutfactor(layout)
   if (xlim[2] - xlim[1] >= 50*layout_factor) {
-    return(xlabels.ts_decade(xlim))
+    return(xlabels.ts_decade(xlim, layout_factor))
   } else if (xlim[2] - xlim[1] >= 3) {
     return(xlabels.ts_year(xlim,layout))
   } else if (xlim[2] - xlim[1] >= 1) {
@@ -466,6 +467,15 @@ is.scatter <- function(x) {
 
 defaultxscale <- function(xvars, ists) {
   if (is.numeric(xvars) && ists) {
+    start <- min(xvars, na.rm = TRUE)
+    end <- max(xvars, na.rm = TRUE)
+    if (end - start >= 3) {
+      return(c(floor(start),ceiling(end)))
+    } else if (end - start >= 1) {
+      return(c(floor(start*4)/4,ceiling(end*4)/4))
+    } else {
+      return(c(floor(start*12)/12,ceiling(end*12)/12))
+    }
     return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
   } else if (is.scatter(xvars)) {
     scale <- defaultscale(max(xvars, na.rm =TRUE), min(xvars, na.rm =TRUE))
