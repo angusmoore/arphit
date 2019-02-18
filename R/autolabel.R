@@ -197,7 +197,9 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
     drawlabel(newlabel)
-    if (label$series_type != "bar" || arrows_bars) {
+    if (label$series_type != "bar") {
+      return(list(label=newlabel,arrow=add_arrow(found_location, newlabel$text, label$col, p, inches_conversion)))
+    } else if (arrows_bars) {
       return(list(label=newlabel,arrow=add_arrow(found_location, newlabel$text, label$fill, p, inches_conversion)))
     } else {
       return(list(label=newlabel))

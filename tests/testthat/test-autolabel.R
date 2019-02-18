@@ -189,7 +189,7 @@ test_that('Line of sight', {
     agg_xlim(1.5,10.5) +
     agg_autolabel(TRUE)
   expect_true(
-    check_graph(p, "autolabel-no-LOS")
+    check_graph(p, "autolabel-no-LOS", 0.995)
   )
 
   # Creating los mask failing for series outside the axes (#202)
