@@ -80,13 +80,13 @@ xticksize <- function(xlabels, layout, srt) {
     if (needxlabels(p, layout)) {
       xticks <- xlabels[[p]]$labels
       if (srt == 0) {
-        size <- max(size, max(sapply(xticks, getstrheight, USE.NAMES = FALSE)))
+        size <- max(size, max(sapply(xticks, getstrheight, USE.NAMES = FALSE), na.rm = TRUE))
       } else if (srt == 90) {
-        size <- max(size, max(sapply(xticks, getstrwidth, USE.NAMES = FALSE)))
+        size <- max(size, max(sapply(xticks, getstrwidth, USE.NAMES = FALSE), na.rm = TRUE))
       } else {
         h <- sapply(xticks, getstrheight, USE.NAMES = FALSE)
         w <- sapply(xticks, getstrwidth, USE.NAMES = FALSE)
-        size <- max(size, max(sin(srt*pi/180)*w + cos(srt*pi/180)*h))
+        size <- max(size, max(sin(srt*pi/180)*w + cos(srt*pi/180)*h, na.rm = TRUE))
       }
     }
   }

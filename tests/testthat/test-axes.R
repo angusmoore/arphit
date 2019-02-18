@@ -33,7 +33,7 @@ test_that("Manually set y axis", {
   )
 
   # apply to all axes on mutlipanel
-  p <- arphitgg(fakedata, agg_aes(x=date,y=a),layout="4b2")+agg_line()+agg_ylim(1,2,5)
+  p <- arphitgg(fakedata, agg_aes(x=date,y=a),layout="4b2", dropxlabel = TRUE)+agg_line()+agg_ylim(1,2,5)
   expect_true(
     check_graph(p, "axes-manual-ylim-multipanel-all")
   )
@@ -237,7 +237,7 @@ test_that("Label steps", {
     ticks <- start:end
     expect_true(length(restrictlabels(ticks, 1)) <= 8)
     expect_true(length(restrictlabels(ticks, 1/2)) <= 4)
-    expect_true(length(restrictlabels(ticks, 1/3)) <= 2)
+    expect_true(length(restrictlabels(ticks, 1/3)) <= 3)
   }
 
   # Tests for much longer label steps
@@ -246,7 +246,7 @@ test_that("Label steps", {
     ticks <- start:end
     expect_true(length(restrictlabels(ticks, 1)) <= 8)
     expect_true(length(restrictlabels(ticks, 1/2)) <= 4)
-    expect_true(length(restrictlabels(ticks, 1/3)) <= 2)
+    expect_true(length(restrictlabels(ticks, 1/3)) <= 3)
   }
 })
 
@@ -295,20 +295,6 @@ test_that("Miscellaneous x axis tests", {
   expect_true(
     check_graph(p, "axes-insufficient-x-steps-145")
   )
-})
-
-test_that("higher frequency x axes", {
-  # Poor handling of x labels for non-integer x limits in time series
-  expect_equal(xlabels.ts(c(2008.008,2009.008), "1")$at %% 1, 0.5)
-  expect_true(all((xlabels.ts(c(2008.008,2019.008), "1")$at %% 1) == 0.5))
-
-  # Showing labels waaay off of panels for high frequency data
-  for (i in 1:1000) {
-    x <- runif(1)
-    expect_lte(xlabels.ts(c(2008 + x, 2009 + x), "1")$at, 2009 + x)
-    expect_gte(xlabels.ts(c(2008 + x, 2009 + x), "1")$at, 2008 + x)
-  }
-
 })
 
 ## Unit handling ===============
@@ -381,4 +367,27 @@ test_that("Axis duplication", {
   p <- arphitgg(data, agg_aes(x=x,y=y), layout = "3v") +
     agg_line(panel = "3")
   expect_true(check_graph(p, "axes-duplicate-3v-right"))
+})
+
+## Non-year frequency x axis =================
+
+test_that("Non-year frequency x axes", {
+  # Decades
+  data <- data.frame(dates = seq.Date(as.Date("1960-03-01"),by = "quarter", length.out = 100),
+                     y = 1:100)
+  p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line() + agg_xlim(1956, 2020)
+  expect_true(check_graph(p, "axes-x-decades"))
+
+  p <- arphitgg(data, agg_aes(x=dates,y=y), layout = "2v") + agg_line() + agg_xlim(1951, NA)
+  expect_true(check_graph(p, "axes-x-decades-2v"))
+
+  # Quarters
+  data <- data.frame(dates = seq.Date(as.Date("2000-03-01"),by="quarter", length.out = 8), y = 1:8)
+  p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line()
+  expect_true(check_graph(p, "axes-x-quarters"))
+
+  # Months
+  data <- data.frame(dates = seq.Date(as.Date("2000-06-01"),by="month", length.out = 10), y = 1:10)
+  p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line() + agg_xlim(2000.333333,2001.25)
+  expect_true(check_graph(p, "axes-x-months"))
 })
