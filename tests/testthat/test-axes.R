@@ -33,7 +33,7 @@ test_that("Manually set y axis", {
   )
 
   # apply to all axes on mutlipanel
-  p <- arphitgg(fakedata, agg_aes(x=date,y=a),layout="4b2")+agg_line()+agg_ylim(1,2,5)
+  p <- arphitgg(fakedata, agg_aes(x=date,y=a),layout="4b2", dropxlabel = TRUE)+agg_line()+agg_ylim(1,2,5)
   expect_true(
     check_graph(p, "axes-manual-ylim-multipanel-all")
   )
@@ -237,7 +237,7 @@ test_that("Label steps", {
     ticks <- start:end
     expect_true(length(restrictlabels(ticks, 1)) <= 8)
     expect_true(length(restrictlabels(ticks, 1/2)) <= 4)
-    expect_true(length(restrictlabels(ticks, 1/3)) <= 2)
+    expect_true(length(restrictlabels(ticks, 1/3)) <= 3)
   }
 
   # Tests for much longer label steps
@@ -246,7 +246,7 @@ test_that("Label steps", {
     ticks <- start:end
     expect_true(length(restrictlabels(ticks, 1)) <= 8)
     expect_true(length(restrictlabels(ticks, 1/2)) <= 4)
-    expect_true(length(restrictlabels(ticks, 1/3)) <= 2)
+    expect_true(length(restrictlabels(ticks, 1/3)) <= 3)
   }
 })
 

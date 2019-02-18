@@ -53,7 +53,8 @@ test_that("Simple labels", {
   p <- arphitgg(foo) +
     agg_line(agg_aes(y=x1)) +
     agg_line(agg_aes(y=x2)) +
-    agg_autolabel(TRUE)
+    agg_autolabel(TRUE) +
+    agg_xlim(2000,2003)
   expect_true(
     check_graph(p, "autolabel-ts")
   )

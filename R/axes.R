@@ -483,8 +483,17 @@ defaultxscale <- function(xvars, ists) {
       return(c(floor(start),ceiling(end)))
     } else if (end - start >= 1) {
       return(c(floor(start*4)/4,ceiling(end*4)/4))
-    } else {
+    } else if (end - start > 0) {
       return(c(floor(start*12)/12,ceiling(end*12)/12))
+    } else {
+      # Singleton observation, use years, not obvious what to do here?
+      if (start %% 1 == 0) {
+        # Right on a year, give half a year either side?
+        return(start-0.5,end+0.5)
+      } else {
+        # Otherwise just give the whole year that the singleton appears in
+        return(c(floor(start),ceiling(end)))
+      }
     }
     return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
   } else if (is.scatter(xvars)) {
