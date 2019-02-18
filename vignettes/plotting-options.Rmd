@@ -814,6 +814,37 @@ agg_draw(p, filename = "drop-x-label.png")
 knitr::include_graphics("drop-x-label.png")
 ```
 
+### Frequency of x axis
+
+For time series graphs, `arphit` will automatically choose the frequency of the ticks on the x axis; there is no way to manually control it. Any graph covering less than a year will use months, less than 3 years quarters and greater than 50 years decades. (Note that vertically divided graphs will swap to decades sooner, due to the compression of the x-axis).
+```{r, results = "hide"}
+decades_data <- data.frame(date = seq.Date(from=as.Date("1950-06-01"),by="year",length=50),
+                                   y1 = rnorm(50))
+p <- arphitgg(decades_data, agg_aes(x=date, y=y1)) + 
+  agg_line()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "decades.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("decades.png")
+```
+
+Automatic x-limits respect the frequency. If your axis is in quarters or months, `arphit` will set the limits to the first and last
+quarter/month of data:
+```{r, results = "hide"}
+partial_quarter_data <- data.frame(date = seq.Date(from=as.Date("2000-03-01"),by="quarter",length=9),
+                                   y1 = rnorm(9))
+p <- arphitgg(partial_quarter_data, agg_aes(x=date, y=y1)) + 
+  agg_line()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "quarter-partial-year.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("quarter-partial-year.png")
+```
+
 ## Log axes
 
 You can make either or both of the `y` and `x` axes log scales (`x` only makes sense for scatter graphs.) Use the `log_scale` option to `arphitgg` and specify one of `"x"`, `"y"` or `"xy"`, which behave as you'd expect.
