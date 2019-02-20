@@ -21,8 +21,7 @@ inchesasuser_width <- function(x) {
 }
 
 charwidth <- function(C) {
-  width <- switch(
-    EXPR = C,
+  widths <- list(
     "a" = 0.15625,
     "b" = 0.15625,
     "c" = 0.145833333333333,
@@ -123,6 +122,7 @@ charwidth <- function(C) {
     "\U00A3" = 0.2083333,
     "\U00A5" = 0.2083333
   )
+  width <- widths[[C]]
   if (is.null(width)) {
     warning(paste0("No width for ", C))
     return(0.291666666666667)
