@@ -146,6 +146,6 @@ test_that("Miscellaneous", {
   foo$x <-  lubridate::make_date(foo$x, 1, 1)
   p <- arphitgg(foo, agg_aes(x=x,y=y)) + agg_line()
   expect_true(
-    check_graph(p, "xvars-unordered-dates")
+    check_graph(p, "xvars-unordered-dates", 0.97)
   )
 })
