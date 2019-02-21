@@ -40,7 +40,6 @@ test_that("Setting attributes", {
     agg_line(agg_aes(y=y2))
   expect_true(check_graph(p, "attributes-set-one"))
 
-
   ## Two sided
   p <- arphitgg(data, agg_aes(x=x)) +
     agg_line(agg_aes(y=y), color = "red",
