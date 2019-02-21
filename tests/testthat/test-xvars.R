@@ -131,6 +131,24 @@ test_that("Single observation graphs", {
   expect_true(check_graph(p, "xvars-singleton-point"))
 })
 
+## Setting frequency of the x axis manually ===========
+
+test_that("Setting x frequency", {
+  data <- ts(data.frame(y=1:10), frequency = 4, start = c(2000,2))
+  p <- arphitgg(data, agg_aes(y=y)) + agg_line() + agg_xlim(2000, 2001 - 1/12) +
+    agg_xaxisfreq("quarter")
+  expect_true(check_graph(p, "xvars-manual-quarter"))
+  p <- arphitgg(data, agg_aes(y=y)) + agg_line() + agg_xlim(2000, 2020) +
+    agg_xaxisfreq("decade")
+  expect_true(check_graph(p, "xvars-manual-decade"))
+  p <- arphitgg(data, agg_aes(y=y)) + agg_line() + agg_xlim(2000, 2002) +
+    agg_xaxisfreq("year")
+  expect_true(check_graph(p, "xvars-manual-year"))
+  p <- arphitgg(data, agg_aes(y=y)) + agg_line() + agg_xlim(2000, 2003) +
+    agg_xaxisfreq("month")
+  expect_true(check_graph(p, "xvars-manual-month"))
+})
+
 ## Miscellaneous tests =================
 
 test_that("Miscellaneous", {
@@ -149,3 +167,4 @@ test_that("Miscellaneous", {
     check_graph(p, "xvars-unordered-dates")
   )
 })
+

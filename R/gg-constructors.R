@@ -351,6 +351,23 @@ agg_xlim <- function(min, max, panel = NULL) {
   return(list(type = "xlim", min = min, max = max, panel = panel))
 }
 
+#' Specify the frequency of the x ticks for time series graphs
+#'
+#' @param freq The frequency, either "decade", "year", "quarter", "month"
+#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels.
+#'
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
+#'
+#' @export
+agg_xaxisfreq <- function(freq, panel = NULL) {
+  if (!is.null(panel)) check_panel(panel)
+  if (!freq %in% c("decade","year","quarter","month")) {
+    stop(paste0(freq, " is not a valid frequency"))
+  }
+  return(list(type = "xfreq", freq = freq, panel = panel))
+}
+
 #' Add a legend to the graph
 #'
 #' @param ncol (optional) Specify the number of columns in the legend (if left blank, arphit will guess)
@@ -541,6 +558,7 @@ arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dr
              xunits = NULL,
              ylim = list(),
              xlim = list(),
+             xfreq = list(),
              legend = FALSE,
              legend.ncol = NA,
              col = list(),
