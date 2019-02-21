@@ -19,7 +19,8 @@
  * x-axis now supports decades, quarter and month spaced x-ticks for suitable length
  samples ([#259](https://github.com/angusmoore/arphit/pull/259)). These are 
  automatically selected if the data is short/long enough to warrant. Automatic
- x-limits will choose partial years if the axis is in quarter or month terms.
+ x-limits will choose partial years if the axis is in quarter or month terms. 
+ Frequencies can be manually set using `agg_xaxisfreq` ([#268](https://github.com/angusmoore/arphit/pull/268)).
 
 ## Breaking changes
 
