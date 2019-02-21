@@ -210,7 +210,7 @@ test_that('Line of sight', {
     agg_xlim(2011,2016) +
     agg_autolabel()
   expect_true(
-    check_graph(p, "autolabel-series-outside-axes-x")
+    check_graph(p, "autolabel-series-outside-axes-x", 0.985)
   )
 })
 
