@@ -33,12 +33,12 @@ test_that("Subtitle", {
   p <- arphitgg() +
     agg_subtitle("This is a veeeeeerrrrrryy loooooooooonnnnnnngg title that should break across lines") +
     agg_subtitle("This is a veeeeeerrrrrryy loooooooooonnnnnnngg panel title too", panel = "1")
-  expect_true(check_graph(p, "notes-long-subtitle"))
+  expect_true(check_graph(p, "notes-long-subtitle", 0.97))
 
   p <- arphitgg() +
     agg_subtitle("This is a veeeeeerrrrrryy\nloooooooooonnnnnnngg title\nwith manual line breaks") +
     agg_subtitle("And manual\nline\nbreaks in a veeeeeeeeeeeeeeeeeeeeeerrrrrrryyyyy loong title", panel = "1")
-  expect_true(check_graph(p, "notes-long-subtitle-manual-breaks"))
+  expect_true(check_graph(p, "notes-long-subtitle-manual-breaks", 0.97))
 })
 
 test_that("Subtitle and title", {
@@ -54,9 +54,9 @@ test_that("Subtitle and title", {
 
 test_that("Footnotes", {
   p <- arphitgg() + agg_footnote("This is a footnote") + agg_footnote("second footnote")
-  expect_true(check_graph(p, "notes-footnotes"))
+  expect_true(check_graph(p, "notes-footnotes", 0.985))
   p <- arphitgg() + agg_footnote(c("This is a footnote", "second footnote"))
-  expect_true(check_graph(p, "notes-footnotes2"))
+  expect_true(check_graph(p, "notes-footnotes", 0.985))
   p <- arphitgg() + agg_footnote("Just one footnote this time")
   expect_true(check_graph(p, "notes-footnote"))
 
@@ -66,7 +66,7 @@ test_that("Footnotes", {
 
   p <- arphitgg() +
     agg_footnote(c("A footnote", "An already split\nveeeeeeeeeeeeery loooooooooooong foooooootnoooote that should split over lines"))
-  expect_true(check_graph(p, "notes-footnote-long-manual-breaks"))
+  expect_true(check_graph(p, "notes-footnote-long-manual-breaks", 0.985))
 })
 
 ## Source ===================

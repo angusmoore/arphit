@@ -37,7 +37,6 @@ test_that("Legend series and colours", {
     agg_legend()
   expect_true(check_graph(p, "draw-outer-basic-duplicate-names-same-attributes"))
 
-  skip("Legend drawing incorrectly #230")
   # different attributes for duplicate
   p <- arphitgg(data, agg_aes(x=x)) +
     agg_line(agg_aes(y=a), panel = "1", color = "red") +
@@ -45,7 +44,7 @@ test_that("Legend series and colours", {
     agg_line(agg_aes(y=a), panel = "2", color = "blue") +
     agg_line(agg_aes(y=d), panel = "2", color = "yellow") +
     agg_legend()
-  expect_true(check_graph(p, "draw-outer-basic-duplicate-names")) # legend is drawing incorrectly
+  expect_true(check_graph(p, "draw-outer-basic-duplicate-names"))
 })
 
 # determining legend size

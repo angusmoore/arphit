@@ -92,7 +92,7 @@ test_that("Simple labels", {
     agg_line(data = foo, panel = "1", color = "red") +
     agg_line(data = foo2, panel = "1", color = "red") +
     agg_autolabel(TRUE)
-  expect_true(check_graph(p, "autolabel-same-series-one-panel"))
+  expect_true(check_graph(p, "autolabel-same-series-one-panel", 0.985))
 })
 
 test_that("Autolabel with bars", {
@@ -210,7 +210,7 @@ test_that('Line of sight', {
     agg_xlim(2011,2016) +
     agg_autolabel()
   expect_true(
-    check_graph(p, "autolabel-series-outside-axes-x")
+    check_graph(p, "autolabel-series-outside-axes-x", 0.985)
   )
 })
 

@@ -1,4 +1,4 @@
-check_graph <- function(p, filename, max_distortion = 0.97) {
+check_graph <- function(p, filename, max_distortion = 0.99) {
   comp_location <- paste0(tempdir(), "/", filename, ".png")
   agg_draw(p, comp_location)
 
