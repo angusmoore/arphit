@@ -14,5 +14,5 @@ before_install:
   - chmod 755 ./.push_gh_pages.sh
 
 after_success:
-  - Rscript -e 'covr::coveralls()'
+  - travis_wait 20 Rscript -e 'covr::coveralls()'
   - test $TRAVIS_BRANCH = "stable" && test $TRAVIS_PULL_REQUEST = "false" && ./.push_gh_pages.sh
