@@ -147,6 +147,14 @@ test_that("Setting x frequency", {
   p <- arphitgg(data, agg_aes(y=y)) + agg_line() + agg_xlim(2000, 2003) +
     agg_xaxisfreq("month")
   expect_true(check_graph(p, "xvars-manual-month"))
+  p <- arphitgg(data, agg_aes(y=y), layout = "2v") +
+    agg_line(panel = "1") + agg_line(panel = "2") +
+    agg_xlim(2000, 2003) + agg_xaxisfreq("quarter", panel = "1")
+  expect_true(check_graph(p, "Xvars-manual-specific-panel"))
+  expect_error(
+    arphitgg() + agg_xaxisfreq("foo"),
+    "foo is not a valid frequency"
+  )
 })
 
 ## Miscellaneous tests =================
