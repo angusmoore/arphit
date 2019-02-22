@@ -379,16 +379,28 @@ xlabels.ts_month <- function(xlim) {
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
 }
 
-xlabels.ts <- function(xlim, layout) {
+xlabels.ts <- function(xlim, layout, xfreq) {
   layout_factor <- getlayoutfactor(layout)
-  if (xlim[2] - xlim[1] >= 50*layout_factor) {
-    return(xlabels.ts_decade(xlim, layout_factor))
-  } else if (xlim[2] - xlim[1] >= 3) {
-    return(xlabels.ts_year(xlim,layout))
-  } else if (xlim[2] - xlim[1] >= 1) {
-    return(xlabels.ts_quarter(xlim))
+  if (!is.null(xfreq)) {
+    if (xfreq == "decade") {
+      return(xlabels.ts_decade(xlim, layout_factor))
+    } else if (xfreq == "year") {
+      return(xlabels.ts_year(xlim,layout))
+    } else if (xfreq == "quarter") {
+      return(xlabels.ts_quarter(xlim))
+    } else if (xfreq == "month") {
+      return(xlabels.ts_month(xlim))
+    }
   } else {
-    return(xlabels.ts_month(xlim))
+    if (xlim[2] - xlim[1] >= 50*layout_factor) {
+      return(xlabels.ts_decade(xlim, layout_factor))
+    } else if (xlim[2] - xlim[1] >= 3) {
+      return(xlabels.ts_year(xlim,layout))
+    } else if (xlim[2] - xlim[1] >= 1) {
+      return(xlabels.ts_quarter(xlim))
+    } else {
+      return(xlabels.ts_month(xlim))
+    }
   }
 }
 
@@ -422,9 +434,9 @@ xlabels.scatter <- function(xlim, xvalues) {
   return(list(at = scale, labels = scale, ticks = scale))
 }
 
-xlabels <- function(xlim, xvar, ists, layout, showall) {
+xlabels <- function(xlim, xvar, xfreq, ists, layout, showall) {
   if (ists) {
-    return(xlabels.ts(xlim, layout))
+    return(xlabels.ts(xlim, layout, xfreq))
   } else if (is.scatter(xvar)) {
     return(xlabels.scatter(xlim, xvar))
   } else {
@@ -432,17 +444,18 @@ xlabels <- function(xlim, xvar, ists, layout, showall) {
   }
 }
 
-handlexlabels <- function(data, xlim, layout, showall) {
+handlexlabels <- function(data, xlim, xfreq, layout, showall) {
   out <- list()
   for (p in names(data)) {
     if (!is_empty(data[[p]])) {
-      out[[p]] <- xlabels(xlim[[p]], data[[p]]$x, data[[p]]$ts, layout, showall)
+      out[[p]] <- xlabels(xlim[[p]], data[[p]]$x, xfreq[[p]],
+                          data[[p]]$ts, layout, showall)
     }
   }
   if (length(out) == 0) {
     # empty graph
     for (p in names(data)) {
-      out[[p]] <-  xlabels(xlim[[p]], NULL, TRUE, layout, showall)
+      out[[p]] <-  xlabels(xlim[[p]], NULL, NULL, TRUE, layout, showall)
     }
   } else {
     # This duplicates horizontal

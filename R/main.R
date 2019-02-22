@@ -31,7 +31,7 @@ agg_draw_internal <- function(gg, filename) {
     stop("You must manually set x axis limits for log scale plots.")
   }
   xlim <- xlimconform(gg$xlim, data, gg$layout)
-  xlabels <- handlexlabels(data, xlim, gg$layout, gg$showallxlabels)
+  xlabels <- handlexlabels(data, xlim, gg$xfreq, gg$layout, gg$showallxlabels)
 
   if (length(gg$ylim)==0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
     stop("You must manually set y axis limits for log scale plots.")

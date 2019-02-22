@@ -60,6 +60,7 @@ print.arphit.gg <- function(x, ...) {
          "xaxislabel" = addaxislabel(gg, element, "x"),
          "legend" = addlegend(gg, element),
          "autolabel" = enableautolabel(gg, element$quiet, element$arrow_bars),
+         "xfreq" = addxfreq(gg, element$freq, element$panel),
          stop("Unknown element type for arphit.gg"))
   return(gg)
 }

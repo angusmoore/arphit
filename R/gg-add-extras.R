@@ -111,6 +111,17 @@ addxlim <- function(gg, xlim) {
   return(gg)
 }
 
+addxfreq <- function(gg, freq, panel) {
+  if (!is.null(panel)) {
+    gg$xfreq[[panel]] <- freq
+  } else {
+    for (p in as.character(1:8)) {
+      gg$xfreq[[p]] <- freq
+    }
+  }
+  return(gg)
+}
+
 addaxislabel <- function(gg, axislabel, axis) {
   index <- paste0(axis, "axislabels")
   if (is.null(axislabel$panel)) {
