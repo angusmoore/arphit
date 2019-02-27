@@ -201,6 +201,15 @@ test_that("Error messages", {
     "Do not know how to join together x values character and integer (panel 1)",
     fixed = TRUE
   )
+
+  data <- data.frame(x=letters[1:10],y=1:10)
+  epxect_error(
+    arphitgg() +
+      agg_col(data = filter(data, x != "c"), aes = agg_aes(x = x, y = y, order = y)) +
+      agg_col(data = filter(data, x == "c"), aes = agg_aes(x = x, y = y)),
+    "Do not know how to join together ordering variables with classes character and integer (panel 1). Perhaps you added layers to the same panel with different ordering variables (or didn't specify an ordering variable for one of the layers)?",
+    fixed = TRUE
+  )
 })
 
 ## Ordering ====================

@@ -155,6 +155,12 @@ reorder_series <- function(gg, data, aes, panel) {
   }
 
   # combine the existing order mapping with the new one and get unique entries
+  if (!is.null(gg$data[[panel]]$order_mapping$order) &&
+      class(new_order_mapping$order) != class(gg$data[[panel]]$order_mapping$order) &&
+      !((class(new_order_mapping$order)=="integer" && class(gg$data[[panel]]$order_mapping$order)=="numeric") ||
+        (class(gg$data[[panel]]$order_mapping$order)=="integer" && class(new_order_mapping$order)=="numeric"))) {
+    stop(paste0("Do not know how to join together ordering variables with classes ", class(new_order_mapping$order), " and ", class(gg$data[[panel]]$order_mapping$order), " (panel ", panel, "). Perhaps you added layers to the same panel with different ordering variables (or didn't specify an ordering variable for one of the layers)?"))
+  }
   gg$data[[panel]]$order_mapping <- unique(rbind(new_order_mapping, gg$data[[panel]]$order_mapping))
 
   # Check for ambiguity
