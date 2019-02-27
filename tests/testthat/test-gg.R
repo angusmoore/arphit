@@ -203,7 +203,7 @@ test_that("Error messages", {
   )
 
   data <- data.frame(x=letters[1:10],y=1:10)
-  epxect_error(
+  expect_error(
     arphitgg() +
       agg_col(data = filter(data, x != "c"), aes = agg_aes(x = x, y = y, order = y)) +
       agg_col(data = filter(data, x == "c"), aes = agg_aes(x = x, y = y)),
