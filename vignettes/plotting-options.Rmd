@@ -959,11 +959,12 @@ knitr::include_graphics("arrow.png")
 
 `arphit` has (experimental) functionality to _automatically_ add series labels for you. If enabled, the auto labeller will run on panels with more than one series, and which do not already have text labels. If you manually set text labels for a panel, the auto labeller will skip that panel. It will also add arrows from the label to the series if necessary.
 
-The autolabeller is still in early stages. Performance in particular is a problem, and it struggles to find locations for some graphs. Work is underway to improve it.
-
 ### Series names
 
-The auto labeller will use whatever your series are called in the data. For long data, this will be the value of the group variable.
+The auto labeller will use whatever your series are called in the data. For long data,
+this will be the value of the group variable. This is identical to how legends
+are determined. Series that appear in multiple panels are only labelled once.
+Series that have `NA` as their name are ignored by the autolabeller.
 
 ### Enabling the auto labeller
 
@@ -1166,6 +1167,8 @@ knitr::include_graphics("legend.png")
 
 `arphit` will ignore duplicate series in multiple panels (i.e. it will only put in one legend entry).
 
+If a series has `NA` as it's name, it will not get a legend entry.
+
 # Saving to a file
 
 To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf`, `svg` and `pdf` are supported.
@@ -1182,6 +1185,12 @@ You can also use the newer `EMFplus` format by using extention `.emf+`. This wil
 it is encoded as the newer EMF+ format.
 ```{r, eval = FALSE}
 agg_qplot(data, filename = "my_filename.emf+")
+```
+
+You can also export to an XLSX, which will save your graph data in a nicely formatted
+spreadsheet. This can be convenient for archiving, or talking with other programs.
+```{r, eval = FALSE}
+agg_draw(p, filename = "my-graph.xlsx")
 ```
 
 ## A note about EMF files
