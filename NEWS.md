@@ -23,6 +23,9 @@
  Frequencies can be manually set using `agg_xaxisfreq` ([#268](https://github.com/angusmoore/arphit/pull/268)).
  * Can now export graph as XLSX, which exports the graph data into a nicely formatted
  Excel spreadsheet ([#250](https://github.com/angusmoore/arphit/pull/250)).
+ * Constructors (like `agg_line` or `agg_abline` etc) now accept vectors of panels
+ so that you can apply layers or objects to multiple panels at once 
+ ([#195](https://github.com/angusmoore/arphit/pull/250)).
 
 ## Breaking changes
 
