@@ -21,6 +21,8 @@
  automatically selected if the data is short/long enough to warrant. Automatic
  x-limits will choose partial years if the axis is in quarter or month terms. 
  Frequencies can be manually set using `agg_xaxisfreq` ([#268](https://github.com/angusmoore/arphit/pull/268)).
+ * Can now export graph as XLSX, which exports the graph data into a nicely formatted
+ Excel spreadsheet ([#250](https://github.com/angusmoore/arphit/pull/250)).
 
 ## Breaking changes
 
