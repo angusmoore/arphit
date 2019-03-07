@@ -1010,11 +1010,6 @@ agg_draw(p, filename = "autolabel_rhs.png")
 knitr::include_graphics("autolabel_rhs.png")
 ```
 
-### Caveats for the auto labeller
-* The auto labeller can be _slow_, particularly if you have a lot of series. Be patient while it runs.
-* There are no guarantees the auto labeller will be able to find labels for all series, particularly if you have many series.
-* The auto labeller is random; each run will put the labels in a different location.
-
 ## Adding horizonal and vertical lines
 
 Horizontal and vertical lines are added using `agg_abline`. Horizontal lines are drawn by specifying the `y` variable _only; vertical the `x` variable only. You can also control the color and line type. These are optional and default to a solid black line. You must also tell `arphit` which panel to put the line on.
