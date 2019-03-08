@@ -32,3 +32,10 @@ test_that("Smoke tests", {
   agg_draw(p, "test-2.xlsx")
   expect_true(file.exists("test-2.xlsx"))
 })
+
+test_that("Characters coerced to factors (#280)", {
+  foo <- data.frame(date = "AAA", x = letters[1:10],y=rnorm(10),z=rnorm(10),stringsAsFactors = FALSE)
+  p <- arphitgg(foo, agg_aes(x=x,y=y,group=date)) + agg_col() + agg_col(agg_aes(y=z)) + agg_autolabel()
+  expect_warning(agg_draw(p, "foo.xlsx"), NA)
+  file.remove("foo.xlsx")
+})
