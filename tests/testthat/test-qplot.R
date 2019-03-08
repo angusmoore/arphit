@@ -12,7 +12,7 @@ test_that("Simple smoke tests of qplot", {
 })
 
 test_that("Errors for wrong x vars", {
-  skip("This is throwing the wrong error at the moment. Will be fixed by #223.")
+  data <- data.frame(x=1:10,y=rnorm(10))
   expect_error(agg_qplot(data, x="x1"),
                "x1 is not in your data for panel 1",
                fixed = TRUE)
