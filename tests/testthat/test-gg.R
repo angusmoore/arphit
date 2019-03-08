@@ -79,7 +79,7 @@ test_that("Facets", {
   p <- arphitgg(foo,agg_aes(x=x,y=y,facet=b)) + agg_line()
   expect_true(check_graph(p, "gg-facet-factor"))
 
-  # NAs in facets
+  # NAs in facets (#256)
   foo <- data.frame(x=1:10,y=3,g=rep(c(1,2,3,NA,5),2))
   p <- arphitgg(foo, agg_aes(x=x,y=y,facet=g)) + agg_col()
   expect_true(check_graph(p, "gg-facet-na"))
