@@ -297,7 +297,8 @@ knitr::include_graphics("facet-group.png")
 
 ### Ordering of graphs
 
-By default, graphs are ordered by the value of their x-ticks.
+By default, graphs are ordered by the value of their x-ticks (that is, either 
+numerically or alphabetically, depending on what your x-ticks are).
 
 You can instead specify a variable to order the graph by using the `order` 
 part of the aesthetic.
@@ -316,7 +317,7 @@ knitr::include_graphics("aes-order-value.png")
 ```
 
 If you have groups and want to order by value, you need to specify which _group's_ 
-value you want to use as the order:
+value you want to use as the order. This will apply that order to every group.
 ```{r, results = "hide"}
 order_data <- data.frame(x=letters[1:10],
                          y=rnorm(10),
@@ -363,8 +364,9 @@ agg_draw(p, filename = "aes-order.png")
 knitr::include_graphics("aes-order.png")
 ```
 
-You can use an order variable with groups, but the ordering variable must uniquely
-associate with an x value; otherwise the ordering of x values is ambiguous.
+You can use a separate order variable with groups, but the ordering variable must uniquely
+associate with each x value and this ordering must be consistent across all groups. If not,
+otherwise the ordering of x values is ambiguous.
 
 ### Tidy evaluation and aesthetics
 
@@ -425,12 +427,16 @@ knitr::include_graphics("aes-tidy-double-group.png")
 A layer is a series (or group of series) built from the same aesthetic. In `arphit`, layers must be assigned to a panel. You can have more than one layer per panel.
 
 All require have four common arguments, and some layers have extra options to define their look:
+
   1. Data
   2. Aesthetic
   3. Panel (defaults to "1" if not supplied)
   4. Colour (optional)
 
 *NB:* Layers will inherit data and aesthetic from their parent if omitted. This is helpful if you want to define multiple layers from the one dataset. (Example below)
+
+You can assign the same layer to multiple panels in one call by specifying a _vector_
+of panel names. E.g. `panel = c("1","2")`.
 
 There are three types of layers, `agg_line`, `agg_point` and `agg_col`. These are used nearly identically to produce line, scatter and column graphs respectively:
 ```{r, results = "hide"}
@@ -473,7 +479,7 @@ knitr::include_graphics("inherit.png")
 
 `agg_line` layers convert data and an aesthetic into line series in the chosen panel (or, panels if you set a facet variable in the aesthetic).
 
-There are 7 options for line layers:
+There are 7 options for line layers. What the options do is covered in more detail below.
 
 * The dataset to be drawn (`data`)
 * The aesthetic that defines how to turn the data into a graph (`aes`)
@@ -486,12 +492,12 @@ There are 7 options for line layers:
 
 ### Column/bar layers
 
-`agg_col` layers plot data as a vertical column graph. They have six options:
+`agg_col` layers plot data as a vertical column graph. They have 6 options. What the options do is covered in more detail below.
 
 * The aesthetic that defines how to turn the data into a graph (`aes`)
 * The dataset to be drawn (`data`)
 * The colour (or colours) for the series (`color`)
-* Point markers for the series (`barcol`)
+* The colour for the outline of the bars (`barcol`)
 * Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 * Whether the bars should be stacked (default) or grouped (`stacked`). This is a global option; you cannot combine stacked and grouped layers.
 
@@ -499,7 +505,7 @@ There are 7 options for line layers:
 
 `agg_point` layers are just a wrapper around `agg_line` that set the line to NA, and the point marker (`pch`) to `19` for solid dots. Naturally, this layer type is best for scatter graphs, as they quicker and easier than constructing your own `agg_line` layer.
 
-`agg_point` has only five arguments. Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`color`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
+`agg_point` has only 5 options Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`color`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
 
 # Series colours and other attributes
 
@@ -676,6 +682,8 @@ agg_draw(p, filename = "paneltitles.png")
 knitr::include_graphics("paneltitles.png")
 ```
 
+You can also apply the same title to multiple panels at once using a vector of panel names `panel = c("1","3")`.
+
 # Units
 
 You can specify the units for your graph using the `agg_units` function. This can be used either with or without a panel specifier. If called without a panel specifier, the units are applied to all panels, otherwise the units are added only to specified panel:
@@ -701,6 +709,8 @@ agg_draw(p, filename = "units-specific.png")
 knitr::include_graphics("units-specific.png")
 ```
 
+You can also apply the same units to multiple panels at once using a vector of panel names `panel = c("1","3")`.
+
 ## x-axis units
 
 You can also add units for the x-axis in much the same way. These are ignored for anything other than scatter graphs.
@@ -714,6 +724,8 @@ agg_draw(p, filename = "x-units.png")
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("x-units.png")
 ```
+
+You can also apply the same units to multiple panels at once using a vector of panel names `panel = c("1","3")`.
 
 # Sources and footnotes
 
@@ -738,7 +750,7 @@ knitr::include_graphics("sources.png")
 
 `arphit` will automatically guess axes for each panel. However, it is not smart enough to sensibly line up axes across panels (e.g. if you have left and right axes). And stacked bar graphs will confuse it.
 
-Y-limits can be controlled with `agg_ylim`. This function takes three required arguments: a minimum, a maximum, and the number of steps to include. You can optionally include a panel identifier; if omitted, the limits will be applied to all panels.
+Y-limits can be controlled with `agg_ylim`. This function takes three required arguments: a minimum, a maximum, and the number of steps to include. You can optionally include a panel identifier; if omitted, the limits will be applied to all panels. You can alternatively apply the same limits to a set of panels at once using a vector of panel names `panel = c("1","3")`.
 
 ### Example 1: Manually setting left and right axes
 ```{r, results = "hide"}
@@ -773,9 +785,10 @@ knitr::include_graphics("ylim-all-axes.png")
 
 X-limits are controlled using `agg_xlim`. This is similar to y-limits, but only a minimum and maximum is required. For time series graphs, you can use part years if desired by adding decimal places (e.g. `2000.5`).
 
-As with the y-axis you can specify a panel identifier to apply the limits to a specific panel; if you omit the panel identifier, the limits will be applied to all panels.
+As with the y-axis you can specify a panel identifier to apply the limits to a specific panel; if you omit the panel identifier, the limits will be applied to all panels. You can alternatively apply the same limits to a set of panels at once using a vector of panel names `panel = c("1","3")`.
 
-Fine-grained control of x-ticks is not currently possible; only the limits can be set, the ticks are determined automatically. Time series graphs only support year ticks; higher frequency - such as months or quarters are not supported.
+Very fine-grained control of x-ticks is not possible; x-ticks are determined by your x-variables. 
+
 ```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x=date, y=y1)) + 
   agg_line() + 
@@ -804,8 +817,7 @@ knitr::include_graphics("x-axis-lim-single-arg.png")
 For layouts with vertical division (e.g. "2v", "2b2" etc), you can drop the the first tick of the right hand panel by setting `dropxlabel = TRUE` in `arphitgg`. This prevents the last label of the left hand panel overlapping the first of the right hand panel.
 ```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x=date, y=y1), layout = "2v", dropxlabel = TRUE) + 
-  agg_line(panel = "1") +
-  agg_line(panel = "2")
+  agg_line(panel = c("1","2"))
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "drop-x-label.png")
@@ -814,9 +826,23 @@ agg_draw(p, filename = "drop-x-label.png")
 knitr::include_graphics("drop-x-label.png")
 ```
 
+By default categorical graphs have all their x ticks displayed. You can change this
+behaviour (if your x-ticks are overlapping) to only display an automatically determined
+limited set of x-ticks by setting `showallxlabels = FALSE` in the call to `arphitgg`:
+```{r, results = "hide"}
+foo <- data.frame(x=paste("label",1:9),y=1:9)
+p <- arphitgg(foo, agg_aes(x=x,y=y), showallxlabels = FALSE) + agg_col()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "showallxlabel.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("showallxlabel.png")
+```
+
 ### Frequency of x axis
 
-For time series graphs, `arphit` will automatically choose the frequency of the ticks on the x axis; there is no way to manually control it. Any graph covering less than a year will use months, less than 3 years quarters and greater than 50 years decades. (Note that vertically divided graphs will swap to decades sooner, due to the compression of the x-axis).
+For time series graphs, `arphit` will automatically choose the frequency of the ticks on the x axis. Any graph covering less than a year will use months, less than 3 years quarters and greater than 50 years decades. (Note that vertically divided graphs will swap to decades sooner, due to the compression of the x-axis).
 ```{r, results = "hide"}
 decades_data <- data.frame(date = seq.Date(from=as.Date("1950-06-01"),by="year",length=50),
                                    y1 = rnorm(50))
@@ -830,8 +856,7 @@ agg_draw(p, filename = "decades.png")
 knitr::include_graphics("decades.png")
 ```
 
-Automatic x-limits respect the frequency. If your axis is in quarters or months, `arphit` will set the limits to the first and last
-quarter/month of data:
+Automatic x-limits respect the frequency. If your axis is in quarters or months, `arphit` will set the limits to the first and last quarter/month of data:
 ```{r, results = "hide"}
 partial_quarter_data <- data.frame(date = seq.Date(from=as.Date("2000-03-01"),by="quarter",length=9),
                                    y1 = rnorm(9))
@@ -845,8 +870,7 @@ agg_draw(p, filename = "quarter-partial-year.png")
 knitr::include_graphics("quarter-partial-year.png")
 ```
 
-If you want override the automatically chosen frequency, you can use `agg_xaxisfreq`. Valid options are `decade`, `year`, `quarter` and `month`.
-You can specify panels too if desired.
+If you want override the automatically chosen frequency, you can use `agg_xaxisfreq`. Valid options are `decade`, `year`, `quarter` and `month`. You can specify panels too if desired.
 ```{r, results = "hide"}
 partial_quarter_data <- data.frame(date = seq.Date(from=as.Date("2000-03-01"),by="quarter",length=9),
                                    y1 = rnorm(9))
@@ -881,7 +905,7 @@ knitr::include_graphics("logscale.png")
 
 You can shade the area between series by adding `agg_shading`. 
 
-Shading is drawn in the order you add it; the first shading added is on the bottom. Series are _always_ drawn on top of shading.
+Shading is drawn in the order you add it; the first shading added is on the bottom and subsequently added shading is drawn on top of this. Series are _always_ drawn on top of shading.
 ```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x=date)) +
   agg_line(agg_aes(y=y1)) +
@@ -918,12 +942,13 @@ knitr::include_graphics("shading-multiple.png")
 
 You can add series labels, and arrows to aid those labels, using `agg_label` and `agg_arrow` arguments.
 
-`agg_label` takes 5 arguments.
+`agg_label` takes 6 arguments - some are optional.
 
 * `text` is the label text. You can add line breaks in text using the `\n` character.
 * `x` and `y` specify where (in the units on the plot) the centre of the label should be. For time series, `x` is in decimal years (i.e. 2000.5 is July 2, 2000). For categorical graphs, 1 corresponds to the first categories, 2 to the second, etc.
 * `panel` specifies which panel to place the label on.
-* `color` is self-explanatory.
+* `color` is self-explanatory; if not specified, defaults to black.
+* `size` is optional and sets the font size. The default is 20.
  
 ```{r, results = "hide"}
 p <- arphitgg() +
@@ -1010,11 +1035,6 @@ agg_draw(p, filename = "autolabel_rhs.png")
 knitr::include_graphics("autolabel_rhs.png")
 ```
 
-### Caveats for the auto labeller
-* The auto labeller can be _slow_, particularly if you have a lot of series. Be patient while it runs.
-* There are no guarantees the auto labeller will be able to find labels for all series, particularly if you have many series.
-* The auto labeller is random; each run will put the labels in a different location.
-
 ## Adding horizonal and vertical lines
 
 Horizontal and vertical lines are added using `agg_abline`. Horizontal lines are drawn by specifying the `y` variable _only; vertical the `x` variable only. You can also control the color and line type. These are optional and default to a solid black line. You must also tell `arphit` which panel to put the line on.
@@ -1069,10 +1089,10 @@ p <- arphitgg(layout = "2h") +
   agg_bgshading(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = "3", color = "lightgreen")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
-agg_draw(p, filename = "bgshading.png")
+agg_draw(p, filename = "bgshading2.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("bgshading.png")
+knitr::include_graphics("bgshading2.png")
 ```
 
 ## Adding axis labels
@@ -1119,7 +1139,7 @@ knitr::include_graphics("xlabel-rotation.png")
 
 # Joining and missing values
 
-The `joined` argument controls how your graph behaves with missing values. When `joined = TRUE` (which is the default) the series will ignore the missing value and connect to the next non-missing value. When `joined = FALSE` the series will break.
+The `joined` argument in` arphitgg` controls how your graph behaves with missing values. When `joined = TRUE` (which is the default) the series will ignore the missing value and connect to the next non-missing value. When `joined = FALSE` the series will break.
 
 For instance, let's use this series, with the middle observation missing:
 ```{r}
@@ -1171,7 +1191,7 @@ If a series has `NA` as it's name, it will not get a legend entry.
 
 # Saving to a file
 
-To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf`, `svg` and `pdf` are supported.
+To save your graph to a file instead of displaying it, use `agg_draw` with the optional filename command. `arphit` will determine what file to save as, based on the extension of your filename. `png`, `emf`, `emf+`, `svg` and `pdf` are supported. `xlsx` is as well, which exports the data (see below).
 ```{r, results = "hide", eval = FALSE}
 p <- arphitgg(simple_data, aes = agg_aes(x = date, y = y1)) +
   agg_line()
@@ -1181,8 +1201,7 @@ agg_draw(p, filename = "my-graph.svg")
 agg_draw(p, filename = "my-graph.pdf")
 ```
 
-You can also use the newer `EMFplus` format by using extention `.emf+`. This will still write an `emf` file, but
-it is encoded as the newer EMF+ format.
+You can also use the newer `EMFplus` format by using extention `.emf+`. This will still write an `emf` file, but it is encoded as the newer EMF+ format.
 ```{r, eval = FALSE}
 agg_qplot(data, filename = "my_filename.emf+")
 ```
@@ -1201,3 +1220,5 @@ EMF files are problematic:
 * EMF files  will _not_ render if exported from Word as PDF; EMF+ will.
 
 Additionally, only EMF+ files support partial transparency; EMF files do not.
+
+If you can, you should prefer SVG over EMF. SVG is a much better supported vector image format. And much less problematic in how it is rendered by R.
