@@ -148,7 +148,6 @@ test_that("Facet order", {
   # Order facets
   foo <- data.frame(x=c("a","b","a","b"),y=1:4,facet=c("b","b","a","a"), stringsAsFactors = FALSE)
   bar <- arphitgg(foo,agg_aes(x=x,y=y,facet=facet))+agg_col()
-  skip("Something weird is happening here")
   expect_true(check_graph(bar, "gg-facet-order"))
 })
 
