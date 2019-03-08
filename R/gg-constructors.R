@@ -5,7 +5,7 @@ check_panel <- function(panel) {
 #' Add a title or panel title
 #'
 #' @param text A string for the title.
-#' @param panel (optional) Specify a panel identifier to add a panel title instead of an overall graph title.
+#' @param panel (optional) Specify a panel identifier to add a panel title instead of an overall graph title.  You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the title to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -26,7 +26,7 @@ agg_title <- function(text, panel = NULL) {
 #' Add a subtitle or panel subtitle
 #'
 #' @param text A string for the subtitle.
-#' @param panel (optional) Specify a panel identifier to add a panel subtitle instead of an overall graph subtitle.
+#' @param panel (optional) Specify a panel identifier to add a panel subtitle instead of an overall graph subtitle. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the subtitle to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -47,7 +47,7 @@ agg_subtitle <- function(text, panel = NULL) {
 #' Add units (for the y axis)
 #'
 #' @param units A string specifying the units.
-#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.  You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the units to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -68,7 +68,7 @@ agg_units <- function(units, panel = NULL) {
 #' Add units to the x axis (only works for scatter graphs)
 #'
 #' @param units A string specifying the units.
-#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.  You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the units to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -88,7 +88,7 @@ agg_xunits <- function(units, panel = NULL) {
 #' Add an axis label to the y axis
 #'
 #' @param axislabel A string specifying the axis label
-#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels.
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the axis label to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -108,7 +108,7 @@ agg_yaxislabel <- function(axislabel, panel = NULL) {
 #' Add an axis label to the x axis
 #'
 #' @param axislabel A string specifying the axis label
-#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels.
+#' @param panel (optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the axis to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -162,7 +162,7 @@ agg_footnote <- function(footnote) {
 #' @param text The text to display on your plot
 #' @param x The x coordinate of the center of your label
 #' @param y The y coordinate of the center of your label
-#' @param panel Which panel should the label be placed on?
+#' @param panel Which panel should the label be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the label to multiple panels at once.
 #' @param color The color of your text
 #' @param size Font size (default 20)
 #'
@@ -208,7 +208,7 @@ agg_autolabel <- function(quiet = FALSE, arrow_bars = FALSE) {
 #' @param head.x The x coordinate of the arrow head
 #' @param head.y The y coordinate of the arrow head
 #' @param color The color of the arrow
-#' @param panel Which panel should the arrow be placed on?
+#' @param panel Which panel should the arrow be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the arrow to multiple panels at once.
 #' @param lwd (Optional, default 1) The linewidth of the arrow
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -237,7 +237,7 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, color = "black", panel, lw
 #' @param x2 For specific AB lines: the second x coordinate
 #' @param y2 For specific AB lines: the second y coordinate
 #' @param color (optional) The color of the AB line (default black)
-#' @param panel Which panel should the line be placed on?
+#' @param panel Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.
 #' @param lwd (Optional, default 1) The linewidth
 #' @param lty (Optional, default 1) The line type
 #'
@@ -269,7 +269,7 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
 #' @param x2 The top right x coordinate (omit to have the shading automatically snap to the edge of the panel)
 #' @param y2 The top right y coordinate (omit to have the shading automatically snap to the edge of the panel)
 #' @param color (optional) The color of the AB line (default grey)
-#' @param panel Which panel should the background shading be placed on?
+#' @param panel Which panel should the background shading be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the shading to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -314,7 +314,7 @@ agg_shading <- function(from, to, panel = NULL, color = RBA["Grey2"]) {
 #' @param min The minimum for the y-axis
 #' @param max The maximum
 #' @param nsteps The number of steps (includes the minimum and maximum)
-#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels.
+#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the scale to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -336,7 +336,7 @@ agg_ylim <- function(min, max, nsteps, panel = NULL) {
 #'
 #' @param min The minimum for the x-axis (can be NA to have arphit guess, based on your data)
 #' @param max The maximum (can also be NA, as above)
-#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended.
+#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the limits to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -354,7 +354,7 @@ agg_xlim <- function(min, max, panel = NULL) {
 #' Specify the frequency of the x ticks for time series graphs
 #'
 #' @param freq The frequency, either "decade", "year", "quarter", "month"
-#' @param panel (optional) Which panel to apply the scale to. If left blank, will be applied to all panels.
+#' @param panel (optional) Which panel to apply the frequency scale to. If left blank, will be applied to all panels. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the frequency to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -393,7 +393,7 @@ agg_legend <- function(ncol = NULL) {
 #' @param lty A line type to be applied to all series, or or (if your aesthetic has a group), a vector of lty values that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.
 #' @param lwd A line width to be applied to all series, or or (if your aesthetic has a group), a vector of lwd values that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.
 #' @param pointsize Scale the size of the points? (default 1)
-#' @param panel (default = "1") Which panel of the graph to place this layer on.
+#' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -427,7 +427,7 @@ agg_line <- function(aes = NULL, data = NULL, color = NULL, pch = NULL, lty = NU
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #' @param barcol (optional) Outline colours for each bar series
-#' @param panel (default = "1") Which panel of the graph to place this layer on.
+#' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
 #' @param stacked (default = TRUE) Stack the bars, or group them?
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -460,7 +460,7 @@ agg_col <- function(aes = NULL, data = NULL, color = NULL, barcol = NULL, panel 
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param color A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #' @param pointsize Scale the size of the points? (default 1)
-#' @param panel (default = "1") Which panel of the graph to place this layer on.
+#' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options

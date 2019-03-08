@@ -1,7 +1,7 @@
 #' Draw a defined graph
 #'
 #' @param gg An arphitgg built graph.
-#' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports pdf, emf and png extensions.
+#' @param filename (optional) If specified, save image to filename instead of displaying in R. Supports png, pdf, emf, emf+, svg and xlsx extensions.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
