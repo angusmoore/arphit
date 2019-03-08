@@ -81,8 +81,8 @@ test_that("Facets", {
 
   # NAs in facets
   foo <- data.frame(x=1:10,y=3,g=rep(c(1,2,3,NA,5),2))
-  arphitgg(foo, agg_aes(x=x,y=y,facet=g)) + agg_col()
-  expect_true(check_graph(p, "gg-facets-na"))
+  p <- arphitgg(foo, agg_aes(x=x,y=y,facet=g)) + agg_col()
+  expect_true(check_graph(p, "gg-facet-na"))
 })
 
 ## facet aesthetic inheritance
