@@ -77,9 +77,9 @@ is_null_quo <- function(x) {
 }
 
 check_aes_in_data <- function(data, aes, panel) {
-  if (!try_tidy(aes$x, data)) stop(paste0(aes$x," is not in your data for panel ", panel))
-  if (!try_tidy(aes$y, data)) stop(paste0(aes$y," is not in your data for panel ", panel))
-  if (!is_null_quo(aes$group) && !try_tidy(aes$group, data)) stop(paste0(aes$group," is not in your data for panel ", panel))
+  if (!try_tidy(aes$x, data)) stop(paste0(rlang::quo_name(aes$x)," is not in your data for panel ", panel))
+  if (!try_tidy(aes$y, data)) stop(paste0(rlang::quo_name(aes$y)," is not in your data for panel ", panel))
+  if (!is_null_quo(aes$group) && !try_tidy(aes$group, data)) stop(paste0(rlang::quo_name(aes$group)," is not in your data for panel ", panel))
 }
 
 convert_data <- function(data, aes) {
