@@ -266,14 +266,19 @@ addlayer <- function(gg, new, panel, bar) {
   } else {
     layoutoverride <- facetlayout(data, aes$facet, gg$layout)
     gg$layout <- layoutoverride$layout
-    facets <- sort(unique(rlang::eval_tidy(aes$facet, data)))
+    facets <- sort(unique(rlang::eval_tidy(aes$facet, data)), na.last = TRUE)
     newseries <- list()
     for (i in 1:length(facets)) {
       panel <- layoutoverride$panels[[i]]
-      subset_data <- data[rlang::eval_tidy(aes$facet, data) == facets[i],]
+      if (!is.na(facets[i])) {
+        keep_rows <- !is.na(rlang::eval_tidy(aes$facet, data)) & rlang::eval_tidy(aes$facet, data) == facets[i]
+      } else {
+        subset_data <- is.na(rlang::eval_tidy(aes$facet, data))
+      }
+      subset_data <- data[keep_rows,]
       out <- addlayertopanel(gg, subset_data, aes, panel, bar)
       gg <- out$gg
-      gg$paneltitles[[panel]] <- as.character(facets[i])
+      gg$paneltitles[[panel]] <- ifelse(is.na(facets[i]), "", as.character(facets[i]))
       newseries[[panel]] <- out$new_series_indices
     }
   }
