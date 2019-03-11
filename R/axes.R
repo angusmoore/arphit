@@ -490,11 +490,16 @@ is.scatter <- function(x) {
   }
 }
 
-defaultxscale <- function(xvars, ists) {
+defaultxscale <- function(xvars, ists, layout) {
   if (is.numeric(xvars) && ists) {
     start <- min(xvars, na.rm = TRUE)
     end <- max(xvars, na.rm = TRUE)
     if (end - start >= 3) {
+      # last year padding?
+      if (getlayoutfactor(layout) < 1 || (ceiling(end) - end) / (ceiling(end) - floor(start)) < 2/3*LASTYEARPADDING) {
+        # PAdding required
+        return(c(floor(start), ceiling(end) + 0.25*round(4*LASTYEARPADDING*(ceiling(end)-floor(start)))))
+      }
       return(c(floor(start),ceiling(end)))
     } else if (end - start >= 1) {
       return(c(floor(start*4)/4,ceiling(end*4)/4))
@@ -510,7 +515,6 @@ defaultxscale <- function(xvars, ists) {
         return(c(floor(start),ceiling(end)))
       }
     }
-    return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
   } else if (is.scatter(xvars)) {
     scale <- defaultscale(max(xvars, na.rm =TRUE), min(xvars, na.rm =TRUE))
     return(c(scale$min,scale$max))
@@ -530,7 +534,7 @@ xlimconform <- function(xlim, data, layout) {
   out <- list()
   for (p in panels) {
     if (!is_empty(data[[p]])) {
-      out[[p]] <- defaultxscale(data[[p]]$x, data[[p]]$ts)
+      out[[p]] <- defaultxscale(data[[p]]$x, data[[p]]$ts, layout)
       if (p %in% names(xlim)) {
         if (is.finite(xlim[[p]][1])) out[[p]][1] <- xlim[[p]][1]
         if (is.finite(xlim[[p]][2])) out[[p]][2] <- xlim[[p]][2]
