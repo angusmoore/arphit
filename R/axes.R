@@ -302,8 +302,8 @@ getlayoutfactor <- function(layout) {
 }
 
 xlabels.ts_decade <- function(xlim, layout_factor) {
-  startyear <- floor(xlim[1]/5)*5
-  endyear <- ceiling(xlim[2]/5)*5
+  startyear <- ceiling(xlim[1]/10)*10 # So that it is inside x limits
+  endyear <- floor(xlim[2]/10)*10
   ticks <- seq(from = startyear, to = endyear, by = 10)
   keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
   labels <- ticks[keep]
@@ -496,9 +496,9 @@ defaultxscale <- function(xvars, ists, layout) {
     end <- max(xvars, na.rm = TRUE)
     if (end - start >= 3) {
       # last year padding?
-      if (getlayoutfactor(layout) < 1 || (ceiling(end) - end) / (ceiling(end) - floor(start)) < 2/3*LASTYEARPADDING) {
-        # PAdding required
-        return(c(floor(start), ceiling(end) + 0.25*round(4*LASTYEARPADDING*(ceiling(end)-floor(start)))))
+      if (getlayoutfactor(layout) < 1 || (ceiling(end) - end) / (ceiling(end) - floor(start)) < LASTYEARPADDING) {
+        # Padding required
+        return(c(floor(start), ceiling(end) + 0.25*ceiling(4*LASTYEARPADDING*(ceiling(end)-floor(start)))))
       }
       return(c(floor(start),ceiling(end)))
     } else if (end - start >= 1) {
