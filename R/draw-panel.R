@@ -254,7 +254,13 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
     }
 
     # Calculate what one line is in user coordinates
-    y <- inchesasuser_height(0.8 * CSI)
+
+    if (!graphics::par("ylog")) {
+      y <- ylim$min - inchesasuser_height(0.8 * CSI)
+    } else {
+      y <- log10(ylim$min) - inchesasuser_height(0.8 * CSI)
+      y <- 10^(y)
+    }
 
     if (srt == 0) {
       adj <- c(0.5, 1)
@@ -262,7 +268,6 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
       adj <- c(1, 0.5)
     }
 
-    y <- ylim$min - y
     graphics::text(x = at, y = y, labels = labels, cex = 1, adj = adj, srt = srt, xpd = NA)
   }
 
