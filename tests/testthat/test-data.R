@@ -103,4 +103,16 @@ test_that("Bar graph placement", {
   foo <- data.frame(date=seq.Date(from = as.Date("2000-01-01"),by="month",length.out=12*4),y=rnorm(12*4))
   p <- arphitgg(foo, agg_aes(x=date,y=y))+agg_line()+agg_col()
   expect_true(check_graph(p, "data-bar-placement"))
+
+  # 157 - widening x values
+  foo <- data.frame(date = c(as.Date("2000-03-01"),
+                      as.Date("2000-09-01"),
+                      as.Date("2001-03-01"),
+                      as.Date("2001-09-01"),
+                      as.Date("2001-12-01"),
+                      as.Date("2002-03-01"),
+                      as.Date("2002-06-01")),
+             y = 1:7)
+  p <- arphitgg(foo, agg_aes(x=date,y=y)) + agg_point() + agg_col()
+  expect_true(check_graph(p, "data-bar-widen-x"))
 })

@@ -92,5 +92,9 @@ convert_to_plot_bardata <- function(bardata, data) {
   bardata_n <- bardata_n
   bardata_p[bardata_n <= 0] <- 0
   bardata_n[bardata_n > 0] <- 0
-  return(list(p = bardata_p, n = bardata_n))
+  if (data$ts) {
+    return(list(p = bardata_p, n = bardata_n, x = equal_spaced))
+  } else {
+    return(list(p = bardata_p, n = bardata_n, x = get_x_plot_locations(data$x, data)))
+  }
 }

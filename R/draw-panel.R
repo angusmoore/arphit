@@ -339,14 +339,14 @@ drawlines <- function(l, data, xlim, ylim, joined, log_scale) {
 }
 
 as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
-  if (nrow(bp.data) > 1) {
-    bp <- graphics::barplot(t(as.matrix(bp.data)), plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
+  if (ncol(bp.data) > 1) {
+    bp <- graphics::barplot(bp.data, plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
     if (!bar.stacked) {
       # We get a matrix, with rows for each data series. Need to collapse to just the centre of the x points
       bp <- apply(bp, 2, mean)
     }
 
-    points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(x[1], x[nrow(bp.data)]))
+    points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(x[1], x[ncol(bp.data)]))
     fit <- stats::lm(as.x ~ time, data = points)
 
     x1 <- stats::predict(fit, data.frame(time = c(xlim[1])))
@@ -357,7 +357,7 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
     if (length(bp.data) == 1) {
       return(c(0,1.4))
     } else {
-      bp <- graphics::barplot(t(as.matrix(bp.data)), plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
+      bp <- graphics::barplot(bp.data, plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
       return(c(0,max(bp)+min(bp)))
     }
   }
@@ -373,8 +373,9 @@ drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
     out <- convert_to_plot_bardata(bardata, data)
     bardata_p <- out$p
     bardata_n <- out$n
+    bar_x_loc <- out$x
 
-    xlim <- as.barplot.x(bardata, get_x_plot_locations(data$x, data), xlim, bar.stacked)
+    xlim <- as.barplot.x(bardata_p, bar_x_loc, xlim, bar.stacked)
     graphics::par(mfg = l)
     graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
     graphics::par(mfg = l)
