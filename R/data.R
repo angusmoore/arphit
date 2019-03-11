@@ -74,10 +74,15 @@ get_bar_data <- function(data) {
 convert_to_plot_bardata <- function(bardata, data) {
   if (data$ts) {
     # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
-    bardata$x <- data$x
-    equal_spaced <- data.frame(x = seq(from = min(bardata$x), to = max(bardata$x), by = data$freq))
-    x <- seq(from = min(bardata$x), to = max(bardata$x), by = data$freq) # and replace x
-    bardata <- dplyr::arrange_(dplyr::full_join(bardata, equal_spaced, by = "x"), "x")
+    bardata$x <- data$x # I have to round because of small inaccuracies
+    equal_spaced <- seq(from = min(bardata$x), to = max(bardata$x), by = data$freq)
+    for (x in equal_spaced) {
+      if (!any(abs(bardata$x - x) < 1e-10)) {
+        # Use fuzzy comparison because of inaccuracies in constructing the sequence
+        bardata <- dplyr::add_row(bardata, x = x)
+      }
+    }
+    bardata <- dplyr::arrange_(bardata, "x")
     bardata <- dplyr::select_(bardata, "-x")
   }
   bardata_n <- t(as.matrix(bardata))
@@ -87,5 +92,9 @@ convert_to_plot_bardata <- function(bardata, data) {
   bardata_n <- bardata_n
   bardata_p[bardata_n <= 0] <- 0
   bardata_n[bardata_n > 0] <- 0
-  return(list(p = bardata_p, n = bardata_n))
+  if (data$ts) {
+    return(list(p = bardata_p, n = bardata_n, x = equal_spaced))
+  } else {
+    return(list(p = bardata_p, n = bardata_n, x = get_x_plot_locations(data$x, data)))
+  }
 }
