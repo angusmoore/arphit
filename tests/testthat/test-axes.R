@@ -223,7 +223,7 @@ test_that("Basic x axis", {
   set.seed(42)
   foo <- data.frame(x=rnorm(10),y=rnorm(10))
   p <- arphitgg(foo, agg_aes(x=x,y=y))+agg_point()+agg_xlim(-0.9,1)
-  expectr_true(check_graph(p, "axes-x-scatter-xlimits"))
+  expect_true(check_graph(p, "axes-x-scatter-xlimits"))
 })
 
 test_that("Warning for different limits",{
