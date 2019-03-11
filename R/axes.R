@@ -431,7 +431,9 @@ xlabels.categorical <- function(xlim, xvar, layout, showall) {
 xlabels.scatter <- function(xlim, xvalues) {
   scale <- defaultscale(xlim[2]-(xlim[2]-xlim[1])/10000, xlim[1])
   scale <- createscale(scale$min,scale$max,scale$nsteps)
-  return(list(at = scale, labels = scale, ticks = scale))
+  # drop any labels that are outside the x limits
+  keep <- scale >= xlim[1] & scale <= xlim[2]
+  return(list(at = scale[keep], labels = scale[keep], ticks = scale[keep]))
 }
 
 xlabels <- function(xlim, xvar, xfreq, ists, layout, showall) {
