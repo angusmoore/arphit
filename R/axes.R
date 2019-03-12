@@ -318,12 +318,13 @@ xlabels.ts_year <- function(xlim, layout) {
   startyear <- floor(xlim[1])
   endyear <- ceiling(xlim[2])
   # Create the sequence and offset the labels by half a year so that the labels are centered
-  ticks <- seq(from = startyear, to = (endyear-1), by = 1)
-  keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
-  labels <- ticks[keep]
+  labels <- seq(from = startyear, to = (endyear-1), by = 1)
+  keep <- restrictlabels(labels, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
+  labels <- labels[keep]
   at <- labels + 0.5
   # drop any labels that are outside the x limits
   keep <- at > xlim[1] & at < xlim[2]
+  ticks <- seq(from = startyear, to = endyear, by = 1)
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
 }
 
@@ -495,12 +496,12 @@ defaultxscale <- function(xvars, ists, layout) {
     start <- min(xvars, na.rm = TRUE)
     end <- max(xvars, na.rm = TRUE)
     if (end - start >= 3) {
-      # last year padding?
-      if (getlayoutfactor(layout) < 1 || (ceiling(end) - end) / (ceiling(end) - floor(start)) < LASTYEARPADDING) {
-        # Padding required
-        return(c(floor(start), ceiling(end) + 0.25*ceiling(4*LASTYEARPADDING*(ceiling(end)-floor(start)))))
+      if (getlayoutfactor(layout) < 1 ||
+          (ceiling(end) - end) / (ceiling(end) - floor(start)) < LASTYEARPADDING) {
+        return(c(floor(start),ceiling(end),ceiling(LASTYEARPADDING*(ceiling(end)-floor(start))*4)/4))
+      } else {
+        return(c(floor(start),ceiling(end)))
       }
-      return(c(floor(start),ceiling(end)))
     } else if (end - start >= 1) {
       return(c(floor(start*4)/4,ceiling(end*4)/4))
     } else if (end - start > 0) {
@@ -555,6 +556,15 @@ xlimconform <- function(xlim, data, layout) {
   # have a check for non-matching xlimits
   warnifxdiff(out)
   return(out)
+}
+
+collapse_in_padding <- function(xlim) {
+  lapply(xlim, function(x)
+    if (length(x) == 3) {
+      return(c(x[1], x[2] + x[3]))
+    } else {
+      return(x)
+    })
 }
 
 handleaxislabels <- function(labels, panels) {

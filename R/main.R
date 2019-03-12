@@ -32,6 +32,7 @@ agg_draw_internal <- function(gg, filename) {
   }
   xlim <- xlimconform(gg$xlim, data, gg$layout)
   xlabels <- handlexlabels(data, xlim, gg$xfreq, gg$layout, gg$showallxlabels)
+  xlim <- collapse_in_padding(xlim)
 
   if (length(gg$ylim)==0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
     stop("You must manually set y axis limits for log scale plots.")
