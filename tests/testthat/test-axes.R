@@ -33,7 +33,7 @@ test_that("Manually set y axis", {
   )
 
   # apply to all axes on mutlipanel
-  p <- arphitgg(fakedata, agg_aes(x=date,y=a),layout="4b2", dropxlabel = TRUE)+agg_line()+agg_ylim(1,2,5)
+  p <- arphitgg(fakedata, agg_aes(x=date,y=a),layout="4b2",dropxlabel = TRUE)+agg_line()+agg_ylim(1,2,5)
   expect_true(
     check_graph(p, "axes-manual-ylim-multipanel-all")
   )
@@ -396,4 +396,34 @@ test_that("Non-year frequency x axes", {
   data <- data.frame(dates = seq.Date(as.Date("2000-06-01"),by="month", length.out = 10), y = 1:10)
   p <- arphitgg(data, agg_aes(x=dates,y=y)) + agg_line() + agg_xlim(2000.333333,2001.25)
   expect_true(check_graph(p, "axes-x-months"))
+})
+
+## Last year padding ====================
+
+test_that("Last year padding", {
+  data <- data.frame(date = seq.Date(as.Date("2000-03-01"),by="quarter",to=as.Date("2004-12-01")),
+                     y = 1:20)
+  p <- arphitgg(data, agg_aes(x=date,y=y)) + agg_line()
+  expect_true(check_graph(p, "axes-lastyearpadding-basic"))
+
+  # Disable last year padding by setting manual x limits
+  p <- arphitgg(data, agg_aes(x=date,y=y)) + agg_line() + agg_xlim(NA, 2005)
+  expect_true(check_graph(p, "axes-lastyearpadding-disable"))
+
+  # Don't add padding for short time series graphs
+  data <- data.frame(date = seq.Date(as.Date("2000-01-01"),by="month",to=as.Date("2001-12-01")),
+                     y = 1:24)
+  p <- arphitgg(data, agg_aes(x=date,y=y)) + agg_line()
+  expect_true(check_graph(p, "axes-lastyearpadding-shortts"))
+
+  # Decades
+  data <- data.frame(date = seq.Date(as.Date("2000-01-01"),by="year",to=as.Date("2050-01-01")),
+                     y = 1:51)
+  p <- arphitgg(data, agg_aes(x=date,y=y)) + agg_line()
+  expect_true(check_graph(p, "axes-lastyearpadding-decade"))
+
+  # test that adding lots of padding doesn't throw off x labels
+  foo <- data.frame(x=seq.Date(from=as.Date("1980-01-01"),by="year",length.out=29),y=1:29)
+  p <- arphitgg(foo, agg_aes(x=x,y=y)) + agg_line()
+  expect_true(check_graph(p, "axes-lastyearpadding-no-labels"))
 })
