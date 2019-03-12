@@ -538,7 +538,10 @@ xlimconform <- function(xlim, data, layout) {
       out[[p]] <- defaultxscale(data[[p]]$x, data[[p]]$ts, layout)
       if (p %in% names(xlim)) {
         if (is.finite(xlim[[p]][1])) out[[p]][1] <- xlim[[p]][1]
-        if (is.finite(xlim[[p]][2])) out[[p]][2] <- xlim[[p]][2]
+        if (is.finite(xlim[[p]][2])) {
+          out[[p]][2] <- xlim[[p]][2]
+          out[[p]] <- out[[p]][1:2] # Chop of any padding if the default scale added it
+        }
       }
     }
   }
