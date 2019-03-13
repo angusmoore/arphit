@@ -496,12 +496,7 @@ defaultxscale <- function(xvars, ists, layout) {
     start <- min(xvars, na.rm = TRUE)
     end <- max(xvars, na.rm = TRUE)
     if (end - start >= 3) {
-      if (getlayoutfactor(layout) < 1 ||
-          (ceiling(end) - end) / (ceiling(end) - floor(start)) < LASTYEARPADDING) {
-        return(c(floor(start),ceiling(end),ceiling(LASTYEARPADDING*(ceiling(end)-floor(start))*4)/4))
-      } else {
-        return(c(floor(start),ceiling(end)))
-      }
+      return(c(floor(start),ceiling(end)))
     } else if (end - start >= 1) {
       return(c(floor(start*4)/4,ceiling(end*4)/4))
     } else if (end - start > 0) {
@@ -525,6 +520,18 @@ defaultxscale <- function(xvars, ists, layout) {
   }
 }
 
+add_lastyear_padding <- function(xvars, xlim, layout) {
+  end <- max(xvars, na.rm = TRUE)
+  if (getlayoutfactor(layout) < 1 ||
+      (xlim[2] - end) / (xlim[2] - xlim[1]) < LASTYEARPADDING) {
+    padding <- LASTYEARPADDING*(xlim[2]-xlim[1])
+    return(c(xlim, ceiling(padding*4)/4))
+  } else {
+    return(xlim)
+  }
+}
+
+
 xlimconform <- function(xlim, data, layout) {
   panels <- names(data)
   if(!is.list(xlim) && length(xlim) > 0) {
@@ -536,11 +543,22 @@ xlimconform <- function(xlim, data, layout) {
   for (p in panels) {
     if (!is_empty(data[[p]])) {
       out[[p]] <- defaultxscale(data[[p]]$x, data[[p]]$ts, layout)
-      if (p %in% names(xlim)) {
-        if (is.finite(xlim[[p]][1])) out[[p]][1] <- xlim[[p]][1]
+
+      if (is.null(xlim[[p]])) {
+        if (data[[p]]$ts && (out[[p]][2] - out[[p]][1]) > 3) {
+          out[[p]] <- add_lastyear_padding(data[[p]]$x, out[[p]], layout)
+        }
+      } else {
+        if (is.finite(xlim[[p]][1])) {
+          out[[p]][1] <- xlim[[p]][1]
+        }
         if (is.finite(xlim[[p]][2])) {
           out[[p]][2] <- xlim[[p]][2]
-          out[[p]] <- out[[p]][1:2] # Chop of any padding if the default scale added it
+        } else {
+          # Only try to add padding if we haven't set an upper bound
+          if (data[[p]]$ts && (out[[p]][2] - out[[p]][1]) > 3) {
+            out[[p]] <- add_lastyear_padding(data[[p]]$x, out[[p]], layout)
+          }
         }
       }
     }

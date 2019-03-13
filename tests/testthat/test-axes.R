@@ -426,4 +426,12 @@ test_that("Last year padding", {
   foo <- data.frame(x=seq.Date(from=as.Date("1980-01-01"),by="year",length.out=29),y=1:29)
   p <- arphitgg(foo, agg_aes(x=x,y=y)) + agg_line()
   expect_true(check_graph(p, "axes-lastyearpadding-no-labels"))
+
+  # Ensure padding is calculated based on manual x limits
+  data <- data.frame(date=seq.Date(as.Date("1870-01-01"),by="year",length.out=130),y=1:130)
+  p <- arphitgg(data,agg_aes(x=date,y=y))+agg_line() + agg_xlim(1996,NA)
+  expect_true(check_graph(p, "axes-lastyearpadding-calculate-w-lowerbound-nopadding"))
+
+  p <- arphitgg(data,agg_aes(x=date,y=y))+agg_line() + agg_xlim(1996,NA)
+  expect_true(check_graph(p, "axes-lastyearpadding-calculate-w-lowerbound-somepadding"))
 })
