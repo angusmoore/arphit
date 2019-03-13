@@ -302,8 +302,8 @@ getlayoutfactor <- function(layout) {
 }
 
 xlabels.ts_decade <- function(xlim, layout_factor) {
-  startyear <- floor(xlim[1]/5)*5
-  endyear <- ceiling(xlim[2]/5)*5
+  startyear <- ceiling(xlim[1]/10)*10 # So that it is inside x limits
+  endyear <- floor(xlim[2]/10)*10
   ticks <- seq(from = startyear, to = endyear, by = 10)
   keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
   labels <- ticks[keep]
@@ -318,12 +318,13 @@ xlabels.ts_year <- function(xlim, layout) {
   startyear <- floor(xlim[1])
   endyear <- ceiling(xlim[2])
   # Create the sequence and offset the labels by half a year so that the labels are centered
-  ticks <- seq(from = startyear, to = (endyear-1), by = 1)
-  keep <- restrictlabels(ticks, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
-  labels <- ticks[keep]
+  labels <- seq(from = startyear, to = (endyear-1), by = 1)
+  keep <- restrictlabels(labels, layout_factor, xlim[2] < endyear && xlim[2] - xlim[1] > 3) # Only keep every 3rd or whatever label
+  labels <- labels[keep]
   at <- labels + 0.5
   # drop any labels that are outside the x limits
   keep <- at > xlim[1] & at < xlim[2]
+  ticks <- seq(from = startyear, to = endyear, by = 1)
   return(list(at = at[keep], labels = labels[keep], ticks = ticks))
 }
 
@@ -490,7 +491,7 @@ is.scatter <- function(x) {
   }
 }
 
-defaultxscale <- function(xvars, ists) {
+defaultxscale <- function(xvars, ists, layout) {
   if (is.numeric(xvars) && ists) {
     start <- min(xvars, na.rm = TRUE)
     end <- max(xvars, na.rm = TRUE)
@@ -510,7 +511,6 @@ defaultxscale <- function(xvars, ists) {
         return(c(floor(start),ceiling(end)))
       }
     }
-    return( c(floor(min(xvars, na.rm = TRUE)), ceiling(max(xvars, na.rm = TRUE))) )
   } else if (is.scatter(xvars)) {
     scale <- defaultscale(max(xvars, na.rm =TRUE), min(xvars, na.rm =TRUE))
     return(c(scale$min,scale$max))
@@ -519,6 +519,18 @@ defaultxscale <- function(xvars, ists) {
     return (c(1, length(xvars)+1))
   }
 }
+
+add_lastyear_padding <- function(xvars, xlim, layout) {
+  end <- max(xvars, na.rm = TRUE)
+  if (getlayoutfactor(layout) < 1 ||
+      (xlim[2] - end) / (xlim[2] - xlim[1]) < LASTYEARPADDING) {
+    padding <- LASTYEARPADDING*(xlim[2]-xlim[1])
+    return(c(xlim, ceiling(padding*4)/4))
+  } else {
+    return(xlim)
+  }
+}
+
 
 xlimconform <- function(xlim, data, layout) {
   panels <- names(data)
@@ -530,10 +542,24 @@ xlimconform <- function(xlim, data, layout) {
   out <- list()
   for (p in panels) {
     if (!is_empty(data[[p]])) {
-      out[[p]] <- defaultxscale(data[[p]]$x, data[[p]]$ts)
-      if (p %in% names(xlim)) {
-        if (is.finite(xlim[[p]][1])) out[[p]][1] <- xlim[[p]][1]
-        if (is.finite(xlim[[p]][2])) out[[p]][2] <- xlim[[p]][2]
+      out[[p]] <- defaultxscale(data[[p]]$x, data[[p]]$ts, layout)
+
+      if (is.null(xlim[[p]])) {
+        if (data[[p]]$ts && (out[[p]][2] - out[[p]][1]) > 3) {
+          out[[p]] <- add_lastyear_padding(data[[p]]$x, out[[p]], layout)
+        }
+      } else {
+        if (is.finite(xlim[[p]][1])) {
+          out[[p]][1] <- xlim[[p]][1]
+        }
+        if (is.finite(xlim[[p]][2])) {
+          out[[p]][2] <- xlim[[p]][2]
+        } else {
+          # Only try to add padding if we haven't set an upper bound
+          if (data[[p]]$ts && (out[[p]][2] - out[[p]][1]) > 3) {
+            out[[p]] <- add_lastyear_padding(data[[p]]$x, out[[p]], layout)
+          }
+        }
       }
     }
   }
@@ -551,6 +577,15 @@ xlimconform <- function(xlim, data, layout) {
   # have a check for non-matching xlimits
   warnifxdiff(out)
   return(out)
+}
+
+collapse_in_padding <- function(xlim) {
+  lapply(xlim, function(x)
+    if (length(x) == 3) {
+      return(c(x[1], x[2] + x[3]))
+    } else {
+      return(x)
+    })
 }
 
 handleaxislabels <- function(labels, panels) {

@@ -814,6 +814,23 @@ agg_draw(p, filename = "x-axis-lim-single-arg.png")
 knitr::include_graphics("x-axis-lim-single-arg.png")
 ```
 
+Time series graphs with data that gets close to the right hand axis will automatically
+add a small margin of spacing to the right hand side. You can stop this by setting a manual x-limit
+for the right hand side. Vertically divided time series graphs always add a margin. 
+
+```{r, results = "hide"}
+close_data <- data.frame(date = seq.Date(as.Date("2000-03-01"),by="quarter",length.out=20),
+                         y1 = rnorm(10))
+p <- arphitgg(close_data, agg_aes(x=date, y=y1)) + 
+  agg_line()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "x-axis-padding.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("x-axis-padding.png")
+```
+
 For layouts with vertical division (e.g. "2v", "2b2" etc), you can drop the the first tick of the right hand panel by setting `dropxlabel = TRUE` in `arphitgg`. This prevents the last label of the left hand panel overlapping the first of the right hand panel.
 ```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x=date, y=y1), layout = "2v", dropxlabel = TRUE) + 
