@@ -433,5 +433,5 @@ test_that("Last year padding", {
   expect_true(check_graph(p, "axes-lastyearpadding-calculate-w-lowerbound-nopadding"))
 
   p <- arphitgg(data,agg_aes(x=date,y=y))+agg_line() + agg_xlim(1970,NA)
-  expect_true(check_graph(p, "axes-lastyearpadding-calculate-w-lowerbound-somepadding"))
+  expect_true(check_graph(p, "axes-lastyearpadding-calculate-w-lowerbound-somepadding", 0.98))
 })
