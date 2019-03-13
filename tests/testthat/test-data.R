@@ -101,7 +101,7 @@ test_that("zoo and xts", {
 test_that("Bar graph placement", {
   set.seed(42)
   foo <- data.frame(date=seq.Date(from = as.Date("2000-01-01"),by="month",length.out=12*4),y=rnorm(12*4))
-  p <- arphitgg(foo, agg_aes(x=date,y=y))+agg_line()+agg_col()
+  p <- arphitgg(foo, agg_aes(x=date,y=y))+agg_line()+agg_col()+agg_xlim(2000,2004)
   expect_true(check_graph(p, "data-bar-placement"))
 
   # 157 - widening x values
