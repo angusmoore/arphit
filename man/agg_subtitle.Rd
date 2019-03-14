@@ -9,7 +9,7 @@ agg_subtitle(text, panel = NULL)
 \arguments{
 \item{text}{A string for the subtitle.}
 
-\item{panel}{(optional) Specify a panel identifier to add a panel subtitle instead of an overall graph subtitle.}
+\item{panel}{(optional) Specify a panel identifier to add a panel subtitle instead of an overall graph subtitle. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the subtitle to multiple panels at once.}
 }
 \description{
 Add a subtitle or panel subtitle

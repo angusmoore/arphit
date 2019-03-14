@@ -9,7 +9,7 @@ agg_xunits(units, panel = NULL)
 \arguments{
 \item{units}{A string specifying the units.}
 
-\item{panel}{(optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.}
+\item{panel}{(optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.  You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the units to multiple panels at once.}
 }
 \description{
 Add units to the x axis (only works for scatter graphs)

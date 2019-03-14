@@ -13,7 +13,7 @@ agg_label(text, x, y, panel, color = "black", size = 20)
 
 \item{y}{The y coordinate of the center of your label}
 
-\item{panel}{Which panel should the label be placed on?}
+\item{panel}{Which panel should the label be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the label to multiple panels at once.}
 
 \item{color}{The color of your text}
 

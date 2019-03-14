@@ -11,7 +11,7 @@ agg_xlim(min, max, panel = NULL)
 
 \item{max}{The maximum (can also be NA, as above)}
 
-\item{panel}{(optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended.}
+\item{panel}{(optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the limits to multiple panels at once.}
 }
 \description{
 Specify the x limits for a graph
