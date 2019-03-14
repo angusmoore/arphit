@@ -1,11 +1,12 @@
-#' Make slides in gif using magick
+#' Make slides in gif
 #'
-#' Flick through ggs in a gif
+#' Flick through arphitgg objects in a gif
 #'
 #' @param gg_list List of gg objects
 #' @param filename Path to save .gif to
 #' @param delay Delay in seconds for each frame
-#' @param loop Whether to loop through frames
+#' @param loop Whether to loop through frames. Setting to zero will loop
+#' infinitely (default).
 #'
 #' @return filename, if successful
 #' @export

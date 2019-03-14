@@ -13,11 +13,12 @@ agg_slides(gg_list, filename = NULL, delay = 1, loop = 0)
 
 \item{delay}{Delay in seconds for each frame}
 
-\item{loop}{Whether to loop through frames}
+\item{loop}{Whether to loop through frames. Setting to zero will loop
+infinitely (default).}
 }
 \value{
 filename, if successful
 }
 \description{
-Flick through ggs in a gif
+Flick through arphitgg objects in a gif
 }
