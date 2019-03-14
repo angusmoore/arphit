@@ -236,5 +236,5 @@ test_that("drop x label", {
 
   foo <- data.frame(date = seq(as.Date("2000-03-01"),length.out=18,by="quarter"),y=1:18)
   p <- arphitgg(foo, agg_aes(x=date,y=y),layout="2v")+agg_line(panel=c("1","2"))
-  expect_true(check_graph(p,  "draw-panel-drop-first-ts-auto-not-requried"))
+  expect_true(check_graph(p,  "draw-panel-drop-first-ts-auto-not-required"))
 })
