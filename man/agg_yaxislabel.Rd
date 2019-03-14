@@ -9,7 +9,7 @@ agg_yaxislabel(axislabel, panel = NULL)
 \arguments{
 \item{axislabel}{A string specifying the axis label}
 
-\item{panel}{(optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels.}
+\item{panel}{(optional) Specify a panel identifier to add to a specific panel. If blank, axis label will be applied to all panels. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the axis label to multiple panels at once.}
 }
 \description{
 Add an axis label to the y axis

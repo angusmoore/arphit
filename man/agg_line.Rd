@@ -22,7 +22,7 @@ agg_line(aes = NULL, data = NULL, color = NULL, pch = NULL,
 
 \item{pointsize}{Scale the size of the points? (default 1)}
 
-\item{panel}{(default = "1") Which panel of the graph to place this layer on.}
+\item{panel}{(default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.}
 }
 \description{
 Add a line layer to an arphit plot.

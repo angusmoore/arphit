@@ -18,7 +18,7 @@ agg_bgshading(x1 = NA, y1 = NA, x2 = NA, y2 = NA,
 
 \item{color}{(optional) The color of the AB line (default grey)}
 
-\item{panel}{Which panel should the background shading be placed on?}
+\item{panel}{Which panel should the background shading be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the shading to multiple panels at once.}
 }
 \description{
 Add background shading

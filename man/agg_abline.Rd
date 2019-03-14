@@ -22,7 +22,7 @@ agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
 
 \item{color}{(optional) The color of the AB line (default black)}
 
-\item{panel}{Which panel should the line be placed on?}
+\item{panel}{Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.}
 
 \item{lwd}{(Optional, default 1) The linewidth}
 
