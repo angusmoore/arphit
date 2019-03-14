@@ -9,7 +9,8 @@ agg_slides(gg_list, filename = NULL, delay = 1, loop = 0)
 \arguments{
 \item{gg_list}{List of gg objects}
 
-\item{filename}{Path to save .gif to}
+\item{filename}{Path to save .gif to. If omitted, .gif will be opened
+externally}
 
 \item{delay}{Delay in seconds for each frame}
 
@@ -17,7 +18,7 @@ agg_slides(gg_list, filename = NULL, delay = 1, loop = 0)
 infinitely (default).}
 }
 \value{
-filename, if successful
+filename if provided, or NULL if not
 }
 \description{
 Flick through arphitgg objects in a gif
