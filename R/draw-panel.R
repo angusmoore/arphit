@@ -138,13 +138,23 @@ getsides <- function(p, layout) {
   return(side)
 }
 
-dropfirstxlabel <- function(p, layout, dropxlabel) {
+dropfirstxlabel <- function(p, layout, dropxlabel, ts, at, label, xlim) {
   if ((layout == "2v" && p == "2") ||
       (layout == "2b2" && p == "4") ||
       (layout == "3v" && (p == "2" || p == "3")) ||
       (layout == "3b2" && p == "6") ||
       (layout == "4b2" && p == "8")) {
-    return(dropxlabel)
+    if (is.na(dropxlabel)) {
+      if (ts) {
+        label_left_border <- at - 0.5*getstrwidth(label, units = "user")
+        overlap <- (label_left_border - xlim[1]) / (xlim[2] - xlim[1])
+        return(overlap < -0.015) # allow labels to overlap up to 1.5 per cent. the last year margin is 3 per cent so they should not overlap
+      } else {
+        return(FALSE)
+      }
+    } else {
+      return(dropxlabel)
+    }
   } else {
     return(FALSE)
    }
@@ -215,7 +225,7 @@ tickadjustment <- function(layout) {
                 "4b2" = 4))
 }
 
-gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt) {
+gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, ts) {
   side <- getsides(p, layout)
   xlab <- needxlabels(p, layout)
 
@@ -240,7 +250,7 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
   if (xlab) {
     # Draw x ticks and labels
     graphics::axis(1, xlabels$ticks, tck = tickadjustment(layout)*DEFAULTTICKLENGTH, labels = FALSE)
-    if (dropfirstxlabel(p, layout, dropxlabel)) {
+    if (dropfirstxlabel(p, layout, dropxlabel, ts, xlabels$at[1], xlabels$labels[1], xlim)) {
       at <- xlabels$at[2:length(xlabels$at)]
       labels <- xlabels$labels[2:length(xlabels$labels)]
     } else {
@@ -414,7 +424,7 @@ drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xun
 
   drawbgshadings(bgshadings, p)
 
-  gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt)
+  gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, data$ts)
 
   if (!is_empty(data)) drawbars(l, data, xlim, ylim, bar.stacked, log_scale)
 

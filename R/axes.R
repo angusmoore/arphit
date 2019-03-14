@@ -410,7 +410,7 @@ xlabels.categorical <- function(xlim, xvar, layout, showall) {
   end <- length(xvar)
   at <- seq(from = start, to = end, by = 1) + 0.5
   labels <- xvar
-  if (!is.null(showall) && !showall) {
+  if (!showall) {
     layout_factor <- getlayoutfactor(layout)
     keep <- restrictlabels(labels, layout_factor)
     at <- at[keep]

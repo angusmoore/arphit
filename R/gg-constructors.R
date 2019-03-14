@@ -540,7 +540,7 @@ agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
 #' all the plotting options
 #'
 #' @export
-arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = FALSE, srt = 0, showallxlabels = NULL, joined = TRUE, plotsize = LANDSCAPESIZE, log_scale = "") {
+arphitgg <- function(data = NULL, aes = NULL, layout = "1", portrait = FALSE, dropxlabel = NA, srt = 0, showallxlabels = TRUE, joined = TRUE, plotsize = LANDSCAPESIZE, log_scale = "") {
   gg <- list(data = list(parent = data),
              aes = aes,
              x = list(),
