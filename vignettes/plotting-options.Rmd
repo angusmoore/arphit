@@ -1239,3 +1239,55 @@ EMF files are problematic:
 Additionally, only EMF+ files support partial transparency; EMF files do not.
 
 If you can, you should prefer SVG over EMF. SVG is a much better supported vector image format. And much less problematic in how it is rendered by R.
+
+# Creating GIF animations
+
+You can create a GIF animation by creating a list of arphitgg objects and using
+`agg_slides`. You can specify how many seconds each 'slide' should be shown for,
+and how many times the animation should loop (0 if infinitely). If you don't 
+supply a filename, it will open it externally.
+
+Here we create a dataframe of four series over the same time period.
+```{r}
+gif_data <- data.frame( 
+  series = rep(1:4, each = 10), 
+  x = rep(seq.Date(from = as.Date("2000-03-01"), by = "quarter", 
+                   length.out = 10)), 
+  y = rnorm(4*10))
+```
+
+We then split this into a list of four dataframes, one for each series and
+construct a graph for each series
+```{r}
+gif_data_list <- split(gif_data, gif_data$series)
+gg_list <- lapply(gif_data_list, function(data) {
+  arphitgg(data, agg_aes(x = x, y = y)) + agg_line()
+})
+```
+
+To create the GIF animation, just pass `gg_list` to `agg_slides`
+```{r, results = "hide", warning = FALSE, message = FALSE}
+agg_slides(gg_list, filename = "agg.gif")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("agg.gif")
+```
+You do need to be careful. The different scales can cause the graphs to be out
+of alignment. This could be solved by setting the same `agg_ylim` for each graph.
+
+The graphs don't need to be the same time series, that was just a convenient
+example. Here's a gif going through the different possible layouts, but only 
+3 times.
+```{r}
+gg_list <- list(
+  arphitgg(layout = "1"), arphitgg(layout = "2v"), arphitgg(layout = "2h"),
+  arphitgg(layout = "2b2"), arphitgg(layout = "3v"), arphitgg(layout = "3h"),
+  arphitgg(layout = "3b2"), arphitgg(layout = "4h"), arphitgg(layout = "4b2")
+)
+```
+```{r, results = "hide", warning = FALSE, message = FALSE}
+agg_slides(gg_list, filename = "agg_layouts.gif", loop = 3)
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("agg_layouts.gif")
+```
