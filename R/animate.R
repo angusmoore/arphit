@@ -1,5 +1,3 @@
-library(magick)
-
 #' Make slides in gif using magick
 #'
 #' Flick through ggs in a gif
