@@ -19,5 +19,5 @@ test_that("Simple animations", {
   })
 
   gif_file <- agg_slides(gg_list, filename = tempfile("ani", fileext = ".gif"))
-  expect_true(check_gif(gif_file, "animations-1"))
+  expect_true(check_gif(gg_list, "animations-1"))
 })

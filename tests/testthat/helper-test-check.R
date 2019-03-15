@@ -26,7 +26,9 @@ check_graph <- function(p, filename, max_distortion = 0.99) {
   }
 }
 
-check_gif <- function(gif, filename, max_distortion = 0.99) {
+check_gif <- function(gg_list, filename, max_distortion = 0.99) {
+  comp_location <- paste0(tempdir(), "/", filename, ".gif")
+  agg_slides(gg_list, comp_location)
 
   if (.Platform$OS.type == "windows") {
     reference_loc <- paste0("../testdata/windows/", filename, ".gif")
@@ -34,9 +36,9 @@ check_gif <- function(gif, filename, max_distortion = 0.99) {
     reference_loc <- paste0("../testdata/linux/", filename, ".gif")
   }
 
-  if (file.exists(reference_loc) & file.exists(gif)) {
+  if (file.exists(reference_loc) & file.exists(comp_location)) {
     reference <- magick::image_read(reference_loc)
-    comparison <- magick::image_read(gif)
+    comparison <- magick::image_read(comp_location)
     # Check that image similarity greater than 97%. The same graph exported on
     # different machines have _slight_ differences for some reason.
     if (length(reference) != length(comparison)) {
