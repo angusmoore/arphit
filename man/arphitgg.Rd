@@ -5,8 +5,8 @@
 \title{Create an new arphit graph}
 \usage{
 arphitgg(data = NULL, aes = NULL, layout = "1", portrait = FALSE,
-  dropxlabel = FALSE, srt = 0, showallxlabels = NULL,
-  joined = TRUE, plotsize = LANDSCAPESIZE, log_scale = "")
+  dropxlabel = NA, srt = 0, showallxlabels = TRUE, joined = TRUE,
+  plotsize = LANDSCAPESIZE, log_scale = "")
 }
 \arguments{
 \item{data}{(Optional) Data to be used for the plot. Can be left blank, but must then be supplied for each layer.}
