@@ -4,6 +4,11 @@ warnings_are_errors: true
 sudo: false
 cache: packages
 
+branches:
+  only:
+    - master
+    - stable
+
 addons:
   apt:
     update: true
