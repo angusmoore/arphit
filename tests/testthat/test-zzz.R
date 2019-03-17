@@ -2,7 +2,7 @@ context("Cross-platform test checking")
 
 win <- list.files("../testdata/windows/")
 linux <- list.files("../testdata/linux/")
-used_tests <- list.files(tempdir(), ".*\\.png")
+used_tests <- list.files(tempdir(), ".*\\.(png|gif)")
 
 test_that("Reference files for linux and windows exist for all tests", {
   expect_false(any(!win %in% linux))
