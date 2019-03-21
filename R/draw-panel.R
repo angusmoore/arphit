@@ -315,7 +315,7 @@ drawshading <- function(shading, data) {
     shading_data <- data.frame(x = c(x_to,rev(x_from)),
                                y = c(y_to,rev(y_from)))
     shading_data <- shading_data[!is.na(shading_data$x) & !is.na(shading_data$y), ]
-    graphics::polygon(shading_data$x,shading_data$y,col = s$color, border = NA)
+    graphics::polygon(shading_data$x,shading_data$y,col = s$colour, border = NA)
   }
 }
 
@@ -381,7 +381,7 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
 drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
   out <- get_bar_data(data)
   bardata <- out$bardata
-  colors <- out$colors
+  colours <- out$colours
   bordercol <- out$bordercol
 
   if (ncol(bardata) > 0) {
@@ -392,9 +392,9 @@ drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
 
     xlim <- as.barplot.x(bardata_p, bar_x_loc, xlim, bar.stacked)
     graphics::par(mfg = l)
-    graphics::barplot(bardata_p, col = colors, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
+    graphics::barplot(bardata_p, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
     graphics::par(mfg = l)
-    graphics::barplot(bardata_n, col = colors, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
+    graphics::barplot(bardata_n, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
   }
 }
 

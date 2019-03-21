@@ -130,7 +130,7 @@ RBA["Grey8"] <- rgb(51, 51, 51, maxColorValue = 255)
 RBA["Grey9"] <- rgb(26, 26, 26, maxColorValue = 255)
 RBA["Grey10"] <- rgb(0, 0, 0, maxColorValue = 255)
 
-# Add aliases for default colors
+# Add aliases for default colours
 RBA["Default1"] <- RBA["Aqua8"]
 RBA["Default2"] <- RBA["Orange2"]
 RBA["Default3"] <- RBA["DarkGreen7"]

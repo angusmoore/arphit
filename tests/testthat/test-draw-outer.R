@@ -7,42 +7,42 @@ data <- data.frame(x=1:10,a=1:10,b=11:20,c=21:30,d=31:40)
 test_that("Legend series and colours", {
   # basic legend tests over one panel, with left and right axes
   p <- arphitgg(data, agg_aes(x=x)) +
-    agg_line(agg_aes(y=a), panel = "1", color = "red") +
-    agg_line(agg_aes(y=b), panel = "1", color = "green") +
+    agg_line(agg_aes(y=a), panel = "1", colour = "red") +
+    agg_line(agg_aes(y=b), panel = "1", colour = "green") +
     agg_legend()
   expect_true(check_graph(p, "draw-outer-basic-legend"))
 
   p <- arphitgg(data, agg_aes(x=x)) +
-    agg_line(agg_aes(y=a), panel = "1", color = "red") +
-    agg_line(agg_aes(y=b), panel = "1", color = "green") +
-    agg_line(agg_aes(y=c), panel = "2", color = "blue") +
-    agg_line(agg_aes(y=d), panel = "2", color = "yellow") +
+    agg_line(agg_aes(y=a), panel = "1", colour = "red") +
+    agg_line(agg_aes(y=b), panel = "1", colour = "green") +
+    agg_line(agg_aes(y=c), panel = "2", colour = "blue") +
+    agg_line(agg_aes(y=d), panel = "2", colour = "yellow") +
     agg_legend()
   expect_true(check_graph(p, "draw-outer-basic-legend-lhs-rhs"))
 
   # check pch works too
   p <- arphitgg(data, agg_aes(x=x)) +
-    agg_line(agg_aes(y=a), panel = "1", color = "red", pch = 20) +
-    agg_line(agg_aes(y=b), panel = "1", color = "green") +
+    agg_line(agg_aes(y=a), panel = "1", colour = "red", pch = 20) +
+    agg_line(agg_aes(y=b), panel = "1", colour = "green") +
     agg_legend()
   expect_true(check_graph(p, "draw-outer-pch"))
 
   # tests for duplicate series names
   # same attributes for duplicate
   p <- arphitgg(data, agg_aes(x=x)) +
-    agg_line(agg_aes(y=a), panel = "1", color = "red") +
-    agg_line(agg_aes(y=b), panel = "1", color = "green") +
-    agg_line(agg_aes(y=a), panel = "2", color = "red") +
-    agg_line(agg_aes(y=d), panel = "2", color = "yellow") +
+    agg_line(agg_aes(y=a), panel = "1", colour = "red") +
+    agg_line(agg_aes(y=b), panel = "1", colour = "green") +
+    agg_line(agg_aes(y=a), panel = "2", colour = "red") +
+    agg_line(agg_aes(y=d), panel = "2", colour = "yellow") +
     agg_legend()
   expect_true(check_graph(p, "draw-outer-basic-duplicate-names-same-attributes"))
 
   # different attributes for duplicate
   p <- arphitgg(data, agg_aes(x=x)) +
-    agg_line(agg_aes(y=a), panel = "1", color = "red") +
-    agg_line(agg_aes(y=b), panel = "1", color = "green") +
-    agg_line(agg_aes(y=a), panel = "2", color = "blue") +
-    agg_line(agg_aes(y=d), panel = "2", color = "yellow") +
+    agg_line(agg_aes(y=a), panel = "1", colour = "red") +
+    agg_line(agg_aes(y=b), panel = "1", colour = "green") +
+    agg_line(agg_aes(y=a), panel = "2", colour = "blue") +
+    agg_line(agg_aes(y=d), panel = "2", colour = "yellow") +
     agg_legend()
   expect_true(check_graph(p, "draw-outer-basic-duplicate-names"))
 })

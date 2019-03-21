@@ -137,7 +137,7 @@ bounding_box_intersection <- function(x,y,a,b,h,w) {
   return(intersections[!sapply(intersections, is.null)][[1]])
 }
 
-add_arrow <- function(found_location, text, color, p, inches_conversion) {
+add_arrow <- function(found_location, text, colour, p, inches_conversion) {
   if ((!found_location$los && found_location$distance > 0.1) || found_location$distance > 1.5) {
     # adjust the tail to the edge of the bounding box
     adjusted <-
@@ -155,7 +155,7 @@ add_arrow <- function(found_location, text, color, p, inches_conversion) {
                        tail.y = adjusted$y,
                        head.x = found_location$xx,
                        head.y = found_location$yy,
-                       color = color,
+                       colour = colour,
                        panel = p)
       drawarrow(newarrow)
     } else {

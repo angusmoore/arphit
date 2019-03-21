@@ -25,7 +25,7 @@ p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_units("$", panel = "3") +
   agg_units("'000", panel = "4") +
   agg_shading(from = x4, to = x3) +
-  agg_label("A label", x = 2001.5, y = 1, panel = "1", color = "red") +
+  agg_label("A label", x = 2001.5, y = 1, panel = "1", colour = "red") +
   agg_abline(x = 2002, panel = "2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
 agg_draw(p, filename = "complex_example.png")

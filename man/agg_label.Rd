@@ -4,7 +4,7 @@
 \alias{agg_label}
 \title{Add a label}
 \usage{
-agg_label(text, x, y, panel, color = "black", size = 20)
+agg_label(text, x, y, panel, colour = "black", color, size = 20)
 }
 \arguments{
 \item{text}{The text to display on your plot}
@@ -15,7 +15,9 @@ agg_label(text, x, y, panel, color = "black", size = 20)
 
 \item{panel}{Which panel should the label be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the label to multiple panels at once.}
 
-\item{color}{The color of your text}
+\item{colour}{The colour of your text}
+
+\item{color}{(Deprecated; use colour instead) The colour of your text}
 
 \item{size}{Font size (default 20)}
 }

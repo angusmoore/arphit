@@ -286,7 +286,7 @@ addlayer <- function(gg, new, panel, bar) {
 }
 
 applylineattributes <- function(gg, newline, panel, newseries) {
-  gg <- applyattribute(gg, "col", panel, newseries, newline$color)
+  gg <- applyattribute(gg, "col", panel, newseries, newline$colour)
   gg <- applyattribute(gg, "pch", panel, newseries, newline$pch)
   gg <- applyattribute(gg, "lty", panel, newseries, newline$lty)
   gg <- applyattribute(gg, "lwd", panel, newseries, newline$lwd)

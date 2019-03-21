@@ -318,10 +318,10 @@ test_that("Mutiple panel constructors", {
   expect_equal(p1, p2)
 
   # label
-  p1 <- arphitgg() + agg_label("Foo", x = 2000, y = 1, color = "black", panel = c("1", "2"))
+  p1 <- arphitgg() + agg_label("Foo", x = 2000, y = 1, colour = "black", panel = c("1", "2"))
   p2 <- arphitgg() +
-    agg_label("Foo", x = 2000, y = 1, color = "black", panel = "1") +
-    agg_label("Foo", x = 2000, y = 1, color = "black", panel = "2")
+    agg_label("Foo", x = 2000, y = 1, colour = "black", panel = "1") +
+    agg_label("Foo", x = 2000, y = 1, colour = "black", panel = "2")
   expect_equal(p1, p2)
 
   # arrow
@@ -331,9 +331,9 @@ test_that("Mutiple panel constructors", {
   expect_equal(p1, p2)
 
   # abline
-  p1 <- arphitgg() + agg_abline(1,color="black",panel=c("1","2"))
-  p2 <- arphitgg() + agg_abline(1,color="black",panel="1") +
-    agg_abline(1,color="black",panel="2")
+  p1 <- arphitgg() + agg_abline(1,colour="black",panel=c("1","2"))
+  p2 <- arphitgg() + agg_abline(1,colour="black",panel="1") +
+    agg_abline(1,colour="black",panel="2")
   expect_equal(p1, p2)
 
   # bgshading
@@ -407,6 +407,6 @@ test_that("Miscellaneous", {
   foo <- data.frame(x=1:10,y=3,g=1:10)
   foo$g[4] <- NA
   p <- arphitgg(foo, agg_aes(x=x,y=y,group=g)) +
-    agg_col(color = c(RBA["Aqua8"], RBA["Aqua8"], RBA["Grey7"], RBA["Orange2"], RBA["DarkGreen7"], RBA["Violet1"], RBA["Blue7"], RBA["Red5"], RBA["Brown4"], RBA["Pink2"]))
+    agg_col(colour = c(RBA["Aqua8"], RBA["Aqua8"], RBA["Grey7"], RBA["Orange2"], RBA["DarkGreen7"], RBA["Violet1"], RBA["Blue7"], RBA["Red5"], RBA["Brown4"], RBA["Pink2"]))
   expect_true(check_graph(p, "gg-na-in-group"))
 })

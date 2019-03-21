@@ -127,10 +127,10 @@ agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NU
     }
 
     if ((is.logical(bars) && bars) || (y %in% bars)) {
-      p <- p + agg_col(aes = aes, color = qplot_get_attribute(col, y))
+      p <- p + agg_col(aes = aes, colour = qplot_get_attribute(col, y))
     } else {
       p <- p + agg_line(aes = aes,
-                        color = qplot_get_attribute(col, y),
+                        colour = qplot_get_attribute(col, y),
                         pch = qplot_get_attribute(pch, y),
                         lty = qplot_get_attribute(pch, y),
                         lwd = qplot_get_attribute(lwd, y))

@@ -5,7 +5,7 @@
 \title{Add an AB line to your graph}
 \usage{
 agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
-  y2 = NULL, color = "black", panel, lwd = 1, lty = 1)
+  y2 = NULL, colour = "black", color, panel, lwd = 1, lty = 1)
 }
 \arguments{
 \item{x}{Draw a vertical line at x (omit to draw a specific AB line)}
@@ -20,7 +20,9 @@ agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
 
 \item{y2}{For specific AB lines: the second y coordinate}
 
-\item{color}{(optional) The color of the AB line (default black)}
+\item{colour}{The colour of the AB line (default black)}
+
+\item{color}{(Deprecated; use colour instead) The colour of the AB line (default black)}
 
 \item{panel}{Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.}
 
@@ -32,12 +34,12 @@ agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
 You need specify only one of x, or y, or x1,x2,y1,y2
 }
 \examples{
-arphitgg(data) + agg_abline(x = 2001, color = RBA["Blue1"], panel = "1") +
-  agg_abline(y = -0.5, color = RBA["Red1"], panel = "1")
+arphitgg(data) + agg_abline(x = 2001, colour = RBA["Blue1"], panel = "1") +
+  agg_abline(y = -0.5, colour = RBA["Red1"], panel = "1")
 
 arphitgg(data) +
   agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5,
-             color = RBA["Blue1"], panel = "1")
+             colour = RBA["Blue1"], panel = "1")
 
 }
 \seealso{

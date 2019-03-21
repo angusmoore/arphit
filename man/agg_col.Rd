@@ -4,15 +4,17 @@
 \alias{agg_col}
 \title{Add a col layer to an arphit plot.}
 \usage{
-agg_col(aes = NULL, data = NULL, color = NULL, barcol = NULL,
-  panel = "1", stacked = TRUE)
+agg_col(aes = NULL, data = NULL, colour = NULL, color,
+  barcol = NULL, panel = "1", stacked = TRUE)
 }
 \arguments{
 \item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
 
 \item{data}{The data to be used. Will inherit from parent if missing.}
 
-\item{color}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
+\item{colour}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
+
+\item{color}{(Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
 
 \item{barcol}{(optional) Outline colours for each bar series}
 
