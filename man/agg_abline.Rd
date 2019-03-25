@@ -5,7 +5,7 @@
 \title{Add an AB line to your graph}
 \usage{
 agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
-  y2 = NULL, colour = "black", color, panel, lwd = 1, lty = 1)
+  y2 = NULL, colour = "black", panel, lwd = 1, lty = 1, color)
 }
 \arguments{
 \item{x}{Draw a vertical line at x (omit to draw a specific AB line)}
@@ -22,13 +22,13 @@ agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
 
 \item{colour}{The colour of the AB line (default black)}
 
-\item{color}{(Deprecated; use colour instead) The colour of the AB line (default black)}
-
 \item{panel}{Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.}
 
 \item{lwd}{(Optional, default 1) The linewidth}
 
 \item{lty}{(Optional, default 1) The line type}
+
+\item{color}{(Deprecated; use colour instead) The colour of the AB line (default black)}
 }
 \description{
 You need specify only one of x, or y, or x1,x2,y1,y2

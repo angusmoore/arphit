@@ -4,7 +4,7 @@
 \alias{agg_label}
 \title{Add a label}
 \usage{
-agg_label(text, x, y, panel, colour = "black", color, size = 20)
+agg_label(text, x, y, panel, colour = "black", size = 20, color)
 }
 \arguments{
 \item{text}{The text to display on your plot}
@@ -17,9 +17,9 @@ agg_label(text, x, y, panel, colour = "black", color, size = 20)
 
 \item{colour}{The colour of your text}
 
-\item{color}{(Deprecated; use colour instead) The colour of your text}
-
 \item{size}{Font size (default 20)}
+
+\item{color}{(Deprecated; use colour instead) The colour of your text}
 }
 \description{
 Add a label

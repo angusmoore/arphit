@@ -4,8 +4,8 @@
 \alias{agg_arrow}
 \title{Add an arrow}
 \usage{
-agg_arrow(tail.x, tail.y, head.x, head.y, colour = "black", color, panel,
-  lwd = 1)
+agg_arrow(tail.x, tail.y, head.x, head.y, colour = "black", panel,
+  lwd = 1, color)
 }
 \arguments{
 \item{tail.x}{The x coordinate of the arrow tail}
@@ -18,11 +18,11 @@ agg_arrow(tail.x, tail.y, head.x, head.y, colour = "black", color, panel,
 
 \item{colour}{The colour of the arrow}
 
-\item{color}{(Deprecated; use colour instead) The colour of the arrow}
-
 \item{panel}{Which panel should the arrow be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the arrow to multiple panels at once.}
 
 \item{lwd}{(Optional, default 1) The linewidth of the arrow}
+
+\item{color}{(Deprecated; use colour instead) The colour of the arrow}
 }
 \description{
 Add an arrow

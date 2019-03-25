@@ -164,8 +164,8 @@ agg_footnote <- function(footnote) {
 #' @param y The y coordinate of the center of your label
 #' @param panel Which panel should the label be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the label to multiple panels at once.
 #' @param colour The colour of your text
-#' @param color (Deprecated; use colour instead) The colour of your text
 #' @param size Font size (default 20)
+#' @param color (Deprecated; use colour instead) The colour of your text
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -174,7 +174,7 @@ agg_footnote <- function(footnote) {
 #' arphitgg() + agg_label("Here is a label", 2003, 0.2, "1", RBA["Red3"])
 #'
 #' @export
-agg_label <- function(text, x, y, panel, colour = "black", color, size = 20) {
+agg_label <- function(text, x, y, panel, colour = "black", size = 20, color) {
   check_panel(panel)
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
@@ -213,9 +213,9 @@ agg_autolabel <- function(quiet = FALSE, arrow_bars = FALSE) {
 #' @param head.x The x coordinate of the arrow head
 #' @param head.y The y coordinate of the arrow head
 #' @param colour The colour of the arrow
-#' @param color (Deprecated; use colour instead) The colour of the arrow
 #' @param panel Which panel should the arrow be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the arrow to multiple panels at once.
 #' @param lwd (Optional, default 1) The linewidth of the arrow
+#' @param color (Deprecated; use colour instead) The colour of the arrow
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -226,7 +226,7 @@ agg_autolabel <- function(quiet = FALSE, arrow_bars = FALSE) {
 #'             color = RBA["Blue1"], panel = "1")
 #'
 #' @export
-agg_arrow <- function(tail.x, tail.y, head.x, head.y, colour = "black", color, panel, lwd = 1) {
+agg_arrow <- function(tail.x, tail.y, head.x, head.y, colour = "black", panel, lwd = 1, color) {
   check_panel(panel)
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
@@ -247,10 +247,10 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, colour = "black", color, p
 #' @param x2 For specific AB lines: the second x coordinate
 #' @param y2 For specific AB lines: the second y coordinate
 #' @param colour The colour of the AB line (default black)
-#' @param color (Deprecated; use colour instead) The colour of the AB line (default black)
 #' @param panel Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.
 #' @param lwd (Optional, default 1) The linewidth
 #' @param lty (Optional, default 1) The line type
+#' @param color (Deprecated; use colour instead) The colour of the AB line (default black)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -264,7 +264,7 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, colour = "black", color, p
 #'              colour = RBA["Blue1"], panel = "1")
 #'
 #' @export
-agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, colour = "black", color, panel, lwd = 1, lty = 1) {
+agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, colour = "black", panel, lwd = 1, lty = 1, color) {
   line <- list(x = x, y = y, x1 = x1, y1 = y1, x2 = x2, y2 = y2, colour = colour, panel = panel, lwd = lwd, lty = lty)
   line <- sanitycheckline(line)
   line$x <- NULL
@@ -284,8 +284,8 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
 #' @param x2 The top right x coordinate (omit to have the shading automatically snap to the edge of the panel)
 #' @param y2 The top right y coordinate (omit to have the shading automatically snap to the edge of the panel)
 #' @param colour (optional) The colour of the AB line (default grey)
-#' @param color (Deprecated; use colour instead) The colour of the AB line (default grey)
 #' @param panel Which panel should the background shading be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the shading to multiple panels at once.
+#' @param color (Deprecated; use colour instead) The colour of the AB line (default grey)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -295,7 +295,7 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
 #' arphitgg(data) + agg_bgshading(y1 = 0.5, y2 = -0.5, panel = "1")
 #'
 #' @export
-agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, colour = RBA["Grey2"], color, panel) {
+agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, colour = RBA["Grey2"], panel, color) {
   check_panel(panel)
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
@@ -308,9 +308,9 @@ agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, colour = RBA["Grey
 #'
 #' @param from The series name to shade from (if you have no group aesthetic, it will be the name of the y variable); if you have groups, it will (usually) be the group identifier. This can get more complicated if you have duplicate group names. If so, arphit appends .y to the group names, so try that.)
 #' @param to The name of the series to shade to
+#' @param panel (optional) Which panel are the relevant series in? (arphit will try to find them if you don't specify)
 #' @param colour (optional) The colour to shade between the series (default grey)
 #' @param color (Deprecated; use colour instead) The colour to shade between the series (default grey)
-#' @param panel (optional) Which panel are the relevant series in? (arphit will try to find them if you don't specify)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -414,12 +414,12 @@ agg_legend <- function(ncol = NULL) {
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param colour A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
-#' @param color (Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #' @param pch A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of pch values that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.
 #' @param lty A line type to be applied to all series, or or (if your aesthetic has a group), a vector of lty values that will be cycled through to consecutive group elements. Any value accepted by R for lty can be used.
 #' @param lwd A line width to be applied to all series, or or (if your aesthetic has a group), a vector of lwd values that will be cycled through to consecutive group elements. Any value accepted by R for lwd can be used.
 #' @param pointsize Scale the size of the points? (default 1)
 #' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
+#' @param color (Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -430,7 +430,7 @@ agg_legend <- function(ncol = NULL) {
 #' arphitgg(data) + agg_line(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_line <- function(aes = NULL, data = NULL, colour = NULL, color, pch = NULL, lty = NULL, lwd = NULL, pointsize = 1, panel = "1") {
+agg_line <- function(aes = NULL, data = NULL, colour = NULL, pch = NULL, lty = NULL, lwd = NULL, pointsize = 1, panel = "1", color) {
   check_panel(panel)
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
@@ -456,10 +456,10 @@ agg_line <- function(aes = NULL, data = NULL, colour = NULL, color, pch = NULL, 
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param colour A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
-#' @param color (Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #' @param barcol (optional) Outline colours for each bar series
 #' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
 #' @param stacked (default = TRUE) Stack the bars, or group them?
+#' @param color (Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -470,7 +470,7 @@ agg_line <- function(aes = NULL, data = NULL, colour = NULL, color, pch = NULL, 
 #' arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_col <- function(aes = NULL, data = NULL, colour = NULL, color, barcol = NULL, panel = "1", stacked = TRUE) {
+agg_col <- function(aes = NULL, data = NULL, colour = NULL, barcol = NULL, panel = "1", stacked = TRUE, color) {
   check_panel(panel)
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
@@ -494,9 +494,9 @@ agg_col <- function(aes = NULL, data = NULL, colour = NULL, color, barcol = NULL
 #' @param data The data to be used. Will inherit from parent if missing.
 #' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
 #' @param colour A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
-#' @param color (Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #' @param pointsize Scale the size of the points? (default 1)
 #' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
+#' @param color (Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -506,7 +506,7 @@ agg_col <- function(aes = NULL, data = NULL, colour = NULL, color, barcol = NULL
 #' arphitgg(data) + agg_point(aes = agg_aes(x = x, y = y), panel = "1")
 #'
 #' @export
-agg_point <- function(aes = NULL, data = NULL, colour = NULL, color, pointsize = 1, panel = "1") {
+agg_point <- function(aes = NULL, data = NULL, colour = NULL, pointsize = 1, panel = "1", color) {
   check_panel(panel)
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
