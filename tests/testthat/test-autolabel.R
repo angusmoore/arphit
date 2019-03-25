@@ -89,8 +89,8 @@ test_that("Simple labels", {
   foo <- tibble::tibble(year = 2000:2020, y = 1:21)
   foo2 <- tibble::tibble(year = 2000:2020, y = 2:22)
   p <- arphitgg(aes = agg_aes(x=year,y=y), layout = "1", showallxlabels = FALSE) +
-    agg_line(data = foo, panel = "1", color = "red") +
-    agg_line(data = foo2, panel = "1", color = "red") +
+    agg_line(data = foo, panel = "1", colour = "red") +
+    agg_line(data = foo2, panel = "1", colour = "red") +
     agg_autolabel(TRUE)
   expect_true(check_graph(p, "autolabel-same-series-one-panel", 0.985))
 })
@@ -224,7 +224,7 @@ test_that("Which panels should be autolabelled", {
     agg_line(agg_aes(y=b), panel = "1") +
     agg_line(agg_aes(y=b), panel = "2") +
     agg_line(agg_aes(y=c), panel = "2") +
-    agg_label("Test",x=2,y=4,color="black",panel="1") +
+    agg_label("Test",x=2,y=4,colour="black",panel="1") +
     agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-one-panel-labelled")

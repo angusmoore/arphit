@@ -274,7 +274,7 @@ knitr::include_graphics("setattributeall.png")
 
 `col` controls the colour of your series. If a colour is not specified for a series, `arphit` cycles through default colours.
 
-The color palette can be accessed using `RBA["Green1"]` etc. For instance:
+The colour palette can be accessed using `RBA["Green1"]` etc. For instance:
 ```{r, eval = FALSE}
 agg_qplot(data,
           series = c("x2", "x4"),

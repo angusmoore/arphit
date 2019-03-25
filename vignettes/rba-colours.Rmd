@@ -36,7 +36,7 @@ for (i in 1:10) {
   text(i, x = xoff, y = 6/5 - 0.025)
 }
 
-# Draw each of the colors and boxes
+# Draw each of the colourss and boxes
 yoff <- 6/5 - 0.02
 for (col in colours) {
   yoff <- yoff - 0.08

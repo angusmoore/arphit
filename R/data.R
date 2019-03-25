@@ -50,14 +50,14 @@ series_names <- function(x) {
 }
 
 get_bar_data <- function(data) {
-  colors <- c()
+  colours <- c()
   bordercol <- c()
   bardata <- data.frame(x = data$x, stringsAsFactors = FALSE)
 
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
     if (s$bar) {
-      colors <- append(colors, s$attributes$col)
+      colours <- append(colours, s$attributes$col)
       bordercol <- append(bordercol, s$attributes$barcol)
       series_data <- data.frame(x = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
       names(series_data) <- c("x", i)
@@ -68,7 +68,7 @@ get_bar_data <- function(data) {
     }
   }
   bardata <- dplyr::select_(bardata, "-x")
-  return(list(bardata=bardata, colors=colors, bordercol=bordercol))
+  return(list(bardata=bardata, colours=colours, bordercol=bordercol))
 }
 
 convert_to_plot_bardata <- function(bardata, data) {

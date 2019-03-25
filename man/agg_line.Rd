@@ -4,15 +4,15 @@
 \alias{agg_line}
 \title{Add a line layer to an arphit plot.}
 \usage{
-agg_line(aes = NULL, data = NULL, color = NULL, pch = NULL,
-  lty = NULL, lwd = NULL, pointsize = 1, panel = "1")
+agg_line(aes = NULL, data = NULL, colour = NULL, pch = NULL,
+  lty = NULL, lwd = NULL, pointsize = 1, panel = "1", color)
 }
 \arguments{
 \item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
 
 \item{data}{The data to be used. Will inherit from parent if missing.}
 
-\item{color}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
+\item{colour}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
 
 \item{pch}{A point marker to be applied to all series, or or (if your aesthetic has a group), a vector of pch values that will be cycled through to consecutive group elements. Any value accepted by R for pch can be used.}
 
@@ -23,6 +23,8 @@ agg_line(aes = NULL, data = NULL, color = NULL, pch = NULL,
 \item{pointsize}{Scale the size of the points? (default 1)}
 
 \item{panel}{(default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.}
+
+\item{color}{(Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
 }
 \description{
 Add a line layer to an arphit plot.

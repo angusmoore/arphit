@@ -483,7 +483,7 @@ There are 7 options for line layers. What the options do is covered in more deta
 
 * The dataset to be drawn (`data`)
 * The aesthetic that defines how to turn the data into a graph (`aes`)
-* The colour (or colours) for the series (`color`)
+* The colour (or colours) for the series (`colour`)
 * Point markers for the series (`pch`)
 * The line type - e.g. solid or dashed - for the sereis (`lty`)
 * The linewidth of the lines (`lwd`)
@@ -496,7 +496,7 @@ There are 7 options for line layers. What the options do is covered in more deta
 
 * The aesthetic that defines how to turn the data into a graph (`aes`)
 * The dataset to be drawn (`data`)
-* The colour (or colours) for the series (`color`)
+* The colour (or colours) for the series (`colour`)
 * The colour for the outline of the bars (`barcol`)
 * Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 * Whether the bars should be stacked (default) or grouped (`stacked`). This is a global option; you cannot combine stacked and grouped layers.
@@ -505,7 +505,7 @@ There are 7 options for line layers. What the options do is covered in more deta
 
 `agg_point` layers are just a wrapper around `agg_line` that set the line to NA, and the point marker (`pch`) to `19` for solid dots. Naturally, this layer type is best for scatter graphs, as they quicker and easier than constructing your own `agg_line` layer.
 
-`agg_point` has only 5 options Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`color`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
+`agg_point` has only 5 options Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`colour`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
 
 # Series colours and other attributes
 
@@ -514,27 +514,27 @@ There are 7 options for line layers. What the options do is covered in more deta
 Specifying line, bar or point (depending on layer type) colours for series is done when creating a layer. For instance:
 ```{r, results = "hide"}
 p <- arphitgg() + 
-  agg_line(data = simple_data, aes = agg_aes(x = date, y = y1), color = RBA["Red1"])
+  agg_line(data = simple_data, aes = agg_aes(x = date, y = y1), colour = RBA["Red1"])
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
-agg_draw(p, filename = "simplecolor.png")
+agg_draw(p, filename = "simplecolour.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("simplecolor.png")
+knitr::include_graphics("simplecolour.png")
 ```
 
-This color is applied to _all_ series in the layer. This is less helpful when you have a group variable, since they will all show up as the same colour (which is unlikely to be what you want). E.g. this is not helpful:
+This colour is applied to _all_ series in the layer. This is less helpful when you have a group variable, since they will all show up as the same colour (which is unlikely to be what you want). E.g. this is not helpful:
 ```{r, results = "hide"}
 p <- arphitgg() +
   agg_line(data = long_data,
            aes = agg_aes(x = date, y = y1, group = group_var),
-           color = RBA["Red1"])
+           colour = RBA["Red1"])
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
-agg_draw(p, filename = "group-single-color.png")
+agg_draw(p, filename = "group-single-colour.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("group-single-color.png")
+knitr::include_graphics("group-single-colour.png")
 ```
 
 To specify for different colours for different series in a grouped layer, you can instead specify a _vector_ of colours:
@@ -542,13 +542,13 @@ To specify for different colours for different series in a grouped layer, you ca
 p <- arphitgg() +
   agg_line(data = long_data,
            aes = agg_aes(x = date, y = y1, group = group_var),
-           color = c(RBA["Red1"], RBA["Blue4"]))
+           colour = c(RBA["Red1"], RBA["Blue4"]))
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
-agg_draw(p, filename = "group-multi-color.png")
+agg_draw(p, filename = "group-multi-colour.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("group-multi-color.png")
+knitr::include_graphics("group-multi-colour.png")
 ```
 
 (NB: `arphit` will cycle through the supplied vector colours if there aren't enough in the vector to cover the number of series in the layer.)
@@ -557,13 +557,13 @@ To see the full list of availble colours type `vignette("rba-colours", package =
 
 Alternatively, you can use any colour that R recognises.
 
-If you don't specify colours, arphit cycles through a set of default colours. Should you need to (e.g. for labels) you can access the default colors using the alias `RBA["Default1"]` etc.
+If you don't specify colours, arphit cycles through a set of default colours. Should you need to (e.g. for labels) you can access the default colours using the alias `RBA["Default1"]` etc.
 
-### (Advanced) Defining your own default colors
+### (Advanced) Defining your own default colours
 
-If you want to define your own set of default colors to be used set the option `arphit.user_colors` with a vector of colours. Putting this into your `.Rprofile` is sensible.
+If you want to define your own set of default colours to be used set the option `arphit.user_colours` with a vector of colours. Putting this into your `.Rprofile` is sensible.
 ```{r, eval=FALSE}
-options(arphit.user_colors = c(RBA["Red1"],RBA["Blue10"],RBA["Olive1"]))
+options(arphit.user_colours = c(RBA["Red1"],RBA["Blue10"],RBA["Olive1"]))
 ```
 
 ## Line markers
@@ -927,7 +927,7 @@ Shading is drawn in the order you add it; the first shading added is on the bott
 p <- arphitgg(simple_data, agg_aes(x=date)) +
   agg_line(agg_aes(y=y1)) +
   agg_line(agg_aes(y=y2)) +
-  agg_shading(from = y1, to = y2, color = RBA["Blue1"])
+  agg_shading(from = y1, to = y2, colour = RBA["Blue1"])
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "shading-single.png")
@@ -943,8 +943,8 @@ p <- arphitgg(simple_data, agg_aes(x=date)) +
   agg_line(agg_aes(y=y2)) +
   agg_line(agg_aes(y=y3)) +
   agg_line(agg_aes(y=y4)) +
-  agg_shading(from = y1, to = y2, color = RBA["Blue1"]) + 
-  agg_shading(from = y3, to = y4, color = "lightgrey")
+  agg_shading(from = y1, to = y2, colour = RBA["Blue1"]) + 
+  agg_shading(from = y3, to = y4, colour = "lightgrey")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "shading-multiple.png")
@@ -964,12 +964,12 @@ You can add series labels, and arrows to aid those labels, using `agg_label` and
 * `text` is the label text. You can add line breaks in text using the `\n` character.
 * `x` and `y` specify where (in the units on the plot) the centre of the label should be. For time series, `x` is in decimal years (i.e. 2000.5 is July 2, 2000). For categorical graphs, 1 corresponds to the first categories, 2 to the second, etc.
 * `panel` specifies which panel to place the label on.
-* `color` is self-explanatory; if not specified, defaults to black.
+* `colour` is self-explanatory; if not specified, defaults to black.
 * `size` is optional and sets the font size. The default is 20.
  
 ```{r, results = "hide"}
 p <- arphitgg() +
-  agg_label("A label", x = 2002, y = 0.5, color = RBA["Blue2"], panel = "1")
+  agg_label("A label", x = 2002, y = 0.5, colour = RBA["Blue2"], panel = "1")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "labels.png")
@@ -983,12 +983,12 @@ Arrows are specified with `agg_arrow`.
 * `tail.x` and `tail.y` specify the coordinates (in the units on the plot) of where to start the arrow at.
 * `head.x` and `head.y` where to finish the arrow (and where the arrow head is).
 * `panel` specifies which panel to place the arrow on.
-* `color` is self-explanatory.
+* `colour` is self-explanatory.
 * `lwd` is optional and specifies the linewidth of the arrow (default = 1).
  
 ```{r, results = "hide"}
 p <- arphitgg() +
-  agg_arrow(tail.x = 2000, tail.y = 0, head.x = 2001, head.y = 0.5, color = RBA["Blue1"], panel = "1")
+  agg_arrow(tail.x = 2000, tail.y = 0, head.x = 2001, head.y = 0.5, colour = RBA["Blue1"], panel = "1")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "arrow.png")
@@ -1054,13 +1054,13 @@ knitr::include_graphics("autolabel_rhs.png")
 
 ## Adding horizonal and vertical lines
 
-Horizontal and vertical lines are added using `agg_abline`. Horizontal lines are drawn by specifying the `y` variable _only; vertical the `x` variable only. You can also control the color and line type. These are optional and default to a solid black line. You must also tell `arphit` which panel to put the line on.
+Horizontal and vertical lines are added using `agg_abline`. Horizontal lines are drawn by specifying the `y` variable _only; vertical the `x` variable only. You can also control the colour and line type. These are optional and default to a solid black line. You must also tell `arphit` which panel to put the line on.
 
-The following example draws a vertical line at 2001 using the default colour and solid line. It also draws a horizontal line at -1 colored darkred and dashed (`lty = 2`).
+The following example draws a vertical line at 2001 using the default colour and solid line. It also draws a horizontal line at -1 coloured darkred and dashed (`lty = 2`).
 ```{r, results = "hide"}
 p <- arphitgg() + 
   agg_abline(x = 2001, panel = "1") + 
-  agg_abline(y = -1, color = "darkred", lty = 2, panel = "1")
+  agg_abline(y = -1, colour = "darkred", lty = 2, panel = "1")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "lines.png")
@@ -1085,7 +1085,7 @@ Entering NA (or omitting the argument) for any of `x1`, `y1`, `x2`, or `y2` will
 
 ## Adding background shading
 
-Background shading can be added using `agg_bgshading`. This draws a rectangle with bottom left corner at `x1`, `y1` and top right corner at `x2`,`y2`. Passing NA for any of the four coordinates will set that coordinate to the axis limit - this is useful for creating shading that stretches across a whole panel. `color` and `panel` are self-explanatory (color is optional and defaults to light grey).
+Background shading can be added using `agg_bgshading`. This draws a rectangle with bottom left corner at `x1`, `y1` and top right corner at `x2`,`y2`. Passing NA for any of the four coordinates will set that coordinate to the axis limit - this is useful for creating shading that stretches across a whole panel. `colour` and `panel` are self-explanatory (colour is optional and defaults to light grey).
 
 This example creates horizontal shading across the whole panel between -1 and 3 on the y axis.
 ```{r, results = "hide"}
@@ -1103,7 +1103,7 @@ And this two panel example repeats the above example for panel 1, but puts light
 ```{r, results = "hide"}
 p <- arphitgg(layout = "2h") + 
   agg_bgshading(x1 = NA, y1 = -0.5, x2 = NA, y2 = 0.5, panel = "1") + 
-  agg_bgshading(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = "3", color = "lightgreen")
+  agg_bgshading(x1 = 2000.5, y1 = NA, x2 = 2001.5, y2 = NA, panel = "3", colour = "lightgreen")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "bgshading2.png")

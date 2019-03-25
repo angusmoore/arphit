@@ -46,7 +46,7 @@ drawbgshading <- function(shading) {
   if (is.na(shading$y2)) {
     shading$y2 <- graphics::par("usr")[4]
   }
-  graphics::rect(shading$x1, shading$y1, shading$x2, shading$y2, col = shading$color, lty = 0)
+  graphics::rect(shading$x1, shading$y1, shading$x2, shading$y2, col = shading$colour, lty = 0)
 }
 
 drawbgshadings <- function(shadings, p) {
@@ -71,7 +71,7 @@ drawannotationline <- function(line) {
   if (is.na(line$y2)) {
     line$y2 <- graphics::par("usr")[4]
   }
-  graphics::segments(line$x1, line$y1, line$x2, line$y2, col = line$color, lty = line$lty, lwd = line$lwd)
+  graphics::segments(line$x1, line$y1, line$x2, line$y2, col = line$colour, lty = line$lty, lwd = line$lwd)
 }
 
 drawannotationlines <- function(lines, p) {
@@ -83,7 +83,7 @@ drawannotationlines <- function(lines, p) {
 }
 
 drawlabel <- function(label) {
-  graphics::text(label$text, x = label$x, y = label$y, adj = c(0.5, 0.5), col = label$color, cex = label$cex)
+  graphics::text(label$text, x = label$x, y = label$y, adj = c(0.5, 0.5), col = label$colour, cex = label$cex)
 }
 
 drawlabels <- function(labels, p) {
@@ -95,7 +95,7 @@ drawlabels <- function(labels, p) {
 }
 
 drawarrow <- function(arrow) {
-  graphics::arrows(arrow$tail.x, arrow$tail.y, arrow$head.x, arrow$head.y, col = arrow$color, lwd = arrow$lwd, length = 0.1)
+  graphics::arrows(arrow$tail.x, arrow$tail.y, arrow$head.x, arrow$head.y, col = arrow$colour, lwd = arrow$lwd, length = 0.1)
 }
 
 drawarrows <- function(arrows, p) {

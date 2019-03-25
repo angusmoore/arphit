@@ -1,4 +1,4 @@
-DEFAULTCOLORS <- c(RBA["Aqua8"], RBA["Orange2"], RBA["DarkGreen7"], RBA["Violet1"], RBA["Blue7"], RBA["Red5"], RBA["Brown4"], RBA["Pink2"], RBA["Grey7"])
+DEFAULTCOLOURS <- c(RBA["Aqua8"], RBA["Orange2"], RBA["DarkGreen7"], RBA["Violet1"], RBA["Blue7"], RBA["Red5"], RBA["Brown4"], RBA["Pink2"], RBA["Grey7"])
 CSI <- 0.2
 LANDSCAPESIZE <- c(0.736842 * 7.5,7.5)
 PORTRAITSIZE <- c(10, 7.5)

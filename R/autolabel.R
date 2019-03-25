@@ -187,7 +187,7 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
   if (!is.null(found_location)) {
     newlabel <- list(
       text = label$label,
-      color = label$series$attributes$col,
+      colour = label$series$attributes$col,
       x = found_location$x,
       y = found_location$y,
       panel = p

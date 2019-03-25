@@ -13,10 +13,10 @@ handleattribute <- function(data, att, default) {
 
 handleattributes <- function(data) {
   for (p in names(data)) {
-    if (is.null(getOption("arphit.user_colors"))) {
-      data[[p]] <- handleattribute(data[[p]], "col", DEFAULTCOLORS)
+    if (is.null(getOption("arphit.user_colours"))) {
+      data[[p]] <- handleattribute(data[[p]], "col", DEFAULTCOLOURS)
     } else {
-      data[[p]] <- handleattribute(data[[p]], "col", getOption("arphit.user_colors"))
+      data[[p]] <- handleattribute(data[[p]], "col", getOption("arphit.user_colours"))
     }
   	data[[p]] <- handleattribute(data[[p]], "pch", DEFAULTPCH)
   	data[[p]] <- handleattribute(data[[p]], "lty", DEFAULTLTY)

@@ -188,26 +188,26 @@ knitr::include_graphics("inherit.png")
 Specifying line, bar or point (depending on layer type) colours for series is done when creating a layer. For instance:
 ```{r, results = "hide"}
 p <- arphitgg() + 
-  agg_line(data = simple_data, aes = agg_aes(x = date, y = y), color = RBA["Red1"])
+  agg_line(data = simple_data, aes = agg_aes(x = date, y = y), colour = RBA["Red1"])
 ``````{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
-agg_draw(p, filename = "simplecolor.png")
+agg_draw(p, filename = "simplecolour.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("simplecolor.png")
+knitr::include_graphics("simplecolour.png")
 ```
 
-This color is applied to _all_ series in the layer. This is less helpful when you have a group variable, since they will all show up as the same colour (which is unlikely to be what you want). E.g. this is not helpful:
+This colour is applied to _all_ series in the layer. This is less helpful when you have a group variable, since they will all show up as the same colour (which is unlikely to be what you want). E.g. this is not helpful:
 ```{r, results = "hide"}
 p <- arphitgg() +
   agg_line(data = long_data,
            aes = agg_aes(x = date, y = y, group = state),
-           color = RBA["Red1"])
+           colour = RBA["Red1"])
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
-agg_draw(p, filename = "group-single-color.png")
+agg_draw(p, filename = "group-single-colour.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("group-single-color.png")
+knitr::include_graphics("group-single-colour.png")
 ```
 
 To specify for different colours for different series in a grouped layer, you can instead specify a _vector_ of colours:
@@ -215,13 +215,13 @@ To specify for different colours for different series in a grouped layer, you ca
 p <- arphitgg() +
   agg_line(data = long_data,
            aes = agg_aes(x = date, y = y, group = state),
-           color = c(RBA["Red1"], RBA["Blue4"]))
+           colour = c(RBA["Red1"], RBA["Blue4"]))
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
-agg_draw(p, filename = "group-multi-color.png")
+agg_draw(p, filename = "group-multi-colour.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
-knitr::include_graphics("group-multi-color.png")
+knitr::include_graphics("group-multi-colour.png")
 ```
 
 (NB: `arphit` will cycle through the supplied vector colours if there aren't enough in the vector to cover the number of series in the layer.)
@@ -232,7 +232,7 @@ Alternatively, you can use any colour that R recognises.
 
 ## Other attributes
 
-You can control line type, line width and points markers with `lty`, `lwd` and `pch`. These work just like `color`. See the [plotting options guide](plotting-options.html) for more detail.
+You can control line type, line width and points markers with `lty`, `lwd` and `pch`. These work just like `colour`. See the [plotting options guide](plotting-options.html) for more detail.
 
 # Titles
 

@@ -4,7 +4,7 @@
 \alias{agg_shading}
 \title{Add shading between series}
 \usage{
-agg_shading(from, to, panel = NULL, color = RBA["Grey2"])
+agg_shading(from, to, panel = NULL, colour = RBA["Grey2"], color)
 }
 \arguments{
 \item{from}{The series name to shade from (if you have no group aesthetic, it will be the name of the y variable); if you have groups, it will (usually) be the group identifier. This can get more complicated if you have duplicate group names. If so, arphit appends .y to the group names, so try that.)}
@@ -13,7 +13,9 @@ agg_shading(from, to, panel = NULL, color = RBA["Grey2"])
 
 \item{panel}{(optional) Which panel are the relevant series in? (arphit will try to find them if you don't specify)}
 
-\item{color}{(optional) The color to shade between the series (default grey)}
+\item{colour}{(optional) The colour to shade between the series (default grey)}
+
+\item{color}{(Deprecated; use colour instead) The colour to shade between the series (default grey)}
 }
 \description{
 Add shading between series
@@ -21,8 +23,8 @@ Add shading between series
 \examples{
 data <- data.frame(date = seq.Date(from = as.Date("2000-03-10"), length.out = 12, by = "month"),
                    x1 = rnorm(12), x2 = rnorm(12))
-arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), color = RBA["Blue2"]) +
-   agg_line(agg_aes(y = x2), color = RBA["Red4"]) +
+arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), colour = RBA["Blue2"]) +
+   agg_line(agg_aes(y = x2), coluor = RBA["Red4"]) +
    agg_shading(from = x1, to = x2)
 
 }
