@@ -6,7 +6,7 @@ inchesasuser_height <- function(x) {
 
 getstrheight <- function(text, units = "inches", cex = 1) {
   single_height <- 0.21875
-  break_height <- 0.1620115
+  break_height <- 0.1145833
   n_lines <- stringr::str_count(text, stringr::fixed("\n"))
   inch_height <- cex * (single_height * (n_lines + 1) + break_height * n_lines)
   if (units == "user") {
