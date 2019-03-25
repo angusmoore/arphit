@@ -177,7 +177,7 @@ agg_footnote <- function(footnote) {
 agg_label <- function(text, x, y, panel, colour = "black", color, size = 20) {
   check_panel(panel)
   if (!missing(color)) {
-    warning("color has been deprecated. Please use `colour` instead.")
+    warning("color is deprecated; use colour instead")
     colour <- color
   }
   return(list(type = "label", text = text, colour = colour, x = x, y = y, panel = panel, cex = size / 20))

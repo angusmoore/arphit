@@ -5,7 +5,7 @@ context("Annotations")
 # Labels
 test_that("Labels", {
   foo <- arphitgg() + agg_label("Text", x = 2002, y = 0.2, panel = "1", colour = "red")
-  bar <- arphitgg() + agg_label("Text", x = 2002, y = 0.2, panel = "1", colour = "red")
+  bar <- arphitgg() + agg_label("Text", x = 2002, y = 0.2, panel = "1", colour = "red") +
     agg_label("Second label", x = 2003, y = -0.2, panel = "1", colour = "green", size = 40)
   expect_true(check_graph(foo, "annotations-label1"))
   expect_true(check_graph(bar, "annotations-label2"))
