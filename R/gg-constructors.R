@@ -319,7 +319,7 @@ agg_bgshading <- function(x1 = NA, y1 = NA, x2 = NA, y2 = NA, colour = RBA["Grey
 #' data <- data.frame(date = seq.Date(from = as.Date("2000-03-10"), length.out = 12, by = "month"),
 #'                    x1 = rnorm(12), x2 = rnorm(12))
 #' arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), colour = RBA["Blue2"]) +
-#'    agg_line(agg_aes(y = x2), coluor = RBA["Red4"]) +
+#'    agg_line(agg_aes(y = x2), colour = RBA["Red4"]) +
 #'    agg_shading(from = x1, to = x2)
 #'
 #' @export

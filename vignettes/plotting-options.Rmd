@@ -1028,7 +1028,7 @@ If you put text labels on a panel, that disables the auto labeller for that pane
 p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var), layout = "2v") +
   agg_line(panel = "1") + 
   agg_line(panel = "2") + 
-  agg_label("Manual\nlabel disables\nautolabels", x = 2001, y = 1.5, col = "black", panel = "2") + 
+  agg_label("Manual\nlabel disables\nautolabels", x = 2001, y = 1.5, colour = "black", panel = "2") + 
   agg_autolabel()
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
@@ -1042,7 +1042,7 @@ The autolabeller should correctly handle left and right hand series:
 ```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x = date), layout = "1") +
   agg_line(agg_aes(y = y1), panel = "1") + 
-  agg_line(agg_aes(y = y2), col = RBA["Orange5"], panel = "2") + 
+  agg_line(agg_aes(y = y2), colour = RBA["Orange5"], panel = "2") + 
   agg_autolabel()
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
