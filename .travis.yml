@@ -18,11 +18,6 @@ addons:
 before_install:
   - chmod 755 ./.push_gh_pages.sh
 
-script:
-  - |
-    R CMD build .
-    travis_wait 20 R CMD check arphit*tar.gz
-
 after_success:
   - travis_wait 20 Rscript -e 'covr::coveralls()'
   - test $TRAVIS_BRANCH = "stable" && test $TRAVIS_PULL_REQUEST = "false" && ./.push_gh_pages.sh
