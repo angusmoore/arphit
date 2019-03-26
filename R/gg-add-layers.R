@@ -126,9 +126,9 @@ assign_series <- function(gg, data, aes, panel, bar) {
     gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
   } else {
     # Special case NAs in the data
-    groups <- as.character(rlang::eval_tidy(aes$group, data))
-    groups[is.na(groups)] <- "<NA>"
+    groups <- factor(rlang::eval_tidy(aes$group, data), ordered = FALSE, exclude = NULL)
     data <- split(data, groups)
+    names(data)[is.na(names(data))] <- "<NA>"
 
     for (name in names(data)) {
       new_series <- create_series(name, rlang::eval_tidy(aes$x, data[[name]]), rlang::eval_tidy(aes$y, data[[name]]), bar)
