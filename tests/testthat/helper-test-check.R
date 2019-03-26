@@ -1,5 +1,10 @@
+test_file_dir <- function() {
+  if (!dir.exists("test_output/")) dir.create("test_output")
+  return("test_output")
+}
+
 check_graph <- function(p, filename, max_distortion = 0.99) {
-  comp_location <- paste0(tempdir(), "/", filename, ".png")
+  comp_location <- paste0(test_file_dir(), "/", filename, ".png")
   agg_draw(p, comp_location)
 
   if (.Platform$OS.type == "windows") {
@@ -27,7 +32,7 @@ check_graph <- function(p, filename, max_distortion = 0.99) {
 }
 
 check_gif <- function(gg_list, filename, max_distortion = 0.99) {
-  comp_location <- paste0(tempdir(), "/", filename, ".gif")
+  comp_location <- paste0(test_file_dir(), "/", filename, ".gif")
   agg_slides(gg_list, comp_location)
 
   if (.Platform$OS.type == "windows") {
