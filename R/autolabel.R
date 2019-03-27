@@ -158,7 +158,7 @@ autolabel_fallback <- function(label, xlim, ylim, underlay_bitmap, layout, p, qu
   return(NULL)
 }
 
-autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, margins, layout, log_scale, bars.stacked, quiet, inches_conversion, arrows_bars) {
+autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, margins, layout, log_scale, bars.stacked, quiet, inches_conversion, arrow_lines, arrow_bars) {
   if (!quiet) cat(paste0("Finding location for ", stringr::str_replace(label$name, stringr::fixed("\n"), " "), " ."))
   series_index <- min(which(
     sapply(data[[p]]$series, function(s) identical(legend_entry(s), legend_entry(label$series)))
@@ -197,9 +197,9 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
     drawlabel(newlabel)
-    if (label$series_type != "bar") {
+    if (label$series_type != "bar" && arrow_lines) {
       return(list(label=newlabel,arrow=add_arrow(found_location, newlabel$text, label$col, p, inches_conversion)))
-    } else if (arrows_bars) {
+    } else if (label$series_type == "bar" && arrow_bars ) {
       return(list(label=newlabel,arrow=add_arrow(found_location, newlabel$text, label$fill, p, inches_conversion)))
     } else {
       return(list(label=newlabel))
@@ -211,7 +211,7 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
   }
 }
 
-autolabel <- function(gg, data, xlim, ylim, margins, labels, quiet, arrow_bars) {
+autolabel <- function(gg, data, xlim, ylim, margins, labels, quiet, arrow_lines, arrow_bars) {
   inches_conversion <-
     list(
       y = 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2],
@@ -244,6 +244,7 @@ autolabel <- function(gg, data, xlim, ylim, margins, labels, quiet, arrow_bars) 
           gg$stacked,
           quiet,
           inches_conversion,
+          arrow_lines,
           arrow_bars
         )
       # Add it to the mask, so that the mask includes it for the next series
