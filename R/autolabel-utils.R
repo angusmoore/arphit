@@ -48,8 +48,21 @@ get_series_objects <- function(series_entry, data, layout, labels) {
   }
 }
 
+simplify_label <- function(label) {
+
+  list(name = label$name, col = ifelse(is.null(label$fill), label$col, label$fill))
+}
+
+strip_layer_duplicates <- function(unique_labels) {
+  # here we collapse attributes down to just colour and strip any duplicates
+  # e.g. a bar and a line with the same name and colour
+  simplified <- lapply(unique_labels, simplify_label)
+  unique_labels[!duplicated(simplified)]
+}
+
 createlabels <- function(data, layout, labels, ylim) {
   unique_labels <- getlegendentries(data) # This gets us all unique series
+  unique_labels <- strip_layer_duplicates(unique_labels)
 
   # Now we match each unique series to the panels it appears in
   panels <- lapply(unique_labels, series_appears_in_panels, data = data, layout = layout, labels = labels)
