@@ -8,7 +8,7 @@ check_series_has_obs_is_finite <- function(y, name) {
 }
 
 is.acceptable.data <- function(data) {
-  return(tibble::is_tibble(data) || is.data.frame(data) || stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data))
+  return(is.data.frame(data) || stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data))
 }
 
 new_panel_data <- function(ts = NA, freq = NULL) {

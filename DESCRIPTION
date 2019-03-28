@@ -10,12 +10,9 @@ Encoding: UTF-8
 LazyData: true
 Imports:
   lubridate,
-  tibble,
   stringr,
-  plyr,
   dplyr,
   rlang,
-  tidyr,
   devEMF,
   zoo,
   xts,
@@ -23,8 +20,10 @@ Imports:
   writexl
 Suggests:
   testthat,
-    knitr,
-    rmarkdown,
-    covr
+  tibble,
+  tidyr,
+  knitr,
+  rmarkdown,
+  covr
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr

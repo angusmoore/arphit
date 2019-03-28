@@ -4,7 +4,7 @@ testscaleoptions <- function(significand, minval, maxval, permittedsteps) {
 
   for (i in 1:length(PERMITTEDLABELS)) {
     step <- PERMITTEDLABELS[i]*10^significand
-    minscale <- plyr::round_any(minval, step, f = floor)
+    minscale <- floor(minval/step)*step
 
     # This bit could be better. There's surely an algebraic way I can determine the best option here
     for (j in 1:length(permittedsteps)) {
@@ -107,7 +107,7 @@ defaultscale <- function(maxval, minval, permittedsteps=PERMITTEDSTEPS) {
   }
   step <- PERMITTEDLABELS[ideal[1]]*10^significand
   nsteps <- permittedsteps[ideal[2]]
-  minscale <- plyr::round_any(minval, step, f = floor)
+  minscale <- floor(minval/step)*step
   maxscale <- minscale + (nsteps-1)*step
   return(list("min" = minscale, "max" = maxscale, "nsteps" = nsteps))
 }
