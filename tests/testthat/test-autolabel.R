@@ -263,7 +263,7 @@ test_that("Miscellaneous tests", {
 
   # Don't autolabel both bars and lines if they are the same colour
   p <- arphitgg(data.frame(x=1:10,y=1:10),agg_aes(x=x,y=y)) +
-    agg_line(colour = "black") + agg_col(colour = "black") + agg_point(colour = "black") +
+    agg_line(color = "black") + agg_col(color = "black") + agg_point(color = "black") +
     agg_autolabel()
   expect_true(check_graph(p, "autolabel-misc-same-colour-layers-278"))
 })
