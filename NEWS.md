@@ -7,6 +7,7 @@
  for the right hand side. Vertically divided time series graphs always add a margin. 
  ([#292](https://github.com/angusmoore/arphit/pull/292))
  * Export a list of graphs as a GIF animation ([#293](https://github.com/angusmoore/arphit/pull/293))
+ * Option to stop autolabeller adding arrows for line series ([#302](https://github.com/angusmoore/arphit/pull/302))
 
 ## Breaking changes
 
