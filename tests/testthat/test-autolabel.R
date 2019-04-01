@@ -200,7 +200,7 @@ test_that('Line of sight', {
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) +
     agg_ylim(-5,5,3) +
-    agg_autolabel()
+    agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-series-outside-axes")
   )
@@ -208,10 +208,19 @@ test_that('Line of sight', {
     agg_line(agg_aes(x=x,y=y)) +
     agg_line(agg_aes(x=x,y=y2)) +
     agg_xlim(2011,2016) +
-    agg_autolabel()
+    agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-series-outside-axes-x", 0.985)
   )
+
+  # Disable arrows for series
+p <- arphitgg(data.frame(x=1:10,longy1=1:10,longy2=2:11,longy3=3:12)) +
+  agg_line(agg_aes(x=x,y=longy1)) +
+  agg_line(agg_aes(x=x,y=longy2)) +
+  agg_line(agg_aes(x=x,y=longy3)) +
+  agg_autolabel(quiet = TRUE, arrow_lines = FALSE)
+expect_true(check_graph(p, "autolabel-los-disable-arrow-lines"))
+
 })
 
 ## Which panels should be autolabelled =================
@@ -238,7 +247,7 @@ test_that("Miscellaneous tests", {
   set.seed(42)
   data <- data.frame(series_name = letters[1:10], value = rnorm(10), group = sample(1:3,10,TRUE))
   p <- arphitgg(data, agg_aes(x = series_name, y = value, group = group)) +
-    agg_col() + agg_autolabel()
+    agg_col() + agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-missing-stacked-bar")
   )
@@ -248,7 +257,7 @@ test_that("Miscellaneous tests", {
     agg_line(agg_aes(x=x,y=y), panel = "1") +
     agg_line(agg_aes(x=x,y=y2), panel = "1") +
     agg_line(agg_aes(x=x,y=y3), panel = "3") +
-    agg_autolabel()
+    agg_autolabel(TRUE)
   expect_true(check_graph(p, "autolabel-remove-single-series-panel"))
 
   # Error for bar charts with NAs in the data (just a smoke test, don't care about output)
@@ -256,7 +265,7 @@ test_that("Miscellaneous tests", {
   foo$y[1] <- NA
 
   expect_error({
-    p <- arphitgg(foo, agg_aes(x = x, y = y, group = g)) + agg_col() + agg_autolabel()
+    p <- arphitgg(foo, agg_aes(x = x, y = y, group = g)) + agg_col() + agg_autolabel(TRUE)
     print(p)
   },
   NA)
