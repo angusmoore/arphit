@@ -26,6 +26,7 @@ This vignette details all the plotting options available in `arphit`. If you are
 
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 library(arphit)
+set.seed(42)
 ```
 # Data types
 
@@ -999,7 +1000,14 @@ knitr::include_graphics("arrow.png")
 
 ## (Experimental) Automatic labels
 
-`arphit` has (experimental) functionality to _automatically_ add series labels for you. If enabled, the auto labeller will run on panels with more than one series, and which do not already have text labels. If you manually set text labels for a panel, the auto labeller will skip that panel. It will also add arrows from the label to the series if necessary.
+`arphit` has (experimental) functionality to _automatically_ add series labels
+for you. If enabled, the auto labeller will run on panels with more than one
+series, and which do not already have text labels. If you manually set text labels
+for a panel, the auto labeller will skip that panel. By default, it will also add
+arrows from the label to the series if necessary for line series, but not for bar
+series. You can stop the autolabeller from adding arrows to line series (or have
+it add arrows to bars using the arguments `arrow_lines` and `arrow_bars` to
+`agg_autolabel`).
 
 ### Series names
 
