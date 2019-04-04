@@ -1210,9 +1210,9 @@ If a series has `NA` as it's name, it will not get a legend entry.
 
 You can also add the legend _on_ the panel, instead of beneath the graph. This is done
 by specifying a location for the legend. There are two ways. The easiest is to choose
-one of "topleft", "topright", "bottomleft", "bottomright". Pass this to the optoinal
-`x` argument to `agg_legend` and the legend will be automatically placed in the 
-appropriate location.
+one of "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright",
+"right" and "center". Pass this to the optoinal `x` argument to `agg_legend` and
+the legend will be automatically placed in the appropriate location.
 
 ```{r, results = "hide"}
 p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var)) +

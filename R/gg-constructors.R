@@ -397,11 +397,12 @@ agg_xaxisfreq <- function(freq, panel = NULL) {
 #'
 #' @param ncol (optional) Specify the number of columns in the legend (if left blank, arphit will guess)
 #' @param x (optional) Specify a location _on_ the plot for the legend. If omitted, the legend
-#' is added beneath the graph. x can be one of "topleft", "topright", "bottomleft", "bottomright"
-#' to have the legend automatically placed in that location. Alternatively, you can supply
-#' a value between 0 and 1 (and a y coordinate) to place a legend in a specific place
-#' on the graph. (0,0) corresponds to the bottom left corner, (1,1) top right. Multipanels
-#' are ignored for the purposes of on-panel legends - graphs are treated as a whole and panels
+#' is added beneath the graph. x can be one of "bottomright", "bottom", "bottomleft", "left",
+#' "topleft", "top", "topright", "right" and "center" to have the legend automatically
+#' placed in that location. Alternatively, you can supply a value between 0 and 1
+#' (and a y coordinate) to place a legend in a specific place on the graph. (0,0)
+#' corresponds to the bottom left corner, (1,1) top right. Multipanels are ignored
+#' for the purposes of on-panel legends - graphs are treated as a whole and panels
 #' are ignored.
 #' @param y (optional) Only required if x is a numeric. y-location for on-panel legend.
 #' Must be between 0 and 1. See above for more detail.
@@ -419,8 +420,9 @@ agg_legend <- function(ncol = NULL, x = NULL, y = NULL) {
     if (is.numeric(x) && (is.null(y))) stop("You must specify a y coordinate if you specify an x coordinate for on panel legends")
     if (is.character(x)) {
       y <- NULL
-      if (!x %in% c("topleft","topright","bottomleft","bottomright")) {
-        stop("Valid options for automatic placement of on panel legend are topleft, topright, bottomleft, bottomright")
+      if (!x %in% c("bottomright", "bottom", "bottomleft", "left", "topleft",
+                    "top", "topright", "right", "center")) {
+        stop("Valid options for automatic placement of on panel legend are bottomright, bottom, bottomleft, left, topleft, top, topright, right and center")
       }
     }
   }
