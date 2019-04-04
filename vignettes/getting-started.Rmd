@@ -24,6 +24,10 @@ vignette: >
 
 This vignette details the first steps for how to create `arphit` graphs. Not all elements that you can add to graphs are covered in this guide. More detailed descriptions of all of the plotting options (including those discussed here) are available in the [plotting options vignette](plotting-options.html). 
 
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+set.seed(42)
+```
+
 # Basics
 
 ## First steps

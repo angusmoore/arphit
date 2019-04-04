@@ -6,6 +6,9 @@ inst/doc
 *.png
 !tests/testdata/linux/*.png
 !tests/testdata/windows/*.png
+*.gif
+!tests/testdata/linux/*.gif
+!tests/testdata/windows/*.gif
 *.html
 *.pdf
 *.xlsx

@@ -1,13 +1,14 @@
 # Build all the images used in the readme
 library(arphit)
+set.seed(42)
 
 data <- data.frame(date = seq.Date(from = as.Date("2001-01-01"),
                                    by = "quarter",
-                                   length.out = 10),
-                   x1 = rnorm(10),
-                   x2 = rnorm(10),
-                   x3 = rnorm(10, sd = 10),
-                   x4 = rnorm(10, sd = 5))
+                                   length.out = 14),
+                   x1 = rnorm(14),
+                   x2 = rnorm(14),
+                   x3 = rnorm(14, sd = 10),
+                   x4 = rnorm(14, sd = 5))
 
 p <- arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
 agg_draw(p, filename = "simple_example.png")
@@ -25,7 +26,7 @@ p <- arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_units("$", panel = "3") +
   agg_units("'000", panel = "4") +
   agg_shading(from = x4, to = x3) +
-  agg_label("A label", x = 2001.5, y = 1, panel = "1", colour = "red") +
+  agg_label("A label", x = 2002, y = 2, panel = "1", colour = "red") +
   agg_abline(x = 2002, panel = "2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
 agg_draw(p, filename = "complex_example.png")

@@ -27,6 +27,10 @@ Examples are included of output, along with explanations.
 
 A word of warning:`agg_qplot` has many features, despite being for quick plots. But, if you're graph is complex, you should use `arphitgg`. It's much easier to use (no lists of lists) and much easier to read the code.
 
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+set.seed(42)
+```
+
 # Data and types of graphs
 
 The most important input to `arphit` is data.

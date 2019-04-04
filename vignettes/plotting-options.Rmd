@@ -26,6 +26,7 @@ This vignette details all the plotting options available in `arphit`. If you are
 
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 library(arphit)
+set.seed(42)
 ```
 # Data types
 
