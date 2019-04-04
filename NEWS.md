@@ -7,6 +7,8 @@
  for the right hand side. Vertically divided time series graphs always add a margin. 
  ([#292](https://github.com/angusmoore/arphit/pull/292))
  * Export a list of graphs as a GIF animation ([#293](https://github.com/angusmoore/arphit/pull/293))
+ * On-panel legends. Optional placement arguments in `agg_legend` to specify where
+ to place on-panel legends. By default, legends are beneath the graph. ([#](https://github.com/angusmoore/pull/))
 
 ## Breaking changes
 

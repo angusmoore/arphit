@@ -76,7 +76,7 @@ agg_draw_internal <- function(gg, filename) {
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, names(data), xlabels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, gg$plotsize, gg$portrait, gg$layout, gg$srt)
+  margins <- figuresetup(filename, device, names(data), xlabels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, gg$legend.onpanel, legend.nrow, gg$plotsize, gg$portrait, gg$layout, gg$srt)
   handlelayout(gg$layout)
 
   # Plot each panel
@@ -116,7 +116,11 @@ agg_draw_internal <- function(gg, filename) {
   drawtitle(title, subtitle)
   drawnotes(footnotes, sources, margins$notesstart)
   if (gg$legend) {
-    drawlegend(data, legend.ncol, margins$xtickmargin, length(xaxislabels)>0)
+    if (!gg$legend.onpanel) {
+      draw_outer_legend(data, legend.ncol, margins$xtickmargin, length(xaxislabels)>0)
+    } else {
+      draw_onpanel_legend(data, legend.ncol, gg$legend.x, gg$legend.y)
+    }
   }
   handlelayout(gg$layout) # Put the correct layout back
 

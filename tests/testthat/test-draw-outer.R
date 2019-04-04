@@ -96,6 +96,42 @@ test_that("Legend columns", {
   )
 })
 
+test_that("On panel legend", {
+  data  <-
+    data.frame(
+      unemployment = 1:20,
+      employment = 1:20,
+      state = c(rep("A", 5), rep("B", 5), rep("C", 5), rep("D", 5)),
+      date = seq.Date(
+        from = as.Date("2017-01-10"),
+        length.out = 10,
+        by = "quarter"
+      )
+    )
+  p <- arphitgg(data) +
+    agg_line(agg_aes(x=date,y=unemployment,group=state)) +
+    agg_legend(x = "topleft")
+  expect_true(check_graph(p, "draw-outer-onpanel-legend"))
+
+  p <- arphitgg(data) +
+    agg_line(agg_aes(x=date,y=unemployment,group=state)) +
+    agg_legend(x = 0.5, y = 0.5)
+  expect_true(check_graph(p, "draw-outer-onpanel-legend-manual-location"))
+
+  ## Errors
+  expect_error(
+    arphitgg() + agg_legend(x=1),
+    "You must specify a y coordinate if you specify an x coordinate for on panel legends",
+    fixed = TRUE
+  )
+
+  expect_error(
+    arphitgg() + agg_legend(x="f"),
+    "Valid options for automatic placement of on panel legend are topleft, topright, bottomleft, bottomright",
+    fixed = TRUE
+  )
+
+})
 
 # Don't include series wihtout names in legends/autolabeller (#219)
 test_that("Miscellaneous", {

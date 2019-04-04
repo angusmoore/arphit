@@ -88,7 +88,7 @@ determinelegendcols <- function(data, ncol) {
   return(list(r = nrow, c = ncol))
 }
 
-drawlegend <- function(data, ncol, xtickmargin, hasaxislabel) {
+get_legend_entries <- function(data) {
   series <- getlegendentries(data)
 
   pch <- sapply(series, FUN = extract_item, item = "pch")
@@ -99,13 +99,17 @@ drawlegend <- function(data, ncol, xtickmargin, hasaxislabel) {
   border <- sapply(series, FUN = extract_item, item = "border")
   names <- sapply(series, FUN = extract_item, item = "name")
 
-  ph <- graphics::par("pin")[2]
+  return(list(pch = pch, lty = lty, lwd = lwd, col = col, fill = fill, border = border, names = names))
+}
 
+draw_outer_legend <- function(data, ncol, xtickmargin, hasaxislabel) {
+  entries <- get_legend_entries(data)
+
+  ph <- graphics::par("pin")[2]
   ylines <- xtickmargin
   if (hasaxislabel) {
     ylines <- ylines + 1.7
   }
-
   y <- -ylines*CSI/ph
 
   graphics::legend(x = 0.5, y = y,
@@ -115,13 +119,33 @@ drawlegend <- function(data, ncol, xtickmargin, hasaxislabel) {
                    xpd = NA,
                    bty = "n",
                    plot = TRUE,
-                   legend = names,
-                   pch = pch,
-                   lty = lty,
-                   lwd = lwd,
-                   col = col,
-                   fill = fill,
-                   border = border,
+                   legend = entries$names,
+                   pch = entries$pch,
+                   lty = entries$lty,
+                   lwd = entries$lwd,
+                   col = entries$col,
+                   fill = entries$fill,
+                   border = entries$border,
+                   cex = (18/20),
+                   y.intersp = 1.4)
+}
+
+draw_onpanel_legend <- function(data, ncol, x, y) {
+  entries <- get_legend_entries(data)
+  graphics::legend(x = x, y = y,
+                   ncol = ncol,
+                   xjust = 0.5,
+                   yjust = 1,
+                   xpd = NA,
+                   bty = "n",
+                   plot = TRUE,
+                   legend = entries$names,
+                   pch = entries$pch,
+                   lty = entries$lty,
+                   lwd = entries$lwd,
+                   col = entries$col,
+                   fill = entries$fill,
+                   border = entries$border,
                    cex = (18/20),
                    y.intersp = 1.4)
 }

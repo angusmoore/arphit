@@ -107,7 +107,7 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
   return(list(height = figheight, width = figwidth, top = top, bottom = bottom, left = left, right = right))
 }
 
-figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.nrow, plotsize, portrait, layout, srt) {
+figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.onpanel, legend.nrow, plotsize, portrait, layout, srt) {
   # Figure out margins
   LRpadding <- leftrightpadding(yticks, yunits, panels)
   left <- 2 + LRpadding$left
@@ -121,7 +121,7 @@ figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title,
   } else {
     notesstart <- 0
   }
-  if(legend.nrow > 0) {
+  if(legend.nrow > 0 && !legend.onpanel) {
     notesstart <- notesstart + (legend.nrow-1)*1.2 + 2.5
   }
 
