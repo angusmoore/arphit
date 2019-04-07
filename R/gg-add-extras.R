@@ -138,6 +138,11 @@ addlegend <- function(gg, legend) {
   if (!is.null(legend$ncol)) {
     gg$legend.ncol <- legend$ncol
   }
+  gg$legend.onpanel <- legend$onpanel
+  if (legend$onpanel) {
+    gg$legend.x <- legend$x
+    gg$legend.y <- legend$y
+  }
   gg$legend <- TRUE
   return(gg)
 }

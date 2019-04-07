@@ -397,6 +397,16 @@ agg_xaxisfreq <- function(freq, panel = NULL) {
 #' Add a legend to the graph
 #'
 #' @param ncol (optional) Specify the number of columns in the legend (if left blank, arphit will guess)
+#' @param x (optional) Specify a location _on_ the plot for the legend. If omitted, the legend
+#' is added beneath the graph. x can be one of "bottomright", "bottom", "bottomleft", "left",
+#' "topleft", "top", "topright", "right" and "center" to have the legend automatically
+#' placed in that location. Alternatively, you can supply a value between 0 and 1
+#' (and a y coordinate) to place a legend in a specific place on the graph. (0,0)
+#' corresponds to the bottom left corner, (1,1) top right. Multipanels are ignored
+#' for the purposes of on-panel legends - graphs are treated as a whole and panels
+#' are ignored.
+#' @param y (optional) Only required if x is a numeric. y-location for on-panel legend.
+#' Must be between 0 and 1. See above for more detail.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -406,8 +416,18 @@ agg_xaxisfreq <- function(freq, panel = NULL) {
 #' arphitgg(data) + agg_line(agg_aes(x = x, y = y)) + agg_legend()
 #'
 #' @export
-agg_legend <- function(ncol = NULL) {
-  return(list(type = "legend", ncol = ncol))
+agg_legend <- function(ncol = NULL, x = NULL, y = NULL) {
+  if (!is.null(x)) {
+    if (is.numeric(x) && (is.null(y))) stop("You must specify a y coordinate if you specify an x coordinate for on panel legends")
+    if (is.character(x)) {
+      y <- NULL
+      if (!x %in% c("bottomright", "bottom", "bottomleft", "left", "topleft",
+                    "top", "topright", "right", "center")) {
+        stop("Valid options for automatic placement of on panel legend are bottomright, bottom, bottomleft, left, topleft, top, topright, right and center")
+      }
+    }
+  }
+  return(list(type = "legend", ncol = ncol, onpanel = !is.null(x), x = x, y = y))
 }
 
 #' Add a line layer to an arphit plot.
