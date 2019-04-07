@@ -127,7 +127,7 @@ test_that("On panel legend", {
 
   expect_error(
     arphitgg() + agg_legend(x="f"),
-    "Valid options for automatic placement of on panel legend are topleft, topright, bottomleft, bottomright",
+    "Valid options for automatic placement of on panel legend are bottomright, bottom, bottomleft, left, topleft, top, topright, right and center",
     fixed = TRUE
   )
 
