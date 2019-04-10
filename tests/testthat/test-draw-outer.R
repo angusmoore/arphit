@@ -118,6 +118,15 @@ test_that("On panel legend", {
     agg_legend(x = 0.5, y = 0.5)
   expect_true(check_graph(p, "draw-outer-onpanel-legend-manual-location"))
 
+  ## Special case handling of when we have too few legend names to spill into the last
+  # legend column, so placement looks weird (#305)
+  data <- data.frame(x=rep(1:10,4),y=1:40,
+                     group=sort(rep(c("Foobar","Foobar32","Fuzzbuzz","Baz"),10),
+                                na.last = TRUE))
+
+  p <- arphitgg(data, agg_aes(x=x,y=y,group=group))+agg_col() + agg_legend(x="topright")
+  expect_true(check_graph(p, "draw-outer-onpanel-legend-exact-columns-305"))
+
   ## Errors
   expect_error(
     arphitgg() + agg_legend(x=1),

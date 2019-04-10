@@ -85,6 +85,11 @@ determinelegendcols <- function(data, ncol) {
       nc <- max(sapply(1:nrow, FUN = rowchars, names = names, ncol = ncol))
     }
   }
+  # special case when we have picked a number of columns that means the names
+  # won't actually fill into the last column
+  if (length(names)/nrow == (ncol - 1)) {
+    ncol <- ncol - 1
+  }
   return(list(r = nrow, c = ncol))
 }
 
