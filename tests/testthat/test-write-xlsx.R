@@ -20,17 +20,22 @@ test_that("Smoke tests", {
   # Time series data
   data <-
     data.frame(
-      x1 = rnorm(12),
+      x1 = rnorm(30),
       agg_time = seq.Date(
         from  = as.Date("2001-03-01"),
         by = "quarter",
-        length.out = 12
+        length.out = 30
       )
     )
 
   p <- arphitgg(data, agg_aes(x=agg_time,y=x1)) + agg_line()
   agg_draw(p, "test-2.xlsx")
   expect_true(file.exists("test-2.xlsx"))
+
+  # With xlimit (#307)
+  p <- arphitgg(data, agg_aes(x=agg_time,y=x1)) + agg_line() + agg_xlim(2006, NA)
+  agg_draw(p, "test-3.xlsx")
+  expect_true(file.exists("test-3.xlsx"))
 })
 
 test_that("Characters coerced to factors (#280)", {
