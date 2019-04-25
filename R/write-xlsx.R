@@ -1,4 +1,4 @@
-create_data_panel <- function(panel, data) {
+create_data_panel <- function(panel, xlim) {
   df <- data.frame(agg_x_variable = panel$x, stringsAsFactors = FALSE)
   for (i in seq_along(panel$series)) {
     newdf <- data.frame(agg_x_variable = series_x_values(panel, i),
@@ -9,6 +9,22 @@ create_data_panel <- function(panel, data) {
   }
   colnames(df)[1] <- ""
   return(df)
+}
+
+restrict_xlim_xlsx <- function(panel, xlim) {
+  if (is.null(xlim)) xlim <- c(-Inf, Inf)
+  if (is.na(xlim[1])) xlim[1] <- -Inf
+  if (is.na(xlim[2])) xlim[2] <- Inf
+
+  indices <- panel[[1]]
+  if (lubridate::is.Date(indices) || lubridate::is.POSIXt(indices)) {
+    freq <- frequencyof(indices)
+    indices <- make_decimal_date(indices, freq)
+  }
+
+  keep <- indices >= xlim[1] & indices <= xlim[2]
+
+  panel[keep, ]
 }
 
 write_to_excel <- function(gg, filename) {
@@ -24,7 +40,14 @@ write_to_excel <- function(gg, filename) {
       stringsAsFactors = FALSE
     )
 
-  panels <- lapply(gg$data, create_data_panel, data = gg$data)
+  panels <- lapply(gg$data, create_data_panel)
+
+  # Handle applying x lim to all axes
+  if (!is.list(gg$xlim)) gg$xlim <- lapply(panels, function(x) gg$xlim)
+
+  for (p in names(panels)) {
+    panels[[p]] <- restrict_xlim_xlsx(panels[[p]], gg$xlim[[p]])
+  }
 
   writexl::write_xlsx(append(list(Meta = metadata), panels),
                       path = filename,
