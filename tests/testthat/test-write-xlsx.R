@@ -36,6 +36,10 @@ test_that("Smoke tests", {
   p <- arphitgg(data, agg_aes(x=agg_time,y=x1)) + agg_line() + agg_xlim(2006, NA)
   agg_draw(p, "test-3.xlsx")
   expect_true(file.exists("test-3.xlsx"))
+
+  p <- arphitgg(data, agg_aes(x=agg_time,y=x1)) + agg_line() + agg_xlim(NA, 2006)
+  agg_draw(p, "test-4.xlsx")
+  expect_true(file.exists("test-4.xlsx"))
 })
 
 test_that("Characters coerced to factors (#280)", {
