@@ -52,22 +52,22 @@ series_names <- function(x) {
 get_bar_data <- function(data) {
   colours <- c()
   bordercol <- c()
-  bardata <- data.frame(x = data$x, stringsAsFactors = FALSE)
+  bardata <- data.frame(agg_xvalues = data$x, stringsAsFactors = FALSE)
 
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
     if (s$bar) {
       colours <- append(colours, s$attributes$col)
       bordercol <- append(bordercol, s$attributes$barcol)
-      series_data <- data.frame(x = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
-      names(series_data) <- c("x", i)
+      series_data <- data.frame(agg_xvalues = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
+      names(series_data) <- c("agg_xvalues", i)
       if (anyDuplicated(series_data$x)) {
         stop(paste0("Series ", s$name, " invalid. Bar graphs cannot have duplicate entries for x values."))
       }
-      bardata <- dplyr::left_join(bardata, series_data, by = "x")
+      bardata <- dplyr::left_join(bardata, series_data, by = "agg_xvalues")
     }
   }
-  bardata <- dplyr::select_(bardata, "-x")
+  bardata <- bardata[names(bardata) != "x"]
   return(list(bardata=bardata, colours=colours, bordercol=bordercol))
 }
 
