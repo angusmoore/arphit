@@ -67,7 +67,7 @@ get_bar_data <- function(data) {
       bardata <- dplyr::left_join(bardata, series_data, by = "agg_xvalues")
     }
   }
-  bardata <- bardata[names(bardata) != "x"]
+  bardata <- bardata[names(bardata) != "agg_xvalues"]
   return(list(bardata=bardata, colours=colours, bordercol=bordercol))
 }
 
