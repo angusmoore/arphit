@@ -162,10 +162,10 @@ test_that("Default scale", {
     # Just do this 100 times to get lots of different scales and check they are all fine
     data <- data.frame(y=rnorm(10))
     scale <- defaultscale(max(data), min(data))
-    expect_that(scale$min <= min(data),is_true())
-    expect_that(scale$max >= max(data),is_true())
-    expect_that(scale$nsteps <= max(PERMITTEDSTEPS),is_true())
-    expect_that(scale$nsteps >= min(PERMITTEDSTEPS),is_true())
+    expect_true(scale$min <= min(data))
+    expect_true(scale$max >= max(data))
+    expect_true(scale$nsteps <= max(PERMITTEDSTEPS))
+    expect_true(scale$nsteps >= min(PERMITTEDSTEPS))
   }
 
   # Check that default scales are sensible for stacked _bar_ series (#147)
