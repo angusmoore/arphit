@@ -21,6 +21,9 @@ agg_draw_internal <- function(gg, filename) {
   # handle series attributes
   data <- handleattributes(data)
 
+  # split out bardata, as that has to be plotted separately
+  data <- lapply(data, extract_bar_data)
+
   # Units and scales
   yunits <- handleunits(data, gg$yunits, gg$layout)
   xunits <- handlexunits(names(data), gg$xunits)

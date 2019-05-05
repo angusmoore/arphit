@@ -49,7 +49,7 @@ series_names <- function(x) {
   sapply(x$series, function(y) y$name)
 }
 
-get_bar_data <- function(data) {
+extract_bar_data <- function(data) {
   colours <- c()
   bordercol <- c()
   bardata <- data.frame(agg_xvalues = data$x, stringsAsFactors = FALSE)
@@ -68,7 +68,11 @@ get_bar_data <- function(data) {
     }
   }
   bardata <- bardata[names(bardata) != "agg_xvalues"]
-  return(list(bardata=bardata, colours=colours, bordercol=bordercol))
+  return(append(data, list(bars = list(bardata=bardata, colours=colours, bordercol=bordercol))))
+}
+
+get_bar_data <- function(data) {
+  data$bars
 }
 
 convert_to_plot_bardata <- function(bardata, data) {
