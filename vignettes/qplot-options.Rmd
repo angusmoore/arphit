@@ -12,14 +12,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Quick links
-
- - [Index](index.html)
- - [Getting started](getting-started.html)
- - [Plotting options](plotting-options.html)
- - [Colour palette](rba-colours.html)
- - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
-
 # Introduction
 
 This document outlines all of the plotting options in `agg_qplot` and how to use them.

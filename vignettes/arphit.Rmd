@@ -1,5 +1,5 @@
 ---
-title: "Getting stated"
+title: "Getting started with arphit"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -7,18 +7,10 @@ output:
     theme: united
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{getting-started}
+  %\VignetteIndexEntry{arphit}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-# Quick links
-
- - [Index](index.html)
- - [Plotting options](plotting-options.html)
- - [Colour palette](rba-colours.html)
- - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
- - [qplot options](qplot-options.html)
 
 # Introduction
 
