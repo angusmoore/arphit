@@ -86,8 +86,8 @@ convert_to_plot_bardata <- function(bardata, data) {
         bardata <- dplyr::add_row(bardata, x = x)
       }
     }
-    bardata <- dplyr::arrange_(bardata, "x")
-    bardata <- dplyr::select_(bardata, "-x")
+    bardata <- bardata[order(bardata$x), ]
+    bardata <- bardata[names(bardata) != "x"]
   }
   bardata_n <- t(as.matrix(bardata))
   bardata_n[is.na(bardata_n)] <- 0 # singletons don't show otherwise (#82)

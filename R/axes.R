@@ -31,7 +31,7 @@ get_stacked_max_min <- function(data, xlim) {
   }
   x <- get_x_plot_locations(bardata$x, data)
   x_restriction <- x >= xlim[1] & x <= xlim[2]
-  bardata <- dplyr::select_(bardata, "-x")
+  bardata <- bardata[names(bardata) != "x"]
   bardata <- bardata[x_restriction,,drop = FALSE]
   if (ncol(bardata) > 0) {
     bardata[is.na(bardata)] <- 0
