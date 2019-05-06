@@ -19,6 +19,7 @@ char_match_width <- function(text) {
 }
 
 test_that("String width", {
+  if (.Platform$OS.type != "windows") skip("String width tests only work on windows at the moment")
   sapply(to_test, char_match_width)
 })
 
@@ -29,5 +30,6 @@ char_match_height <- function(text) {
 }
 
 test_that("String height", {
+  if (.Platform$OS.type != "windows") skip("String height tests only work on windows at the moment")
   sapply(to_test, char_match_width)
 })
