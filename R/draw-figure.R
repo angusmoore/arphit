@@ -28,12 +28,13 @@ is.even <- function(x) {
   return(as.integer(x) %% 2 == 0)
 }
 
-leftrightpadding <- function(yticks, yunits, panels) {
+leftrightpadding <- function(yticks, yunits, panels, layout) {
   R <- 0
   L <- 0
   for (p in panels) {
-    nc <- max(sapply(yticks[[p]], getstrwidth))
-    nc <- max(nc, sapply(yunits[[p]], getstrwidth))
+    yticks_dropped <- yticks_to_draw(yticks[[p]], p, layout)
+    nc <- max(sapply(yticks_dropped, getstrwidth))
+    nc <- max(nc, getstrwidth(yunits[[p]]))
     if (is.even(p)) {
       R <- max(R, nc)
     } else {
@@ -109,9 +110,9 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
 
 figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.onpanel, legend.nrow, plotsize, portrait, layout, srt) {
   # Figure out margins
-  LRpadding <- leftrightpadding(yticks, yunits, panels)
-  left <- 2 + LRpadding$left
-  right <- 2 + LRpadding$right
+  LRpadding <- leftrightpadding(yticks, yunits, panels, layout)
+  left <- LRpadding$left + 1
+  right <- LRpadding$right + 1 # A bit of extra white spacing
 
   if (length(yaxislabels) > 0) {
     left <- left + 1.2
