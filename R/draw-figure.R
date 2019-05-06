@@ -32,8 +32,8 @@ leftrightpadding <- function(yticks, yunits, panels) {
   R <- 0
   L <- 0
   for (p in panels) {
-    nc <- max(getstrwidth(yticks[[p]]))
-    nc <- max(nc, getstrwidth(yunits[[p]]))
+    nc <- max(sapply(yticks[[p]], getstrwidth))
+    nc <- max(nc, sapply(yunits[[p]], getstrwidth))
     if (is.even(p)) {
       R <- max(R, nc)
     } else {
