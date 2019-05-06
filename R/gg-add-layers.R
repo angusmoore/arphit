@@ -83,10 +83,6 @@ check_aes_in_data <- function(data, aes, panel) {
 }
 
 convert_data <- function(data, aes) {
-  if (is.data.frame(data)) {
-    # Make sure data isn't grouped (causes errors sometimes if it is)
-    data <- dplyr::ungroup(data)
-  }
   # Special case ts data
   if (is_null_quo(aes$x) && (stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data))) {
     if (stats::is.ts(data)) {
@@ -192,7 +188,7 @@ reorder_series <- function(gg, data, aes, panel) {
 
 addlayertopanel <- function(gg, data, aes, panel, bar) {
   existing_series <- length(gg$data[[panel]]$series)
-  out <- convert_data(data, aes) # convert TS/ZOO/XTS to dataframe Ensure ungrouped.
+  out <- convert_data(data, aes) # convert TS/ZOO/XTS to dataframe
   data <- out$data
   aes <- out$aes
   sanity_check_aesthetic(aes) # Check for bare minimum aes
