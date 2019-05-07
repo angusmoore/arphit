@@ -21,6 +21,7 @@ before_install:
 
 jobs:
   include:
+  - r: devel
   - r: oldrel
   - r: release
     after_success:
