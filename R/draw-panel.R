@@ -225,19 +225,21 @@ tickadjustment <- function(layout) {
                 "4b2" = 4))
 }
 
+yticks_to_draw <- function(labels_drop, p, layout) {
+  if (dropbottomlabel(p, layout)) {
+    labels_drop[2:(length(labels_drop)-1)]
+  } else {
+    labels_drop[1:(length(labels_drop)-1)]
+  }
+}
+
 gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, ts) {
   side <- getsides(p, layout)
   xlab <- needxlabels(p, layout)
 
   ## Draw the axis scale
   # Drop the first label
-  labels_drop <- yticks
-
-  if (dropbottomlabel(p, layout)) {
-    labels_drop <- labels_drop[2:(length(labels_drop)-1)]
-  } else {
-    labels_drop <- labels_drop[1:(length(labels_drop)-1)]
-  }
+  labels_drop <- yticks_to_draw(yticks, p, layout)
 
   if (!is.na(side)) {
     graphics::axis(side, at = labels_drop, labels = labels_drop,
