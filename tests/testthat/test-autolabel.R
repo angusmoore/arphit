@@ -245,7 +245,8 @@ test_that("Which panels should be autolabelled", {
 test_that("Miscellaneous tests", {
   # Missing observations in stacked bar graphs (#217)
   set.seed(42)
-  data <- data.frame(series_name = letters[1:10], value = rnorm(10), group = sample(1:3,10,TRUE))
+  data <- data.frame(series_name = letters[1:10], value = rnorm(10),
+                     group = c(3,1,3,3,1,2,2,3,2,3))
   p <- arphitgg(data, agg_aes(x = series_name, y = value, group = group)) +
     agg_col() + agg_autolabel(TRUE)
   #expect_true(
