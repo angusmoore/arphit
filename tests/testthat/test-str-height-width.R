@@ -14,12 +14,12 @@ print(arphitgg()) # instantiate a canvas to get the correct widths
 
 char_match_width <- function(text) {
   if (!expect_true(abs(strwidth(text, "inches") - getstrwidth(text)) < 1e-5)) {
-    cat("Width for: ", text, " is incorrect\n")
+    cat("Width for: ", text, " is incorrect, (", getstrwidth(text), " versus R-calculated ", strwidth(text, "inches"),")\n")
   }
 }
 
 test_that("String width", {
-  if (.Platform$OS.type != "windows") skip("String width tests only work on windows at the moment")
+  if (.Platform$OS.type != "windows" || !interactive()) skip("String width tests only work on windows at the moment")
   sapply(to_test, char_match_width)
 })
 
@@ -30,6 +30,6 @@ char_match_height <- function(text) {
 }
 
 test_that("String height", {
-  if (.Platform$OS.type != "windows") skip("String height tests only work on windows at the moment")
+  if (.Platform$OS.type != "windows" || !interactive()) skip("String height tests only work on windows at the moment")
   sapply(to_test, char_match_width)
 })
