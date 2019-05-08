@@ -24,16 +24,14 @@ jobs:
   - r: devel
   - r: oldrel
   - r: release
-    before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
-    after_success:
-      - travis_wait 20 Rscript -e 'covr::coveralls()'
-      - test $TRAVIS_BRANCH = "stable" && test $TRAVIS_PULL_REQUEST = "false" && ./.push_gh_pages.sh
+#    after_success:
+#      - travis_wait 20 Rscript -e 'covr::coveralls()'
     deploy:
       - provider: script
         script: Rscript -e 'pkgdown::deploy_site_github()'
         skip_cleanup: true
-        on:
-          repo: angusmoore/arphit
+#        on:
+#          repo: angusmoore/arphit
       - provider: releases
         skip_cleanup: true
         api_key:
