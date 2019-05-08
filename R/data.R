@@ -90,6 +90,7 @@ convert_to_plot_bardata <- function(bardata, data) {
     bardata <- bardata[names(bardata) != "x"]
   }
   bardata_n <- t(as.matrix(bardata))
+  colnames(bardata_n) <- NULL
   bardata_n[is.na(bardata_n)] <- 0 # singletons don't show otherwise (#82)
   # Split into positive and negative (R doesn't stack well across axes)
   bardata_p <- bardata_n

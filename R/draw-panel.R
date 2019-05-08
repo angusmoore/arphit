@@ -394,7 +394,7 @@ drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
 
     xlim <- as.barplot.x(bardata_p, bar_x_loc, xlim, bar.stacked)
     graphics::par(mfg = l)
-    graphics::barplot(bardata_p, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
+    graphics::barplot(bardata_p, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale, names.arg = NULL)
     graphics::par(mfg = l)
     graphics::barplot(bardata_n, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
   }
