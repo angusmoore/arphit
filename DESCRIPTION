@@ -24,6 +24,7 @@ Suggests:
   tidyr,
   knitr,
   rmarkdown,
-  covr
+  covr,
+  pkgdown
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
