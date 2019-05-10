@@ -89,7 +89,7 @@
 <p><code>arphit</code> is a ggplot-inspired R package to easily create RBA-style graphs in R. Once you have your data, you can quickly create a plot with:</p>
 <pre><code>arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()</code></pre>
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/simple_example.png" width="400px"></p>
+  <img src="https://angusmoore.github.io/arphit/articles/simple_example.png" width="400px"></p>
 <p><code>arphit</code> is also customisable. You can create complex charts, with multiple panels, bars, titles, annotations, shading, sources and footnotes:</p>
 <pre><code>arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_col(agg_aes(y=x1), panel = "1") +
@@ -107,12 +107,12 @@
   agg_abline(x = 2002, panel = "2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")</code></pre>
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/complex_example.png" width="400px"></p>
+  <img src="https://angusmoore.github.io/arphit/articles/complex_example.png" width="400px"></p>
 <p><code>arphit</code> also has a quick plotting function, which plots all (or a subset of) the columns in your data. This is particularly helpful for time series data, or other ‘wide’ data:</p>
 <pre><code>data &lt;- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
 agg_qplot(data)</code></pre>
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/qplot.png" width="400px"></p>
+  <img src="https://angusmoore.github.io/arphit/articles/qplot.png" width="400px"></p>
 </div>
 <div id="installation-and-getting-started" class="section level1">
 <h1 class="hasAnchor">
@@ -134,7 +134,7 @@ Failed to connect to api.github.com port 443: Timed out</code></pre>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting started</h2>
-<p>(For more detail see <a href="https://angusmoore.github.io/arphit/getting-started.html">getting started guide</a>.)</p>
+<p>(For more detail see <a href="https://angusmoore.github.io/arphit/articles/arphit.html">getting started guide</a>.)</p>
 <p>The very first step to using arphit is to import it into your workspace:</p>
 <pre><code><a href="https://www.rdocumentation.org/packages/base/topics/library">library(arphit)</a></code></pre>
 <p>The second step is to get some data. For these simple examples, we’ll randomly construct three years worth of quarterly time series data, starting from Q1 2000:</p>
@@ -148,7 +148,7 @@ Failed to connect to api.github.com port 443: Timed out</code></pre>
 <p>To make a simple line plot, all we need to do is specify the <code>x</code> and <code>y</code> variables and tell arphit we want a layer:</p>
 <pre><code>arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()</code></pre>
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/nooptions.png" width="400px"></p>
+  <img src="https://angusmoore.github.io/arphit/articles/nooptions.png" width="400px"></p>
 <p>That chart is serviceable, but not very well labelled. Let’s make it a bit nicer, by putting each of the four series into its own panel, and giving the graph and panels titles, and a source.</p>
 <pre><code>arphitgg(data, layout = "2b2") +
   agg_line(agg_aes(x=date, y = x1), panel = "1") + 
@@ -164,15 +164,15 @@ Failed to connect to api.github.com port 443: Timed out</code></pre>
   agg_title("Panel 4", panel = "4") + 
   agg_source("Randomly generated data")</code></pre>
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/lotsofoptions.png" width="400px"></p>
-<p>The <a href="https://angusmoore.github.io/arphit/getting-started.html">getting started vignette</a> provides more introduction on how to create graphs in <code>arphit</code>. <code>arphit</code> has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the <a href="https://angusmoore.github.io/arphit/plotting-options.html">plotting options vignette</a>.</p>
+  <img src="https://angusmoore.github.io/arphit/articles/lotsofoptions.png" width="400px"></p>
+<p>The <a href="https://angusmoore.github.io/arphit/articles/arphit.html">getting started vignette</a> provides more introduction on how to create graphs in <code>arphit</code>. <code>arphit</code> has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the <a href="https://angusmoore.github.io/arphit/articles/plotting-options.html">plotting options vignette</a>.</p>
 </div>
 </div>
 <div id="documentation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#documentation" class="anchor"></a>Documentation</h1>
-<p>The <a href="https://angusmoore.github.io/arphit/getting-started.html">getting started</a> guide is a good place to start. A list of all the plotting options and examples of how to use them can be found in the <a href="https://angusmoore.github.io/arphit/plotting-options.html">plotting options vignette</a>. It is more detailed than the getting started guide.</p>
-<p>Package documentation can be found <a href="https://angusmoore.github.io/arphit/arphit.pdf">here</a>. It is technical and in most cases will be less useful than the plotting options vignette.</p>
+<p>The <a href="https://angusmoore.github.io/arphit/articles/arphit.html">getting started</a> guide is a good place to start. A list of all the plotting options and examples of how to use them can be found in the <a href="https://angusmoore.github.io/arphit/articles/plotting-options.html">plotting options vignette</a>. It is more detailed than the getting started guide.</p>
+<p>Package documentation can be found <a href="https://angusmoore.github.io/reference/">here</a>. It is technical and in most cases will be less useful than the plotting options vignette.</p>
 <p>If these sources don’t answer your problems, or you encounter a bug, please open an issue (see below).</p>
 </div>
 <div id="bugs-and-planned-features" class="section level1">
