@@ -19,7 +19,7 @@ finddevice <- function(filename) {
     if (filetype == "png" || filetype == "pdf" || filetype == "emf" || filetype == "svg" || filetype == "emf+" || filetype == "xlsx") {
       return(filetype)
     } else {
-      stop(paste("Unsupported file type ", filetype, ".", sep = ""))
+      stop(paste("Unsupported file type ", filetype, ".", sep = ""), call. = FALSE)
     }
   }
 }
@@ -163,7 +163,10 @@ handlelayout <- function(layout) {
   } else if (layout == "4b2") {
     graphics::par(mfrow=c(4,2))
   } else {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2.", sep = ""))
+    stop(paste("Unknown layout option ", layout,
+               ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2.",
+               sep = ""),
+         call. = FALSE)
   }
   graphics::par(cex=1)
 }

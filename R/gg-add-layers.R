@@ -18,7 +18,7 @@ autolayout <- function(n) {
                    "6" = "3b2",
                    "7" = "4b2",
                    "8" = "4b2",
-                   stop(paste0("Cannot layout ", n, " facets.")))
+                   stop(paste0("Cannot layout ", n, " facets.")), call. = FALSE)
 
   panels <- switch(as.character(n),
                    "1" = c("1"),
@@ -56,10 +56,12 @@ facetlayout <- function(data, facet, layout) {
 
 sanity_check_aesthetic <- function(aes) {
   if (is_null_quo(aes$x)) {
-    stop("Cannot add layer. You have not specified an x aesthetic (and there was not one to inherit).")
+    stop("Cannot add layer. You have not specified an x aesthetic (and there was not one to inherit).",
+         call. = FALSE)
   }
   if (is_null_quo(aes$y)) {
-    stop("Cannot add layer. You have not specified a y aesthetic for at least one of your layers (and there was not one to inherit).")
+    stop("Cannot add layer. You have not specified a y aesthetic for at least one of your layers (and there was not one to inherit).",
+         call. = FALSE)
   }
 }
 
@@ -77,9 +79,18 @@ is_null_quo <- function(x) {
 }
 
 check_aes_in_data <- function(data, aes, panel) {
-  if (!try_tidy(aes$x, data)) stop(paste0(rlang::quo_name(aes$x)," is not in your data for panel ", panel))
-  if (!try_tidy(aes$y, data)) stop(paste0(rlang::quo_name(aes$y)," is not in your data for panel ", panel))
-  if (!is_null_quo(aes$group) && !try_tidy(aes$group, data)) stop(paste0(rlang::quo_name(aes$group)," is not in your data for panel ", panel))
+  if (!try_tidy(aes$x, data)) {
+    stop(paste0(rlang::quo_name(aes$x)," is not in your data for panel ", panel),
+         call. = FALSE)
+  }
+  if (!try_tidy(aes$y, data)) {
+    stop(paste0(rlang::quo_name(aes$y)," is not in your data for panel ", panel),
+         call. = FALSE)
+  }
+  if (!is_null_quo(aes$group) && !try_tidy(aes$group, data)) {
+    stop(paste0(rlang::quo_name(aes$group)," is not in your data for panel ", panel),
+         call. = FALSE)
+  }
 }
 
 convert_data <- function(data, aes) {
@@ -110,7 +121,9 @@ widen_x <- function(gg, data, aes, panel) {
   if (!is.null(old_x) && class(new_x) != class(old_x) &&
       !((class(new_x)=="integer" && class(old_x)=="numeric") ||
         (class(old_x)=="integer" && class(new_x)=="numeric"))) {
-    stop(paste0("Do not know how to join together x values ", class(new_x), " and ", class(old_x), " (panel ", panel, ")"))
+    stop(paste0("Do not know how to join together x values ",
+                class(new_x), " and ", class(old_x), " (panel ", panel, ")"),
+         call. = FALSE)
   }
   gg$data[[panel]]$x <- unique(c(new_x,old_x))
   return(gg)
@@ -155,14 +168,17 @@ reorder_series <- function(gg, data, aes, panel) {
       class(new_order_mapping$order) != class(gg$data[[panel]]$order_mapping$order) &&
       !((class(new_order_mapping$order)=="integer" && class(gg$data[[panel]]$order_mapping$order)=="numeric") ||
         (class(gg$data[[panel]]$order_mapping$order)=="integer" && class(new_order_mapping$order)=="numeric"))) {
-    stop(paste0("Do not know how to join together ordering variables with classes ", class(new_order_mapping$order), " and ", class(gg$data[[panel]]$order_mapping$order), " (panel ", panel, "). Perhaps you added layers to the same panel with different ordering variables (or didn't specify an ordering variable for one of the layers)?"))
+    stop(paste0("Do not know how to join together ordering variables with classes ",
+                class(new_order_mapping$order), " and ", class(gg$data[[panel]]$order_mapping$order),
+                " (panel ", panel, "). Perhaps you added layers to the same panel with different ordering variables (or didn't specify an ordering variable for one of the layers)?"),
+         call. = FALSE)
   }
   gg$data[[panel]]$order_mapping <- unique(rbind(new_order_mapping, gg$data[[panel]]$order_mapping))
 
   # Check for ambiguity
   if (anyDuplicated(gg$data[[panel]]$order_mapping$x) ||
       nrow(gg$data[[panel]]$order_mapping) != length(gg$data[[panel]]$x)) {
-    stop("Ordering is ambiguous - some x values associate with multiple values of the ordering variable, or there are no observations of the ordering variable for some x values.")
+    stop("Ordering is ambiguous - some x values associate with multiple values of the ordering variable, or there are no observations of the ordering variable for some x values.", call. = FALSE)
   }
 
   # sort the order mapping
@@ -241,7 +257,7 @@ inherit_data <- function(gg, data) {
   if (is.null(data)) {
     data <- gg$data[["parent"]]
     if (is.null(data)) {
-      stop("You have not supplied data for series")
+      stop("You have not supplied data for series", call. = FALSE)
     }
   }
   return(data)
@@ -252,7 +268,8 @@ addlayer <- function(gg, new, panel, bar) {
   data <- inherit_data(gg, new$data)
   # Error if data is weird
   if (!is.acceptable.data(data)) {
-    stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
+    stop(paste0("Data is of unsupported type (you passed in ", class(data),")"),
+         call. = FALSE)
   }
 
   if (is_null_quo(aes$facet)) {
