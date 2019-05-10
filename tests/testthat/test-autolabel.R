@@ -277,7 +277,7 @@ test_that("Miscellaneous tests", {
     agg_autolabel()
   expect_true(check_graph(p, "autolabel-misc-same-colour-layers-278"))
 
-  # Warnings with bar graphs (#319)
+  # Warnings with identical duplicate series in bar graphs (#319)
   p <- arphitgg(data.frame(x=1:10,y=1:10),agg_aes(x,y))+agg_col()+agg_col()+agg_autolabel()
   expect_warning(print(p), NA)
 })
