@@ -1,1 +1,45 @@
 destination: docs
+
+template:
+  params:
+    bootswatch: paper
+
+reference:
+- title: Graph creation functions
+  contents:
+  - '`agg_aes`'
+  - '`agg_col`'
+  - '`agg_line`'
+  - '`agg_point`'
+  - '`arphitgg`'
+- title: Graph operators
+  contents:
+  - '`agg_draw`'
+  - '`agg_slides`'
+  - '`+.arphit.gg`'
+  - '`print.arphit.gg`'
+- title: On-panel annotations
+  contents:
+  - '`agg_abline`'
+  - '`agg_arrow`'
+  - '`agg_autolabel`'
+  - '`agg_bgshading`'
+  - '`agg_label`'
+  - '`agg_shading`'
+- title: Graph annotations and display options
+  contents:
+  - '`agg_footnote`'
+  - '`agg_legend`'
+  - '`agg_source`'
+  - '`agg_subtitle`'
+  - '`agg_title`'
+  - '`agg_units`'
+  - '`agg_xaxisfreq`'
+  - '`agg_xaxislabel`'
+  - '`agg_xlim`'
+  - '`agg_xunits`'
+  - '`agg_yaxislabel`'
+  - '`agg_ylim`'
+- title: Quick plotting
+  contents:
+  - '`agg_qplot`'
