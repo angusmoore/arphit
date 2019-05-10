@@ -4,3 +4,6 @@
 .push_gh_pages.sh
 build-readme-images.R
 NEWS.md
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

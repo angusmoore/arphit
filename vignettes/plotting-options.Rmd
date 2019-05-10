@@ -12,14 +12,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Quick links
-
- - [Index](index.html)
- - [Getting started](getting-started.html)
- - [Colour palette](rba-colours.html)
- - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
- - [qplot options](qplot-options.html)
-
 # Introduction
 
 This vignette details all the plotting options available in `arphit`. If you are learning how to use `arphit`, you should read the [getting started guide](getting-started.html) first.
