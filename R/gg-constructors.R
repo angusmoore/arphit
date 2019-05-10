@@ -20,7 +20,8 @@ agg_title <- function(text, panel = NULL) {
     panel <- as.character(panel)
   }
   if (length(text) > 1) {
-    stop("text for title should be a single character, not a vector")
+    stop("text for title should be a single character, not a vector",
+         call. = FALSE)
   }
   if (!is.null(panel)) check_panel(panel)
   return(list(type = "title", text = text, panel = panel))
@@ -44,7 +45,8 @@ agg_subtitle <- function(text, panel = NULL) {
     panel <- as.character(panel)
   }
   if (length(text) > 1) {
-    stop("text for subtitle should be a single character, not a vector")
+    stop("text for subtitle should be a single character, not a vector",
+         call. = FALSE)
   }
   if (!is.null(panel)) check_panel(panel)
   return(list(type = "subtitle", text = text, panel = panel))
