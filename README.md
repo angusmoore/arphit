@@ -1,5 +1,7 @@
+<!-- badges: start -->
 [![Build Status](https://travis-ci.org/angusmoore/arphit.svg?branch=master)](https://travis-ci.org/angusmoore/arphit)
 [![Coverage Status](https://coveralls.io/repos/github/angusmoore/arphit/badge.svg?branch=master)](https://coveralls.io/github/angusmoore/arphit?branch=master)
+<!-- badges: end -->
 
 # arphit
 
@@ -8,7 +10,7 @@
 arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/simple_example.png" width="400px" />
+  <img src="https://angusmoore.github.io/arphit/articles/simple_example.png" width="400px" />
 </p>
 
 `arphit` is also customisable. You can create complex charts, with multiple panels, bars, titles, annotations, shading, sources and footnotes:
@@ -30,7 +32,7 @@ arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/complex_example.png" width="400px" />
+  <img src="https://angusmoore.github.io/arphit/articles/complex_example.png" width="400px" />
 </p>
 
 `arphit` also has a quick plotting function, which plots all (or a subset of) the columns in your data. This is particularly helpful for time series data, or other 'wide' data:
@@ -39,7 +41,7 @@ data <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
 agg_qplot(data)
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/qplot.png" width="400px" />
+  <img src="https://angusmoore.github.io/arphit/articles/qplot.png" width="400px" />
 </p>
 
 # Installation and getting started
@@ -67,7 +69,7 @@ Sys.setenv(https_proxy = curl::ie_get_proxy_for_url("https://www.google.com"))
 
 ## Getting started
 
-(For more detail see [getting started guide](https://angusmoore.github.io/arphit/getting-started.html).)
+(For more detail see [getting started guide](https://angusmoore.github.io/arphit/articles/arphit.html).)
 
 The very first step to using arphit is to import it into your workspace:
 ```
@@ -90,7 +92,7 @@ To make a simple line plot, all we need to do is specify the `x` and `y` variabl
 arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/nooptions.png" width="400px" />
+  <img src="https://angusmoore.github.io/arphit/articles/nooptions.png" width="400px" />
 </p>
 
 That chart is serviceable, but not very well labelled. Let's make it a bit nicer, by putting each of the four series into its own panel, and giving the graph and panels titles, and a source.
@@ -110,16 +112,16 @@ arphitgg(data, layout = "2b2") +
   agg_source("Randomly generated data")
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/images/lotsofoptions.png" width="400px" />
+  <img src="https://angusmoore.github.io/arphit/articles/lotsofoptions.png" width="400px" />
 </p>
 
-The [getting started vignette](https://angusmoore.github.io/arphit/getting-started.html) provides more introduction on how to create graphs in `arphit`. `arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](https://angusmoore.github.io/arphit/plotting-options.html).
+The [getting started vignette](https://angusmoore.github.io/arphit/articles/arphit.html) provides more introduction on how to create graphs in `arphit`. `arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](https://angusmoore.github.io/arphit/articles/plotting-options.html).
 
 # Documentation
 
-The [getting started](https://angusmoore.github.io/arphit/getting-started.html) guide is a good place to start. A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](https://angusmoore.github.io/arphit/plotting-options.html). It is more detailed than the getting started guide.
+The [getting started](https://angusmoore.github.io/arphit/articles/arphit.html) guide is a good place to start. A list of all the plotting options and examples of how to use them can be found in the [plotting options vignette](https://angusmoore.github.io/arphit/articles/plotting-options.html). It is more detailed than the getting started guide.
 
-Package documentation can be found [here](https://angusmoore.github.io/arphit/arphit.pdf). It is technical and in most cases will be less useful than the plotting options vignette.
+Package documentation can be found [here](https://angusmoore.github.io/reference/). It is technical and in most cases will be less useful than the plotting options vignette.
 
 If these sources don't answer your problems, or you encounter a bug, please open an issue (see below).
 
