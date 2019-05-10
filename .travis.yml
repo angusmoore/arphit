@@ -4,11 +4,11 @@ warnings_are_errors: true
 sudo: false
 cache: packages
 
-#branches:
-#  only:
-#    - master
-#    - stable
-#    - /^v.*$/
+branches:
+  only:
+    - master
+    - stable
+    - /^v.*$/
 
 addons:
   apt:
@@ -24,15 +24,15 @@ jobs:
   - r: devel
   - r: oldrel
   - r: release
-#    after_success:
-#      - travis_wait 20 Rscript -e 'covr::coveralls()'
+    after_success:
+      - travis_wait 20 Rscript -e 'covr::coveralls()'
     deploy:
       - provider: script
         script: Rscript -e 'pkgdown::deploy_site_github()'
         skip_cleanup: true
         on:
           repo: angusmoore/arphit
-          all_branches: true
+          tags: true
       - provider: releases
         skip_cleanup: true
         api_key:
