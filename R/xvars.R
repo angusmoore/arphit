@@ -29,7 +29,7 @@ make_decimal_date <- function(date, frequency) {
   } else if (frequency == 1/365) {
     return(lubridate::year(date) + (lubridate::yday(date) - 0.5)/days_in_year(date))
   }
-  stop("Unknown frequency")
+  stop("Unknown frequency", call. = FALSE)
 }
 
 
