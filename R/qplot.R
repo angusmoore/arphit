@@ -1,20 +1,23 @@
 sanity_check_ylim <- function(ylim) {
-  if (!is.list(ylim)) stop("ylim should be a list")
+  if (!is.list(ylim)) stop("ylim should be a list", call. = FALSE)
   if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
-    stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).")
+    stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
+         call. = FALSE)
   }
   if (is.null(ylim$max)) {
-    stop("You did not supply a max ylimit.")
+    stop("You did not supply a max ylimit.", call. = FALSE)
   }
   if (is.null(ylim$min)) {
-    stop("You did not supply a min ylimit.")
+    stop("You did not supply a min ylimit.", call. = FALSE)
   }
 }
 
 check_attribute_series_names <- function(attr, series_names) {
   if (any(!names(attr) %in% series_names)) {
     name <- names(attr)[!names(attr) %in% series_names]
-    stop(paste0("You have tried to set attributes for ", name, " but it is not a series in your data."))
+    stop(paste0("You have tried to set attributes for ", name,
+                " but it is not a series in your data."),
+         call. = FALSE)
   }
 }
 
@@ -84,7 +87,10 @@ qplot_get_attribute <- function(att, y) {
 #' @export
 agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
 
-  if (!is.acceptable.data(data)) stop(paste0("Data is of unsupported type (you passed in ", class(data),")"))
+  if (!is.acceptable.data(data)) {
+    stop(paste0("Data is of unsupported type (you passed in ", class(data),")"),
+         call. = FALSE)
+  }
 
   # Create the basics
   p <- arphitgg(data) + agg_title(title) + agg_subtitle(subtitle) +

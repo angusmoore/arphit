@@ -11,7 +11,9 @@ maxpanels <- function(layout) {
   } else if (layout == "4h" || layout == "4b2") {
     maxnp <- 8
   } else {
-    stop(paste0("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4b2."))
+    stop(paste0("Unknown layout option ", layout,
+                ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4b2."),
+         call. = FALSE)
   }
   return(maxnp)
 }
