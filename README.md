@@ -11,7 +11,7 @@
 arphitgg(data, agg_aes(x=date,y=x1)) + agg_line()
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/articles/simple_example.png" width="400px" />
+  <img src="man/figures/README-simple_example.png" width="400px" />
 </p>
 
 `arphit` is also customisable. You can create complex charts, with multiple panels, bars, titles, annotations, shading, sources and footnotes:
@@ -33,7 +33,7 @@ arphitgg(data, agg_aes(x = date), layout = "2b2") +
   agg_bgshading(y1 = -1, y2 = 3, panel = "4")
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/articles/complex_example.png" width="400px" />
+  <img src="man/figures/README-complex_example.png" width="400px" />
 </p>
 
 `arphit` also has a quick plotting function, which plots all (or a subset of) the columns in your data. This is particularly helpful for time series data, or other 'wide' data:
@@ -42,7 +42,7 @@ data <- ts(data.frame(y=rnorm(10)), frequency = 4, start = 200)
 agg_qplot(data)
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/articles/qplot.png" width="400px" />
+  <img src="man/figures/README-qplot.png" width="400px" />
 </p>
 
 # Installation and getting started
@@ -93,7 +93,7 @@ To make a simple line plot, all we need to do is specify the `x` and `y` variabl
 arphitgg(data, agg_aes(x=date, y = x1)) + agg_line()
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/articles/nooptions.png" width="400px" />
+  <img src="man/figures/README-nooptions.png" width="400px" />
 </p>
 
 That chart is serviceable, but not very well labelled. Let's make it a bit nicer, by putting each of the four series into its own panel, and giving the graph and panels titles, and a source.
@@ -113,7 +113,7 @@ arphitgg(data, layout = "2b2") +
   agg_source("Randomly generated data")
 ```
 <p align="center">
-  <img src="https://angusmoore.github.io/arphit/articles/lotsofoptions.png" width="400px" />
+  <img src="man/figures/README-lotsofoptions.png" width="400px" />
 </p>
 
 The [getting started vignette](https://angusmoore.github.io/arphit/articles/arphit.html) provides more introduction on how to create graphs in `arphit`. `arphit` has a lot of plotting options to control how your chart looks. These are all explained, with examples, in the [plotting options vignette](https://angusmoore.github.io/arphit/articles/plotting-options.html).
