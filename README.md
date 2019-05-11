@@ -4,7 +4,8 @@
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 <!-- badges: end -->
 
-# arphit
+# arphit <a href='https://https://angusmoore.github.io/arphit/'><img src='man/figures/arphit-logo.png' align="right" height="139" /></a>
+
 
 `arphit` is a ggplot-inspired R package to easily create RBA-style graphs in R. Once you have your data, you can quickly create a plot with:
 ```
