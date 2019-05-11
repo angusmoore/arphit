@@ -1,9 +1,9 @@
 check_series_has_obs_is_finite <- function(y, name) {
   if (length(y) == 0) {
-    stop(paste0("Series ", name, " has no observations."))
+    stop(paste0("Series ", name, " has no observations."), call. = FALSE)
   }
   if (any(is.infinite(y))) {
-    stop(paste0("Series ", name, " contains non-finite values."))
+    stop(paste0("Series ", name, " contains non-finite values."), call. = FALSE)
   }
 }
 
@@ -49,26 +49,31 @@ series_names <- function(x) {
   sapply(x$series, function(y) y$name)
 }
 
-get_bar_data <- function(data) {
+extract_bar_data <- function(data) {
   colours <- c()
   bordercol <- c()
-  bardata <- data.frame(x = data$x, stringsAsFactors = FALSE)
+  bardata <- data.frame(agg_xvalues = data$x, stringsAsFactors = FALSE)
 
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
     if (s$bar) {
       colours <- append(colours, s$attributes$col)
       bordercol <- append(bordercol, s$attributes$barcol)
-      series_data <- data.frame(x = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
-      names(series_data) <- c("x", i)
-      if (anyDuplicated(series_data$x)) {
-        stop(paste0("Series ", s$name, " invalid. Bar graphs cannot have duplicate entries for x values."))
+      series_data <- data.frame(agg_xvalues = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
+      names(series_data) <- c("agg_xvalues", i)
+      if (anyDuplicated(series_data$agg_xvalues)) {
+        stop(paste0("Series ", s$name, " invalid. Bar graphs cannot have duplicate entries for x values."),
+             call. = FALSE)
       }
-      bardata <- dplyr::left_join(bardata, series_data, by = "x")
+      bardata <- dplyr::left_join(bardata, series_data, by = "agg_xvalues")
     }
   }
-  bardata <- dplyr::select_(bardata, "-x")
-  return(list(bardata=bardata, colours=colours, bordercol=bordercol))
+  bardata <- bardata[names(bardata) != "agg_xvalues"]
+  return(append(data, list(bars = list(bardata=bardata, colours=colours, bordercol=bordercol))))
+}
+
+get_bar_data <- function(data) {
+  data$bars
 }
 
 convert_to_plot_bardata <- function(bardata, data) {
@@ -82,10 +87,11 @@ convert_to_plot_bardata <- function(bardata, data) {
         bardata <- dplyr::add_row(bardata, x = x)
       }
     }
-    bardata <- dplyr::arrange_(bardata, "x")
-    bardata <- dplyr::select_(bardata, "-x")
+    bardata <- bardata[order(bardata$x), ]
+    bardata <- bardata[names(bardata) != "x"]
   }
   bardata_n <- t(as.matrix(bardata))
+  colnames(bardata_n) <- NULL
   bardata_n[is.na(bardata_n)] <- 0 # singletons don't show otherwise (#82)
   # Split into positive and negative (R doesn't stack well across axes)
   bardata_p <- bardata_n

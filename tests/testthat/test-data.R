@@ -16,11 +16,11 @@ data <-
 
 ## Tests for types of data
 test_that("Acceptable data types", {
-  expect_that(is.acceptable.data(data.frame(x1 = 1:10)), is_true())
-  expect_that(is.acceptable.data(tibble::tibble(x1 = 1:10)), is_true())
-  expect_that(is.acceptable.data(utils::data), is_false())
-  expect_that(is.acceptable.data(1), is_false())
-  expect_that(is.acceptable.data(utils::data()), is_false())
+  expect_true(is.acceptable.data(data.frame(x1 = 1:10)))
+  expect_true(is.acceptable.data(tibble::tibble(x1 = 1:10)))
+  expect_false(is.acceptable.data(utils::data))
+  expect_false(is.acceptable.data(1))
+  expect_false(is.acceptable.data(utils::data()))
 })
 
 ## Errors ==================

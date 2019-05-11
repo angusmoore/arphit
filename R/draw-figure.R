@@ -19,7 +19,7 @@ finddevice <- function(filename) {
     if (filetype == "png" || filetype == "pdf" || filetype == "emf" || filetype == "svg" || filetype == "emf+" || filetype == "xlsx") {
       return(filetype)
     } else {
-      stop(paste("Unsupported file type ", filetype, ".", sep = ""))
+      stop(paste("Unsupported file type ", filetype, ".", sep = ""), call. = FALSE)
     }
   }
 }
@@ -28,11 +28,12 @@ is.even <- function(x) {
   return(as.integer(x) %% 2 == 0)
 }
 
-leftrightpadding <- function(yticks, yunits, panels) {
+leftrightpadding <- function(yticks, yunits, panels, layout) {
   R <- 0
   L <- 0
   for (p in panels) {
-    nc <- max(getstrwidth(yticks[[p]]))
+    yticks_dropped <- yticks_to_draw(yticks[[p]], p, layout)
+    nc <- max(sapply(yticks_dropped, getstrwidth))
     nc <- max(nc, getstrwidth(yunits[[p]]))
     if (is.even(p)) {
       R <- max(R, nc)
@@ -109,9 +110,9 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
 
 figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.onpanel, legend.nrow, plotsize, portrait, layout, srt) {
   # Figure out margins
-  LRpadding <- leftrightpadding(yticks, yunits, panels)
-  left <- 2 + LRpadding$left
-  right <- 2 + LRpadding$right
+  LRpadding <- leftrightpadding(yticks, yunits, panels, layout)
+  left <- LRpadding$left + 1
+  right <- LRpadding$right + 1 # A bit of extra white spacing
 
   if (length(yaxislabels) > 0) {
     left <- left + 1.2
@@ -162,7 +163,10 @@ handlelayout <- function(layout) {
   } else if (layout == "4b2") {
     graphics::par(mfrow=c(4,2))
   } else {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2.", sep = ""))
+    stop(paste("Unknown layout option ", layout,
+               ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2.",
+               sep = ""),
+         call. = FALSE)
   }
   graphics::par(cex=1)
 }

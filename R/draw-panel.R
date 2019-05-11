@@ -59,7 +59,9 @@ getlocation <- function(p, layout) {
                "7" = c(4,1),
                "8" = c(4,2))
   } else {
-    stop(paste0("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."))
+    stop(paste0("Unknown layout option ", layout,
+                ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."),
+         call. = FALSE)
   }
 }
 
@@ -96,7 +98,7 @@ getsides <- function(p, layout) {
     } else if (p == "2") {
       side <- 4
     } else {
-      stop(paste("Layout ", layout, " does not have panel ", p, sep = ""))
+      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
     }
   } else if (layout == "2h" || layout == "2b2") {
     if (p == "1" || p == "3") {
@@ -104,7 +106,7 @@ getsides <- function(p, layout) {
     } else if (p == "2" || p == "4") {
       side <- 4
     } else {
-      stop(paste("Layout ", layout, " does not have panel ", p, sep = ""))
+      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
     }
   } else if (layout == "3v") {
     if (p == "1") {
@@ -114,7 +116,7 @@ getsides <- function(p, layout) {
     } else if (p == "3") {
       side <- 4
     } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p))
+      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
     }
   } else if (layout == "3h" || layout == "3b2") {
     if (p == "1" || p == "3" || p == "5") {
@@ -122,7 +124,7 @@ getsides <- function(p, layout) {
     } else if (p == "2" || p == "4" || p == "6") {
       side <- 4
     } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p))
+      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
     }
   } else if (layout == "4h" || layout == "4b2") {
     if (p == "1" || p == "3" || p == "5" || p == "7") {
@@ -130,10 +132,12 @@ getsides <- function(p, layout) {
     } else if (p == "2" || p == "4" || p == "6" || p == "8") {
       side <- 4
     } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p))
+      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
     }
   } else  {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2.", sep = ""))
+    stop(paste0("Unknown layout option ", layout,
+               ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2."),
+         call. = FALSE)
   }
   return(side)
 }
@@ -178,7 +182,10 @@ needxlabels <- function(p, layout) {
   } else if (layout == "4b2") {
     return(p == "7" || p == "8")
   } else {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2.", sep = ""))
+    stop(paste("Unknown layout option ", layout,
+               ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2.",
+               sep = ""),
+         call. = FALSE)
   }
 }
 
@@ -192,7 +199,10 @@ dropbottomlabel <- function(p, layout) {
   } else if (layout == "4h" || layout == "4b2") {
     return(p == "1" || p == "2" || p == "3" || p == "4" || p == "5" || p == "6")
   } else {
-    stop(paste("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2.", sep = ""))
+    stop(paste("Unknown layout option ", layout,
+               ". Options are 1, 2h, 2v, 2b2.",
+               sep = ""),
+         call. = FALSE)
   }
 }
 
@@ -208,7 +218,9 @@ needgrid <- function(p, layout) {
   } else if (layout == "2v" || layout == "2b2" || layout == "3v" || layout == "3b2" || layout == "4b2") {
     return(TRUE)
   } else {
-    stop(paste0("Unknown layout option ", layout, ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."))
+    stop(paste0("Unknown layout option ", layout,
+                ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."),
+         call. = FALSE)
   }
 }
 
@@ -225,19 +237,21 @@ tickadjustment <- function(layout) {
                 "4b2" = 4))
 }
 
+yticks_to_draw <- function(labels_drop, p, layout) {
+  if (dropbottomlabel(p, layout)) {
+    labels_drop[2:(length(labels_drop)-1)]
+  } else {
+    labels_drop[1:(length(labels_drop)-1)]
+  }
+}
+
 gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, ts) {
   side <- getsides(p, layout)
   xlab <- needxlabels(p, layout)
 
   ## Draw the axis scale
   # Drop the first label
-  labels_drop <- yticks
-
-  if (dropbottomlabel(p, layout)) {
-    labels_drop <- labels_drop[2:(length(labels_drop)-1)]
-  } else {
-    labels_drop <- labels_drop[1:(length(labels_drop)-1)]
-  }
+  labels_drop <- yticks_to_draw(yticks, p, layout)
 
   if (!is.na(side)) {
     graphics::axis(side, at = labels_drop, labels = labels_drop,
@@ -392,7 +406,7 @@ drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
 
     xlim <- as.barplot.x(bardata_p, bar_x_loc, xlim, bar.stacked)
     graphics::par(mfg = l)
-    graphics::barplot(bardata_p, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
+    graphics::barplot(bardata_p, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale, names.arg = NULL)
     graphics::par(mfg = l)
     graphics::barplot(bardata_n, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
   }

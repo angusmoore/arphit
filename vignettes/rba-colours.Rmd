@@ -9,14 +9,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-# Quick links
-
- - [Index](index.html)
- - [Getting started](getting-started.html)
- - [Plotting options](plotting-options.html)
- - [Package documentation (pdf)](https://angusmoore.github.io/arphit/arphit.pdf)
- - [qplot options](qplot-options.html)
  
 # Colour palette
 

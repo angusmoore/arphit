@@ -1,5 +1,8 @@
 check_panel <- function(panel) {
-  if (!all(panel %in% as.character(1:8))) stop(paste0("Panel identifier '", panel, "' is invalid. Panels must be between 1 and 8."))
+  if (!all(panel %in% as.character(1:8))) {
+    stop(paste0("Panel identifier '", panel, "' is invalid. Panels must be between 1 and 8."),
+         call. = FALSE)
+  }
 }
 
 #' Add a title or panel title
@@ -18,6 +21,10 @@ check_panel <- function(panel) {
 agg_title <- function(text, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
+  }
+  if (length(text) > 1) {
+    stop("text for title should be a single character, not a vector",
+         call. = FALSE)
   }
   if (!is.null(panel)) check_panel(panel)
   return(list(type = "title", text = text, panel = panel))
@@ -39,6 +46,10 @@ agg_title <- function(text, panel = NULL) {
 agg_subtitle <- function(text, panel = NULL) {
   if (!is.null(panel)) {
     panel <- as.character(panel)
+  }
+  if (length(text) > 1) {
+    stop("text for subtitle should be a single character, not a vector",
+         call. = FALSE)
   }
   if (!is.null(panel)) check_panel(panel)
   return(list(type = "subtitle", text = text, panel = panel))
@@ -352,7 +363,7 @@ agg_shading <- function(from, to, panel = NULL, colour = RBA["Grey2"], color) {
 #' @export
 agg_ylim <- function(min, max, nsteps, panel = NULL) {
   if (nsteps < 2) {
-    stop("The y-limit you supplied has fewer than 2 points.")
+    stop("The y-limit you supplied has fewer than 2 points.", call. = FALSE)
   }
   if (!is.null(panel)) check_panel(panel)
   return(list(type = "ylim", min = min, max = max, nsteps = nsteps, panel = panel))
@@ -389,7 +400,7 @@ agg_xlim <- function(min, max, panel = NULL) {
 agg_xaxisfreq <- function(freq, panel = NULL) {
   if (!is.null(panel)) check_panel(panel)
   if (!freq %in% c("decade","year","quarter","month")) {
-    stop(paste0(freq, " is not a valid frequency"))
+    stop(paste0(freq, " is not a valid frequency"), call. = FALSE)
   }
   return(list(type = "xfreq", freq = freq, panel = panel))
 }
@@ -418,12 +429,12 @@ agg_xaxisfreq <- function(freq, panel = NULL) {
 #' @export
 agg_legend <- function(ncol = NULL, x = NULL, y = NULL) {
   if (!is.null(x)) {
-    if (is.numeric(x) && (is.null(y))) stop("You must specify a y coordinate if you specify an x coordinate for on panel legends")
+    if (is.numeric(x) && (is.null(y))) stop("You must specify a y coordinate if you specify an x coordinate for on panel legends", call. = FALSE)
     if (is.character(x)) {
       y <- NULL
       if (!x %in% c("bottomright", "bottom", "bottomleft", "left", "topleft",
                     "top", "topright", "right", "center")) {
-        stop("Valid options for automatic placement of on panel legend are bottomright, bottom, bottomleft, left, topleft, top, topright, right and center")
+        stop("Valid options for automatic placement of on panel legend are bottomright, bottom, bottomleft, left, topleft, top, topright, right and center", call. = FALSE)
       }
     }
   }

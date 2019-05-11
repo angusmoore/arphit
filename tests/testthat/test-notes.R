@@ -20,6 +20,11 @@ test_that("Title", {
   expect_true(check_graph(p, "notes-long-title-manual-breaks", 0.945)) # Needs lower distortion because is text heavy
 })
 
+test_that("Errors for bad titles", {
+  expect_error(arphitgg() + agg_title(c("foo","bar")),
+               "text for title should be a single character, not a vector")
+})
+
 
 ## Subtitle ===================
 
@@ -49,6 +54,12 @@ test_that("Subtitle and title", {
     agg_subtitle("Now a subtitle, which is fun", panel = "1")
   expect_true(check_graph(p, "notes-title-and-subtitle", 0.92)) # Needs lower distortion because is text heavy
 })
+test_that("Errors for bad subtitles", {
+  expect_error(arphitgg() + agg_subtitle(c("foo","bar")),
+               "text for subtitle should be a single character, not a vector")
+})
+
+
 
 ## Footnotes ===================
 

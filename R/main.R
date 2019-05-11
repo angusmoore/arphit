@@ -3,7 +3,8 @@ agg_draw_internal <- function(gg, filename) {
 
   if (any(!names(gg$data) %in% permitted_panels(gg$layout))) {
     inval_panel <-  names(gg$data)[!names(gg$data) %in% permitted_panels(gg$layout)]
-    stop(paste0("Your chosen layout (", gg$layout,") does not have a panel ", inval_panel, "."))
+    stop(paste0("Your chosen layout (", gg$layout,") does not have a panel ", inval_panel, "."),
+         call. = FALSE)
   }
 
   data <- convert_ts_to_decimal_date(gg$data)
@@ -21,6 +22,9 @@ agg_draw_internal <- function(gg, filename) {
   # handle series attributes
   data <- handleattributes(data)
 
+  # split out bardata, as that has to be plotted separately
+  data <- lapply(data, extract_bar_data)
+
   # Units and scales
   yunits <- handleunits(data, gg$yunits, gg$layout)
   xunits <- handlexunits(names(data), gg$xunits)
@@ -28,14 +32,14 @@ agg_draw_internal <- function(gg, filename) {
   xaxislabels <- handleaxislabels(gg$xaxislabels, names(data))
 
   if (length(gg$xlim)==0 && (gg$log_scale == "x" || gg$log_scale == "xy")) {
-    stop("You must manually set x axis limits for log scale plots.")
+    stop("You must manually set x axis limits for log scale plots.", call. = FALSE)
   }
   xlim <- xlimconform(gg$xlim, data, gg$layout)
   xlabels <- handlexlabels(data, xlim, gg$xfreq, gg$layout, gg$showallxlabels)
   xlim <- collapse_in_padding(xlim)
 
   if (length(gg$ylim)==0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
-    stop("You must manually set y axis limits for log scale plots.")
+    stop("You must manually set y axis limits for log scale plots.", call. = FALSE)
   }
   ylim <- ylimconform(gg$ylim, data, gg$layout, gg$stacked, xlim)
   yticks <- handleticks(data, ylim)

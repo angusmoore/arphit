@@ -1,8 +1,8 @@
 sanitycheck.specificline <- function(line) {
-  if (is.null(line$x1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.")
-  if (is.null(line$x2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.")
-  if (is.null(line$y1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.")
-  if (is.null(line$y2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.")
+  if (is.null(line$x1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.", call. = FALSE)
+  if (is.null(line$x2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.", call. = FALSE)
+  if (is.null(line$y1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.", call. = FALSE)
+  if (is.null(line$y2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.", call. = FALSE)
   return(line)
 }
 

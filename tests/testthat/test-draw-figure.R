@@ -8,14 +8,14 @@ test_that("Filetypes", {
     file <- paste("foo.", suffix, sep = "")
     agg_qplot(randomdata, filename = file)
     # test exists
-    expect_that(file.exists(file), is_true())
+    expect_true(file.exists(file))
     # remove
     file.remove(file)
   }
 
   # Special case EMF+, because we change the file extension
   agg_qplot(randomdata, filename = "foo.emf+")
-  expect_that(file.exists("foo.emf"), is_true())
+  expect_true(file.exists("foo.emf"))
   file.remove("foo.emf")
 
   p <- arphitgg()

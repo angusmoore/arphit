@@ -245,11 +245,12 @@ test_that("Which panels should be autolabelled", {
 test_that("Miscellaneous tests", {
   # Missing observations in stacked bar graphs (#217)
   set.seed(42)
-  data <- data.frame(series_name = letters[1:10], value = rnorm(10), group = sample(1:3,10,TRUE))
+  data <- data.frame(series_name = letters[1:10], value = rnorm(10),
+                     group = c(3,1,3,3,1,2,2,3,2,3))
   p <- arphitgg(data, agg_aes(x = series_name, y = value, group = group)) +
     agg_col() + agg_autolabel(TRUE)
   expect_true(
-    check_graph(p, "autolabel-missing-stacked-bar")
+   check_graph(p, "autolabel-missing-stacked-bar")
   )
 
   # Failing to remove labels on single-series panels properly (#249)
@@ -275,4 +276,8 @@ test_that("Miscellaneous tests", {
     agg_line(colour = "black") + agg_col(colour = "black") + agg_point(colour = "black") +
     agg_autolabel()
   expect_true(check_graph(p, "autolabel-misc-same-colour-layers-278"))
+
+  # Warnings with identical duplicate series in bar graphs (#319)
+  p <- arphitgg(data.frame(x=1:10,y=1:10),agg_aes(x,y))+agg_col()+agg_col()+agg_autolabel()
+  expect_warning(print(p), NA)
 })
