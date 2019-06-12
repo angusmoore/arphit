@@ -1,8 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .travis.yml
-.push_gh_pages.sh
-build-readme-images.R
 NEWS.md
 ^_pkgdown\.yml$
 ^docs$
