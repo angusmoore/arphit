@@ -1,4 +1,4 @@
-# arphit <a href='https://https://angusmoore.github.io/arphit/'><img src='man/figures/arphit-logo.png' align="right" height="139" /></a>
+# arphit <a href='https://https://angusmoore.github.io/arphit/'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 [![Build Status](https://travis-ci.org/angusmoore/arphit.svg?branch=master)](https://travis-ci.org/angusmoore/arphit)

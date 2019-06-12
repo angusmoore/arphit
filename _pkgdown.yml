@@ -12,6 +12,7 @@ reference:
   - '`agg_line`'
   - '`agg_point`'
   - '`arphitgg`'
+  - '`RBA`'
 - title: Graph operators
   contents:
   - '`agg_draw`'
