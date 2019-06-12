@@ -1,10 +1,10 @@
+# arphit <a href='https://https://angusmoore.github.io/arphit/'><img src='man/figures/logo.png' align="right" height="139" /></a>
+
 <!-- badges: start -->
 [![Build Status](https://travis-ci.org/angusmoore/arphit.svg?branch=master)](https://travis-ci.org/angusmoore/arphit)
 [![Coverage Status](https://coveralls.io/repos/github/angusmoore/arphit/badge.svg?branch=master)](https://coveralls.io/github/angusmoore/arphit?branch=master)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 <!-- badges: end -->
-
-# arphit
 
 `arphit` is a ggplot-inspired R package to easily create RBA-style graphs in R. Once you have your data, you can quickly create a plot with:
 ```
