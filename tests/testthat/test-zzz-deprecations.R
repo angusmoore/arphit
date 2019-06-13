@@ -51,3 +51,15 @@ test_that("Deprecation warnings for color", {
     fixed = TRUE
   )
 })
+
+test_that("Deprecations for agg_vline and hline", {
+  expect_warning(
+    arphitgg() + agg_abline(x = 1, panel = "1"),
+    "x to draw a vertical line is deprecated. Use `agg_vline`"
+  )
+
+  expect_warning(
+    arphitgg() + agg_abline(y = 1, panel = "1"),
+    "y to draw a horizontal line is deprecated. Use `agg_hline`"
+  )
+})

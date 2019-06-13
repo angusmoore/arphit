@@ -1,37 +1,3 @@
-sanitycheck.specificline <- function(line) {
-  if (is.null(line$x1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.", call. = FALSE)
-  if (is.null(line$x2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.", call. = FALSE)
-  if (is.null(line$y1)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.", call. = FALSE)
-  if (is.null(line$y2)) stop("Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.", call. = FALSE)
-  return(line)
-}
-
-sanitycheck.vhline <- function(line, i) {
-  if (!is.null(line$x)) {
-    line$x1 <- line$x
-    line$x2 <- line$x
-    line$y1 <- NA
-    line$y2 <- NA
-  }
-  if (!is.null(line$y)) {
-    line$x1 <- NA
-    line$x2 <- NA
-    line$y1 <- line$y
-    line$y2 <- line$y
-  }
-  return(line)
-}
-
-sanitycheckline <- function(line) {
-      # can't use null checking, because x1 partial matches x
-      if (!is.null(line$x) || !is.null(line$y)) {
-        line <- sanitycheck.vhline(line)
-      } else {
-        line <- sanitycheck.specificline(line)
-      }
-  return(line)
-}
-
 drawbgshading <- function(shading) {
   # if any are NA, give them the ends of the plot
   if (is.na(shading$x1)) {

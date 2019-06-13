@@ -36,11 +36,11 @@ test_that("Background shading", {
 ## AB lines ================
 
 test_that("AB lines", {
-  foo <- arphitgg() + agg_abline(x = 2001, colour = RBA["Blue1"], panel = "1")
-  bar <- arphitgg() + agg_abline(y = -0.5, colour = RBA["Red1"], panel = "1") +
-    agg_abline(x = 2001, colour = RBA["Blue1"], panel = "1")
+  foo <- arphitgg() + agg_vline(x = 2001, colour = RBA["Blue1"], panel = "1")
+  bar <- arphitgg() + agg_hline(y = -0.5, colour = RBA["Red1"], panel = "1") +
+    agg_vline(x = 2001, colour = RBA["Blue1"], panel = "1")
   baz <- arphitgg() + agg_abline(x1 = 2000, y1 = -0.1, x2 = 2002, y2 = 0.5, panel = "1")
-  p <- arphitgg() + agg_abline(x = 2002, lty = 5, lwd = 20, panel = "1")
+  p <- arphitgg() + agg_vline(x = 2002, lty = 5, lwd = 20, panel = "1")
 
   expect_true(check_graph(foo, "annotations-ablines1"))
   expect_true(check_graph(bar, "annotations-ablines2"))
@@ -51,54 +51,7 @@ test_that("AB lines", {
 ## Extrapolating on missing arguments for ab lines ============
 
 test_that("Extrapolate ab lines arguments", {
-  expect_equal(agg_abline(x=2001,panel="1",colour="green",lty=2),
-                 list(
-                   x1 = 2001,
-                   y1 = NA,
-                   x2 = 2001,
-                   y2 = NA,
-                   colour = "green",
-                   panel = "1",
-                   lwd=1,
-                   lty=2,
-                   type="abline"
-                 )
-               )
-
-  expect_equal(agg_abline(y=-0.5,panel="1"),
-    list(
-      x1 = NA,
-      y1 = -0.5,
-      x2 = NA,
-      y2 = -0.5,
-      colour = "black",
-      panel = "1",
-      lwd = 1,
-      lty = 1,
-      type = "abline"
-    ))
-
-  expect_equal(agg_abline(x1=2000,y1=-1,x2=2001,y2=0,panel='1'),
-    list(
-      x1 = 2000,
-      y1 = -1,
-      x2 = 2001,
-      y2 = 0,
-      colour = "black",
-      panel = "1",
-      lwd = 1,
-      lty = 1,
-      type = "abline"
-    ))
-  nopanel <- list(list(x = 2001))
-  specificerror <- list(list(
-    x1 = 2000,
-    y1 = -1,
-    y2 = 0,
-    panel = 1
-  ))
-
-  expect_error(agg_abline(x = 2001),
+  expect_error(agg_vline(x = 2001),
                "argument \"panel\" is missing, with no default")
   expect_error(
     agg_abline(
@@ -107,7 +60,7 @@ test_that("Extrapolate ab lines arguments", {
       y2 = 0,
       panel = "1"
     ),
-    "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x2.",
+    "Line is missing",
     fixed = TRUE
   )
   expect_error(
@@ -117,7 +70,7 @@ test_that("Extrapolate ab lines arguments", {
       y1 = -1,
       panel = "1"
     ),
-    "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y2.",
+    "Line is missing",
     fixed = TRUE
   )
   expect_error(
@@ -127,7 +80,7 @@ test_that("Extrapolate ab lines arguments", {
       y2 = 0,
       panel = "1"
     ),
-    "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing x1.",
+    "Line is missing",
     fixed = TRUE
   )
   expect_error(
@@ -137,7 +90,7 @@ test_that("Extrapolate ab lines arguments", {
       y2 = -1,
       panel = "1"
     ),
-    "Line was specified without x or y (i.e. not a horizontal or vertical line), but is missing y1.",
+    "Line is missing",
     fixed = TRUE
   )
 })

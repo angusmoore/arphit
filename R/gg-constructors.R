@@ -273,7 +273,7 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, colour = "black", panel, l
 #'              colour = RBA["Blue1"], panel = "1")
 #'
 #' @export
-agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, colour = "black", panel, lwd = 1, lty = 1, color) {
+agg_abline <- function(x = NULL, y = NULL, x1, y1, x2, y2, colour = "black", panel, lwd = 1, lty = 1, color) {
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
     colour <- color
@@ -283,9 +283,13 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
     return(agg_vline(x = x, colour = colour, panel = panel, lwd = lwd, lty = lty))
   }
   if (!is.null(y)) {
-    warning("`agg_abline` with only y to draw a horizontal line is deprecated. Use `agg_vline` instead.")
+    warning("`agg_abline` with only y to draw a horizontal line is deprecated. Use `agg_hline` instead.")
     return(agg_hline(y = y, colour = colour, panel = panel, lwd = lwd, lty = lty))
   }
+  if (missing(x1)) stop("Line is missing x1")
+  if (missing(y1)) stop("Line is missing y1")
+  if (missing(x2)) stop("Line is missing x2")
+  if (missing(y2)) stop("Line is missing y2")
   line <- list(x1 = x1, y1 = y1, x2 = x2, y2 = y2, colour = colour, panel = panel, lwd = lwd, lty = lty)
   check_panel(panel)
   return(append(line, list(type = "abline")))
@@ -320,7 +324,7 @@ agg_vline <- function(x, colour = "black", panel, lwd = 1, lty = 1) {
 #'
 #' @examples
 #' arphitgg() + agg_hline(y=0.7,panel="1")
-agg_vline <- function(y, colour = "black", panel, lwd = 1, lty = 1) {
+agg_hline <- function(y, colour = "black", panel, lwd = 1, lty = 1) {
   check_panel(panel)
   return(list(y1 = y, y2 = y, x1 = NA, x2 = NA, panel = panel, lwd = lwd, lty = lty, colour = colour, type = "abline"))
 }
