@@ -6,6 +6,8 @@
 
 ## Bugfixes
 
+* Y axis tick labels are now formatted to the same number of decimal places
+([#339](https://github.com/angusmoore/arphit/pull/339))
 * Exporting to XLSX respects x limits ([#309](https://github.com/angusmoore/arphit/pull/309))
 * Better measurement of required margins on left and right sides ([#312](https://github.com/angusmoore/arphit/pull/312))
 * Improved performance for autolabeller on column graphs ([#318](https://github.com/angusmoore/arphit/pull/318))

@@ -252,6 +252,15 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
   ## Draw the axis scale
   # Drop the first label
   labels_drop <- yticks_to_draw(yticks, p, layout)
+  n_decimals <- max(sapply(stringr::str_split(labels_drop, "\\."),
+                           function(x) {
+                             if (length(x) == 2) {
+                               nchar(x[[2]])
+                             } else {
+                               return(0)
+                             }
+                           }))
+  labels_drop <- formatC(labels_drop, format = "f", digits = n_decimals)
 
   if (!is.na(side)) {
     graphics::axis(side, at = labels_drop, labels = labels_drop,
