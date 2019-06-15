@@ -4,8 +4,8 @@
 \alias{agg_abline}
 \title{Add a line between two points on your graph}
 \usage{
-agg_abline(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL,
-  y2 = NULL, colour = "black", panel, lwd = 1, lty = 1, color)
+agg_abline(x = NULL, y = NULL, x1, y1, x2, y2, colour = "black",
+  panel, lwd = 1, lty = 1, color)
 }
 \arguments{
 \item{x}{(Deprecated; use agg_vline instead) Draw a vertical line at x (omit to draw a specific AB line)}
