@@ -217,7 +217,6 @@ agg_autolabel <- function(quiet = FALSE, arrow_lines = TRUE, arrow_bars = FALSE)
   return(list(type = "autolabel", quiet = quiet, arrow_lines = arrow_lines, arrow_bars = arrow_bars))
 }
 
-
 #' Add an arrow
 #'
 #' @param tail.x The x coordinate of the arrow tail
@@ -248,20 +247,18 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, colour = "black", panel, l
               head.y = head.y, colour = colour, panel = panel, lwd = lwd))
 }
 
-#' Add an AB line to your graph
+#' Add a line between two points on your graph
 #'
-#' You need specify only one of x, or y, or x1,x2,y1,y2
-#'
-#' @param x Draw a vertical line at x (omit to draw a specific AB line)
-#' @param y Draw a horizontal at y omit to draw a specific AB line)
-#' @param x1 For specific AB lines: the first x coordinate
-#' @param y1 For specific AB lines: the first y coordinate
-#' @param x2 For specific AB lines: the second x coordinate
-#' @param y2 For specific AB lines: the second y coordinate
+#' @param x (Deprecated; use agg_vline instead) Draw a vertical line at x (omit to draw a specific AB line)
+#' @param y (Deprecated; use agg_hline instead) Draw a horizontal at y omit to draw a specific AB line)
+#' @param x1 The first x coordinate
+#' @param y1 The first y coordinate
+#' @param x2 The second x coordinate
+#' @param y2 The second y coordinate
 #' @param colour The colour of the AB line (default black)
 #' @param panel Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.
-#' @param lwd (Optional, default 1) The linewidth
-#' @param lty (Optional, default 1) The line type
+#' @param lwd (Optional, default 1) The line width
+#' @param lty (Optional, default 1) The line type  (uses R line types)
 #' @param color (Deprecated; use colour instead) The colour of the AB line (default black)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -276,17 +273,60 @@ agg_arrow <- function(tail.x, tail.y, head.x, head.y, colour = "black", panel, l
 #'              colour = RBA["Blue1"], panel = "1")
 #'
 #' @export
-agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 = NULL, colour = "black", panel, lwd = 1, lty = 1, color) {
-  line <- list(x = x, y = y, x1 = x1, y1 = y1, x2 = x2, y2 = y2, colour = colour, panel = panel, lwd = lwd, lty = lty)
-  line <- sanitycheckline(line)
-  line$x <- NULL
-  line$y <- NULL
-  check_panel(panel)
+agg_abline <- function(x = NULL, y = NULL, x1, y1, x2, y2, colour = "black", panel, lwd = 1, lty = 1, color) {
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
     colour <- color
   }
+  if (!is.null(x)) {
+    warning("`agg_abline` with only x to draw a vertical line is deprecated. Use `agg_vline` instead.")
+    return(agg_vline(x = x, colour = colour, panel = panel, lwd = lwd, lty = lty))
+  }
+  if (!is.null(y)) {
+    warning("`agg_abline` with only y to draw a horizontal line is deprecated. Use `agg_hline` instead.")
+    return(agg_hline(y = y, colour = colour, panel = panel, lwd = lwd, lty = lty))
+  }
+  if (missing(x1)) stop("Line is missing x1")
+  if (missing(y1)) stop("Line is missing y1")
+  if (missing(x2)) stop("Line is missing x2")
+  if (missing(y2)) stop("Line is missing y2")
+  line <- list(x1 = x1, y1 = y1, x2 = x2, y2 = y2, colour = colour, panel = panel, lwd = lwd, lty = lty)
+  check_panel(panel)
   return(append(line, list(type = "abline")))
+}
+
+#' Add a vertical line to your graph
+#'
+#' @param x The x coordinate to draw the vertical line at
+#' @param colour The colour of the line (default black)
+#' @param panel Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.
+#' @param lwd (Optional, default 1) The line width
+#' @param lty (Optional, default 1) The line type (uses R line types)
+#'
+#' @export
+#'
+#' @examples
+#' arphitgg() + agg_vline(x=2003,panel="1")
+agg_vline <- function(x, colour = "black", panel, lwd = 1, lty = 1) {
+  check_panel(panel)
+  return(list(x1 = x, x2 = x, y1 = NA, y2 = NA, panel = panel, lwd = lwd, lty = lty, colour = colour, type = "abline"))
+}
+
+#' Add a horizontal line to your graph
+#'
+#' @param y The y coordinate to draw the vertical line at
+#' @param colour The colour of the line (default black)
+#' @param panel Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.
+#' @param lwd (Optional, default 1) The line width
+#' @param lty (Optional, default 1) The line type (uses R line types)
+#'
+#' @export
+#'
+#' @examples
+#' arphitgg() + agg_hline(y=0.7,panel="1")
+agg_hline <- function(y, colour = "black", panel, lwd = 1, lty = 1) {
+  check_panel(panel)
+  return(list(y1 = y, y2 = y, x1 = NA, x2 = NA, panel = panel, lwd = lwd, lty = lty, colour = colour, type = "abline"))
 }
 
 #' Add background shading
@@ -295,9 +335,9 @@ agg_abline <- function(x = NULL, y = NULL, x1 = NULL, y1 = NULL, x2 = NULL, y2 =
 #' @param y1 The bottom left y coordinate (omit to have the shading automatically snap to the edge of the panel)
 #' @param x2 The top right x coordinate (omit to have the shading automatically snap to the edge of the panel)
 #' @param y2 The top right y coordinate (omit to have the shading automatically snap to the edge of the panel)
-#' @param colour (optional) The colour of the AB line (default grey)
+#' @param colour (optional) The colour of the background shading (default grey)
 #' @param panel Which panel should the background shading be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the shading to multiple panels at once.
-#' @param color (Deprecated; use colour instead) The colour of the AB line (default grey)
+#' @param color (Deprecated; use colour instead) The colour of the background shading (default grey)
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
