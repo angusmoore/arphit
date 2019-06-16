@@ -409,4 +409,12 @@ test_that("Miscellaneous", {
   p <- arphitgg(foo, agg_aes(x=x,y=y,group=g)) +
     agg_col()
   expect_true(check_graph(p, "gg-na-in-group"))
+
+  # Group with only missings (#330)
+  foo <- data.frame(x=1:10,y=1:10,group=rep(c(1:5),2))
+  foo$x[c(1,6)] <- NA
+
+  expect_error(
+    arphitgg(foo, agg_aes(x=x,y=y,group=group))+agg_point(),
+    NA)
 })
