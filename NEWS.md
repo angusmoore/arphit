@@ -15,3 +15,6 @@
 * Underscores in titles no longer throw errors for unknown width ([#337](https://github.com/angusmoore/arphit/pull/337))
 
 ## Deprecated or removed
+
+* `x` and `y` arguments to `agg_abline` for drawing vertical and horizontal lines have been deprecated.
+These have been replaced with `agg_vline` and `agg_hline` respectively ([#338](https://github.com/angusmoore/arphit/pull/338))
