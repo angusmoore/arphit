@@ -48,7 +48,7 @@ get_stacked_max_min <- function(data, xlim) {
 
 get_series_max_min <- function(series, data, xlim) {
   x <- get_x_plot_locations(series$x, data)
-  x_restriction <- x >= xlim[1] & x <= xlim[2]
+  x_restriction <- !is.na(x) & x >= xlim[1] & x <= xlim[2]
   if (!any(x_restriction)) x_restriction <- TRUE # if no visible x, use all the data as a fallback
   list(max=max(series$y[x_restriction],na.rm=TRUE),
        min=min(series$y[x_restriction],na.rm=TRUE))
