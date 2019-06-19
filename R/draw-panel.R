@@ -346,7 +346,7 @@ drawlines <- function(l, data, xlim, ylim, joined, log_scale) {
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
     x <- get_x_plot_locations(s$x, data)
-    if (!s$bar) {
+    if (s$geomtype != "bar") {
       graphics::par(mfg = l)
       if (joined) {
         nas <- is.na(x) | is.na(s$y)

@@ -129,9 +129,9 @@ widen_x <- function(gg, data, aes, panel) {
   return(gg)
 }
 
-assign_series <- function(gg, data, aes, panel, bar) {
+assign_series <- function(gg, data, aes, panel, geomtype) {
   if (is_null_quo(aes$group)) {
-    new_series <- create_series(rlang::quo_name(aes$y), rlang::eval_tidy(aes$x, data), rlang::eval_tidy(aes$y, data), bar)
+    new_series <- create_series(rlang::quo_name(aes$y), rlang::eval_tidy(aes$x, data), rlang::eval_tidy(aes$y, data), geomtype)
     gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
   } else {
     # Special case NAs in the data
@@ -140,7 +140,7 @@ assign_series <- function(gg, data, aes, panel, bar) {
     names(data)[is.na(names(data))] <- "<NA>"
 
     for (name in names(data)) {
-      new_series <- create_series(name, rlang::eval_tidy(aes$x, data[[name]]), rlang::eval_tidy(aes$y, data[[name]]), bar)
+      new_series <- create_series(name, rlang::eval_tidy(aes$x, data[[name]]), rlang::eval_tidy(aes$y, data[[name]]), geomtype)
       gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
     }
   }
@@ -202,7 +202,7 @@ reorder_series <- function(gg, data, aes, panel) {
   return(gg)
 }
 
-addlayertopanel <- function(gg, data, aes, panel, bar) {
+addlayertopanel <- function(gg, data, aes, panel, geomtype) {
   existing_series <- length(gg$data[[panel]]$series)
   out <- convert_data(data, aes) # convert TS/ZOO/XTS to dataframe
   data <- out$data
@@ -219,7 +219,7 @@ addlayertopanel <- function(gg, data, aes, panel, bar) {
   gg <- widen_x(gg, data, aes, panel)
 
   ## assign series
-  gg <- assign_series(gg, data, aes, panel, bar)
+  gg <- assign_series(gg, data, aes, panel, geomtype)
 
   ## now reorder
   gg <- reorder_series(gg, data, aes, panel)
@@ -263,7 +263,7 @@ inherit_data <- function(gg, data) {
   return(data)
 }
 
-addlayer <- function(gg, new, panel, bar) {
+addlayer <- function(gg, new, panel, geomtype) {
   aes <- inherit_aes(gg, new$aes)
   data <- inherit_data(gg, new$data)
   # Error if data is weird
@@ -273,7 +273,7 @@ addlayer <- function(gg, new, panel, bar) {
   }
 
   if (is_null_quo(aes$facet)) {
-    out <- addlayertopanel(gg, data, aes, panel, bar)
+    out <- addlayertopanel(gg, data, aes, panel, geomtype)
     gg <- out$gg
     newseries <- out$new_series_indices
   } else {
@@ -289,7 +289,7 @@ addlayer <- function(gg, new, panel, bar) {
         subset_data <- is.na(rlang::eval_tidy(aes$facet, data))
       }
       subset_data <- data[keep_rows,]
-      out <- addlayertopanel(gg, subset_data, aes, panel, bar)
+      out <- addlayertopanel(gg, subset_data, aes, panel, geomtype)
       gg <- out$gg
       gg$paneltitles[[panel]] <- ifelse(is.na(facets[i]), "", as.character(facets[i]))
       newseries[[panel]] <- out$new_series_indices
@@ -311,7 +311,7 @@ applyattributes <- function(gg, thisseries, panel, allnewseries) {
 
 addseries_ <- function(gg, newseries, type) {
   panel <- newseries$panel
-  out <- addlayer(gg, newseries, panel, type == "bar")
+  out <- addlayer(gg, newseries, panel, type)
   gg <- out$gg
   allnewseries <- out$newseries
 
