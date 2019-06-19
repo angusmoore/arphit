@@ -41,9 +41,9 @@ print.arphit.gg <- function(x, ...) {
 #' @export
 "+.arphit.gg" <- function(gg, element) {
   gg = switch(element$type,
-         "line" = addlineseries(gg, element),
-         "col" = addcolseries(gg, element),
-         "step" = addstepseries(gg, element),
+         "line" = addseries(gg, element, "line"),
+         "col" = addseries(gg, element, "bar"),
+         "step" = addseries(gg, element, "step"),
          "title" = addtitle(gg, element),
          "subtitle" = addsubtitle(gg, element),
          "units" = addunits(gg, element),

@@ -298,76 +298,43 @@ addlayer <- function(gg, new, panel, bar) {
   return(list(gg = gg, newseries = newseries))
 }
 
-applylineattributes <- function(gg, newline, panel, newseries) {
-  gg <- applyattribute(gg, "col", panel, newseries, newline$colour)
-  gg <- applyattribute(gg, "pch", panel, newseries, newline$pch)
-  gg <- applyattribute(gg, "lty", panel, newseries, newline$lty)
-  gg <- applyattribute(gg, "lwd", panel, newseries, newline$lwd)
-  gg <- applyattribute(gg, "pointsize", panel, newseries, newline$pointsize)
+applyattributes <- function(gg, thisseries, panel, allnewseries) {
+  gg <- applyattribute(gg, "col", panel, allnewseries, thisseries$colour)
+  gg <- applyattribute(gg, "pch", panel, allnewseries, thisseries$pch)
+  gg <- applyattribute(gg, "lty", panel, allnewseries, thisseries$lty)
+  gg <- applyattribute(gg, "lwd", panel, allnewseries, thisseries$lwd)
+  gg <- applyattribute(gg, "pointsize", panel, allnewseries, thisseries$pointsize)
+  gg <- applyattribute(gg, "barcol", panel, allnewseries, thisseries$barcol)
+  gg <- applyattribute(gg, "col", panel, allnewseries, thisseries$col)
   return(gg)
 }
 
-addlineseries_ <- function(gg, newline) {
-  panel <- newline$panel
-  out <- addlayer(gg, newline, panel, FALSE)
+addseries_ <- function(gg, newseries, type) {
+  panel <- newseries$panel
+  out <- addlayer(gg, newseries, panel, type == "bar")
   gg <- out$gg
-  newseries <- out$newseries
-  if (!is.list(newseries)) {
-    gg <- applylineattributes(gg, newline, panel, newseries)
+  allnewseries <- out$newseries
+
+  if (!is.list(allnewseries)) {
+    gg <- applyattributes(gg, newseries, panel, allnewseries)
   } else {
-    for (panel in names(newseries)) {
-      gg <- applylineattributes(gg, newline, panel, newseries[[panel]])
-    }
-  }
-  return(gg)
-}
-
-addlineseries <- function(gg, newline)  {
-  for (p in newline$panel) {
-    tmp <- newline
-    tmp$panel <- p
-    gg <- addlineseries_(gg, tmp)
-  }
-  return(gg)
-}
-
-applycolattributes <- function(gg, panel, newcol, newcols) {
-  if (!is.null(newcol$barcol)) {
-    gg <- applyattribute(gg, "barcol", panel, newcols, newcol$barcol)
-  }
-  if (!is.null(newcol$col)) {
-    gg <- applyattribute(gg, "col", panel, newcols, newcol$col)
-  }
-  return(gg)
-}
-
-addcolseries_ <- function(gg, newcol) {
-  panel <- newcol$panel
-  out <- addlayer(gg, newcol, panel, TRUE)
-  gg <- out$gg
-  newcols <- out$newseries
-
-  if (!is.list(newcols)) {
-    gg <- applycolattributes(gg, panel, newcol, newcols)
-  } else {
-    for (panel in names(newcols)) {
-      gg <- applycolattributes(gg, panel, newcol, newcols[[panel]])
+    for (panel in names(allnewseries)) {
+      gg <- applyattributes(gg, newseries, panel, allnewseries[[panel]])
     }
   }
 
-  if (!is.null(newcol$stacked)) {
-    gg$stacked <- newcol$stacked
+  if (type == "bar" && !is.null(newseries$stacked)) {
+    gg$stacked <- newseries$stacked
   }
 
   return(gg)
 }
 
-
-addcolseries <- function(gg, newcol) {
-  for (p in newcol$panel) {
-    tmp <- newcol
+addseries <- function(gg, newseries, type) {
+  for (p in newseries$panel) {
+    tmp <- newseries
     tmp$panel <- p
-    gg <- addcolseries_(gg, tmp)
+    gg <- addseries_(gg, tmp, type)
   }
   return(gg)
 }
