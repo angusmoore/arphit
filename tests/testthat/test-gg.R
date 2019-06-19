@@ -331,9 +331,9 @@ test_that("Mutiple panel constructors", {
   expect_equal(p1, p2)
 
   # abline
-  p1 <- arphitgg() + agg_abline(1,colour="black",panel=c("1","2"))
-  p2 <- arphitgg() + agg_abline(1,colour="black",panel="1") +
-    agg_abline(1,colour="black",panel="2")
+  p1 <- arphitgg() + agg_vline(x=1,colour="black",panel=c("1","2"))
+  p2 <- arphitgg() + agg_vline(x=1,colour="black",panel="1") +
+    agg_vline(x=1,colour="black",panel="2")
   expect_equal(p1, p2)
 
   # bgshading
