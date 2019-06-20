@@ -342,37 +342,52 @@ drawshading <- function(shading, data) {
   }
 }
 
+interleave <- function(a, b) {
+  idx <- order(c(seq_along(a), seq_along(b)))
+  c(a,b)[idx]
+}
+
+drawstep <- function(s, plotx, xlim, ylim, log_scale) {
+  plotx <- interleave(plotx, plotx[2:length(plotx)])
+  s$y <- interleave(s$y, s$y[1:length(s$y)-1])
+
+  drawline(s, plotx, xlim, ylim, log_scale)
+}
+
+drawline <- function(s, plotx, xlim, ylim, log_scale) {
+  graphics::plot(
+    plotx,
+    s$y,
+    type = "o",
+    col = s$attributes$col,
+    xlim = xlim,
+    ylim = c(ylim$min, ylim$max),
+    axes = FALSE,
+    xlab = "",
+    ylab = "",
+    pch = s$attributes$pch,
+    lty = s$attributes$lty,
+    lwd = s$attributes$lwd,
+    log = log_scale
+  )
+}
+
 drawlines <- function(l, data, xlim, ylim, joined, log_scale) {
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
     x <- get_x_plot_locations(s$x, data)
-    if (s$geomtype != "bar") {
-      graphics::par(mfg = l)
-      if (joined) {
-        nas <- is.na(x) | is.na(s$y)
-        plotx <- x[!nas]
-        s$y <- s$y[!nas]
-      } else {
-        plotx <- x
-      }
-      graphics::par(cex = s$attributes$pointsize)
-      graphics::plot(
-        plotx,
-        s$y,
-        type = "o",
-        col = s$attributes$col,
-        xlim = xlim,
-        ylim = c(ylim$min, ylim$max),
-        axes = FALSE,
-        xlab = "",
-        ylab = "",
-        pch = s$attributes$pch,
-        lty = s$attributes$lty,
-        lwd = s$attributes$lwd,
-        log = log_scale
-      )
-      graphics::par(cex = 1)
+    graphics::par(mfg = l)
+    graphics::par(cex = s$attributes$pointsize)
+    if (joined) {
+      nas <- is.na(x) | is.na(s$y)
+      plotx <- x[!nas]
+      s$y <- s$y[!nas]
+    } else {
+      plotx <- x
     }
+    if (s$geomtype == "line") drawline(s, plotx, xlim, ylim, log_scale)
+    if (s$geomtype == "step") drawstep(s, plotx, xlim, ylim, log_scale)
+    graphics::par(cex = 1)
   }
 }
 
