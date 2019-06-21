@@ -55,7 +55,7 @@ countsrclines <- function(sources) {
 countfnlines <- function(footnotes) {
   nf <- length(footnotes)
   extralines <- sum(stringr::str_count(footnotes, "\n"))
-  return(1.1*nf + 1.1*extralines)
+  return(1.3*nf + 1.1*extralines)
 }
 
 counttitlelines <- function(title, subtitle) {
@@ -115,10 +115,10 @@ figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title,
   right <- LRpadding$right + 1 # A bit of extra white spacing
 
   if (length(yaxislabels) > 0) {
-    left <- left + 1.2
+    left <- left + 1.4
   }
   if(length(xaxislabels) > 0) {
-    notesstart <- 1.7
+    notesstart <- 2
   } else {
     notesstart <- 0
   }
