@@ -168,23 +168,24 @@ drawnotes <- function(footnotes, sources, notesstart) {
                       side = 1,
                       adj = 0,
                       padj = 1,
-                      line = (cumuloffset + 1.1*(i-1) - 1), # Minus 1 because padj = 1
+                      line = (cumuloffset + 1.3*(i-1) - 1), # Minus 1 because padj = 1
                       cex = (14/20))
       graphics::mtext(paste(strrep(" ", NSPACESNOTES), replacedtext, sep = ""),
                       outer = TRUE,
                       side = 1,
                       adj = 0,
                       padj = 1,
-                      line = (cumuloffset + 1.1*(i-1) - 1), # Minus 1 because padj = 1
+                      line = (cumuloffset + 1.3*(i-1) - 1), # Minus 1 because padj = 1
                       cex = (14/20))
       cumuloffset <- cumuloffset + 1.1*nlines
     }
   }
   if (nchar(sources$text) > 0) {
+    sources_line <- (cumuloffset + 1.3*nf - 1) + ifelse(nf > 0, 0.2, 0)
     if (sources$plural) {
-      graphics::mtext("Sources:", outer = TRUE, side = 1, adj = 0, padj = 1, line = (cumuloffset + 1.1*nf - 1), cex = (14/20))
+      graphics::mtext("Sources:", outer = TRUE, side = 1, adj = 0, padj = 1, line = sources_line, cex = (14/20))
     } else {
-      graphics::mtext("Source:", outer = TRUE, side = 1, adj = 0, padj = 1, line = (cumuloffset + 1.1*nf - 1), cex = (14/20))
+      graphics::mtext("Source:", outer = TRUE, side = 1, adj = 0, padj = 1, line = sources_line, cex = (14/20))
     }
 
     nlines <- stringr::str_count(sources$text, "\n")
@@ -194,7 +195,7 @@ drawnotes <- function(footnotes, sources, notesstart) {
                     side = 1,
                     adj = 0,
                     padj = 1,
-                    line = (cumuloffset + 1.1*nf - 1),
+                    line = sources_line,
                     cex = (14/20))
   }
   graphics::par(lheight = 1)
