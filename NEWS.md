@@ -13,6 +13,7 @@
 * Improved performance for autolabeller on column graphs ([#318](https://github.com/angusmoore/arphit/pull/318))
 * Fixed autolabeller failure when have to identical column series ([#324](https://github.com/angusmoore/arphit/pull/324))
 * Underscores in titles no longer throw errors for unknown width ([#337](https://github.com/angusmoore/arphit/pull/337))
+* Better vertical spacing of footnotes, sources, and axis labels ([#342](https://github.com/angusmoore/arphit/pull/342))
 
 ## Deprecated or removed
 
