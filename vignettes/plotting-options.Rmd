@@ -419,7 +419,7 @@ knitr::include_graphics("aes-tidy-double-group.png")
 
 A layer is a series (or group of series) built from the same aesthetic. In `arphit`, layers must be assigned to a panel. You can have more than one layer per panel.
 
-All require have four common arguments, and some layers have extra options to define their look:
+All layer types have four common arguments, and some layers have extra options to define their look:
 
   1. Data
   2. Aesthetic
@@ -431,7 +431,7 @@ All require have four common arguments, and some layers have extra options to de
 You can assign the same layer to multiple panels in one call by specifying a _vector_
 of panel names. E.g. `panel = c("1","2")`.
 
-There are three types of layers, `agg_line`, `agg_point` and `agg_col`. These are used nearly identically to produce line, scatter and column graphs respectively:
+There are four types of layers, `agg_line`, `agg_col`, `agg_point` and `agg_step`. These are used nearly identically to produce line, column, scatter and step graphs respectively:
 ```{r, results = "hide"}
 p <- arphitgg(layout = "2h") + 
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), panel = "1") + 
@@ -498,7 +498,29 @@ There are 7 options for line layers. What the options do is covered in more deta
 
 `agg_point` layers are just a wrapper around `agg_line` that set the line to NA, and the point marker (`pch`) to `19` for solid dots. Naturally, this layer type is best for scatter graphs, as they quicker and easier than constructing your own `agg_line` layer.
 
-`agg_point` has only 5 options Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`colour`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
+`agg_point` has only 5 options: Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`colour`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
+
+### Step layers
+
+`agg_step` layers are a special type of line layer that 'step' to each point rather
+than connecting the two with a straight line. What this means is that the line is
+held constant from the previous observation and then 'steps' up to the next 
+observation. The final observation has only the vertical part of the step.
+
+```{r, results = "hide"}
+step_data <- data.frame(x=1:10,y=1:10)
+p <- arphitgg(step_data, aes = agg_aes(x = x, y = y)) + 
+  agg_step()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "step.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("step.png")
+```
+
+Otherwise, `agg_step` layers are identical to line layers. They have same arguments
+and attributes (such as colour, line type etc).
 
 # Series colours and other attributes
 
