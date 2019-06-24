@@ -2,6 +2,8 @@
 
 ## New features
 
+* Add new layer type - `agg_step` - to create step line graphs ([#341](https://github.com/angusmoore/arphit/pull/341))
+
 ## Breaking changes
 
 ## Bugfixes
