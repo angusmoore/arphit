@@ -33,7 +33,7 @@ is_empty <- function(panel) {
   length(panel$series) == 0
 }
 
-create_series <- function(name, x, y, bar) {
+create_series <- function(name, x, y, geomtype) {
   check_series_has_obs_is_finite(y, name)
   if (is.factor(x)) {
     x <- as.character(x)
@@ -41,7 +41,7 @@ create_series <- function(name, x, y, bar) {
   list(name = name,
        x = x,
        y = y,
-       bar = bar,
+       geomtype = geomtype,
        attributes = list())
 }
 
@@ -56,7 +56,7 @@ extract_bar_data <- function(data) {
 
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
-    if (s$bar) {
+    if (s$geomtype == "bar") {
       colours <- append(colours, s$attributes$col)
       bordercol <- append(bordercol, s$attributes$barcol)
       series_data <- data.frame(agg_xvalues = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)

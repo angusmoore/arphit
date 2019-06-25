@@ -31,7 +31,7 @@ line_legend_entry <- function(name, col, pch, lwd, lty) {
 }
 
 legend_entry <- function(series) {
-  if (series$bar) {
+  if (series$geomtype == "bar") {
     entry <- col_legend_entry(series$name, series$attributes$col, series$attributes$barcol)
   } else {
     entry <- line_legend_entry(series$name, series$attributes$col, series$attributes$pch,

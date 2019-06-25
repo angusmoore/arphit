@@ -23,7 +23,7 @@ get_stacked_max_min <- function(data, xlim) {
   bardata <- data.frame(x = data$x, stringsAsFactors = FALSE)
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
-    if (s$bar) {
+    if (s$geomtype == "bar") {
       series_data <- data.frame(x = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
       names(series_data) <- c("x", i)
       bardata <- dplyr::left_join(bardata, series_data, by = "x")
@@ -55,7 +55,7 @@ get_series_max_min <- function(series, data, xlim) {
 }
 
 get_data_max_min <- function(data, xlim, stacked) {
-  if (any(sapply(data$series, function(x) x$bar))) {
+  if (any(sapply(data$series, function(x) x$geomtype == "bar"))) {
     minval <- 0 # bound by zero if we have bars, since we want them to start there
     maxval <- 0
   } else {
@@ -65,7 +65,7 @@ get_data_max_min <- function(data, xlim, stacked) {
 
   # Find smallest and largest series value
   for (s in data$series) {
-    if (!s$bar || !stacked) {
+    if (s$geomtype != "bar" || !stacked) {
       out <- get_series_max_min(s, data, xlim)
       minval <- min(minval, out$min, na.rm = TRUE)
       maxval <- max(maxval, out$max, na.rm = TRUE)

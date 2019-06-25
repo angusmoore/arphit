@@ -44,6 +44,14 @@ test_that("Layers", {
   # Point
   foo <- arphitgg(data) + agg_point(aes = agg_aes(x = date, y = unemployment, group = state))
   expect_true(check_graph(foo, "gg-layer-point"))
+
+  # Simple test of step graph
+  foo <- arphitgg(data.frame()) + agg_step(agg_aes(x=1:10,y=1:10))
+  expect_true(check_graph(foo, "gg-layer-simple-step"))
+
+  # More complex step
+  foo <- arphitgg(data) + agg_step(aes = agg_aes(x = date, y = unemployment, group = state))
+  expect_true(check_graph(foo, "gg-layer-step"))
 })
 
 test_that("Aesthetic inheritance", {
