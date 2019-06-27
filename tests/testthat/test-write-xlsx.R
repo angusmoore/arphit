@@ -31,6 +31,22 @@ test_that("Smoke tests", {
   p <- arphitgg(data, agg_aes(x=agg_time,y=x1)) + agg_line()
   agg_draw(p, "test-2.xlsx")
   expect_true(file.exists("test-2.xlsx"))
+
+  # With xlimit (#307)
+  p <- arphitgg(data, agg_aes(x=agg_time,y=x1)) + agg_line() + agg_xlim(2006, NA)
+  agg_draw(p, "test-3.xlsx")
+  expect_true(file.exists("test-3.xlsx"))
+
+  p <- arphitgg(data, agg_aes(x=agg_time,y=x1)) + agg_line() + agg_xlim(NA, 2006)
+  agg_draw(p, "test-4.xlsx")
+  expect_true(file.exists("test-4.xlsx"))
+
+  # Correct number of rows #348
+  p <- arphitgg(data.frame(x=letters[1:10],y=rnorm(10),stringsAsFactors = F),
+                agg_aes(x,y)) + agg_col()
+  agg_draw(p, "baz.xlsx")
+  baz <- readxl::read_xlsx("baz.xlsx", sheet = "1")
+  expect_equal(nrow(baz), 10)
 })
 
 test_that("Characters coerced to factors (#280)", {
