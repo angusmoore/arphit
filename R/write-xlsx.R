@@ -11,12 +11,13 @@ create_data_panel <- function(panel, xlim) {
   return(df)
 }
 
-restrict_xlim_xlsx <- function(panel, xlim) {
+restrict_xlim_xlsx <- function(panel, data, xlim) {
   if (is.null(xlim)) xlim <- c(-Inf, Inf)
   if (is.na(xlim[1])) xlim[1] <- -Inf
   if (is.na(xlim[2])) xlim[2] <- Inf
 
-  indices <- panel[[1]]
+  indices <- get_x_plot_locations(panel[[1]], data)
+
   if (lubridate::is.Date(indices) || lubridate::is.POSIXt(indices)) {
     freq <- frequencyof(indices)
     indices <- make_decimal_date(indices, freq)
@@ -41,12 +42,13 @@ write_to_excel <- function(gg, filename) {
     )
 
   panels <- lapply(gg$data, create_data_panel)
+  data <- convert_ts_to_decimal_date(gg$data)
 
   # Handle applying x lim to all axes
   if (!is.list(gg$xlim)) gg$xlim <- lapply(panels, function(x) gg$xlim)
 
   for (p in names(panels)) {
-    panels[[p]] <- restrict_xlim_xlsx(panels[[p]], gg$xlim[[p]])
+    panels[[p]] <- restrict_xlim_xlsx(panels[[p]], data[[p]], gg$xlim[[p]])
   }
 
   writexl::write_xlsx(append(list(Meta = metadata), panels),
