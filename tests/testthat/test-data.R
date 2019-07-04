@@ -115,4 +115,20 @@ test_that("Bar graph placement", {
              y = 1:7)
   p <- arphitgg(foo, agg_aes(x=date,y=y)) + agg_point() + agg_col()
   expect_true(check_graph(p, "data-bar-widen-x"))
+
+  # Widening week and days - problematic as there aren't consistent numbers of them in a year
+  # 352
+  dates <- seq(as.Date("2013/1/1"), as.Date("2016/1/1"), "weeks")
+  data <- data.frame(date = dates,
+                     y = runif(length(dates)))
+  p <- arphitgg(data, agg_aes(x=date,y=y,group=lubridate::year(dates)))+agg_col()+
+    agg_vline(2014,panel="1")+agg_vline(2015,panel="1")
+  expect_true(check_graph(p, "data-bar-widen-x-weeks"))
+
+  dates <- seq(as.Date("2013/1/1"), as.Date("2015/1/1"), "days")
+  data <- data.frame(date = dates,
+                     y = runif(length(dates)))
+  p <- arphitgg(data, agg_aes(x=date,y=y,group=lubridate::year(date)))+agg_col()+
+    agg_vline(2014,panel="1")
+  expect_true(check_graph(p, "data-bar-widen-x-days"))
 })
