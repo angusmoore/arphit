@@ -52,6 +52,20 @@ test_that("Layers", {
   # More complex step
   foo <- arphitgg(data) + agg_step(aes = agg_aes(x = date, y = unemployment, group = state))
   expect_true(check_graph(foo, "gg-layer-step"))
+
+  # Waterfall graph
+  data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y))
+  expect_true(check_graph(foo, "gg-layer-waterfall"))
+
+  # Below the axis
+
+  # Cross the axis
+
+  # Only positive changes
+  data  <- data.frame(x = letters[1:4], y = c(2,1,0.5,3.5))
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y))
+
 })
 
 test_that("Aesthetic inheritance", {
@@ -221,6 +235,13 @@ test_that("Error messages", {
       agg_col(data = filter(data, x == "c"), aes = agg_aes(x = x, y = y)),
     "Do not know how to join together ordering variables with classes character and integer (panel 1). Perhaps you added layers to the same panel with different ordering variables (or didn't specify an ordering variable for one of the layers)?",
     fixed = TRUE
+  )
+
+  ## Adding two waterfall layers to the same panel
+  data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
+  expect_error(
+    arphitgg(data, agg_aes(x=x,y=y)) + agg_waterfall(from="a",to="f") + agg_waterfall(from="a",to="f"),
+    "Cannot add agg_waterfall layer to panel 1 because one already exists"
   )
 })
 

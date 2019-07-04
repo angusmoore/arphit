@@ -635,6 +635,51 @@ agg_point <- function(aes = NULL, data = NULL, colour = NULL, pointsize = 1, pan
   )
 }
 
+#' Add a waterfall layer to an arphit plot.
+#'
+#' Creates a bar chart, showing how the changes from left-most observation to the
+#' right-most observation.
+#'
+#' You should ensure that your data are ordered so that your first observation is
+#' the observation you want the waterfall to 'start' from, and your last
+#' observation the one you want the waterfall to 'end' at. Positive and negative
+#' bars are coloured differently to distinguish them, as are the start and end
+#' observations. Sensible defaults are provided, but you can set your own. See
+#' the documentation for the `colour` argument.
+#'
+#' This layer should be considered experimental and may undergo breaking
+#' changes.
+#'
+#' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
+#' @param data The data to be used. Will inherit from parent if missing.
+#' @param colour A vector of four colours for (in order) the 'from'/'start' bar,
+#' negative, changes, positive changes and the 'to'/'end' bar
+#' @param barcol (optional) Outline colours for each bar series (same order as
+#' `colour`)
+#' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
+#'
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
+#'
+#' @examples
+#' data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
+#' arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,order=x))
+#'
+#' @export
+agg_waterfall <- function(aes = NULL, data = NULL, colour = c(RBA["Grey5"],RBA["Red4"],RBA["DarkGreen3"],RBA["Grey10"]), barcol = NULL, panel = "1") {
+  check_panel(panel)
+  return(
+    list(
+      type = "waterfall",
+      data = data,
+      aes = aes,
+      colour = colour,
+      barcol = barcol,
+      panel = as.character(panel)
+    )
+  )
+}
+
 #' Define an aesthetic for a graph, or a graph layer.
 #'
 #' If specified as part of a layer, fields left blank will be inherited from the parent.

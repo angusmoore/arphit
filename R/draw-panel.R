@@ -416,6 +416,14 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
   }
 }
 
+drawwaterfall <- function(l, data, xlim, ylim, log_scale) {
+  snames <- sapply(data$series, function(s) s$name)
+  left <- data$series[snames=="1"]$y
+  right <- data$series[snames=="4"]$y
+  positive <- data$series[snames=="3"]$y
+  negative <- data$series[snames=="2"]$y
+}
+
 drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
   out <- get_bar_data(data)
   bardata <- out$bardata
@@ -465,6 +473,7 @@ drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xun
   gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, data$ts)
 
   if (!is_empty(data)) drawbars(l, data, xlim, ylim, bar.stacked, log_scale)
+  if (!is_empty(data)) drawwaterfall(l, data, xlim, ylim, log_scale)
 
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
   graphics::par(mfg = l)
