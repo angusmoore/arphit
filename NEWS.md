@@ -9,7 +9,7 @@
 ## Bugfixes
 
 * Fixed error for bar graphs with weekly data due to the fact that years don't
-have a whole number of weeks ([#354](https://github.com/angusmoore/arphit/pull/354))
+have a whole number of weeks ([#355](https://github.com/angusmoore/arphit/pull/355))
 * Y axis tick labels are now formatted to the same number of decimal places
 ([#339](https://github.com/angusmoore/arphit/pull/339))
 * Exporting to XLSX respects x limits ([#309](https://github.com/angusmoore/arphit/pull/309))
