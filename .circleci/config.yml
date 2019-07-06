@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: rocker/tidyverse:latest
+      - image: rocker/verse:latest
     steps:
       - restore_cache:
           keys:
@@ -30,6 +30,10 @@ jobs:
       - run:
           name: Check package
           command: R CMD check *tar.gz
+      - run:
+          name: R CMD check logs - failure
+          command: cat arphit.rcheck/00check.log
+          when: on_fail
       - save_cache:
           key: cache
           paths:
