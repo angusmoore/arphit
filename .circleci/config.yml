@@ -8,7 +8,7 @@ jobs:
           keys:
             - cache
       - checkout
-      - run: sudo apt-get install libmagick++-dev
+      - run: apt-get install libmagick++-dev -y
       - run:
           name: Install package dependencies
           command: |
