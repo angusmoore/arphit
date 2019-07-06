@@ -46,6 +46,9 @@ get_x_plot_locations <- function(x, data) {
 convert_ts_to_decimal_date <- function(data) {
   for (p in names(data)) {
     # if is dates, convert to year fractions
+    if (class(data[[p]]$x) == "yearqtr" || class(data[[p]]$x) == "yearmon") {
+      data[[p]]$x <- zoo::as.Date(data[[p]]$x)
+    }
     if (lubridate::is.Date(data[[p]]$x) || lubridate::is.POSIXt(data[[p]]$x)) {
       freq <- frequencyof(data[[p]]$x)
       data[[p]]$x <- make_decimal_date(data[[p]]$x, freq)

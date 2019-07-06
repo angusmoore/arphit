@@ -176,3 +176,23 @@ test_that("Miscellaneous", {
   )
 })
 
+## yearqtr and yearmon =================
+
+test_that("yearqtr and yearmon", {
+  set.seed(42)
+  Quarter <- zoo::as.yearqtr(seq.Date(from = as.Date("1982-03-01"), to = as.Date("2019-03-01"), by = "quarter"))
+  data <- rnorm(n = length(Quarter), mean = 1, sd = 1)
+  data_tbl <- cbind.data.frame(Quarter, data)
+
+  p <- arphitgg(data_tbl) +
+    agg_line(aes = agg_aes(x = Quarter, y = data), colour = RBA["Purple1"])
+  expect_true(check_graph(p, "xvars-zoo-yearqtr"))
+
+  month <- zoo::as.yearqtr(seq.Date(from = as.Date("1982-03-01"), to = as.Date("2019-03-01"), by = "month"))
+  data <- rnorm(n = length(month), mean = 1, sd = 1)
+  data_tbl <- cbind.data.frame(month, data)
+
+  p <- arphitgg(data_tbl) +
+    agg_line(aes = agg_aes(x = month, y = data), colour = RBA["Purple1"])
+  expect_true(check_graph(p, "xvars-zoo-yearmon"))
+})
