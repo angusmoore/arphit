@@ -118,6 +118,7 @@ test_that("Bar graph placement", {
 
   # Widening week and days - problematic as there aren't consistent numbers of them in a year
   # 352
+  set.seed(42)
   dates <- seq(as.Date("2013/1/1"), as.Date("2016/1/1"), "weeks")
   data <- data.frame(date = dates,
                      y = runif(length(dates)))
