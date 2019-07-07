@@ -32,7 +32,7 @@ jobs:
           command: R CMD check *tar.gz
       - run:
           name: R CMD check logs - failure
-          command: cat /root/project/arphit.Rcheck/00check.log
+          command: cat ..\arphit.Rcheck\tests\*.Rout.fail
           when: on_fail
       - save_cache:
           key: cache
