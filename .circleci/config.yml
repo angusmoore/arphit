@@ -31,8 +31,11 @@ jobs:
           name: Check package
           command: R CMD check *tar.gz
       - run:
+          name: Warnings as errors
+          command: grep -q -R "WARNING" /root/project/arphit.Rcheck/00check.log
+      - run:
           name: R CMD check logs - failure
-          command: cat ../arphit.Rcheck/tests/*.Rout.fail
+          command: for name in $(find "/root/project/arphit.Rcheck/tests/" -type f -name "*fail");do echo ">>> Filename: ${name} <<<";cat ${name};done
           when: on_fail
       - save_cache:
           key: cache
