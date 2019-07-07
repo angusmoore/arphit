@@ -32,12 +32,18 @@ jobs:
           command: R CMD check *tar.gz
       - run:
           name: Warnings as errors
-          command: grep -q -R "WARNING" /root/project/arphit.Rcheck/00check.log
+          command: grep -q -R "WARNING" ${CIRCLE_WORKING_DIRECTORY}/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
+          when: on_success
       - run:
           name: R CMD check logs - failure
           command: |
-            for name in $(find "/root/project/arphit.Rcheck/tests/" -type f -name "*fail");do echo ">>> Filename: ${name} <<<";cat ${name};done
+            for name in $(find "${CIRCLE_WORKING_DIRECTORY}/${CIRCLE_PROJECT_REPONAME}.Rcheck/tests/" -type f -name "*fail");do echo ">>> Filename: ${name} <<<";cat ${name};done
           when: on_fail
+      - run:
+          name: Code coverage report (codecov.io)
+          command: |
+            Rscript -e 'covr::coveralls()'
+          when: on_success
       - save_cache:
           key: cache
           paths:
