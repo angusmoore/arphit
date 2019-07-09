@@ -418,18 +418,40 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
 
 drawwaterfall <- function(l, data, xlim, ylim, log_scale) {
   snames <- sapply(data$series, function(s) s$name)
-  left <- data$series[snames=="1"]$y
-  right <- data$series[snames=="4"]$y
-  positive <- data$series[snames=="3"]$y
-  negative <- data$series[snames=="2"]$y
+  data$bars <- NULL # remove the pre-fetched bardata (used for things like setting ylimits)
+  bars <- extract_bar_data(data, "waterfall")$bars
+
+  if (nrow(bars$bardata) > 0) {
+    for (i in 1:nrow(bars$bardata)) {
+      draw_data <- bars$bardata
+      draw_data[-i,] <- NA
+
+      if (i > 1 && i < nrow(bars$bardata)) {
+        y_offset <- sum(bars$bardata[1:(i-1),], na.rm = TRUE)
+      } else {
+        y_offset <- 0
+      }
+
+      drawbars_(
+        l,
+        data,
+        draw_data,
+        bars$colours,
+        bars$bordercol,
+        xlim,
+        list(
+          min = ylim$min - y_offset,
+          max = ylim$max - y_offset,
+          nsteps = ylim$nsteps
+        ),
+        TRUE,
+        log_scale
+      )
+    }
+  }
 }
 
-drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
-  out <- get_bar_data(data)
-  bardata <- out$bardata
-  colours <- out$colours
-  bordercol <- out$bordercol
-
+drawbars_ <- function(l, data, bardata, colours, bordercol, xlim, ylim, bar.stacked, log_scale) {
   if (ncol(bardata) > 0) {
     out <- convert_to_plot_bardata(bardata, data)
     bardata_p <- out$p
@@ -442,6 +464,11 @@ drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
     graphics::par(mfg = l)
     graphics::barplot(bardata_n, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
   }
+}
+
+drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
+  out <- get_bar_data(data)
+  drawbars_(l, data, out$bardata, out$colours, out$bordercol, xlim, ylim, bar.stacked, log_scale)
 }
 
 drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, log_scale) {

@@ -129,43 +129,9 @@ widen_x <- function(gg, data, aes, panel) {
   return(gg)
 }
 
-assign_series_waterfall <- function(gg, data, aes, panel) {
-  if (length(gg$data[[panel]]$series) > 0) {
-    waterfall_series <-
-      sapply(gg$data[[panel]]$series, function(s)
-        s$geomtype == "waterfall")
-    if (sum(waterfall_series) != 0)
-      stop(
-        paste0(
-          "Cannot add agg_waterfall layer to panel ",
-          panel,
-          " because one already exists. Can only have 1 waterfall layer per panel."
-        ),
-        .call = FALSE
-      )
-  }
-
-  if (!is_null_quo(aes$group)) stop(paste0("agg_waterfall layers cannot have a group aesthetic (panel ", panel, ")"), .call = FALSE)
-
-  # Assign the 'groups'
-  groups <- dplyr::case_when(rlang::eval_tidy(aes$y, data) < 0 ~ 2,
-                             rlang::eval_tidy(aes$y, data) >= 0 ~ 3)
-  groups[1] <- 1
-  groups[length(groups)] <- 4
-
-  data <- split(data, groups)
-  for (name in names(data)) {
-    new_series <- create_series(name, rlang::eval_tidy(aes$x, data[[name]]),
-                                rlang::eval_tidy(aes$y, data[[name]]), "waterfall")
-    gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
-  }
-  return(gg)
-}
-
 assign_series <- function(gg, data, aes, panel, geomtype) {
   if (is_null_quo(aes$group)) {
-    new_series <- create_series(rlang::quo_name(aes$y), rlang::eval_tidy(aes$x, data),
-                                rlang::eval_tidy(aes$y, data), geomtype)
+    new_series <- create_series(rlang::quo_name(aes$y), rlang::eval_tidy(aes$x, data), rlang::eval_tidy(aes$y, data), geomtype)
     gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
   } else {
     # Special case NAs in the data
@@ -174,8 +140,7 @@ assign_series <- function(gg, data, aes, panel, geomtype) {
     names(data)[is.na(names(data))] <- "<NA>"
 
     for (name in names(data)) {
-      new_series <- create_series(name, rlang::eval_tidy(aes$x, data[[name]]),
-                                  rlang::eval_tidy(aes$y, data[[name]]), geomtype)
+      new_series <- create_series(name, rlang::eval_tidy(aes$x, data[[name]]), rlang::eval_tidy(aes$y, data[[name]]), geomtype)
       gg$data[[panel]]$series <- append(gg$data[[panel]]$series, list(new_series))
     }
   }
@@ -183,6 +148,7 @@ assign_series <- function(gg, data, aes, panel, geomtype) {
 }
 
 reorder_series <- function(gg, data, aes, panel) {
+
   if (!is_null_quo(aes$group) && rlang::quo_name(aes$order) %in% series_names(gg$data[[panel]])) {
     # ordering by the value of one of the series (the group subset of aes$y)
     order_index <- which(rlang::quo_name(aes$order) == series_names(gg$data[[panel]]))
@@ -253,11 +219,7 @@ addlayertopanel <- function(gg, data, aes, panel, geomtype) {
   gg <- widen_x(gg, data, aes, panel)
 
   ## assign series
-  if (geomtype == "waterfall") {
-    gg <- assign_series_waterfall(gg, data, aes, panel)
-  } else {
-    gg <- assign_series(gg, data, aes, panel, geomtype)
-  }
+  gg <- assign_series(gg, data, aes, panel, geomtype)
 
   ## now reorder
   gg <- reorder_series(gg, data, aes, panel)

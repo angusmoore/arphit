@@ -66,6 +66,12 @@ test_that("Layers", {
   data  <- data.frame(x = letters[1:4], y = c(2,1,0.5,3.5))
   foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y))
 
+  # Waterfall with groups
+  data <- data.frame(x = c('start','a','a','b','b','end'),
+                     y = c(1, 0.5, -0.4, 0.2, 0.1, 1.4),
+                     group = c(1, 2, 3, 2, 3, 4),
+                     order = c(1,2,2,3,3,4))
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,group=group,order=order))
 })
 
 test_that("Aesthetic inheritance", {
