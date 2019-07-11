@@ -21,12 +21,9 @@ weeks_in_year <- function(dates) {
   # 2000-01-01, you'll get 53 'weekly' observations (ending with 2000-12-30),
   # but if it starts 2000-01-04 instead, the 53rd 'week' is 2000-10-02.
   # This is a bug in the calendar. Fixing it seems hard. Caesar should be ashamed.
-  sapply(dates, function(date) {
-    if (lubridate::year(date + lubridate::weeks(53 - lubridate::week(date))) == lubridate::year(date)) {
-      53
-    } else {
-      52
-  }})
+  dplyr::if_else(lubridate::year(dates + lubridate::weeks(53 - lubridate::week(dates))) == lubridate::year(dates),
+                 53,
+                 52)
 }
 
 make_decimal_date <- function(date, frequency) {
