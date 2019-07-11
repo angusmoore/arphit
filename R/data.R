@@ -76,11 +76,33 @@ get_bar_data <- function(data) {
   data$bars
 }
 
+equal_date_spacing <- function(x, freq) {
+  if (freq == 1/365 || freq == 1 / (365 / 7)) {
+    # special case days and weeks as there isn't a whole number of them / consistently
+    # the same number of them in a year
+    make_decimal_date(
+      seq(
+        from = min(x),
+        to = max(x),
+        by = dplyr::case_when(
+          freq == 1 / (365 / 7) ~ "week",
+          freq == 1 / 365 ~ "day"
+        )
+      ),
+      freq
+    )
+  } else {
+    seq(from = make_decimal_date(min(x), freq),
+        to = make_decimal_date(max(x), freq),
+        by = freq)
+  }
+}
+
 convert_to_plot_bardata <- function(bardata, data) {
   if (data$ts) {
     # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
     bardata$x <- data$x # I have to round because of small inaccuracies
-    equal_spaced <- seq(from = min(bardata$x), to = max(bardata$x), by = data$freq)
+    equal_spaced <- equal_date_spacing(data$ts_x, data$freq)
     for (x in equal_spaced) {
       if (!any(abs(bardata$x - x) < 1e-10)) {
         # Use fuzzy comparison because of inaccuracies in constructing the sequence
