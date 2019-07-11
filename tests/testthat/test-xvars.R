@@ -32,7 +32,7 @@ test_that("Time series graphs at different frequencies", {
     ),
     y = rnorm(100))
   p <- arphitgg(data, agg_aes(x = date, y = y)) + agg_line()
-  expect_true(check_graph(p, "xvars-weekly"))
+  expect_true(check_graph(p, "xvars-weekly"), 0.95)
 
   # semi annual data
   data <-
@@ -52,7 +52,7 @@ test_that("Time series graphs at different frequencies", {
   # Monthly
   foo <- ts(data.frame(y = rnorm(100)), frequency = 12, start = c(2000,1))
   p <- arphitgg(foo, agg_aes(y=y)) + agg_line()
-  expect_true(check_graph(p, "xvars-monthly"))
+  expect_true(check_graph(p, "xvars-monthly"), 0.95)
 
   # Daily
   foo <- ts(data.frame(y = rnorm(1000)), frequency = 365.25, start = c(2000,1))
