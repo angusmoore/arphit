@@ -131,5 +131,5 @@ test_that("Bar graph placement", {
                      y = runif(length(dates)))
   p <- arphitgg(data, agg_aes(x=date,y=y,group=lubridate::year(date)))+agg_col()+
     agg_vline(2014,panel="1")
-  expect_true(check_graph(p, "data-bar-widen-x-days"))
+  expect_true(check_graph(p, "data-bar-widen-x-days", 0.985))
 })
