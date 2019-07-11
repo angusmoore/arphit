@@ -123,13 +123,13 @@ test_that("Bar graph placement", {
   data <- data.frame(date = dates,
                      y = runif(length(dates)))
   p <- arphitgg(data, agg_aes(x=date,y=y,group=lubridate::year(dates)))+agg_col()+
-    agg_vline(2014,panel="1")+agg_vline(2015,panel="1")
+    agg_abline(x=2014,panel="1")+agg_abline(x=2015,panel="1")
   expect_true(check_graph(p, "data-bar-widen-x-weeks"))
 
   dates <- seq(as.Date("2013/1/1"), as.Date("2015/1/1"), "days")
   data <- data.frame(date = dates,
                      y = runif(length(dates)))
   p <- arphitgg(data, agg_aes(x=date,y=y,group=lubridate::year(date)))+agg_col()+
-    agg_vline(2014,panel="1")
+    agg_abline(x=2014,panel="1")
   expect_true(check_graph(p, "data-bar-widen-x-days", 0.985))
 })
