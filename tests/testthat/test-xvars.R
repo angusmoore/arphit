@@ -194,5 +194,5 @@ test_that("yearqtr and yearmon", {
 
   p <- arphitgg(data_tbl) +
     agg_line(aes = agg_aes(x = month, y = data), colour = RBA["Purple1"])
-  expect_true(check_graph(p, "xvars-zoo-yearmon"))
+  expect_true(check_graph(p, "xvars-zoo-yearmon", 0.96))
 })
