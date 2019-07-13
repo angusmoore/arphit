@@ -55,23 +55,39 @@ test_that("Layers", {
 
   # Waterfall graph
   data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
-  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y))
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y)) + agg_ylim(0,4,5)
   expect_true(check_graph(foo, "gg-layer-waterfall"))
 
   # Below the axis
+  data  <- data.frame(x = letters[1:6], y = -c(2,1,-0.5,-0.2,0.4,2.7))
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y)) + agg_ylim(-4,1,6)
+  expect_true(check_graph(foo, "gg-layer-waterfall-below"))
 
   # Cross the axis
+  data <- data.frame(x = letters[1:4],
+                     y = c(0.5, -1, 0.2, -0.3))
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x,y)) + agg_ylim(-1,1,3)
+  expect_true(check_graph(foo, "gg-layer-waterfall-crossing"))
 
   # Only positive changes
   data  <- data.frame(x = letters[1:4], y = c(2,1,0.5,3.5))
   foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y))
+  expect_true(check_graph(foo, "gg-layer-waterfall-positive-changes"))
 
   # Waterfall with groups
   data <- data.frame(x = c('start','a','a','b','b','end'),
                      y = c(1, 0.5, -0.4, 0.2, 0.1, 1.4),
                      group = c(1, 2, 3, 2, 3, 4),
                      order = c(1,2,2,3,3,4))
-  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,group=group,order=order))
+  foo <- arphitgg(data) +
+    agg_waterfall(agg_aes(x=x,y=y,group=group,order=order)) +
+    agg_ylim(0,2,5)
+  expect_true(check_graph(foo, "gg-layer-waterfall-groups"))
+
+  # Waterfall mixed with other layers
+  data <- data.frame(x=letters[1:6],y=c(1,0.5,-0.2,0.2,-0.5,1),z=1:6)
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x,y,x))+agg_point(agg_aes(x,z))
+  expect_true(check_graph(foo, "gg-layer-waterfall-with-point"))
 })
 
 test_that("Aesthetic inheritance", {
@@ -241,13 +257,6 @@ test_that("Error messages", {
       agg_col(data = filter(data, x == "c"), aes = agg_aes(x = x, y = y)),
     "Do not know how to join together ordering variables with classes character and integer (panel 1). Perhaps you added layers to the same panel with different ordering variables (or didn't specify an ordering variable for one of the layers)?",
     fixed = TRUE
-  )
-
-  ## Adding two waterfall layers to the same panel
-  data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
-  expect_error(
-    arphitgg(data, agg_aes(x=x,y=y)) + agg_waterfall(from="a",to="f") + agg_waterfall(from="a",to="f"),
-    "Cannot add agg_waterfall layer to panel 1 because one already exists"
   )
 })
 
