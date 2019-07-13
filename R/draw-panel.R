@@ -421,7 +421,7 @@ drawwaterfall <- function(l, data, xlim, ylim, log_scale) {
   data$bars <- NULL # remove the pre-fetched bardata (used for things like setting ylimits)
   bars <- extract_bar_data(data, "waterfall")$bars
 
-  if (nrow(bars$bardata) > 0) {
+  if (ncol(bars$bardata) > 0 && nrow(bars$bardata) > 0) {
     for (i in 1:nrow(bars$bardata)) {
       draw_data <- bars$bardata
       draw_data[-i,] <- NA
