@@ -238,10 +238,10 @@ test_that("drop x label", {
   p <- arphitgg(foo, agg_aes(x=date,y=y),layout="2v")+agg_line(panel=c("1","2"))
   expect_true(check_graph(p,  "draw-panel-drop-first-ts-auto-not-required"))
 
-  # not respected for scatter graphs
+  # not respected for scatter graphs (#351)
   set.seed(42)
   df <- data.frame(x = runif(20), y = runif(20), panel = rep(c("a", "b"), each = 10))
   p <- arphitgg(df, agg_aes(x = x, y = y, facet = panel), layout = "2v", dropxlabel = TRUE) +
     agg_point()
-
+  expect_true(check_graph(p, "draw-panel-drop-first-xlabel-scatter"))
 })
