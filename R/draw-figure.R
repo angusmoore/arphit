@@ -33,7 +33,7 @@ leftrightpadding <- function(yticks, yunits, panels, layout) {
   L <- 0
   for (p in panels) {
     yticks_dropped <- yticks_to_draw(yticks[[p]], p, layout)
-    nc <- max(sapply(yticks_dropped, getstrwidth))
+    nc <- max(sapply(pretty_format_numbers(yticks_dropped), getstrwidth))
     nc <- max(nc, getstrwidth(yunits[[p]]))
     if (is.even(p)) {
       R <- max(R, nc)
