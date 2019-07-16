@@ -33,7 +33,13 @@ jobs:
           command: R CMD check *tar.gz
       - run:
           name: Warnings as errors
-          command: grep -q -c -R "WARNING" /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
+          command: | 
+            grep -q -R "WARNING" /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
+            if [$? -eq 1] then
+              exit 0
+            else
+              exit 1
+            fi
           when: on_success
       - run:
           name: R CMD check logs - failure
