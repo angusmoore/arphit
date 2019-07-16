@@ -33,7 +33,7 @@ jobs:
           command: R CMD check *tar.gz
       - run:
           name: Warnings as errors
-          command: grep -q -R "WARNING" /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
+          command: grep -q -c -R "WARNING" /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
           when: on_success
       - run:
           name: R CMD check logs - failure
@@ -41,9 +41,13 @@ jobs:
             for name in $(find "/root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/tests/" -type f -name "*fail");do echo ">>> Filename: ${name} <<<";cat ${name};done
           when: on_fail
       - run:
+          name: R CMD check logs - log
+          command: |
+            cat /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
+      - run:
           name: Code coverage report (codecov.io)
           command: |
-            Rscript -e 'covr::coveralls()'
+            Rscript -e 'covr::codecov()'
           when: on_success
       - save_cache:
           key: cache
