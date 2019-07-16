@@ -44,6 +44,7 @@ jobs:
           name: R CMD check logs - log
           command: |
             cat /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
+          when: on_fail
       - run:
           name: Code coverage report (codecov.io)
           command: |
