@@ -35,7 +35,7 @@ jobs:
           name: Warnings as errors
           command: | 
             grep -q -R "WARNING" /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
-            if [$? -eq 1] then
+            if [$? -neq 0] then
               exit 0
             else
               exit 1
