@@ -54,19 +54,19 @@ test_that("Layers", {
   expect_true(check_graph(foo, "gg-layer-step"))
 
   # Waterfall graph
-  data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
-  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y)) + agg_ylim(0,4,5)
+  data  <- data.frame(x = letters[1:6], y = c(2,1.1,-0.5,-0.2,0.4,2.8))
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y))
   expect_true(check_graph(foo, "gg-layer-waterfall"))
 
   # Below the axis
   data  <- data.frame(x = letters[1:6], y = -c(2,1,-0.5,-0.2,0.4,2.7))
-  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y)) + agg_ylim(-4,1,6)
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y))
   expect_true(check_graph(foo, "gg-layer-waterfall-below"))
 
   # Cross the axis
   data <- data.frame(x = letters[1:4],
                      y = c(0.5, -1, 0.2, -0.3))
-  foo <- arphitgg(data) + agg_waterfall(agg_aes(x,y)) + agg_ylim(-1,1,3)
+  foo <- arphitgg(data) + agg_waterfall(agg_aes(x,y))
   expect_true(check_graph(foo, "gg-layer-waterfall-crossing"))
 
   # Only positive changes
@@ -80,8 +80,7 @@ test_that("Layers", {
                      group = c(1, 2, 3, 2, 3, 4),
                      order = c(1,2,2,3,3,4))
   foo <- arphitgg(data) +
-    agg_waterfall(agg_aes(x=x,y=y,group=group,order=order)) +
-    agg_ylim(0,2,5)
+    agg_waterfall(agg_aes(x=x,y=y,group=group,order=order))
   expect_true(check_graph(foo, "gg-layer-waterfall-groups"))
 
   # Waterfall mixed with other layers
