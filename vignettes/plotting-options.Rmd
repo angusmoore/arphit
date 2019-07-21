@@ -431,7 +431,8 @@ All layer types have four common arguments, and some layers have extra options t
 You can assign the same layer to multiple panels in one call by specifying a _vector_
 of panel names. E.g. `panel = c("1","2")`.
 
-There are four types of layers, `agg_line`, `agg_col`, `agg_point` and `agg_step`. These are used nearly identically to produce line, column, scatter and step graphs respectively:
+There are three types of basic layers, `agg_line`, `agg_col`, and `agg_point`. These are used nearly identically to produce line, column, and scatter graphs respectively. There are also two types of specialised layers, discussed below.
+
 ```{r, results = "hide"}
 p <- arphitgg(layout = "2h") + 
   agg_line(data = long_data, aes = agg_aes(x = date, y = y1, group = group_var), panel = "1") + 
@@ -500,7 +501,9 @@ There are 7 options for line layers. What the options do is covered in more deta
 
 `agg_point` has only 5 options: Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`colour`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
 
-### Step layers
+### Specialised layer types
+
+#### Step layers
 
 `agg_step` layers are a special type of line layer that 'step' to each point rather
 than connecting the two with a straight line. What this means is that the line is
@@ -521,6 +524,65 @@ knitr::include_graphics("step.png")
 
 Otherwise, `agg_step` layers are identical to line layers. They have same arguments
 and attributes (such as colour, line type etc).
+
+#### Waterfall layers
+
+`agg_waterfall` creates waterfall graphs. These are a specialised bar graph where
+the bars (except for the last one) step from where the previous one ends. These work
+largely identically to `agg_col` layers. The first and last bars (determined by
+the order aesthetic) are always anchored to zero; but every other colubarmn is anchored
+to where the previous bar ended. X-ticks can have multiple observations, using
+groups. In this case, the _net_ of the bar is where the next bar(s) start.
+
+```{r, results = "hide"}
+waterfall_data <- data.frame(x = letters[1:6],
+                             y = c(1,0.5,-0.2,0.3,-0.5,1.1))
+p <- arphitgg(waterfall_data, agg_aes(x,y)) + agg_waterfall()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "waterfall.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("waterfall.png")
+```
+
+Waterfall layers work with groups. This can be helpful for highlighting positive and negative changes, but can also be used when you have multiple observations per x-tick:
+
+```{r, results = "hide"}
+library(dplyr)
+waterfall_data <- data.frame(x = letters[1:6],
+                             y = c(1,0.5,-0.2,0.3,-0.5,1.1))
+p <- arphitgg(waterfall_data,
+              agg_aes(x = x,
+                      y = y,
+                      group = case_when(x == "a" ~ "start",
+                                        x == "f" ~ "end",
+                                        y > 0 ~ "plus",
+                                        y <=0 ~ "minus"))) + 
+  agg_waterfall(colour = c("grey","red","blue","black"))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "waterfall-plusminus.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("waterfall-plusminus.png")
+```
+
+
+```{r results = "hide"}
+data <- data.frame(x = c('start','a','a','b','b','end'),
+                   y = c(1, 0.5, -0.4, 0.2, 0.1, 1.4),
+                   group = c(1, 2, 3, 2, 3, 4),
+                   order = c(1,2,2,3,3,4))
+p <- arphitgg(data) +
+    agg_waterfall(agg_aes(x=x,y=y,group=group,order=order))
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "waterfall-group.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("waterfall-group.png")
+```
 
 # Series colours and other attributes
 
