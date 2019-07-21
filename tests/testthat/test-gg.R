@@ -418,3 +418,10 @@ test_that("Miscellaneous", {
     arphitgg(foo, agg_aes(x=x,y=y,group=group))+agg_point(),
     NA)
 })
+
+test_that("NAs in text stuff", {
+  expect_error(print(arphitgg() + agg_title(NA)), NA)
+  expect_error(print(arphitgg() + agg_subtitle(NA)), NA)
+  expect_error(print(arphitgg() + agg_source(NA)), NA)
+  expect_error(print(arphitgg() + agg_footnote(NA)), NA)
+})

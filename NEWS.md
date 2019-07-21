@@ -2,6 +2,8 @@
 
 ## Bugfixes
 
+* NAs in text (like titles, subtitles) no longer throw errors, just don't show
+the relevant text ([#362](https://github.com/angusmoore/arphit/pull/362))
 * Fixed error for bar graphs with weekly data due to the fact that years don't
 have a whole number of weeks ([#355](https://github.com/angusmoore/arphit/pull/355))
 * `yearqtr` and `yearmon` x variables in a `data.frame` or `tibble` are correctly
