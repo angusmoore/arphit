@@ -151,7 +151,9 @@ agg_xaxislabel <- function(axislabel, panel = NULL) {
 #'
 #' @export
 agg_source <- function(source) {
-  if (is.null(source) || is.na(source)) source <- NULL
+  if (!is.null(source)) {
+    source <- source[!is.na(source)]
+  }
   return(list(type = "source", source = source))
 }
 
@@ -168,7 +170,9 @@ agg_source <- function(source) {
 #'
 #' @export
 agg_footnote <- function(footnote) {
-  if (is.null(footnote) || is.na(footnote)) footnote <- NULL
+  if (!is.null(footnote)) {
+    footnote <- footnote[!is.na(footnote)]
+  }
   return(list(type = "footnote", footnote = footnote))
 }
 
