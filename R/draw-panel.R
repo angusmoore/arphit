@@ -1,69 +1,4 @@
-getlocation <- function(p, layout) {
-  if (layout == "1") {
-    l <- c(1,1)
-  } else if (layout == "2h") {
-    l <- switch(p,
-                "1" = c(1,1),
-                "2" = c(1,1),
-                "3" = c(2,1),
-                "4" = c(2,1))
-  } else if (layout == "2v") {
-    l <- switch(p,
-                "1" = c(1,1),
-                "2" = c(1,2))
-  } else if (layout == "2b2") {
-    l <- switch(p,
-                "1" = c(1,1),
-                "2" = c(1,2),
-                "3" = c(2,1),
-                "4" = c(2,2))
-  } else if (layout == "3v") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,2),
-               "3" = c(1,3))
-  } else if (layout == "3h") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,1),
-               "3" = c(2,1),
-               "4" = c(2,1),
-               "5" = c(3,1),
-               "6" = c(3,1))
-  } else if (layout == "3b2") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,2),
-               "3" = c(2,1),
-               "4" = c(2,2),
-               "5" = c(3,1),
-               "6" = c(3,2))
-  } else if (layout == "4h") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,1),
-               "3" = c(2,1),
-               "4" = c(2,1),
-               "5" = c(3,1),
-               "6" = c(3,1),
-               "7" = c(4,1),
-               "8" = c(4,1))
-  } else if (layout == "4b2") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,2),
-               "3" = c(2,1),
-               "4" = c(2,2),
-               "5" = c(3,1),
-               "6" = c(3,2),
-               "7" = c(4,1),
-               "8" = c(4,2))
-  } else {
-    stop(paste0("Unknown layout option ", layout,
-                ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."),
-         call. = FALSE)
-  }
-}
+
 
 pretty_format_numbers <- function(labels) {
   n_decimals <-
@@ -103,7 +38,20 @@ drawpaneltitle <- function(paneltitle, panelsubtitle) {
   }
 }
 
+drawaxislabels_hlayout <- function(ylabel, xlabel, p, layout, tickmargin, leftmargin) {
+  if (!is.null(ylabel)) {
+    side <- getsides(p, layout)
+    if (!is.na(side) && side == 1) {
+      graphics::mtext(text = ylabel, side = side, line = tickmargin + 0.2)
+    }
+  }
+  if (!is.null(xlabel) && needxlabels(p, layout)) {
+    graphics::mtext(text = xlabel, side = xaxisside(layout), line = leftmargin - 1.8, las = 3)
+  }
+}
+
 drawaxislabels <- function(ylabel, xlabel, p, layout, xtickmargin, leftmargin) {
+  if (layout == "1h") return(drawaxislabels_hlayout(ylabel, xlabel, p, layout, xtickmargin, leftmargin))
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
     if (!is.na(side) && side == 2) {
@@ -111,154 +59,8 @@ drawaxislabels <- function(ylabel, xlabel, p, layout, xtickmargin, leftmargin) {
     }
   }
   if (!is.null(xlabel) && needxlabels(p, layout)) {
-    graphics::mtext(text = xlabel, side = 1, line = xtickmargin + 0.2)
+    graphics::mtext(text = xlabel, side = xaxisside(layout), line = xtickmargin + 0.2)
   }
-}
-
-getsides <- function(p, layout) {
-  if (layout == "1" || layout == "2v") {
-    if (p == "1") {
-      side <- 2
-    } else if (p == "2") {
-      side <- 4
-    } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
-    }
-  } else if (layout == "2h" || layout == "2b2") {
-    if (p == "1" || p == "3") {
-      side <- 2
-    } else if (p == "2" || p == "4") {
-      side <- 4
-    } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
-    }
-  } else if (layout == "3v") {
-    if (p == "1") {
-      side <- 2
-    } else if (p == "2") {
-      side <- NA
-    } else if (p == "3") {
-      side <- 4
-    } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
-    }
-  } else if (layout == "3h" || layout == "3b2") {
-    if (p == "1" || p == "3" || p == "5") {
-      side <- 2
-    } else if (p == "2" || p == "4" || p == "6") {
-      side <- 4
-    } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
-    }
-  } else if (layout == "4h" || layout == "4b2") {
-    if (p == "1" || p == "3" || p == "5" || p == "7") {
-      side <- 2
-    } else if (p == "2" || p == "4" || p == "6" || p == "8") {
-      side <- 4
-    } else {
-      stop(paste0("Layout ", layout, " does not have panel ", p), call. = FALSE)
-    }
-  } else  {
-    stop(paste0("Unknown layout option ", layout,
-               ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2."),
-         call. = FALSE)
-  }
-  return(side)
-}
-
-dropfirstxlabel <- function(p, layout, dropxlabel, ts, at, label, xlim) {
-  if ((layout == "2v" && p == "2") ||
-      (layout == "2b2" && p == "4") ||
-      (layout == "3v" && (p == "2" || p == "3")) ||
-      (layout == "3b2" && p == "6") ||
-      (layout == "4b2" && p == "8")) {
-    if (is.na(dropxlabel)) {
-      if (ts) {
-        label_left_border <- at - 0.5*getstrwidth(label, units = "user")
-        overlap <- (label_left_border - xlim[1]) / (xlim[2] - xlim[1])
-        return(overlap < -0.015) # allow labels to overlap up to 1.5 per cent. the last year margin is 3 per cent so they should not overlap
-      } else {
-        return(FALSE)
-      }
-    } else {
-      return(dropxlabel)
-    }
-  } else {
-    return(FALSE)
-   }
-}
-
-needxlabels <- function(p, layout) {
-  if (layout == "1") {
-    return(p == "1")
-  } else if (layout == "2h") {
-    return(p == "3")
-  } else if (layout == "2v" || layout == "3v") {
-    return(TRUE)
-  } else if (layout == "2b2") {
-    return(p == "3" || p == "4")
-  } else if (layout == "3b2") {
-    return(p == "5" || p == "6")
-  } else if (layout == "3h") {
-    return(p == "5")
-  } else if (layout == "4h") {
-    return(p == "7")
-  } else if (layout == "4b2") {
-    return(p == "7" || p == "8")
-  } else {
-    stop(paste("Unknown layout option ", layout,
-               ". Options are 1, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2.",
-               sep = ""),
-         call. = FALSE)
-  }
-}
-
-dropbottomlabel <- function(p, layout) {
-  if (layout == "1" || layout == "2v" || layout == "3v") {
-    return(FALSE)
-  } else if (layout == "2h" || layout == "2b2") {
-    return(p == "1" || p == "2")
-  } else if (layout == "3h" || layout == "3b2") {
-    return(p == "1" || p == "2" || p == "3" || p == "4")
-  } else if (layout == "4h" || layout == "4b2") {
-    return(p == "1" || p == "2" || p == "3" || p == "4" || p == "5" || p == "6")
-  } else {
-    stop(paste("Unknown layout option ", layout,
-               ". Options are 1, 2h, 2v, 2b2.",
-               sep = ""),
-         call. = FALSE)
-  }
-}
-
-needgrid <- function(p, layout) {
-  if (layout == "1") {
-    return(p == "1")
-  } else if (layout == "2h") {
-    return(p == "1" || p == "3")
-  } else if (layout == "3h") {
-    return(p == "1" || p == "3" || p == "5")
-  } else if (layout == "4h") {
-    return(p == "1" || p == "3" || p == "5" || p == "7")
-  } else if (layout == "2v" || layout == "2b2" || layout == "3v" || layout == "3b2" || layout == "4b2") {
-    return(TRUE)
-  } else {
-    stop(paste0("Unknown layout option ", layout,
-                ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."),
-         call. = FALSE)
-  }
-}
-
-tickadjustment <- function(layout) {
-  return(switch(layout,
-                "1" = 1,
-                "2h" = 2,
-                "2v" = 3/2,
-                "2b2" = 2,
-                "3h" = 3,
-                "3v" = 2,
-                "3b2" = 3,
-                "4h" = 4,
-                "4b2" = 4))
 }
 
 yticks_to_draw <- function(labels_drop, p, layout) {
@@ -269,26 +71,51 @@ yticks_to_draw <- function(labels_drop, p, layout) {
   }
 }
 
-gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, ts) {
-  side <- getsides(p, layout)
-  xlab <- needxlabels(p, layout)
+xaxisside <- function(layout) {
+  if (layout == "1h") {
+    2
+  } else {
+    1
+  }
+}
 
-  ## Draw the axis scale
+format_same_dp <- function(labels) {
+  n_decimals <- max(sapply(stringr::str_split(labels, "\\."),
+                           function(x) {
+                             if (length(x) == 2) {
+                               nchar(x[[2]])
+                             } else {
+                               return(0)
+                             }
+                           }))
+  formatC(labels, format = "f", digits = n_decimals)
+}
+
+drawyaxis <- function(p, layout, yunits, yticks, ylim) {
+  side <- getsides(p, layout)
   # Drop the first label
-  labels_drop <- yticks_to_draw(yticks, p, layout)
-  formatted_labels_drop <- pretty_format_numbers(labels_drop)
+  labels_drop_at <- yticks_to_draw(yticks, p, layout)
+  labels_drop_formatted <- format_same_dp(labels_drop_at)
 
   if (!is.na(side)) {
-    graphics::axis(side, at = labels_drop, labels = formatted_labels_drop,
-                   tck = 0, cex.lab = 1, mgp = c(3, 0.2, 0))
+    if (layout != "1h") {
+      mgp <- c(3, 0.2, 0)
+      units_shift <- 0.2
+    } else {
+      mgp <- c(3, 0.7, 0)
+      units_shift <- -0.3
+    }
+    graphics::axis(side, at = labels_drop_at, labels = labels_drop_formatted,
+                   tck = 0, cex.lab = 1, mgp = mgp)
     # Add units
-    graphics::mtext(text = yunits, side = side, at = ylim$max, line = 0.2, cex = 1, padj = 1)
+    graphics::mtext(text = yunits, side = side, at = ylim[2], line = units_shift, cex = 1, padj = 1)
   }
+}
 
-  ## Draw the x-axis
-  if (xlab) {
+drawxaxis <- function(p, layout, xunits, xlabels, xlim, ylim, dropxlabel, srt, ts) {
+  if (needxlabels(p, layout)) {
     # Draw x ticks and labels
-    graphics::axis(1, xlabels$ticks, tck = tickadjustment(layout)*DEFAULTTICKLENGTH, labels = FALSE)
+    graphics::axis(xaxisside(layout), xlabels$ticks, tck = tickadjustment(layout)*DEFAULTTICKLENGTH, labels = FALSE)
     if (dropfirstxlabel(p, layout, dropxlabel, ts, xlabels$at[1], xlabels$labels[1], xlim)) {
       at <- xlabels$at[2:length(xlabels$at)]
       labels <- xlabels$labels[2:length(xlabels$labels)]
@@ -296,18 +123,24 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
       at <- xlabels$at
       labels <- xlabels$labels
     }
+
+    # Draw x axis unit if required
     if (!is.null(xunits)) {
       at <- at[1:(length(at)-1)]
       labels <- labels[1:(length(labels)-1)]
-      graphics::mtext(text = xunits, side = 1, at = xlim[2], line = 0, cex = 1, padj = 1)
+      graphics::mtext(text = xunits, side = xaxisside(layout), at = xlim[2], line = 0, cex = 1, padj = 1)
     }
 
     # Calculate what one line is in user coordinates
-
-    if (!graphics::par("ylog")) {
-      y <- ylim$min - inchesasuser_height(0.8 * CSI)
+    if (layout != "1h") {
+      oneline <- inchesasuser_height(0.8 * CSI)
     } else {
-      y <- log10(ylim$min) - inchesasuser_height(0.8 * CSI)
+      oneline <- inchesasuser_width(0.8 * CSI)
+    }
+    if (!graphics::par("ylog")) {
+      y <- ylim[1] - oneline
+    } else {
+      y <- log10(ylim[1]) - oneline
       y <- 10^(y)
     }
 
@@ -316,33 +149,49 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
     } else {
       adj <- c(1, 0.5)
     }
-
-    graphics::text(x = at, y = y, labels = labels, cex = 1, adj = adj, srt = srt, xpd = NA)
+    if (layout != "1h") {
+      graphics::text(x = at, y = y, labels = labels, cex = 1, adj = adj, srt = srt, xpd = NA)
+    } else {
+      graphics::text(x = y, y = at, labels = labels, cex = 1, adj = rev(adj), srt = srt, xpd = NA)
+    }
   }
+}
+
+drawborder <- function(p, layout, xlim, ylim, horiz) {
+  if (horiz) return(drawborder(p, layout, ylim, xlim, FALSE))
+  if (!is.na(getsides(p, layout))) {
+    ## Draw the outer bouding box
+    graphics::axis(1, xlim, labels = FALSE, tck = 0, lwd = 1)
+    graphics::axis(2, ylim, labels = FALSE, tck = 0, lwd = 1)
+    graphics::axis(4, ylim, labels = FALSE, tck = 0, lwd = 1)
+  }
+  graphics::axis(3, xlim, labels = FALSE, tck = 0, lwd = 1)
+}
+
+drawgrid <- function(p, layout, yticks, xlim) {
+  side <- getsides(p, layout)
 
   ## Draw the grid
   if (needgrid(p, layout)) {
-    # graphics::grid(nx = FALSE, ny = (ylim$nsteps - 1), col = "lightgray", lty = "solid", lwd = 1)
-    lapply(yticks[2:(length(yticks)-1)],
-           function(x) graphics::abline(h = x, col = "lightgray", lty = "solid", lwd = 1))
+    if (layout == "1h") {
+      lapply(yticks[2:(length(yticks)-1)],
+             function(x) graphics::abline(v = x, col = "lightgray", lty = "solid", lwd = 1))
+    } else {
+      lapply(yticks[2:(length(yticks)-1)],
+             function(x) graphics::abline(h = x, col = "lightgray", lty = "solid", lwd = 1))
+    }
     # Add a solid zero line if needed
     if (0 %in% yticks) {
-      graphics::axis(1, pos = 0, c(xlim[1], xlim[2]), labels = FALSE, tck = 0, lwd = 1)
+      graphics::axis(xaxisside(layout), pos = 0, c(xlim[1], xlim[2]), labels = FALSE, tck = 0, lwd = 1)
     }
   }
+}
 
-  if (!is.na(side)) {
-    ## Draw the outer bouding box
-    graphics::axis(side, c(ylim$min, ylim$max), labels = FALSE, tck = 0, lwd = 1)
-  }
-  # Add a line on the right. This is irrelevant/duplicate for some graphs, but for vertical multipanels it adds the divider
-  if (is.na(side) || side != 4) {
-    graphics::axis(4, c(ylim$min, ylim$max), labels = FALSE, tck = 0, lwd = 1)
-  }
-
-  # Draw top and bottom line, will often double up but better to overdo than under
-  graphics::axis(1, c(xlim[1], xlim[2]), tck = 0, labels = FALSE, lwd = 1)
-  graphics::axis(3, c(xlim[1], xlim[2]), tck = 0, labels = FALSE, lwd = 1)
+gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, ts) {
+  drawyaxis(p, layout, yunits, yticks, ylim)
+  drawxaxis(p, layout, xunits, xlabels, xlim, ylim, dropxlabel, srt, ts)
+  drawgrid(p, layout, yticks, xlim)
+  drawborder(p, layout, xlim, ylim, layout == "1h")
 }
 
 drawshading <- function(shading, data) {
@@ -363,32 +212,48 @@ interleave <- function(a, b) {
   c(a,b)[idx]
 }
 
-drawstep <- function(s, plotx, xlim, ylim, log_scale) {
+drawstep <- function(s, plotx, ploty, xlim, ylim, log_scale, horiz) {
   plotx <- interleave(plotx, plotx[2:length(plotx)])
-  s$y <- interleave(s$y, s$y[1:length(s$y)-1])
+  ploty <- interleave(ploty, ploty[1:length(ploty)-1])
 
-  drawline(s, plotx, xlim, ylim, log_scale)
+  drawline(s, plotx, ploty, xlim, ylim, log_scale, horiz)
 }
 
-drawline <- function(s, plotx, xlim, ylim, log_scale) {
-  graphics::plot(
-    plotx,
-    s$y,
-    type = "o",
-    col = s$attributes$col,
-    xlim = xlim,
-    ylim = c(ylim$min, ylim$max),
-    axes = FALSE,
-    xlab = "",
-    ylab = "",
-    pch = s$attributes$pch,
-    lty = s$attributes$lty,
-    lwd = s$attributes$lwd,
-    log = log_scale
-  )
+rotate_log_scale <- function(log_scale) {
+  if (log_scale == "") {
+    ""
+  } else if (log_scale == "x") {
+    "y"
+  } else if (log_scale == "y") {
+    "x"
+  } else {
+    "xy"
+  }
 }
 
-drawlines <- function(l, data, xlim, ylim, joined, log_scale) {
+drawline <- function(s, plotx, ploty, xlim, ylim, log_scale, horiz) {
+  if (horiz) {
+    drawline(s, ploty, plotx, ylim, xlim, rotate_log_scale(log_scale), FALSE) # flip x and y
+  } else {
+    graphics::plot(
+      x = plotx,
+      y = ploty,
+      type = "o",
+      col = s$attributes$col,
+      xlim = xlim,
+      ylim = ylim,
+      axes = FALSE,
+      xlab = "",
+      ylab = "",
+      pch = s$attributes$pch,
+      lty = s$attributes$lty,
+      lwd = s$attributes$lwd,
+      log = log_scale
+    )
+  }
+}
+
+drawlines <- function(l, data, xlim, ylim, joined, log_scale, horiz) {
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
     x <- get_x_plot_locations(s$x, data)
@@ -401,8 +266,8 @@ drawlines <- function(l, data, xlim, ylim, joined, log_scale) {
     } else {
       plotx <- x
     }
-    if (s$geomtype == "line") drawline(s, plotx, xlim, ylim, log_scale)
-    if (s$geomtype == "step") drawstep(s, plotx, xlim, ylim, log_scale)
+    if (s$geomtype == "line") drawline(s, plotx, s$y, xlim, ylim, log_scale, horiz)
+    if (s$geomtype == "step") drawstep(s, plotx, s$y, xlim, ylim, log_scale, horiz)
     graphics::par(cex = 1)
   }
 }
@@ -432,7 +297,27 @@ as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
   }
 }
 
-drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
+drawbar <- function(l, bardata, colours, bordercol, xlim, ylim, bar.stacked, log_scale, horiz) {
+  if (any(bardata != 0)) { # otherwise no point - and doing so causes errors with log scale plots
+    graphics::par(mfg = l)
+    graphics::barplot(
+      bardata,
+      col = colours,
+      border = bordercol,
+      xlim = xlim,
+      ylim = ylim,
+      xlab = "",
+      ylab = "",
+      axes = FALSE,
+      beside = (!bar.stacked),
+      log = log_scale,
+      names.arg = NULL,
+      horiz = horiz
+    )
+  }
+}
+
+drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale, horiz) {
   out <- get_bar_data(data)
   bardata <- out$bardata
   colours <- out$colours
@@ -444,15 +329,42 @@ drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale) {
     bardata_n <- out$n
     bar_x_loc <- out$x
 
+    if ((log_scale == "y" || log_scale == "xy") && any(bardata_n != 0)) {
+      stop("y log scale plots cannot have negative data (in one of your bar series)")
+    }
+
     xlim <- as.barplot.x(bardata_p, bar_x_loc, xlim, bar.stacked)
+    if (!horiz) {
+      drawbar(l, bardata_p, colours, bordercol, xlim, ylim, bar.stacked, log_scale, horiz)
+      drawbar(l, bardata_n, colours, bordercol, xlim, ylim, bar.stacked, log_scale, horiz)
+    }  else {
+      drawbar(l, bardata_p, colours, bordercol, ylim, xlim, bar.stacked, rotate_log_scale(log_scale), horiz)
+      drawbar(l, bardata_n, colours, bordercol, ylim, xlim, bar.stacked, rotate_log_scale(log_scale), horiz)
+    }
+  }
+}
+
+draw_blankplot <- function(l, xlim, ylim, log_scale, horiz) {
+  if (horiz == TRUE) {
+    draw_blankplot(l, ylim, xlim, rotate_log_scale(log_scale), FALSE) # flip the axis limits
+  } else {
     graphics::par(mfg = l)
-    graphics::barplot(bardata_p, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale, names.arg = NULL)
-    graphics::par(mfg = l)
-    graphics::barplot(bardata_n, col = colours, border = bordercol, xlim = xlim, ylim = c(ylim$min, ylim$max), xlab = "", ylab = "", axes = FALSE, beside = (!bar.stacked), log = log_scale)
+    graphics::plot(
+      1,
+      lwd = 0,
+      pch = NA,
+      axes = FALSE,
+      xlab = "",
+      ylab = "",
+      xlim = xlim,
+      ylim = ylim,
+      log = log_scale
+    )
   }
 }
 
 drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, log_scale) {
+
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
   l <- getlocation(p, layout)
@@ -463,42 +375,20 @@ drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xun
   }
 
   # Start the plot with a blank plot, used for panels with no series
-  graphics::par(mfg = l)
-  graphics::plot(
-    1,
-    lwd = 0,
-    pch = NA,
-    axes = FALSE,
-    xlab = "",
-    ylab = "",
-    xlim = xlim,
-    ylim = c(ylim$min, ylim$max),
-    log = log_scale
-  )
+  draw_blankplot(l, xlim, ylim, log_scale, layout == "1h")
 
   drawbgshadings(bgshadings, p)
 
   gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, data$ts)
 
-  if (!is_empty(data)) drawbars(l, data, xlim, ylim, bar.stacked, log_scale)
+  if (!is_empty(data)) drawbars(l, data, xlim, ylim, bar.stacked, log_scale, layout == "1h")
 
   # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
-  graphics::par(mfg = l)
-  graphics::plot(
-    1,
-    lwd = 0,
-    pch = NA,
-    axes = FALSE,
-    xlab = "",
-    ylab = "",
-    xlim = xlim,
-    ylim = c(ylim$min, ylim$max),
-    log = log_scale
-  )
+  draw_blankplot(l, xlim, ylim, log_scale, layout == "1h")
 
   if(!is_empty(data)) {
     drawshading(shading, data)
-    drawlines(l, data, xlim, ylim, joined, log_scale)
+    drawlines(l, data, xlim, ylim, joined, log_scale, layout == "1h")
   }
 
   drawpaneltitle(paneltitle, panelsubtitle)
