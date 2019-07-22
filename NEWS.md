@@ -8,6 +8,8 @@
 
 ## Bugfixes
 
+* Multipanel scatter graphs respect `dropxlabel`
+([#361](https://github.com/angusmoore/arphit/pull/361))
 * NAs in text (like titles, subtitles) no longer throw errors, just don't show
 the relevant text ([#362](https://github.com/angusmoore/arphit/pull/362))
 * Fixed error for bar graphs with weekly data due to the fact that years don't
