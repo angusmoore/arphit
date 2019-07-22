@@ -27,6 +27,7 @@ agg_title <- function(text, panel = NULL) {
          call. = FALSE)
   }
   if (!is.null(panel)) check_panel(panel)
+  if (is.null(text) || is.na(text)) text <- NULL
   return(list(type = "title", text = text, panel = panel))
 }
 
@@ -52,6 +53,7 @@ agg_subtitle <- function(text, panel = NULL) {
          call. = FALSE)
   }
   if (!is.null(panel)) check_panel(panel)
+  if (is.null(text) || is.na(text)) text <- NULL
   return(list(type = "subtitle", text = text, panel = panel))
 }
 
@@ -149,6 +151,7 @@ agg_xaxislabel <- function(axislabel, panel = NULL) {
 #'
 #' @export
 agg_source <- function(source) {
+  if (is.null(source) || is.na(source)) source <- NULL
   return(list(type = "source", source = source))
 }
 
@@ -165,6 +168,7 @@ agg_source <- function(source) {
 #'
 #' @export
 agg_footnote <- function(footnote) {
+  if (is.null(footnote) || is.na(footnote)) footnote <- NULL
   return(list(type = "footnote", footnote = footnote))
 }
 
