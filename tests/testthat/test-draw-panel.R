@@ -245,3 +245,15 @@ test_that("drop x label", {
     agg_point()
   expect_true(check_graph(p, "draw-panel-drop-first-xlabel-scatter"))
 })
+
+## Formatting of y labels ==================
+
+test_that("Formatting y labels", {
+  #Many decimal points
+  p <- arphitgg()+agg_ylim(0,3e-6,4)
+  expect_true(check_graph(p, "draw-panel-ylabel-format-decimals"))
+
+  # Thousands separator #359
+  p <- arphitgg()+agg_ylim(0,30000,4)
+  expect_true(check_graph(p, "draw-panel-ylabel-format-thousands"))
+})

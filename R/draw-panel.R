@@ -65,6 +65,30 @@ getlocation <- function(p, layout) {
   }
 }
 
+pretty_format_numbers <- function(labels) {
+  n_decimals <-
+    max(sapply(stringr::str_split(
+      formatC(
+        labels,
+        format = "f",
+        drop0trailing = TRUE,
+        digits = 10
+      ),
+      "\\."
+    ),
+    function(x) {
+      if (length(x) == 2) {
+        nchar(x[[2]])
+      } else {
+        return(0)
+      }
+    }))
+  formatC(labels,
+          format = "f",
+          digits = n_decimals,
+          big.mark = ",")
+}
+
 drawpaneltitle <- function(paneltitle, panelsubtitle) {
   if (!is.null(paneltitle)) {
     graphics::mtext(paneltitle, line = -0.6, padj = 1)
@@ -252,18 +276,10 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
   ## Draw the axis scale
   # Drop the first label
   labels_drop <- yticks_to_draw(yticks, p, layout)
-  n_decimals <- max(sapply(stringr::str_split(labels_drop, "\\."),
-                           function(x) {
-                             if (length(x) == 2) {
-                               nchar(x[[2]])
-                             } else {
-                               return(0)
-                             }
-                           }))
-  labels_drop <- formatC(labels_drop, format = "f", digits = n_decimals)
+  formatted_labels_drop <- pretty_format_numbers(labels_drop)
 
   if (!is.na(side)) {
-    graphics::axis(side, at = labels_drop, labels = labels_drop,
+    graphics::axis(side, at = labels_drop, labels = formatted_labels_drop,
                    tck = 0, cex.lab = 1, mgp = c(3, 0.2, 0))
     # Add units
     graphics::mtext(text = yunits, side = side, at = ylim$max, line = 0.2, cex = 1, padj = 1)

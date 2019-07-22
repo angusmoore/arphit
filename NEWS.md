@@ -8,6 +8,8 @@
 
 ## Bugfixes
 
+* Thousands now have comma separators in y labels
+([#362](https://github.com/angusmoore/arphit/pull/362))
 * Multipanel scatter graphs respect `dropxlabel`
 ([#361](https://github.com/angusmoore/arphit/pull/361))
 * NAs in text (like titles, subtitles) no longer throw errors, just don't show
