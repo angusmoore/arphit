@@ -139,7 +139,7 @@ test_that("Autolabel with waterfall", {
                      y = c(1, 0.5, -0.4, 0.2, 0.1, 1.4),
                      group = c(1, 2, 3, 2, 3, 4),
                      order = c(1,2,2,3,3,4))
-  foo <- arphitgg(data) +
+  p <- arphitgg(data) +
     agg_waterfall(agg_aes(x=x,y=y,group=group,order=order)) +
     agg_ylim(0,2,5) + 
     agg_autolabel()
