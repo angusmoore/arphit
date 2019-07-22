@@ -297,8 +297,8 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
       labels <- xlabels$labels
     }
     if (!is.null(xunits)) {
-      at <- xlabels$at[1:(length(xlabels$at)-1)]
-      labels <- xlabels$labels[1:(length(xlabels$labels)-1)]
+      at <- at[1:(length(at)-1)]
+      labels <- labels[1:(length(labels)-1)]
       graphics::mtext(text = xunits, side = 1, at = xlim[2], line = 0, cex = 1, padj = 1)
     }
 
