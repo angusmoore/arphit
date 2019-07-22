@@ -79,23 +79,11 @@ xaxisside <- function(layout) {
   }
 }
 
-format_same_dp <- function(labels) {
-  n_decimals <- max(sapply(stringr::str_split(labels, "\\."),
-                           function(x) {
-                             if (length(x) == 2) {
-                               nchar(x[[2]])
-                             } else {
-                               return(0)
-                             }
-                           }))
-  formatC(labels, format = "f", digits = n_decimals)
-}
-
 drawyaxis <- function(p, layout, yunits, yticks, ylim) {
   side <- getsides(p, layout)
   # Drop the first label
-  labels_drop_at <- yticks_to_draw(yticks, p, layout)
-  labels_drop_formatted <- format_same_dp(labels_drop_at)
+  labels_drop <- yticks_to_draw(yticks, p, layout)
+  formatted_labels_drop <- pretty_format_numbers(labels_drop)
 
   if (!is.na(side)) {
     if (layout != "1h") {
@@ -105,7 +93,7 @@ drawyaxis <- function(p, layout, yunits, yticks, ylim) {
       mgp <- c(3, 0.7, 0)
       units_shift <- -0.3
     }
-    graphics::axis(side, at = labels_drop_at, labels = labels_drop_formatted,
+    graphics::axis(side, at = labels_drop_at, labels = formatted_labels_drop,
                    tck = 0, cex.lab = 1, mgp = mgp)
     # Add units
     graphics::mtext(text = yunits, side = side, at = ylim[2], line = units_shift, cex = 1, padj = 1)
