@@ -93,7 +93,7 @@ drawyaxis <- function(p, layout, yunits, yticks, ylim) {
       mgp <- c(3, 0.7, 0)
       units_shift <- -0.3
     }
-    graphics::axis(side, at = labels_drop_at, labels = formatted_labels_drop,
+    graphics::axis(side, at = labels_drop, labels = formatted_labels_drop,
                    tck = 0, cex.lab = 1, mgp = mgp)
     # Add units
     graphics::mtext(text = yunits, side = side, at = ylim[2], line = units_shift, cex = 1, padj = 1)
