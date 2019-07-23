@@ -90,4 +90,12 @@ test_that("1h layout", {
   p <- arphitgg(data.frame(), agg_aes(x=letters[1:10],1:10), layout = "1h", log_scale = "y") +
     agg_col() + agg_point() + agg_ylim(0.5, 10.5, 6)
   expect_true(check_graph(p, "draw-figure-1h-logy"))
+
+  p <- arphitgg(data.frame(), agg_aes(x=letters[1:10],1:10), layout = "1h", log_scale = "x") +
+    agg_point() + agg_xlim(1,10)
+  expect_true(check_graph(p, "draw-figure-1h-logx"))
+
+  p <- arphitgg(data.frame(), agg_aes(x=c(1.5,8,1.5,3),y = 2:5), layout = "1h", log_scale = "xy") +
+    agg_point() + agg_ylim(1, 11, 6) + agg_xlim(1, 10)
+  expect_true(check_graph(p, "draw-figure-1h-logxy"))
 })
