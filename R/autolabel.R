@@ -1,4 +1,4 @@
-evaluate_candidate <- function(x, y, text_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series_index, data, xlim, ylim, layout, p, underlay_bitmap, los_mask, bars.stacked, inches_conversion) {
+evaluate_candidate <- function(x, y, text_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series_index, series_type, data, xlim, ylim, layout, p, underlay_bitmap, los_mask, bars.stacked, inches_conversion) {
 
   dim <- dim(underlay_bitmap)
   indices <- shift_text_indices(text_indices,x,y,x_text_anchor,y_text_anchor,x_scale,y_scale,xlim,ylim,dim,layout,p)
@@ -11,7 +11,7 @@ evaluate_candidate <- function(x, y, text_indices, x_text_anchor, y_text_anchor,
                                    y,
                                    get_x_plot_locations(series_x_values(data, s), data),
                                    series_values(data, s),
-                                   get_series_type(legend_entry(data$series[[s]])),
+                                   series_type,
                                    data,
                                    bars.stacked,
                                    inches_conversion
@@ -59,7 +59,7 @@ autolabeller_y_points <- function(ylim, has_linebreak) {
   }
 }
 
-candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series_index, data, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion, has_linebreak) {
+candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series_index, series_type, data, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion, has_linebreak) {
   if (!quiet) cat(".")
 
   points_to_try <- autolabeller_y_points(ylim, has_linebreak)
@@ -75,6 +75,7 @@ candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anch
         x_scale,
         y_scale,
         series_index,
+        series_type,
         data,
         xlim,
         ylim,
@@ -89,7 +90,7 @@ candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anch
   return(candidates)
 }
 
-find_candidates <- function(label, plot_bitmap, series_index, data, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion) {
+find_candidates <- function(label, plot_bitmap, series_index, series_type, data, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion) {
   step <- (xlim[2] - xlim[1])/AUTOLABEL_XSTEPS
   x_anchors <- seq(from = xlim[1] + 1.5*step, by = step, length.out = AUTOLABEL_XSTEPS-2)
 
@@ -112,6 +113,7 @@ find_candidates <- function(label, plot_bitmap, series_index, data, xlim, ylim, 
                  x_scale,
                  y_scale,
                  series_index,
+                 series_type,
                  data,
                  xlim,
                  ylim,
@@ -163,11 +165,17 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
   series_index <- min(which(
     sapply(data[[p]]$series, function(s) identical(legend_entry(s), legend_entry(label$series)))
   )) # I use min for the rare case that there are two series in the same panel with same name and attributes
+  series_type <- data[[p]]$series[[series_index]]$geomtype
+  if (series_type == "line" && label$lty == 0) {
+    series_type <- "point" # special case - because distances are calculated differently for points
+  }
+
   found_location <-
     find_candidates(
       label,
       plot_bitmap,
       series_index,
+      series_type,
       data[[p]],
       xlim[[p]],
       ylim[[p]],
@@ -197,9 +205,9 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
     drawlabel(newlabel)
-    if (label$series_type != "bar" && arrow_lines) {
+    if ((series_type != "bar" && series_type != "waterfall") && arrow_lines) {
       return(list(label=newlabel,arrow=add_arrow(found_location, newlabel$text, label$col, p, inches_conversion)))
-    } else if (label$series_type == "bar" && arrow_bars ) {
+    } else if ((series_type == "bar" || series_type == "waterfall") && arrow_bars ) {
       return(list(label=newlabel,arrow=add_arrow(found_location, newlabel$text, label$fill, p, inches_conversion)))
     } else {
       return(list(label=newlabel))

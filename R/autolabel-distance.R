@@ -90,5 +90,9 @@ get_distance_series_type <- function(x, y, series.x, series.y, series_type, data
     return(point_point_distance(x, y, series.x, series.y, inches_conversion))
   } else if (series_type == "bar") {
     return(point_bar_distance(x, y, series.x, series.y, data, bars.stacked, inches_conversion))
+  } else if (series_type == "step") {
+    return(point_line_distance(x, y, series.x, series.y, inches_conversion)) # good enough approximation
+  } else if (series_type == "Waterfall") {
+    return(list(xx=NA,yy=NA,distance=NA))
   }
 }
