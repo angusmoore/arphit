@@ -47,8 +47,8 @@ line_segment_points <- function(a1,a2,b1,b2,dims) {
 create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,xlim,ylim) {
   tail.x <- (tail.x - xlim[1])/(xlim[2]-xlim[1])*dims[1]
   head.x <- (head.x - xlim[1])/(xlim[2]-xlim[1])*dims[1]
-  tail.y <- dims[2] - (tail.y - ylim$min)/(ylim$max-ylim$min)*dims[2]
-  head.y <- dims[2] - (head.y - ylim$min)/(ylim$max-ylim$min)*dims[2]
+  tail.y <- dims[2] - (tail.y - ylim[1])/(ylim[2]-ylim[1])*dims[2]
+  head.y <- dims[2] - (head.y - ylim[1])/(ylim[2]-ylim[1])*dims[2]
 
   out <- line_segment_points(tail.x,head.x,tail.y,head.y,dims)
 
@@ -73,7 +73,7 @@ create_arrow_bitmap <- function(tail.x,tail.y,head.x,head.y,dims,xlim,ylim) {
   return(linear_indices)
 }
 
-los_mask_series_draw <- function(exclude, data, xlim, ylim, bar.stacked, log_scale, joined) {
+los_mask_series_draw <- function(exclude, data, xlim, ylim, bar.stacked, log_scale, joined, layout) {
   if (!is_empty(data)) {
     x <- get_x_plot_locations(data$x, data)
     # overwrite the attributes
@@ -86,8 +86,8 @@ los_mask_series_draw <- function(exclude, data, xlim, ylim, bar.stacked, log_sca
       data$series[[i]]$attributes$barcol <- "white"
       data$series[[i]]$attributes$pch <- NA
     }
-    drawbars(c(1,1), data, xlim, ylim, bar.stacked, log_scale)
-    drawlines(c(1,1), data, xlim, ylim, joined, log_scale)
+    drawbars(c(1,1), data, xlim, ylim, bar.stacked, log_scale, layout == "1h")
+    drawlines(c(1,1), data, xlim, ylim, joined, log_scale, layout == "1h")
   }
 }
 
@@ -109,10 +109,11 @@ create_los_mask <- function(series, data, p, dims, xlim, ylim, bar.stacked, layo
   los_mask_series_draw(series,
                        data[[p]],
                        xlim[[p]],
-                       ylim[[p]],
+                       c(ylim[[p]]$min, ylim[[p]]$max),
                        bar.stacked,
                        log_scale,
-                       joined)
+                       joined,
+                       layout)
 
   # Do RHS axes if necessary
   if (!is.null(other_axes(p, layout))) {
@@ -120,10 +121,11 @@ create_los_mask <- function(series, data, p, dims, xlim, ylim, bar.stacked, layo
     los_mask_series_draw(series,
                          data[[p]],
                          xlim[[p]],
-                         ylim[[p]],
+                         c(ylim[[p]]$min, ylim[[p]]$max),
                          bar.stacked,
                          log_scale,
-                         joined)
+                         joined,
+                         layout)
   }
   grDevices::dev.off()
   image <- magick::image_read(paste0(tempdir(), "/autolabel-los-mask.png"))

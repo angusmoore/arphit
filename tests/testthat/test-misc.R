@@ -21,6 +21,9 @@ test_that("Log scales",{
   p <- data.frame(x = c(10, 100, 60), y = c(11, 20, 40)) %>%
     arphitgg(agg_aes(x = x, y = y), log_scale = "x") + agg_line() + agg_xlim(10, 100)
   expect_true(check_graph(p, "misc-log-scale-x"))
+  p <- data.frame(x = c(1,2,3), y = c(-1,2,3)) %>%
+    arphitgg(agg_aes(x,y),log_scale = "y") + agg_col() + agg_ylim(1,2,3)
+  expect_error(print(p), "y log scale plots cannot have negative data")
 })
 
 test_that("Log scale limit requirement", {

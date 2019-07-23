@@ -80,7 +80,7 @@ agg_draw_internal <- function(gg, filename) {
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, names(data), xlabels, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, gg$legend.onpanel, legend.nrow, gg$plotsize, gg$portrait, gg$layout, gg$srt)
+  margins <- figuresetup(filename, device, names(data), xlabels, yticks, xunits, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, gg$legend.onpanel, legend.nrow, gg$plotsize, gg$portrait, gg$layout, gg$srt)
   handlelayout(gg$layout)
 
   # Plot each panel
@@ -96,7 +96,7 @@ agg_draw_internal <- function(gg, filename) {
       xunits[[p]],
       yticks[[p]],
       xlabels[[p]],
-      ylim[[p]],
+      c(ylim[[p]]$min, ylim[[p]]$max),
       xlim[[p]],
       paneltitles[[p]],
       panelsubtitles[[p]],

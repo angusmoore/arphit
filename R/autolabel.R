@@ -41,7 +41,7 @@ evaluate_candidate <- function(x, y, text_indices, x_text_anchor, y_text_anchor,
 }
 
 divide_y_axis <- function(ylim, divisor, axis_points, axis_step, remove_axis) {
-    new_points <- seq(from = ylim$min + axis_step/divisor, by = axis_step/divisor, to = ylim$max - axis_step/divisor)
+    new_points <- seq(from = ylim[1] + axis_step/divisor, by = axis_step/divisor, to = ylim[2] - axis_step/divisor)
     if (remove_axis) {
       return(setdiff(new_points, axis_points))
     } else {
@@ -49,9 +49,9 @@ divide_y_axis <- function(ylim, divisor, axis_points, axis_step, remove_axis) {
     }
 }
 
-autolabeller_y_points <- function(ylim, has_linebreak) {
-  axis_step <- (ylim$max - ylim$min)/(ylim$nsteps-1)
-  axis_points <- seq(from = ylim$min + axis_step, by = axis_step, to = ylim$max - axis_step)
+autolabeller_y_points <- function(ylim, ylim_nsteps, has_linebreak) {
+  axis_step <- (ylim[2] - ylim[1])/(ylim_nsteps-1)
+  axis_points <- seq(from = ylim[1] + axis_step, by = axis_step, to = ylim[2] - axis_step)
 
   for (divisor in seq(from = 2, by = 2, to = AUTOLABEL_YSTEPS)) {
     candidate_points <- divide_y_axis(ylim, divisor, axis_points, axis_step, !has_linebreak)
@@ -59,10 +59,10 @@ autolabeller_y_points <- function(ylim, has_linebreak) {
   }
 }
 
-candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series_index, data, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion, has_linebreak) {
+candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anchor, x_scale, y_scale, series_index, data, xlim, ylim, ylim_nsteps, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion, has_linebreak) {
   if (!quiet) cat(".")
 
-  points_to_try <- autolabeller_y_points(ylim, has_linebreak)
+  points_to_try <- autolabeller_y_points(ylim, ylim_nsteps, has_linebreak)
 
   candidates <-
     dplyr::bind_rows(lapply(points_to_try, function(y)
@@ -89,12 +89,12 @@ candidate_from_x_anchor <- function(x, label_indices, x_text_anchor, y_text_anch
   return(candidates)
 }
 
-find_candidates <- function(label, plot_bitmap, series_index, data, xlim, ylim, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion) {
+find_candidates <- function(label, plot_bitmap, series_index, data, xlim, ylim, ylim_nsteps, layout, p, log_scale, underlay_bitmap, los_mask, bars.stacked, quiet, inches_conversion) {
   step <- (xlim[2] - xlim[1])/AUTOLABEL_XSTEPS
   x_anchors <- seq(from = xlim[1] + 1.5*step, by = step, length.out = AUTOLABEL_XSTEPS-2)
 
   x_text_anchor <- mean(xlim)
-  y_text_anchor <- mean(c(ylim$min,ylim$max))
+  y_text_anchor <- mean(ylim)
   x_scale <- graphics::par("mfrow")[2]
   y_scale <- graphics::par("mfrow")[1]
   text_indices <- create_text_bitmap(x_text_anchor,y_text_anchor,label$label,xlim,ylim,dim(underlay_bitmap),layout,p)
@@ -115,6 +115,7 @@ find_candidates <- function(label, plot_bitmap, series_index, data, xlim, ylim, 
                  data,
                  xlim,
                  ylim,
+                 ylim_nsteps,
                  layout,
                  p,
                  log_scale,
@@ -139,8 +140,8 @@ find_candidates <- function(label, plot_bitmap, series_index, data, xlim, ylim, 
 autolabel_fallback <- function(label, xlim, ylim, underlay_bitmap, layout, p, quiet) {
   x_up <- seq(from = mean(xlim), to = max(xlim), length.out = AUTOLABEL_FALLBACK_STEPS)
   x_down <- seq(from = mean(xlim), to = min(xlim), length.out = AUTOLABEL_FALLBACK_STEPS)
-  y_up <- seq(from = mean(c(ylim$min,ylim$max)), to = ylim$max, length.out = AUTOLABEL_FALLBACK_STEPS)
-  y_down <- seq(from = mean(c(ylim$min,ylim$max)), to = ylim$min, length.out = AUTOLABEL_FALLBACK_STEPS)
+  y_up <- seq(from = mean(ylim), to = max(ylim), length.out = AUTOLABEL_FALLBACK_STEPS)
+  y_down <- seq(from = mean(ylim), to = min(ylim), length.out = AUTOLABEL_FALLBACK_STEPS)
 
   x_steps <- c(rbind(x_up,x_down)) # This interleaves the numbers
   y_steps <- c(rbind(y_up,y_down))
@@ -170,7 +171,8 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
       series_index,
       data[[p]],
       xlim[[p]],
-      ylim[[p]],
+      c(ylim[[p]]$min, ylim[[p]]$max),
+      ylim[[p]]$nsteps,
       layout,
       p,
       log_scale,
@@ -181,7 +183,8 @@ autolabel_series <- function(label, p, data, plot_bitmap, los_mask, xlim, ylim, 
       inches_conversion
     )
   if (is.null(found_location)) {
-    found_location <- autolabel_fallback(label$label, xlim[[p]], ylim[[p]], plot_bitmap, layout, p, quiet)
+    found_location <- autolabel_fallback(label$label, xlim[[p]], c(ylim[[p]]$min, ylim[[p]]$max),
+                                         plot_bitmap, layout, p, quiet)
   }
   if (!quiet) cat("\n")
   if (!is.null(found_location)) {
@@ -249,7 +252,7 @@ autolabel <- function(gg, data, xlim, ylim, margins, labels, quiet, arrow_lines,
         )
       # Add it to the mask, so that the mask includes it for the next series
       if (!is.null(new_label$label)) {
-        plot_bitmap <- add_new_label_to_mask(plot_bitmap, new_label, ylim[[p]], xlim[[p]], p, gg$layout)
+        plot_bitmap <- add_new_label_to_mask(plot_bitmap, new_label, c(ylim[[p]]$min, ylim[[p]]$max), xlim[[p]], p, gg$layout)
         break # no need to continue looping over possible panels
       }
     }

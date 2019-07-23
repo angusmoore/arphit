@@ -29,11 +29,11 @@ line_y_indices <- function(text, y, ylim, y_start, padding, line_n, total_lines,
   lheight <- total_height / total_lines
   line_offset <- 0.5*total_height - (0.5+line_n-1)*lheight
 
-  top <- y + (0.5*getstrheight(text, units = "inches") + line_offset) / (graphics::par("pin")[2])*(ylim$max-ylim$min)
-  bottom <- y + ( - 0.5*getstrheight(text, units = "inches") + line_offset) / (graphics::par("pin")[2])*(ylim$max-ylim$min)
+  top <- y + (0.5*getstrheight(text, units = "inches") + line_offset) / (graphics::par("pin")[2])*(ylim[2]-ylim[1])
+  bottom <- y + ( - 0.5*getstrheight(text, units = "inches") + line_offset) / (graphics::par("pin")[2])*(ylim[2]-ylim[1])
 
-  if (line_n == 1)  top <- top + padding / (graphics::par("pin")[2])*(ylim$max-ylim$min)
-  if (line_n == total_lines) bottom <- bottom - padding / (graphics::par("pin")[2])*(ylim$max-ylim$min)
+  if (line_n == 1)  top <- top + padding / (graphics::par("pin")[2])*(ylim[2]-ylim[1])
+  if (line_n == total_lines) bottom <- bottom - padding / (graphics::par("pin")[2])*(ylim[2]-ylim[1])
 
   which(y_start < top & (y_start + y_start[2]-y_start[1]) > bottom)
 }
@@ -43,7 +43,7 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLAB
   y_scale <- graphics::par("mfrow")[1]
 
   x_start <- seq(from = xlim[1], to = xlim[2], length.out = round(dim[1]/x_scale) + 1)[1:round(dim[1]/x_scale)]
-  y_start <- seq(from = ylim$max, to = ylim$min, length.out = round(dim[2]/y_scale) + 1)[2:(round(dim[2]/y_scale)+1)]
+  y_start <- seq(from = ylim[2], to = ylim[1], length.out = round(dim[2]/y_scale) + 1)[2:(round(dim[2]/y_scale)+1)]
 
   left <- x - 0.5*(getstrwidth(text, units = "inches") + padding) / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
   right <- x + 0.5*(getstrwidth(text, units = "inches") + padding) / (graphics::par("pin")[1])*(xlim[2]-xlim[1])
@@ -72,7 +72,7 @@ create_text_bitmap <- function(x,y,text,xlim,ylim,dim,layout,p,padding = AUTOLAB
 
 shift_text_indices <- function(indices,x,y,x_text_anchor,y_text_anchor,x_scale,y_scale,xlim,ylim,dim,layout,p) {
   x_shift <- round((x - x_text_anchor) / (xlim[2] - xlim[1]) * (dim[1]/x_scale))
-  y_shift <- -round((y - y_text_anchor) / (ylim$max - ylim$min) * (dim[2]/y_scale))
+  y_shift <- -round((y - y_text_anchor) / (ylim[2] - ylim[1]) * (dim[2]/y_scale))
 
   x_indices <- indices$x + x_shift
   y_indices <- indices$y + y_shift

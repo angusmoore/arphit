@@ -172,7 +172,7 @@ apply_nonempty <- function(toduplicate, data, nonempty) {
 }
 
 duplicateaxes_vertical <- function(toduplicate, data, layout) {
-  if (layout != "2v" && layout != "3v") {
+  if (!layout %in% c("1h", "2v", "3v")) {
     rhs <- names(data)[seq(from = 2, to = length(data), by = 2)]
     lhs <- names(data)[seq(from = 1, to = length(data), by = 2)]
     rhs_nonempty <- names(data[rhs])[!sapply(data[rhs], is_empty)]
