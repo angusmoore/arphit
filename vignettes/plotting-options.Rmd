@@ -50,7 +50,7 @@ ts_data <- ts(data.frame(x1 = rnorm(10), x2 = rnorm(10)), frequency = 4, start =
 
 # Layouts and panels
 
-There are nine supported layouts, with up to 8 panels. *Right hand side axes count as separate panels in some layouts.* Panels are numbered from left to right, top to bottom.
+There are ten supported layouts, with up to 8 panels. *Right hand side axes count as separate panels in some layouts.* Panels are numbered from left to right, top to bottom.
 
   1. One-panel "1". This is the default if you do not supply a value for `layout`. Despite its name this layout has *two* panels. Panel "1" corresponds to the left axis; panel "2" corresponds to the right axis.
 ```{r, eval = FALSE}
@@ -150,6 +150,19 @@ agg_draw(arphitgg(layout = "4b2"), filename = "layout_4b2.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("layout_4b2.png")
+```  
+
+ 10. One panel horizontal. This layout has only 1 panel - there are not top and 
+ bottom y axes.
+```{r, eval = FALSE}
+arphitgg(data.frame(x=1:10), agg_aes(x,x), layout = "1h") + agg_col()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+p <- arphitgg(data.frame(x=1:10), agg_aes(x,x), layout = "1h") + agg_col()
+agg_draw(p, filename = "layout_1h.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("layout_1h.png")
 ```  
 
 ## Portrait-size graphs
@@ -493,6 +506,13 @@ There are 7 options for line layers. What the options do is covered in more deta
 * The colour for the outline of the bars (`barcol`)
 * Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 * Whether the bars should be stacked (default) or grouped (`stacked`). This is a global option; you cannot combine stacked and grouped layers.
+
+#### (Advanced) Horizontal bar graphs
+
+You can use the layout option `layout = "1h"` to create horizontal bar graphs - 
+where the x axis on the left side. This type of graph has only one panel. (NB: You
+can make any layer type a horizontal graph, but it is most useful for column
+graphs.) See the section "Layouts and panels" above.
 
 ### Point/scatter layers
 
