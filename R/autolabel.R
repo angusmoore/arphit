@@ -172,10 +172,6 @@ autolabel_fallback <- function(label, xlim, ylim, underlay_bitmap, layout, p, qu
 autolabel_series <- function(label, series, p, data, plot_bitmap, los_mask, xlim, ylim, margins, layout, log_scale, bars.stacked, quiet, inches_conversion, arrow_lines, arrow_bars) {
   if (!quiet) cat(paste0("Finding location for ", stringr::str_replace(label$name, stringr::fixed("\n"), " "), " ."))
 
-  if (series$geomtype == "line" && label$lty == 0) {
-    series$geomtype <- "point" # special case - because distances are calculated differently for points
-  }
-
   found_location <-
     find_candidates(
       label,
