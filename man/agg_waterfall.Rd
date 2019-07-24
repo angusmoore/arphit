@@ -4,20 +4,17 @@
 \alias{agg_waterfall}
 \title{Add a waterfall layer to an arphit plot.}
 \usage{
-agg_waterfall(aes = NULL, data = NULL, colour = c(RBA["Grey5"],
-  RBA["Red4"], RBA["DarkGreen3"], RBA["Grey10"]), barcol = NULL,
-  panel = "1")
+agg_waterfall(aes = NULL, data = NULL, colour = NULL,
+  barcol = NULL, panel = "1")
 }
 \arguments{
 \item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
 
 \item{data}{The data to be used. Will inherit from parent if missing.}
 
-\item{colour}{A vector of four colours for (in order) the 'from'/'start' bar,
-negative, changes, positive changes and the 'to'/'end' bar}
+\item{colour}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
 
-\item{barcol}{(optional) Outline colours for each bar series (same order as
-`colour`)}
+\item{barcol}{(optional) Outline colours for each bar series}
 
 \item{panel}{(default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.}
 }
@@ -28,17 +25,32 @@ right-most observation.
 \details{
 You should ensure that your data are ordered so that your first observation is
 the observation you want the waterfall to 'start' from, and your last
-observation the one you want the waterfall to 'end' at. Positive and negative
-bars are coloured differently to distinguish them, as are the start and end
-observations. Sensible defaults are provided, but you can set your own. See
-the documentation for the `colour` argument.
+observation the one you want the waterfall to 'end' at. Do this by specifying
+an `order` in your aesthetic.
 
-This layer should be considered experimental and may undergo breaking
+Setting groups (and colours) is a good idea: create a group to differentiate
+your start and end observations and your positive and negative observations (
+separately colouring positive and negative makes the graph easier to read).
+
+This layer type should be considered experimental and may undergo breaking
 changes.
 }
 \examples{
+# Simple waterfall graph
 data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
-arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,order=x),from="a",to="f")
+arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,order=x))
+
+# Waterfall graph separately colouring positive and negative changes
+data <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
+arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,group=y<0,order=x))
+
+# Waterfall graphs with multiple groups per x observation
+data <- data.frame(x = c('start','a','a','b','b','end'),
+                   y = c(1, 0.5, -0.4, 0.2, 0.1, 1.4),
+                   group = c(1, 2, 3, 2, 3, 4),
+                   order = c(1,2,2,3,3,4))
+arphitgg(data) +
+  agg_waterfall(agg_aes(x=x,y=y,group=group,order=order))
 
 }
 \seealso{

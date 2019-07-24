@@ -122,6 +122,18 @@ test_that("Autolabel with bars", {
     agg_col(agg_aes(x=x,y=y3)) +
     agg_autolabel(quiet = TRUE, arrow_bars = TRUE)
   expect_true(check_graph(p, "autolabel-arrow-bars"))
+
+  # bars and lines
+  data <- data.frame(x=1:10,y=1:10,z=1:10)
+  p <- arphitgg(data) + agg_line(agg_aes(x,y)) +
+    agg_col(agg_aes(x,z))+agg_autolabel()
+  expect_true(check_graph(p, "autolabel-bar-line"))
+
+  # with NA
+  data <- data.frame(x=1:10,y=1:10,z=c(NA,NA,1:8))
+  p <- arphitgg(data) + agg_line(agg_aes(x,y)) +
+    agg_col(agg_aes(x,z))+agg_autolabel()
+  expect_true(check_graph(p, "autolabel-bars-NAs"))
 })
 
 test_that("Autolabel with points", {
@@ -141,7 +153,7 @@ test_that("Autolabel with waterfall", {
                      order = c(1,2,2,3,3,4))
   p <- arphitgg(data) +
     agg_waterfall(agg_aes(x=x,y=y,group=group,order=order)) +
-    agg_ylim(0,2,5) + 
+    agg_ylim(0,2,5) +
     agg_autolabel()
   expect_true(check_graph(p, "autolabel-waterfall"))
 })

@@ -49,7 +49,6 @@ get_series_objects <- function(series_entry, data, layout, labels) {
 }
 
 simplify_label <- function(label) {
-
   list(name = label$name, col = ifelse(is.null(label$fill), label$col, label$fill))
 }
 

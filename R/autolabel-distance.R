@@ -49,15 +49,16 @@ point_bar_distance <- function(x, y, series.x, series.y, data, bars.stacked, inc
   if (!bars.stacked) {
     return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
   } else {
-    bardata <- get_bar_data(data)$bardata
-    row_n <- which(sapply(seq_along(bardata), function(i) identical(bardata[[i]][!is.na(bardata[[i]])], series.y[!is.na(series.y)])))
+    barseries <- sapply(data$series, function(s) s$geomtype == "bar", USE.NAMES = FALSE)
+    row_n <- which(sapply(data$series[barseries], function(s) identical(s$y, series.y)))
+
     if (length(row_n) > 1) row_n <- row_n[1] # only occurs if have two identical bar series. Rare special case.
-    # I use !is.na because bardata has been widened to all x observations, while series.y hasn't
+
     if (row_n == 1) {
       return(point_bar_distance_(x, y, series.x, rep(0, length(series.y)), series.y, inches_conversion))
     } else {
       series.x <- get_x_plot_locations(data$x, data) # We have to widen the bar data to the full plot x
-      out <- convert_to_plot_bardata(bardata, data)
+      out <- convert_to_plot_bardata(get_bar_data(data)$bardata, data)
       bardata_p <- out$p
       bardata_n <- out$n
       if (row_n > 2) {
@@ -83,6 +84,41 @@ point_bar_distance <- function(x, y, series.x, series.y, data, bars.stacked, inc
   }
 }
 
+point_waterfall_distance <- function(x, y, series.x, series.y, data, inches_conversion) {
+  data$bars <- NULL # remove the pre-fetched bardata (used for things like setting ylimits)
+  bars <- extract_bar_data(data, "waterfall")$bars
+  barseries <- sapply(data$series, function(s) s$geomtype == "waterfall", USE.NAMES = FALSE)
+  row_n <- which(sapply(data$series[barseries], function(s) identical(s$y, series.y)))
+  if (length(row_n) > 1) row_n <- row_n[1] # only occurs if have two identical bar series. Rare special case.
+  out <- convert_to_plot_bardata(bars$bardata, data)
+  series.x <- get_x_plot_locations(data$x, data) # We have to widen the bar data to the full plot x
+  bardata <- out$p + out$n
+  y1 <- c() # points at the start of the bar
+  y2 <- c() # points at the end of the bar
+  for (xi in 1:ncol(bardata)) {
+    if (xi > 1 && xi < ncol(bardata)) {
+      y_offset <- sum(bardata[,1:(xi-1)], na.rm = TRUE)
+    } else {
+      y_offset <- 0
+    }
+
+    if (row_n > 1) {
+      preceding_series <- bardata[1:(row_n-1),xi]
+    } else {
+      preceding_series <- c()
+    }
+
+    if (bardata[row_n, xi] > 0) {
+      y1 <- c(y1, y_offset + sum(preceding_series[preceding_series > 0]))
+    } else {
+      y1 <- c(y1, y_offset + sum(preceding_series[preceding_series < 0]))
+    }
+
+    y2 <- c(y2, y1[xi] + unname(bardata[row_n, xi]))
+  }
+  point_bar_distance_(x, y, series.x, y1, y2, inches_conversion)
+}
+
 get_distance_series_type <- function(x, y, series.x, series.y, series_type, data, bars.stacked, inches_conversion) {
   if (series_type == "line") {
     return(point_line_distance(x, y, series.x, series.y, inches_conversion))
@@ -92,7 +128,10 @@ get_distance_series_type <- function(x, y, series.x, series.y, series_type, data
     return(point_bar_distance(x, y, series.x, series.y, data, bars.stacked, inches_conversion))
   } else if (series_type == "step") {
     return(point_line_distance(x, y, series.x, series.y, inches_conversion)) # good enough approximation
-  } else if (series_type == "Waterfall") {
-    return(list(xx=NA,yy=NA,distance=NA))
+  } else if (series_type == "waterfall") {
+    return(point_waterfall_distance(x, y, series.x, series.y, data, inches_conversion))
+  } else {
+    stop(paste0("Autolabeller not supported for layers of type ", series_type),
+         .call = FALSE)
   }
 }

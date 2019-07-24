@@ -667,7 +667,8 @@ agg_point <- function(aes = NULL, data = NULL, colour = NULL, pointsize = 1, pan
 #' arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,order=x))
 #'
 #' # Waterfall graph separately colouring positive and negative changes
-#' stop("no example")
+#' data <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
+#' arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,group=y<0,order=x))
 #'
 #' # Waterfall graphs with multiple groups per x observation
 #' data <- data.frame(x = c('start','a','a','b','b','end'),
