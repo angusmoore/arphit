@@ -306,11 +306,7 @@ drawwaterfall <- function(l, data, xlim, ylim, log_scale, horiz) {
         bars$colours,
         bars$bordercol,
         xlim,
-        list(
-          min = ylim$min - y_offset,
-          max = ylim$max - y_offset,
-          nsteps = ylim$nsteps
-        ),
+        ylim - y_offset,
         TRUE,
         log_scale,
         horiz
