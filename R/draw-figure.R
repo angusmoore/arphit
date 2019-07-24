@@ -32,9 +32,15 @@ leftrightpadding <- function(yticks, yunits, panels, layout) {
   R <- 0
   L <- 0
   for (p in panels) {
-    yticks_dropped <- yticks_to_draw(yticks[[p]], p, layout)
-    nc <- max(sapply(yticks_dropped, getstrwidth))
+    if (layout != "1h") {
+      yticks_dropped <- yticks_to_draw(yticks[[p]], p, layout)
+    } else {
+      yticks_dropped <- yticks[[p]]
+    }
+
+    nc <- max(sapply(pretty_format_numbers(yticks_dropped), getstrwidth))
     nc <- max(nc, getstrwidth(yunits[[p]]))
+
     if (is.even(p)) {
       R <- max(R, nc)
     } else {
@@ -108,16 +114,21 @@ getfigsize <- function(plotsize, top, bottom, left, right) {
   return(list(height = figheight, width = figwidth, top = top, bottom = bottom, left = left, right = right))
 }
 
-figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.onpanel, legend.nrow, plotsize, portrait, layout, srt) {
+figuresetup <- function(filename, device, panels, xticks, yticks, xunits, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, legend.onpanel, legend.nrow, plotsize, portrait, layout, srt) {
   # Figure out margins
-  LRpadding <- leftrightpadding(yticks, yunits, panels, layout)
-  left <- LRpadding$left + 1
-  right <- LRpadding$right + 1 # A bit of extra white spacing
+  if (layout != "1h") {
+    LRpadding <- leftrightpadding(yticks, yunits, panels, layout)
+    left <- LRpadding$left + 1
+    right <- LRpadding$right + 1 # A bit of extra white spacing
+  } else {
+    left <- leftrightpadding(lapply(xticks, function(x) x$labels), lapply(yunits, function(x) ""), panels, layout)$left + 2
+    right <- max(1, sapply(yunits, getstrwidth, USE.NAMES = FALSE) / (2*CSI) + 0.5)
+  }
 
-  if (length(yaxislabels) > 0) {
+  if ((layout != "1h" && length(yaxislabels) > 0) || (layout == "1h" && length(xaxislabels) > 0)) {
     left <- left + 1.4
   }
-  if(length(xaxislabels) > 0) {
+  if ((layout != "1h" && length(xaxislabels) > 0) || (layout == "1h" && length(yaxislabels) > 0)) {
     notesstart <- 2
   } else {
     notesstart <- 0
@@ -126,7 +137,12 @@ figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title,
     notesstart <- notesstart + (legend.nrow-1)*1.2 + 2.5
   }
 
-  xtickmargin <- 1.8 + xticksize(xticks, layout, srt)
+  if (layout != "1h") {
+    xtickmargin <- 1.8 + xticksize(xticks, layout, srt)
+  } else {
+    xtickmargin <- 1.8 + xticksize(lapply(yticks, function(x) list(labels = x)), layout, srt)
+  }
+
   notesstart <- notesstart + xtickmargin
 
   bottom <- countfnlines(footnotes) + countsrclines(sources) + notesstart
@@ -144,7 +160,7 @@ figuresetup <- function(filename, device, panels, xticks, yticks, yunits, title,
 }
 
 handlelayout <- function(layout) {
-  if (layout == "1") {
+  if (layout %in% c("1", "1h")) {
     graphics::par(mfrow=c(1,1))
   } else if (layout == "2h") {
     graphics::par(mfrow=c(2,1))
@@ -164,7 +180,7 @@ handlelayout <- function(layout) {
     graphics::par(mfrow=c(4,2))
   } else {
     stop(paste("Unknown layout option ", layout,
-               ". Options are 1, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2.",
+               ". Options are 1, 1h, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2.",
                sep = ""),
          call. = FALSE)
   }

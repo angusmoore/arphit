@@ -60,6 +60,7 @@ test_that("getlocation", {
 ## getsides ================
 test_that("getsides", {
   expect_that(getsides("1", "1"), equals(2))
+  expect_equal(getsides("1", "1h"), 1)
   expect_that(getsides("1", "2h"), equals(2))
   expect_that(getsides("1", "2v"), equals(2))
   expect_that(getsides("1", "2b2"), equals(2))
@@ -70,6 +71,7 @@ test_that("getsides", {
   expect_equal(getsides("1", "4b2"), 2)
 
   expect_that(getsides("2", "1"), equals(4))
+  expect_error(getsides("2", "1h"))
   expect_that(getsides("2", "2h"), equals(4))
   expect_that(getsides("2", "2v"), equals(4))
   expect_that(getsides("2", "2b2"), equals(4))
@@ -80,6 +82,7 @@ test_that("getsides", {
   expect_equal(getsides("2", "4b2"), 4)
 
   expect_error(getsides("3", "1"))
+  expect_error(getsides("3", "1h"))
   expect_that(getsides("3", "2h"), equals(2))
   expect_error(getsides("3", "2v"))
   expect_that(getsides("3", "2b2"), equals(2))
@@ -89,6 +92,7 @@ test_that("getsides", {
   expect_equal(getsides("3", "4b2"), 2)
 
   expect_error(getsides("4", "1"))
+  expect_error(getsides("4", "1h"))
   expect_that(getsides("4", "2h"), equals(4))
   expect_error(getsides("4", "2v"))
   expect_that(getsides("4", "2b2"), equals(4))
@@ -98,6 +102,7 @@ test_that("getsides", {
   expect_equal(getsides("4", "4b2"), 4)
 
   expect_error(getsides("5", "1"))
+  expect_error(getsides("5", "1h"))
   expect_error(getsides("5", "2v"))
   expect_error(getsides("5", "2h"))
   expect_error(getsides("5", "2b2"))
@@ -107,6 +112,7 @@ test_that("getsides", {
   expect_equal(getsides("5", "4b2"), 2)
 
   expect_error(getsides("6", "1"))
+  expect_error(getsides("6", "1h"))
   expect_error(getsides("6", "2v"))
   expect_error(getsides("6", "2h"))
   expect_error(getsides("6", "2b2"))
@@ -116,6 +122,7 @@ test_that("getsides", {
   expect_equal(getsides("6", "4b2"), 4)
 
   expect_error(getsides("7", "1"))
+  expect_error(getsides("7", "1h"))
   expect_error(getsides("7", "2v"))
   expect_error(getsides("7", "2h"))
   expect_error(getsides("7", "2b2"))
@@ -125,6 +132,7 @@ test_that("getsides", {
   expect_equal(getsides("7", "4b2"), 2)
 
   expect_error(getsides("8", "1"))
+  expect_error(getsides("8", "1h"))
   expect_error(getsides("8", "2v"))
   expect_error(getsides("8", "2h"))
   expect_error(getsides("8", "2b2"))
@@ -237,4 +245,23 @@ test_that("drop x label", {
   foo <- data.frame(date = seq(as.Date("2000-03-01"),length.out=18,by="quarter"),y=1:18)
   p <- arphitgg(foo, agg_aes(x=date,y=y),layout="2v")+agg_line(panel=c("1","2"))
   expect_true(check_graph(p,  "draw-panel-drop-first-ts-auto-not-required"))
+
+  # not respected for scatter graphs (#351)
+  set.seed(42)
+  df <- data.frame(x = runif(20), y = runif(20), panel = rep(c("a", "b"), each = 10))
+  p <- arphitgg(df, agg_aes(x = x, y = y, facet = panel), layout = "2v", dropxlabel = TRUE) +
+    agg_point()
+  expect_true(check_graph(p, "draw-panel-drop-first-xlabel-scatter"))
+})
+
+## Formatting of y labels ==================
+
+test_that("Formatting y labels", {
+  #Many decimal points
+  p <- arphitgg()+agg_ylim(0,3e-6,4)
+  expect_true(check_graph(p, "draw-panel-ylabel-format-decimals"))
+
+  # Thousands separator #359
+  p <- arphitgg()+agg_ylim(0,30000,4)
+  expect_true(check_graph(p, "draw-panel-ylabel-format-thousands"))
 })

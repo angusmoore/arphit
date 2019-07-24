@@ -5,11 +5,21 @@
 * Add new layer type - `agg_step` - to create step line graphs ([#341](https://github.com/angusmoore/arphit/pull/341))
 * Add new layer types - `agg_waterfall` - to create waterfall column/bar graphs
 ([#364](https://github.com/angusmoore/arphit/pull/364))
+* New layout type - `1h` - to create horizontal graphs (where the x axis is along
+the left axis and the y axis along on the bottom). This is particularly useful for
+bar graphs; but other layer types work too.
+([#350](https://github.com/angusmoore/arphit/pull/350))
 
 ## Breaking changes
 
 ## Bugfixes
 
+* Thousands now have comma separators in y labels
+([#362](https://github.com/angusmoore/arphit/pull/362))
+* Multipanel scatter graphs respect `dropxlabel`
+([#361](https://github.com/angusmoore/arphit/pull/361))
+* NAs in text (like titles, subtitles) no longer throw errors, just don't show
+the relevant text ([#362](https://github.com/angusmoore/arphit/pull/362))
 * Fixed error for bar graphs with weekly data due to the fact that years don't
 have a whole number of weeks ([#355](https://github.com/angusmoore/arphit/pull/355))
 * `yearqtr` and `yearmon` x variables in a `data.frame` or `tibble` are correctly

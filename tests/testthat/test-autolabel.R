@@ -21,7 +21,8 @@ test_that("Simple labels", {
   data <- tibble::tibble(x = sort(rep(letters[1:5],2)), g = rep(c("f","m"),5), y = rnorm(10))
   p <-  arphitgg(data, agg_aes(x=x,y=y,group=g)) +
     agg_col() +
-    agg_autolabel(TRUE)
+
+      agg_autolabel(TRUE)
   expect_true(
     check_graph(p, "autolabel-non-numeric-x")
   )
