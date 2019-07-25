@@ -157,6 +157,23 @@ test_that("Autolabel with waterfall", {
     agg_ylim(0,2,5) +
     agg_autolabel()
   expect_true(check_graph(p, "autolabel-waterfall"))
+
+  # Corner case - two identical series
+  data  <- data.frame(x = letters[1:6], y = c(2,1.1,-0.5,-0.2,0.4,2.8))
+  p <- arphitgg(data, agg_aes(x=x,y=y)) +
+    agg_waterfall() +
+    agg_waterfall() +
+    agg_autolabel()
+  expect_true(check_graph(p, "autolabel-waterfall-duplicate-series"))
+})
+
+test_that("Autolabel with step graph", {
+  data <- data.frame(x=1:10,y=2:11)
+  p <- arphitgg(data) +
+    agg_step(agg_aes(x,x)) +
+    agg_step(agg_aes(x,y)) +
+    agg_autolabel()
+  expect_true(check_graph(p, "autolabel-step"))
 })
 
 ## Auto label fall back ====================
