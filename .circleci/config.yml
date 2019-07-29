@@ -67,7 +67,7 @@ jobs:
       branches:
         ignore: /.*/
       tags:
-        only: /^v\d+\.\d+\.\d+$/
+        only: /^v.*$/
     docker:
       - image: cibuilds/github
     steps:
