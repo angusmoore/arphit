@@ -54,6 +54,22 @@ get_series_max_min <- function(series, data, xlim) {
        min=min(series$y[x_restriction],na.rm=TRUE))
 }
 
+waterfall_highest_lowest <- function(data) {
+  maxval <- 0
+  minval <- 0
+  for (i in 1:nrow(data)) {
+    if (i > 1 && i < nrow(data)) {
+      y_offset <- sum(data[1:(i-1),], na.rm = TRUE)
+    } else {
+      y_offset <- 0
+    }
+    thistick <- data[i,]
+    maxval <- max(maxval, sum(thistick[thistick > 0], na.rm = TRUE) + y_offset, na.rm = TRUE)
+    minval <- min(minval, sum(thistick[thistick < 0], na.rm = TRUE) + y_offset, na.rm = TRUE)
+  }
+  return(list(min = minval, max = maxval))
+}
+
 get_data_max_min <- function(data, xlim, stacked) {
   if (any(sapply(data$series, function(x) x$geomtype == "bar"))) {
     minval <- 0 # bound by zero if we have bars, since we want them to start there
@@ -65,18 +81,29 @@ get_data_max_min <- function(data, xlim, stacked) {
 
   # Find smallest and largest series value
   for (s in data$series) {
-    if (s$geomtype != "bar" || !stacked) {
+    if ((s$geomtype != "bar" || !stacked) && s$geomtype != "waterfall") {
       out <- get_series_max_min(s, data, xlim)
       minval <- min(minval, out$min, na.rm = TRUE)
       maxval <- max(maxval, out$max, na.rm = TRUE)
     }
   }
 
+  # handle stacked bar graphs
   if (stacked) {
     out <- get_stacked_max_min(data, xlim)
     minval <- min(minval, out$min, na.rm = TRUE)
     maxval <- max(maxval, out$max, na.rm = TRUE)
   }
+
+  # Max and min for waterfall graphs
+  data$bars <- NULL
+  bars <- extract_bar_data(data, "waterfall")$bars
+  if (ncol(bars$bardata) > 0 && nrow(bars$bardata) > 0) {
+    out <- waterfall_highest_lowest(bars$bardata)
+    minval <- min(minval, out$min, na.rm = TRUE)
+    maxval <- max(maxval, out$max, na.rm = TRUE)
+  }
+
   return(list(min = minval, max = maxval))
 }
 

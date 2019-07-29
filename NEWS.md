@@ -3,6 +3,8 @@
 ## New features
 
 * Add new layer type - `agg_step` - to create step line graphs ([#341](https://github.com/angusmoore/arphit/pull/341))
+* Add new layer types - `agg_waterfall` - to create waterfall column/bar graphs
+([#364](https://github.com/angusmoore/arphit/pull/364))
 * New layout type - `1h` - to create horizontal graphs (where the x axis is along
 the left axis and the y axis along on the bottom). This is particularly useful for
 bar graphs; but other layer types work too.

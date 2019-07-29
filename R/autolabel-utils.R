@@ -49,7 +49,6 @@ get_series_objects <- function(series_entry, data, layout, labels) {
 }
 
 simplify_label <- function(label) {
-
   list(name = label$name, col = ifelse(is.null(label$fill), label$col, label$fill))
 }
 
@@ -78,11 +77,6 @@ createlabels <- function(data, layout, labels, ylim) {
   # go through and add annotations - if necessary and (LHS) and (RHS)
   unique_labels <- lapply(unique_labels, convert_series_to_label, ylim = ylim, layout = layout)
 
-  # Add in series types
-  for (i in seq_along(unique_labels)) {
-    unique_labels[[i]]$series_type <- get_series_type(unique_labels[[i]])
-  }
-
   return(unique_labels)
 }
 
@@ -110,17 +104,6 @@ notalreadylabelled <- function(p, labels) {
     }
   }
   return(TRUE)
-}
-
-
-get_series_type <- function(series) {
-  if (!is.null(series$fill)) {
-    return("bar")
-  } else if (series$lty == 0) {
-    return("point")
-  } else {
-    return("line")
-  }
 }
 
 segment_intersection <- function(x1, y1, x2, y2, a1, b1, a2, b2) {

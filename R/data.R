@@ -49,14 +49,14 @@ series_names <- function(x) {
   sapply(x$series, function(y) y$name)
 }
 
-extract_bar_data <- function(data) {
+extract_bar_data <- function(data, geomtype = "bar") {
   colours <- c()
   bordercol <- c()
   bardata <- data.frame(agg_xvalues = data$x, stringsAsFactors = FALSE)
 
   for (i in seq_along(data$series)) {
     s <- data$series[[i]]
-    if (s$geomtype == "bar") {
+    if (s$geomtype == geomtype) {
       colours <- append(colours, s$attributes$col)
       bordercol <- append(bordercol, s$attributes$barcol)
       series_data <- data.frame(agg_xvalues = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)

@@ -123,6 +123,18 @@ test_that("Autolabel with bars", {
     agg_col(agg_aes(x=x,y=y3)) +
     agg_autolabel(quiet = TRUE, arrow_bars = TRUE)
   expect_true(check_graph(p, "autolabel-arrow-bars"))
+
+  # bars and lines
+  data <- data.frame(x=1:10,y=1:10,z=1:10)
+  p <- arphitgg(data) + agg_line(agg_aes(x,y)) +
+    agg_col(agg_aes(x,z))+agg_autolabel()
+  expect_true(check_graph(p, "autolabel-bar-line"))
+
+  # with NA
+  data <- data.frame(x=1:10,y=1:10,z=c(NA,NA,1:8))
+  p <- arphitgg(data) + agg_line(agg_aes(x,y)) +
+    agg_col(agg_aes(x,z))+agg_autolabel()
+  expect_true(check_graph(p, "autolabel-bars-NAs"))
 })
 
 test_that("Autolabel with points", {
@@ -133,6 +145,35 @@ test_that("Autolabel with points", {
     agg_point(agg_aes(x=x,y=z)) +
     agg_autolabel(TRUE)
   expect_true(check_graph(p, "autolabel-scatter"))
+})
+
+test_that("Autolabel with waterfall", {
+  data <- data.frame(x = c('start','a','a','b','b','end'),
+                     y = c(1, 0.5, -0.4, 0.2, 0.1, 1.4),
+                     group = c(1, 2, 3, 2, 3, 4),
+                     order = c(1,2,2,3,3,4))
+  p <- arphitgg(data) +
+    agg_waterfall(agg_aes(x=x,y=y,group=group,order=order)) +
+    agg_ylim(0,2,5) +
+    agg_autolabel()
+  expect_true(check_graph(p, "autolabel-waterfall"))
+
+  # Corner case - two identical series
+  data  <- data.frame(x = letters[1:6], y = c(2,1.1,-0.5,-0.2,0.4,2.8))
+  p <- arphitgg(data, agg_aes(x=x,y=y)) +
+    agg_waterfall() +
+    agg_waterfall() +
+    agg_autolabel()
+  expect_true(check_graph(p, "autolabel-waterfall-duplicate-series"))
+})
+
+test_that("Autolabel with step graph", {
+  data <- data.frame(x=1:10,y=2:11)
+  p <- arphitgg(data) +
+    agg_step(agg_aes(x,x)) +
+    agg_step(agg_aes(x,y)) +
+    agg_autolabel()
+  expect_true(check_graph(p, "autolabel-step"))
 })
 
 ## Auto label fall back ====================

@@ -643,6 +643,64 @@ agg_point <- function(aes = NULL, data = NULL, colour = NULL, pointsize = 1, pan
   )
 }
 
+#' Add a waterfall layer to an arphit plot.
+#'
+#' Creates a bar chart, showing how the changes from left-most observation to the
+#' right-most observation.
+#'
+#' You should ensure that your data are ordered so that your first observation is
+#' the observation you want the waterfall to 'start' from, and your last
+#' observation the one you want the waterfall to 'end' at. Do this by specifying
+#' an `order` in your aesthetic.
+#'
+#' Setting groups (and colours) is a good idea: create a group to differentiate
+#' your start and end observations and your positive and negative observations (
+#' separately colouring positive and negative makes the graph easier to read).
+#'
+#' This layer type should be considered experimental and may undergo breaking
+#' changes.
+#'
+#' @param aes The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.
+#' @param data The data to be used. Will inherit from parent if missing.
+#' @param colour A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
+#' @param barcol (optional) Outline colours for each bar series
+#' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
+#'
+#' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
+#' all the plotting options
+#'
+#' @examples
+#' # Simple waterfall graph
+#' data  <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
+#' arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,order=x))
+#'
+#' # Waterfall graph separately colouring positive and negative changes
+#' data <- data.frame(x = letters[1:6], y = c(2,1,-0.5,-0.2,0.4,2.7))
+#' arphitgg(data) + agg_waterfall(agg_aes(x=x,y=y,group=y<0,order=x))
+#'
+#' # Waterfall graphs with multiple groups per x observation
+#' data <- data.frame(x = c('start','a','a','b','b','end'),
+#'                    y = c(1, 0.5, -0.4, 0.2, 0.1, 1.4),
+#'                    group = c(1, 2, 3, 2, 3, 4),
+#'                    order = c(1,2,2,3,3,4))
+#' arphitgg(data) +
+#'   agg_waterfall(agg_aes(x=x,y=y,group=group,order=order))
+#'
+#' @export
+agg_waterfall <- function(aes = NULL, data = NULL, colour = NULL, barcol = NULL, panel = "1") {
+  check_panel(panel)
+  return(
+    list(
+      type = "waterfall",
+      data = data,
+      aes = aes,
+      colour = colour,
+      barcol = barcol,
+      panel = as.character(panel)
+    )
+  )
+}
+
 #' Define an aesthetic for a graph, or a graph layer.
 #'
 #' If specified as part of a layer, fields left blank will be inherited from the parent.

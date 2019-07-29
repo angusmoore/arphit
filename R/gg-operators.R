@@ -44,6 +44,7 @@ print.arphit.gg <- function(x, ...) {
          "line" = addseries(gg, element, "line"),
          "col" = addseries(gg, element, "bar"),
          "step" = addseries(gg, element, "step"),
+         "waterfall" = addseries(gg, element, "waterfall"),
          "title" = addtitle(gg, element),
          "subtitle" = addsubtitle(gg, element),
          "units" = addunits(gg, element),
