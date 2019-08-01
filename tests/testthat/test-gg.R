@@ -460,6 +460,25 @@ test_that("Miscellaneous", {
   expect_error(
     arphitgg(foo, agg_aes(x=x,y=y,group=group))+agg_point(),
     NA)
+
+  # vector comparison for long order aesthetic
+  expect_warning(print(arphitgg(
+    data.frame(variable = letters[1:10], y = 1:10),
+    agg_aes(
+      x = variable,
+      y = y,
+      order = case_when(
+        variable == "GDP" ~ 1,
+        variable == "Consumption" ~ 2,
+        variable == "Dwelling" ~ 3,
+        variable == "Mining" ~ 4,
+        variable == "Non-mining" ~ 5,
+        variable == "Public" ~ 6,
+        variable == "Exports" ~ 7,
+        variable == "Imports" ~ 8
+      )
+    )
+  ) + agg_line()), NA)
 })
 
 test_that("NAs in text stuff", {
