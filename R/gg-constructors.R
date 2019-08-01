@@ -729,7 +729,7 @@ agg_aes <- function(x, y, group = NULL, facet = NULL, order = NULL) {
   y <- rlang::enquo(y)
   group <- rlang::enquo(group)
   facet <- rlang::enquo(facet)
-  if (as.character(deparse(substitute(order))) == "NULL") {
+  if (length(deparse(substitute(order))) > 0 && as.character(deparse(substitute(order))) == "NULL") {
     order <- x
   } else {
     order <- rlang::enquo(order)
