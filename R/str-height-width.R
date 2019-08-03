@@ -121,7 +121,8 @@ charwidth <- function(C) {
     "," = 0.08333333,
     "\U20AC" = 0.15625,
     "\U00A3" = 0.15625,
-    "\U00A5" = 0.15625
+    "\U00A5" = 0.15625,
+    "\U00AE" = 0.208099
   )
   width <- widths[[C]]
   if (is.null(width)) {
