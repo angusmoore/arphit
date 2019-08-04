@@ -154,3 +154,45 @@ enableautolabel <- function(gg, quiet, arrow_lines, arrow_bars) {
   gg$arrow_bars <- arrow_bars
   return(gg)
 }
+
+sanity_check_rename <- function(gg, mapping, panels) {
+  missing <- unname(mapping)
+  for (p in panels) {
+    missing <- setdiff(missing, series_names(gg$data[[p]]))
+  }
+  if (length(missing) > 0) {
+    warning(
+      paste0(
+        "Unable to rename series `", paste0(missing, collapse = "`, `"),
+        "` as this series does not exist in the relevant panels (",
+        paste(panels, collapse = ", "), "). Did you misspell it?"
+      ),
+      call. = FALSE
+    )
+  }
+}
+
+replace_name <- function(name, mapping) {
+  if (name %in% mapping) {
+    return(names(mapping)[which(name == mapping)])
+  } else {
+    return(name)
+  }
+}
+
+renameseries <- function(gg, mapping, panel) {
+  if (is.null(panel)) {
+    panel <- names(gg$data)
+    panel <- panel[panel != "parent"]
+  }
+
+  sanity_check_rename(gg, mapping, panel)
+
+  for (p in panel) {
+    for (s in seq_along(gg$data[[p]]$series)) {
+      gg$data[[p]]$series[[s]]$name <- replace_name(gg$data[[p]]$series[[s]]$name, mapping)
+    }
+  }
+
+  gg
+}

@@ -487,3 +487,37 @@ test_that("NAs in text stuff", {
   expect_error(print(arphitgg() + agg_source(NA)), NA)
   expect_error(print(arphitgg() + agg_footnote(NA)), NA)
 })
+
+test_that("rename_series", {
+  p <- arphitgg(data.frame(x=1:10,y=1:10), agg_aes(x,y)) + agg_line() +
+      agg_rename_series(list('Nicer series name' = 'y')) +
+      agg_legend()
+  expect_true(check_graph(p, "gg-rename-series-simple"))
+
+  p <- arphitgg(data.frame(x=1:10,y=1:10,g=c(rep("a",5),rep("b",5))),
+                agg_aes(x,y,g)) +
+    agg_line() +
+    agg_rename_series(list('Group A' = 'a', "Group B" = "b")) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-rename-series-group"))
+
+  p <- arphitgg(data.frame(x=1:10,y=1:10,g=c(rep("a",5),rep("b",5))),
+                agg_aes(x,y,g),
+                layout = "2b2") +
+    agg_line(panel = 1) +
+    agg_line(panel = 2) +
+    agg_line(panel = 3, colour = c("red","green")) +
+    agg_line(panel = 4, colour = c("red","green")) +
+    agg_rename_series(list('Group A' = 'a', "Group B" = "b"), panel = c("1","3")) +
+    agg_autolabel()
+  expect_true(check_graph(p, "gg-rename-series-restrict-panel"))
+
+  expect_warning(
+    p <- arphitgg(data.frame(x=1:10,y=1:10), agg_aes(x,y)) + agg_line() +
+    agg_rename_series(list('Nicer series name' = 'y', "foobar" = "z")) +
+    agg_legend(),
+    "Unable to rename series `z`"
+  )
+  expect_true(check_graph(p, "gg-rename-series-simple"))
+
+})
