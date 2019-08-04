@@ -2,6 +2,8 @@
 
 ## New features
 
+* New argument to `agg_col` layers (`reorder_bars`) that allows you to manually
+specify the order for bars within that layer ([#369](https://github.com/angusmoore/arphit/pull/369))
 * Add new layer type - `agg_step` - to create step line graphs ([#341](https://github.com/angusmoore/arphit/pull/341))
 * Add new layer types - `agg_waterfall` - to create waterfall column/bar graphs
 ([#364](https://github.com/angusmoore/arphit/pull/364))

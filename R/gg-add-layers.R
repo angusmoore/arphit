@@ -91,6 +91,10 @@ check_aes_in_data <- function(data, aes, panel) {
     stop(paste0(rlang::quo_name(aes$group)," is not in your data for panel ", panel),
          call. = FALSE)
   }
+  if (!is_null_quo(aes$series_order) && !try_tidy(aes$series_order, data)) {
+    stop(paste0(rlang::quo_name(aes$series_order)," is not in your data for panel ", panel),
+         call. = FALSE)
+  }
 }
 
 convert_data <- function(data, aes) {
@@ -221,7 +225,7 @@ addlayertopanel <- function(gg, data, aes, panel, geomtype) {
   ## assign series
   gg <- assign_series(gg, data, aes, panel, geomtype)
 
-  ## now reorder
+  ## now reorder (x values)
   gg <- reorder_series(gg, data, aes, panel)
 
   return(list(gg = gg, new_series_indices = (existing_series+1):length(gg$data[[panel]]$series)))
@@ -309,6 +313,49 @@ applyattributes <- function(gg, thisseries, panel, allnewseries) {
   return(gg)
 }
 
+change_bar_order <- function(gg, reorder_bars, panel) {
+  snames <- series_names(gg$data[[panel]])
+
+  if (any(!reorder_bars %in% snames)) {
+    undefined_series <- reorder_bars[!reorder_bars %in% snames]
+    warning(
+      paste0(
+        "Cannot reorder bar series `",
+        paste(undefined_series, collapse = "`, `"),
+        "` as it does not exist; ignoring."
+      )
+    )
+    reorder_bars <- reorder_bars[reorder_bars %in% snames]
+  }
+  if (any(!snames %in% reorder_bars)) {
+    undefined_series <- snames[!snames %in% reorder_bars]
+    warning(
+      paste0(
+        "You did not manually specify an order for `",
+        paste(undefined_series, collapse = "`, `"),
+        "`; these will be order alphabetically _after_ the series you manually ordered"
+      )
+    )
+  }
+
+  existing_indices <- data.frame(
+    series = snames,
+    existing_index = 1:length(snames),
+    stringsAsFactors = FALSE
+  )
+  new_order <- data.frame(
+    new_index = 1:length(reorder_bars),
+    series = reorder_bars,
+    stringsAsFactors = FALSE
+  )
+  new_order <- dplyr::left_join(existing_indices, new_order, by = "series")
+  new_order <- order(new_order$new_index, new_order$series, na.last = TRUE)
+
+  gg$data[[panel]]$series <- gg$data[[panel]]$series[new_order]
+
+  return(gg)
+}
+
 addseries_ <- function(gg, newseries, type) {
   panel <- newseries$panel
   out <- addlayer(gg, newseries, panel, type)
@@ -325,6 +372,10 @@ addseries_ <- function(gg, newseries, type) {
 
   if (type == "bar" && !is.null(newseries$stacked)) {
     gg$stacked <- newseries$stacked
+  }
+
+  if (!is.null(newseries$reorder_bars)) {
+    gg <- change_bar_order(gg, newseries$reorder_bars, panel)
   }
 
   return(gg)
