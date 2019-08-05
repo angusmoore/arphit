@@ -341,6 +341,13 @@ test_that("reorder_bars", {
     agg_col(stacked = FALSE, reorder_bars = c("c",NA, "a")) +
     agg_legend()
   expect_true(check_graph(p, "gg-reorder-bars-na-name"))
+
+  # Duplicate series names
+  p <- arphitgg(data, agg_aes(x,y,group)) +
+    agg_col(agg_aes(x=1:5,y=rep(2,5),group="c")) +
+    agg_col(stacked = FALSE, reorder_bars = c("c", NA, "a")) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-reorder-bars-duplicate-name"))
 })
 
 ## Reference multiple panels in one constructor (#191) ======================
