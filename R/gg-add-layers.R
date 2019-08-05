@@ -315,6 +315,8 @@ applyattributes <- function(gg, thisseries, panel, allnewseries) {
 
 change_bar_order <- function(gg, reorder_bars, panel) {
   snames <- series_names(gg$data[[panel]])
+  # special case NAs
+  reorder_bars[is.na(reorder_bars)] <- "<NA>"
 
   if (any(!reorder_bars %in% snames)) {
     undefined_series <- reorder_bars[!reorder_bars %in% snames]
