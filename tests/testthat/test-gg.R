@@ -333,6 +333,14 @@ test_that("reorder_bars", {
     "Cannot reorder bar series"
   )
   expect_true(check_graph(p, "gg-reorder-bars-basic"))
+
+  # Corner cases - NA in series names
+  data <- data.frame(x = rep(1:5,3), group = c(rep("a",5), rep(NA,5), rep ("c",5)),
+                     y = 1:15)
+  p <- arphitgg(data, agg_aes(x,y,group)) +
+    agg_col(stacked = FALSE, reorder_bars = c("c",NA, "a")) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-reorder-bars-na-name"))
 })
 
 ## Reference multiple panels in one constructor (#191) ======================
