@@ -280,6 +280,13 @@ test_that("Which panels should be autolabelled", {
   expect_true(
     check_graph(p, "autolabel-one-panel-labelled")
   )
+
+  # Override existence of labels on a panel and label anyway
+  p <- arphitgg(data.frame(x = 1:10, y = 1:10), agg_aes(x, y)) +
+    agg_line() + agg_point() +
+    agg_autolabel(ignore_existing_labels = TRUE) +
+    agg_label("foo", 2, 2, panel = "1")
+  expect_true(check_graph(p, "autolabel-ignore-existing-labels"))
 })
 
 ## Misc tests ==================
