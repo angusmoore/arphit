@@ -15,7 +15,17 @@ agg_rename_series(mapping = list(), panel = NULL)
 Rename series in your plot (for legends and autolabeller)
 }
 \examples{
-arphitgg(data.frame(x=1:10,y=1:10)) + agg_line() +
-  agg_rename_series(list('Nicer series name' = 'y'))
+
+# Simple example
+arphitgg(data.frame(x=1:10,y=1:10), agg_aes(x,y)) + agg_line() +
+  agg_rename_series(list('Nicer series name' = 'y')) +
+  agg_legend()
+
+# With groups
+arphitgg(data.frame(x=1:10,y=1:10,g=c(rep("a",5),rep("b",5))),
+         agg_aes(x,y,g)) +
+  agg_line() +
+  agg_rename_series(list('Group A' = 'a', "Group B" = "b")) +
+  agg_legend()
 
 }
