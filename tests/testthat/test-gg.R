@@ -551,4 +551,11 @@ test_that("rename_series", {
     agg_rename_series(list('foobar' = "<NA>")) +
     agg_legend()
   expect_true(check_graph(p, "gg-rename-from-na"))
+  
+  # Error for bad mapping
+  expect_error(
+    arphitgg(data.frame(x=1:10,y=1:10),agg_aes(x,y))+agg_line() +
+      agg_rename_series(c("a"="b")),
+    "`mapping` should be a list in format"
+  )
 })
