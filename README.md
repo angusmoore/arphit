@@ -1,4 +1,4 @@
-# arphit <a href='https://https://angusmoore.github.io/arphit/'><img src='man/figures/logo.png' align="right" height="139" /></a>
+# arphit <a href='https://angusmoore.github.io/arphit/'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 [![CircleCI](https://circleci.com/gh/angusmoore/arphit.svg?style=svg&circle-token=de7d58333f2bbfadd18348db90d289a81956c55d)](https://circleci.com/gh/angusmoore/arphit)
