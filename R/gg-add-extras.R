@@ -186,6 +186,8 @@ renameseries <- function(gg, mapping, panel) {
     panel <- panel[panel != "parent"]
   }
 
+  mapping <- lapply(mapping, function(x) { if (is.na(x)) {"<NA>"} else {x}})
+
   sanity_check_rename(gg, mapping, panel)
 
   for (p in panel) {
