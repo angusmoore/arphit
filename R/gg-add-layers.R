@@ -91,10 +91,6 @@ check_aes_in_data <- function(data, aes, panel) {
     stop(paste0(rlang::quo_name(aes$group)," is not in your data for panel ", panel),
          call. = FALSE)
   }
-  if (!is_null_quo(aes$series_order) && !try_tidy(aes$series_order, data)) {
-    stop(paste0(rlang::quo_name(aes$series_order)," is not in your data for panel ", panel),
-         call. = FALSE)
-  }
 }
 
 convert_data <- function(data, aes) {
