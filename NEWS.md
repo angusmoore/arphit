@@ -2,6 +2,8 @@
 
 ## New features
 
+* Rename series using `agg_rename_series` so that you have nice series names in
+legends and autolabels ([#371](https://github.com/angusmoore/arphit/pull/371))
 * Add new layer type - `agg_step` - to create step line graphs ([#341](https://github.com/angusmoore/arphit/pull/341))
 * Add new layer types - `agg_waterfall` - to create waterfall column/bar graphs
 ([#364](https://github.com/angusmoore/arphit/pull/364))

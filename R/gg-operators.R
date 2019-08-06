@@ -63,6 +63,7 @@ print.arphit.gg <- function(x, ...) {
          "legend" = addlegend(gg, element),
          "autolabel" = enableautolabel(gg, element$quiet, element$arrow_lines, element$arrow_bars),
          "xfreq" = addxfreq(gg, element$freq, element$panel),
-         stop("Unknown element type for arphit.gg", call. = FALSE))
+         "rename_series" = renameseries(gg, element$mapping, element$panel),
+         stop("Unknown element type for arphitgg", call. = FALSE))
   return(gg)
 }
