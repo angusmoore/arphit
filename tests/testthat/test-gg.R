@@ -520,4 +520,35 @@ test_that("rename_series", {
   )
   expect_true(check_graph(p, "gg-rename-series-simple"))
 
+  # Duplicate series
+  p <- arphitgg(data.frame(x=1:10,y=1:10), agg_aes(x,y)) + agg_line() + agg_col() +
+    agg_rename_series(list('Nicer series name' = 'y')) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-rename-duplicate-name"))
+
+  p <- arphitgg(data.frame(x=1:10,y=1:10), agg_aes(x,y), layout = "2v") +
+    agg_line(panel = "1") + agg_col(panel = "2") +
+    agg_rename_series(list('Nicer series name' = 'y'), panel = "1") +
+    agg_legend()
+  expect_true(check_graph(p, "gg-rename-duplicate-name-multiple-panels"))
+
+  # Renaming to NA
+  p <- arphitgg(data.frame(x=1:10,y=1:10,z=10:1)) +
+    agg_line(agg_aes(x,y)) + agg_col(agg_aes(x,z)) +
+    agg_rename_series(list("<NA>" = 'y')) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-rename-to-na"))
+
+  # Renaming NA to non-NA
+  p <- arphitgg(data.frame(x=1:10,y=1:10,z=10:1)) +
+    agg_line(agg_aes(x,y)) + agg_col(agg_aes(x,z,group=NA)) +
+    agg_rename_series(list('foobar' = NA)) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-rename-from-na"))
+
+  p <- arphitgg(data.frame(x=1:10,y=1:10,z=10:1)) +
+    agg_line(agg_aes(x,y)) + agg_col(agg_aes(x,z,group=NA)) +
+    agg_rename_series(list('foobar' = "<NA>")) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-rename-from-na"))
 })
