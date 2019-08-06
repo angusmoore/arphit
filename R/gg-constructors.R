@@ -256,7 +256,7 @@ agg_rename_series <- function(mapping = list(), panel = NULL) {
   if (!is.list(mapping)) {
     stop(
       paste0(
-        "`mapping` should be a list in format `list('newname' = 'oldname'); you passed in a ",
+        "`mapping` should be a list in format `list('newname' = 'oldname')`; you passed in a ",
         class(mapping)
       ),
       .call = FALSE
