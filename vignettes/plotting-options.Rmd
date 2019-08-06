@@ -1161,6 +1161,9 @@ this will be the value of the group variable. This is identical to how legends
 are determined. Series that appear in multiple panels are only labelled once.
 Series that have `NA` as their name are ignored by the autolabeller.
 
+You can rename series using the function `agg_rename_series`. See the section on
+adding legends for more details.
+
 ### Enabling the auto labeller
 
 Enable the auto labeller by adding `agg_autolabel()`:
@@ -1176,7 +1179,8 @@ agg_draw(p, filename = "autolabel.png")
 knitr::include_graphics("autolabel.png")
 ```
 
-If you put text labels on a panel, that disables the auto labeller for that panel:
+If you put text labels on a panel, that disables the auto labeller for that panel,
+unless you set `ignore_existing_labels = TRUE` as an argument to `agg_autolabel`:
 ```{r, results = "hide"}
 p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var), layout = "2v") +
   agg_line(panel = "1") + 
@@ -1191,7 +1195,7 @@ agg_draw(p, filename = "autolabel2.png")
 knitr::include_graphics("autolabel2.png")
 ```
 
-The autolabeller should correctly handle left and right hand series:
+The autolabeller correctly handles left and right hand series:
 ```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x = date), layout = "1") +
   agg_line(agg_aes(y = y1), panel = "1") + 
@@ -1397,6 +1401,63 @@ agg_draw(p, filename = "onpanel-legend-specific-place.png")
 ```
 ```{r, out.width = "50%", echo = FALSE, fig.align="center"}
 knitr::include_graphics("onpanel-legend-specific-place.png")
+```
+
+## (Advanced) Renaming series for legends
+
+By default, series names in legends are the name of the `y` aesthetic (if the
+aesthetic has no group) or the value of the grouping variable. Often these are
+variable names and so are not particularly meaningful on a graph. The function
+`agg_rename_series` exists to allow you to easily rename series for legends (or
+for the autolabeller).
+
+This function takes a named list. The values in the list are the current name and
+the names in the list are what the series are to be renamed to. (This is the same
+structure as `dplyr`'s `rename` function.) You can optional restrict the mapping
+to only a specific panel; if no panel ID is supplied, the mapping will be applied 
+to all panels:
+
+```{r, results = "hide"}
+p <- arphitgg(simple_data, agg_aes(x = date, y = y1)) +
+  agg_line() +
+  agg_rename_series(list("Nicer name" = "y1")) + 
+  agg_legend()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "rename-series-simple.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("rename-series-simple.png")
+```
+
+```{r, results = "hide"}
+p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var)) +
+  agg_line() +
+  agg_rename_series(list("Series A" = "A", "Series B" = "B")) + 
+  agg_legend()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "rename-series-group.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("rename-series-group.png")
+```
+
+As before, you can stop a series from being displayed in a legend by settings its
+name to `NA`. This is a little complicated in `agg_rename_series` because R does not
+accept NA as a name in a list. Instead use the string "<NA>" as the series name 
+to indicate that a series should not be displayed in a legend:
+```{r, results = "hide"}
+p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var)) +
+  agg_line() +
+  agg_rename_series(list("Series A" = "A", "<NA>" = "B")) + 
+  agg_legend()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "rename-series-na.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("rename-series-na.png")
 ```
 
 # Saving to a file

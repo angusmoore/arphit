@@ -4,6 +4,8 @@
 
 * New argument to `agg_col` layers (`reorder_bars`) that allows you to manually
 specify the order for bars within that layer ([#369](https://github.com/angusmoore/arphit/pull/369))
+* Rename series using `agg_rename_series` so that you have nice series names in
+legends and autolabels ([#371](https://github.com/angusmoore/arphit/pull/371))
 * Add new layer type - `agg_step` - to create step line graphs ([#341](https://github.com/angusmoore/arphit/pull/341))
 * Add new layer types - `agg_waterfall` - to create waterfall column/bar graphs
 ([#364](https://github.com/angusmoore/arphit/pull/364))
@@ -11,6 +13,9 @@ specify the order for bars within that layer ([#369](https://github.com/angusmoo
 the left axis and the y axis along on the bottom). This is particularly useful for
 bar graphs; but other layer types work too.
 ([#350](https://github.com/angusmoore/arphit/pull/350))
+* New argument `ignore_existing_labels` to `agg_autolabel` which permits the autolabeller
+to add automatic to labels that already have text annotations (by default it does not)
+([#371](https://github.com/angusmoore/arphit/pull/373))
 
 ## Breaking changes
 

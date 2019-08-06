@@ -223,13 +223,13 @@ autolabel_series <- function(label, series, p, data, plot_bitmap, los_mask, xlim
   }
 }
 
-autolabel <- function(gg, data, xlim, ylim, margins, labels, quiet, arrow_lines, arrow_bars) {
+autolabel <- function(gg, data, xlim, ylim, margins, labels, quiet, arrow_lines, arrow_bars, ignore_existing_labels) {
   inches_conversion <-
     list(
       y = 1 / (graphics::par("usr")[4] - graphics::par("usr")[3]) * graphics::par("pin")[2],
       x = 1 / (graphics::par("usr")[2] - graphics::par("usr")[1]) * graphics::par("pin")[1]
     )
-  series_to_label <- createlabels(data, gg$layout, labels, ylim)
+  series_to_label <- createlabels(data, gg$layout, labels, ylim, ignore_existing_labels)
 
   if (length(series_to_label) > 0) {
     plot_bitmap <- get_underlay_bitmap(gg, margins)

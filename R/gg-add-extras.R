@@ -147,10 +147,55 @@ addlegend <- function(gg, legend) {
   return(gg)
 }
 
-enableautolabel <- function(gg, quiet, arrow_lines, arrow_bars) {
+enableautolabel <- function(gg, quiet, arrow_lines, arrow_bars, ignore_existing_labels) {
   gg$enable_autolabeller <-  TRUE
   gg$autolabel_quiet <- quiet
   gg$arrow_lines <- arrow_lines
   gg$arrow_bars <- arrow_bars
+  gg$ignore_existing_labels <- ignore_existing_labels
   return(gg)
+}
+
+sanity_check_rename <- function(gg, mapping, panels) {
+  missing <- unname(mapping)
+  for (p in panels) {
+    missing <- setdiff(missing, series_names(gg$data[[p]]))
+  }
+  if (length(missing) > 0) {
+    warning(
+      paste0(
+        "Unable to rename series `", paste0(missing, collapse = "`, `"),
+        "` as this series does not exist in the relevant panels (",
+        paste(panels, collapse = ", "), "). Did you misspell it?"
+      ),
+      call. = FALSE
+    )
+  }
+}
+
+replace_name <- function(name, mapping) {
+  if (name %in% mapping) {
+    return(names(mapping)[which(name == mapping)])
+  } else {
+    return(name)
+  }
+}
+
+renameseries <- function(gg, mapping, panel) {
+  if (is.null(panel)) {
+    panel <- names(gg$data)
+    panel <- panel[panel != "parent"]
+  }
+
+  mapping <- lapply(mapping, function(x) { if (is.na(x)) {"<NA>"} else {x}})
+
+  sanity_check_rename(gg, mapping, panel)
+
+  for (p in panel) {
+    for (s in seq_along(gg$data[[p]]$series)) {
+      gg$data[[p]]$series[[s]]$name <- replace_name(gg$data[[p]]$series[[s]]$name, mapping)
+    }
+  }
+
+  gg
 }

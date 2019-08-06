@@ -18,10 +18,10 @@ convert_series_to_label <- function(series_entry, ylim, layout) {
   return(series_entry)
 }
 
-series_appears_in_panels <- function(series_entry, data, layout, labels) {
+series_appears_in_panels <- function(series_entry, data, layout, labels, ignore_existing_labels) {
   panels <- NULL
   for (p in names(data)) {
-    if (panel_has_multiple_series(p, data, layout) && notalreadylabelled(p, labels)) {
+    if (panel_has_multiple_series(p, data, layout) && notalreadylabelled(p, labels, ignore_existing_labels)) {
       for (series in data[[p]]$series) {
         if (identical(legend_entry(series), series_entry)) {
           if (is.null(panels)) {
@@ -36,9 +36,9 @@ series_appears_in_panels <- function(series_entry, data, layout, labels) {
   return(panels)
 }
 
-get_series_objects <- function(series_entry, data, layout, labels) {
+get_series_objects <- function(series_entry, data, layout, labels, ignore_existing_labels) {
   for (p in names(data)) {
-    if (panel_has_multiple_series(p, data, layout) && notalreadylabelled(p, labels)) {
+    if (panel_has_multiple_series(p, data, layout) && notalreadylabelled(p, labels, ignore_existing_labels)) {
       for (series in data[[p]]$series) {
         if (identical(legend_entry(series), series_entry)) {
           return(series)
@@ -59,13 +59,30 @@ strip_layer_duplicates <- function(unique_labels) {
   unique_labels[!duplicated(simplified)]
 }
 
-createlabels <- function(data, layout, labels, ylim) {
+createlabels <- function(data, layout, labels, ylim, ignore_existing_labels) {
   unique_labels <- getlegendentries(data) # This gets us all unique series
   unique_labels <- strip_layer_duplicates(unique_labels)
 
   # Now we match each unique series to the panels it appears in
-  panels <- lapply(unique_labels, series_appears_in_panels, data = data, layout = layout, labels = labels)
-  matching_series <- lapply(unique_labels, get_series_objects, data = data, layout = layout, labels = labels)
+  panels <-
+    lapply(
+      unique_labels,
+      series_appears_in_panels,
+      data = data,
+      layout = layout,
+      labels = labels,
+      ignore_existing_labels = ignore_existing_labels
+    )
+
+  matching_series <-
+    lapply(
+      unique_labels,
+      get_series_objects,
+      data = data,
+      layout = layout,
+      labels = labels,
+      ignore_existing_labels = ignore_existing_labels
+    )
 
   # Merge that panel data in (we do it this way, so it doesn't ruin the comparison)
   for (i in seq_along(unique_labels)) {
@@ -97,7 +114,8 @@ other_axes <- function(p, layout) {
   }
 }
 
-notalreadylabelled <- function(p, labels) {
+notalreadylabelled <- function(p, labels, ignore_existing_labels) {
+  if (ignore_existing_labels) return(TRUE)
   for (label in labels) {
     if (label$panel == p) {
       return(FALSE)

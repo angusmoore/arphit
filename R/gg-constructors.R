@@ -209,6 +209,11 @@ agg_label <- function(text, x, y, panel, colour = "black", size = 20, color) {
 #' if there isn't line of sight between the label and the series.
 #' @param arrow_bars (logical, default FALSE) Add arrows between labels and bar series
 #' if there isn't line of sight between the label and the series.
+#' @param ignore_existing_labels (logical, default FALSE) Add labels to panels with
+#' already-existing manual labels. Set to TRUE to auto-place labels on such panels
+#' (note: will add all labels, as the autolabeller doesn't know which series, if any,
+#' the existing label is for)
+#'
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
 #' all the plotting options
@@ -221,8 +226,43 @@ agg_label <- function(text, x, y, panel, colour = "black", size = 20, color) {
 #'   agg_autolabel()
 #'
 #' @export
-agg_autolabel <- function(quiet = FALSE, arrow_lines = TRUE, arrow_bars = FALSE) {
-  return(list(type = "autolabel", quiet = quiet, arrow_lines = arrow_lines, arrow_bars = arrow_bars))
+agg_autolabel <- function(quiet = FALSE, arrow_lines = TRUE, arrow_bars = FALSE, ignore_existing_labels = FALSE) {
+  return(list(type = "autolabel", quiet = quiet, arrow_lines = arrow_lines, arrow_bars = arrow_bars, ignore_existing_labels = ignore_existing_labels))
+}
+
+
+
+#' Rename series in your plot (for legends and autolabeller)
+#'
+#' @param mapping A list with values the existing series names and names the new series names
+#' @param panel (optional) Only apply mapping to specific panels
+#'
+#' @examples
+#'
+#' # Simple example
+#' arphitgg(data.frame(x=1:10,y=1:10), agg_aes(x,y)) + agg_line() +
+#'   agg_rename_series(list('Nicer series name' = 'y')) +
+#'   agg_legend()
+#'
+#' # With groups
+#' arphitgg(data.frame(x=1:10,y=1:10,g=c(rep("a",5),rep("b",5))),
+#'          agg_aes(x,y,g)) +
+#'   agg_line() +
+#'   agg_rename_series(list('Group A' = 'a', "Group B" = "b")) +
+#'   agg_legend()
+#'
+#' @export
+agg_rename_series <- function(mapping = list(), panel = NULL) {
+  if (!is.list(mapping)) {
+    stop(
+      paste0(
+        "`mapping` should be a list in format `list('newname' = 'oldname'); you passed in a ",
+        class(mapping)
+      ),
+      .call = FALSE
+    )
+  }
+  return(list(type = "rename_series", mapping = mapping, panel = panel))
 }
 
 #' Add an arrow
