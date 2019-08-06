@@ -9,6 +9,9 @@
 the left axis and the y axis along on the bottom). This is particularly useful for
 bar graphs; but other layer types work too.
 ([#350](https://github.com/angusmoore/arphit/pull/350))
+* New argument `ignore_existing_labels` to `agg_autolabel` which permits the autolabeller
+to add automatic to labels that already have text annotations (by default it does not)
+([#371](https://github.com/angusmoore/arphit/pull/373))
 
 ## Breaking changes
 

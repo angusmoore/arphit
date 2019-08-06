@@ -1127,7 +1127,8 @@ agg_draw(p, filename = "autolabel.png")
 knitr::include_graphics("autolabel.png")
 ```
 
-If you put text labels on a panel, that disables the auto labeller for that panel:
+If you put text labels on a panel, that disables the auto labeller for that panel,
+unless you set `ignore_existing_labels = TRUE` as an argument to `agg_autolabel`:
 ```{r, results = "hide"}
 p <- arphitgg(long_data, agg_aes(x = date, y = y1, group = group_var), layout = "2v") +
   agg_line(panel = "1") + 
@@ -1142,7 +1143,7 @@ agg_draw(p, filename = "autolabel2.png")
 knitr::include_graphics("autolabel2.png")
 ```
 
-The autolabeller should correctly handle left and right hand series:
+The autolabeller correctly handles left and right hand series:
 ```{r, results = "hide"}
 p <- arphitgg(simple_data, agg_aes(x = date), layout = "1") +
   agg_line(agg_aes(y = y1), panel = "1") + 
