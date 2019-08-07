@@ -13,13 +13,13 @@ Imports:
   stringr,
   dplyr,
   rlang,
-  devEMF,
+  devEMF (>= 3.6.3),
   zoo,
   xts,
   magick,
   writexl
 Suggests:
-  testthat,
+  testthat (>= 2.1.0),
   tibble,
   tidyr,
   knitr,
