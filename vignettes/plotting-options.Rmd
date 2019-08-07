@@ -374,6 +374,12 @@ You can use a separate order variable with groups, but the ordering variable mus
 associate with each x value and this ordering must be consistent across all groups. If not,
 otherwise the ordering of x values is ambiguous.
 
+#### (Note: Ordering of bars)
+
+You can also control the order of bars within a layer (i.e. which bar appears 
+closest to the axis) using the argument `reorder_bars` to `agg_col`. This is covered
+in detail under the `agg_col` section of the section 'Layers' below.
+
 ### Tidy evaluation and aesthetics
 
 Aesthetics support tidy evaluation. This means that your aesthetic can actually
@@ -514,6 +520,49 @@ You can use the layout option `layout = "1h"` to create horizontal bar graphs -
 where the x axis on the left side. This type of graph has only one panel. (NB: You
 can make any layer type a horizontal graph, but it is most useful for column
 graphs.) See the section "Layouts and panels" above.
+
+#### (Advanced) Order of bar layers
+
+Bars are ordered left-to-right (if not stacked) or closest to axis (if stacked) 
+based on the order they are added to the graph. For layers with group aesthetics,
+the bars _within_ a layer are ordered alphabetically;^[Series without a name (i.e.
+value of grouping variable equal to `NA`) appear last.] but later layers always
+appear after earlier layers:
+
+```{r, results = "hide"}
+p <- arphitgg() + 
+  agg_col(data = simple_data, aes = agg_aes(x = date, y = y1), stacked = FALSE) + # appears left-most
+  agg_col(data = long_data, aes = agg_aes(x = date, y = y2, group = group_var), stacked = FALSE) + # appears to the right the first layer, with the groups in alphabetical order
+  agg_legend()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "bar-order.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("bar-order.png")
+```
+
+You can manually control the order of bars using the argument `reorder_bars`. All bar series
+added to a panel up to that point can be reordered within that layer. As such, you
+should always reorder in the _last_ layer you add to a panel:
+
+```{r, results = "hide"}
+p <- arphitgg() + 
+  agg_col(data = simple_data, aes = agg_aes(x = date, y = y1), stacked = FALSE) + # appears left-most
+  agg_col(data = long_data, aes = agg_aes(x = date, y = y2, group = group_var), stacked = FALSE,
+          reorder_bars = c("B","y1", "A")) + # reorder the series so that B appears left-most then y1 (added in a previous layer) and then A
+  agg_legend()
+```
+```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
+agg_draw(p, filename = "bar-reorder.png")
+```
+```{r, out.width = "50%", echo = FALSE, fig.align="center"}
+knitr::include_graphics("bar-reorder.png")
+```
+
+You do not have to specify a full order. If you leave out series, these are ordered
+after those you manually order (in alphabetical order). You will get a warning telling
+you this (in case it was a mistake).
 
 ### Point/scatter layers
 

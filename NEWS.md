@@ -2,6 +2,8 @@
 
 ## New features
 
+* New argument to `agg_col` layers (`reorder_bars`) that allows you to manually
+specify the order for bars within that layer ([#369](https://github.com/angusmoore/arphit/pull/369))
 * Rename series using `agg_rename_series` so that you have nice series names in
 legends and autolabels ([#371](https://github.com/angusmoore/arphit/pull/371))
 * Add new layer type - `agg_step` - to create step line graphs ([#341](https://github.com/angusmoore/arphit/pull/341))

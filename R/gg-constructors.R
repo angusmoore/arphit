@@ -616,6 +616,7 @@ agg_step <- function(aes = NULL, data = NULL, colour = NULL, pch = NULL, lty = N
 #' @param barcol (optional) Outline colours for each bar series
 #' @param panel (default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.
 #' @param stacked (default = TRUE) Stack the bars, or group them?
+#' @param reorder_bars A vector (of values of your grouping variable) to set the order bars should appear in. First element is closest to the axis. Does nothing for non-grouped layers. (And doesn't affect adding subsequent layers, which will always appear after earlier layers, regardless of `reorder_bars`)
 #' @param color (Deprecated; use colour instead) A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.
 #'
 #' @seealso \code{vignette("plotting-options", package = "arphit")} for a detailed description of
@@ -627,7 +628,7 @@ agg_step <- function(aes = NULL, data = NULL, colour = NULL, pch = NULL, lty = N
 #' arphitgg(data) + agg_col(aes = agg_aes(x = date, y = unemployment, group = state), panel = "1")
 #'
 #' @export
-agg_col <- function(aes = NULL, data = NULL, colour = NULL, barcol = NULL, panel = "1", stacked = TRUE, color) {
+agg_col <- function(aes = NULL, data = NULL, colour = NULL, barcol = NULL, panel = "1", stacked = TRUE, reorder_bars = NULL, color) {
   check_panel(panel)
   if (!missing(color)) {
     warning("color is deprecated; use colour instead")
@@ -641,7 +642,8 @@ agg_col <- function(aes = NULL, data = NULL, colour = NULL, barcol = NULL, panel
       colour = colour,
       barcol = barcol,
       panel = as.character(panel),
-      stacked = stacked
+      stacked = stacked,
+      reorder_bars = reorder_bars
     )
   )
 }

@@ -313,6 +313,43 @@ test_that("Ordering", {
                "Ordering is ambiguous - some x values associate with multiple values of the ordering variable, or there are no observations of the ordering variable for some x values.")
 })
 
+test_that("reorder_bars", {
+  data <- data.frame(x = 1:10, v = 1, w = 2, y = 3, z = 4)
+  data <- tidyr::gather(data, key = key, value = value, w, v, y, z)
+  p <- arphitgg(data, agg_aes(x=x,y=value,group=key))+
+    agg_col(reorder_bars = c("z","y","v","w"))
+  expect_true(check_graph(p, "gg-reorder-bars-basic"))
+
+  expect_warning(
+    p <- arphitgg(data, agg_aes(x = x, y = value, group = key)) +
+      agg_col(reorder_bars = c("z", "w")),
+    "You did not manually specify an order"
+  )
+  expect_true(check_graph(p, "gg-reorder-bars-missing-some"))
+
+  expect_warning(
+    p <- arphitgg(data, agg_aes(x = x, y = value, group = key)) +
+      agg_col(reorder_bars = c("z","y","v","w","a")),
+    "Cannot reorder bar series"
+  )
+  expect_true(check_graph(p, "gg-reorder-bars-basic"))
+
+  # Corner cases - NA in series names
+  data <- data.frame(x = rep(1:5,3), group = c(rep("a",5), rep(NA,5), rep ("c",5)),
+                     y = 1:15)
+  p <- arphitgg(data, agg_aes(x,y,group)) +
+    agg_col(stacked = FALSE, reorder_bars = c("c",NA, "a")) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-reorder-bars-na-name"))
+
+  # Duplicate series names
+  p <- arphitgg(data, agg_aes(x,y,group)) +
+    agg_col(agg_aes(x=1:5,y=rep(2,5),group="c")) +
+    agg_col(stacked = FALSE, reorder_bars = c("c", NA, "a")) +
+    agg_legend()
+  expect_true(check_graph(p, "gg-reorder-bars-duplicate-name"))
+})
+
 ## Reference multiple panels in one constructor (#191) ======================
 test_that("Mutiple panel constructors", {
   # Line layer to multiple panels
