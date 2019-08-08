@@ -191,13 +191,11 @@ agg_draw(p, filename = "plotsize.png")
 knitr::include_graphics("plotsize.png")
 ```
 
-# Layers and aesthetics
-
-## Aesthetic
+# Aesthetics
 
 An aesthetic is the definition of a layer. It tells arphit how to display the data.
 
-### `x` and `y`
+## `x` and `y`
 
 The `x` and `y` variables speak for themselves. They must be variables
 in your dataset. (`x` values can be categorical). Aesthetics can also be
@@ -217,7 +215,7 @@ knitr::include_graphics("no-group-aes.png")
 
 If your data are a `ts`, the `x` aesthetic does not need to specified, it is automatically the dates in the time series.
 
-### Inheriting aesthetics
+## Inheriting aesthetics
 
 Aesthetics inherit from their parent. That is, if you omit part of an aesthetic in the definition of a layer, it will inherit from the parent (if it exists). If you specify both a parent aesthetic and a layer aesthetic, the layer aesthetic overrides.
 
@@ -245,7 +243,7 @@ agg_draw(p, filename = "inherit-aes-some.png")
 knitr::include_graphics("inherit-aes-some.png")
 ```
 
-### Groups
+## Groups
 
 An aesthetic can also specify a `group` variable. This is used when your data is in long form and you have multiple observations on each `x` observation, corresponding to different variables. For instance, `x` might be the date column, `y` the column containing observations of the unemployment rate and `group` the column containing state identifiers.
 ```{r, results = "hide"}
@@ -271,7 +269,7 @@ agg_draw(p, filename = "group-by-x.png")
 knitr::include_graphics("group-by-x.png")
 ```
 
-### Facets
+## Facets
 
 An aesthetic can also specify a `facet` variable. `facet`s work like `group`s, except that facets are split across panels (and so layers ignore if you give them a panel).
 ```{r, results = "hide"}
@@ -301,7 +299,7 @@ agg_draw(p, filename = "facet-group.png")
 knitr::include_graphics("facet-group.png")
 ```
 
-### Ordering of graphs
+## Ordering of x values in graphs
 
 By default, graphs are ordered by the value of their x-ticks (that is, either 
 numerically or alphabetically, depending on what your x-ticks are).
@@ -374,13 +372,13 @@ You can use a separate order variable with groups, but the ordering variable mus
 associate with each x value and this ordering must be consistent across all groups. If not,
 otherwise the ordering of x values is ambiguous.
 
-#### (Note: Ordering of bars)
+### (Note: Ordering of bars)
 
 You can also control the order of bars within a layer (i.e. which bar appears 
 closest to the axis) using the argument `reorder_bars` to `agg_col`. This is covered
 in detail under the `agg_col` section of the section 'Layers' below.
 
-### Tidy evaluation and aesthetics
+## Tidy evaluation and aesthetics
 
 Aesthetics support tidy evaluation. This means that your aesthetic can actually
 be an expression, which is evaluated in the environment of your data. This means
@@ -434,7 +432,7 @@ agg_draw(p, filename = "aes-tidy-double-group.png")
 knitr::include_graphics("aes-tidy-double-group.png")
 ```
 
-## Layers
+# Layers and graph types
 
 A layer is a series (or group of series) built from the same aesthetic. In `arphit`, layers must be assigned to a panel. You can have more than one layer per panel.
 
@@ -488,7 +486,7 @@ agg_draw(p, filename = "inherit.png")
 knitr::include_graphics("inherit.png")
 ```
 
-### Line layers
+## Line layers
 
 `agg_line` layers convert data and an aesthetic into line series in the chosen panel (or, panels if you set a facet variable in the aesthetic).
 
@@ -503,7 +501,7 @@ There are 7 options for line layers. What the options do is covered in more deta
 * The size of the point markers (`pointsize`). Only has any effect if `pch` is not NA.
 * Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 
-### Column/bar layers
+## Column/bar layers
 
 `agg_col` layers plot data as a vertical column graph. They have 6 options. What the options do is covered in more detail below.
 
@@ -514,14 +512,14 @@ There are 7 options for line layers. What the options do is covered in more deta
 * Which panel to plot the series on (`panel`). This is ignored if the aesthetic defines a facet variable.
 * Whether the bars should be stacked (default) or grouped (`stacked`). This is a global option; you cannot combine stacked and grouped layers.
 
-#### (Advanced) Horizontal bar graphs
+### (Advanced) Horizontal bar graphs
 
 You can use the layout option `layout = "1h"` to create horizontal bar graphs - 
 where the x axis on the left side. This type of graph has only one panel. (NB: You
 can make any layer type a horizontal graph, but it is most useful for column
 graphs.) See the section "Layouts and panels" above.
 
-#### (Advanced) Order of bar layers
+### (Advanced) Order of bar layers
 
 Bars are ordered left-to-right (if not stacked) or closest to axis (if stacked) 
 based on the order they are added to the graph. For layers with group aesthetics,
@@ -564,15 +562,15 @@ You do not have to specify a full order. If you leave out series, these are orde
 after those you manually order (in alphabetical order). You will get a warning telling
 you this (in case it was a mistake).
 
-### Point/scatter layers
+## Point/scatter layers
 
 `agg_point` layers are just a wrapper around `agg_line` that set the line to NA, and the point marker (`pch`) to `19` for solid dots. Naturally, this layer type is best for scatter graphs, as they quicker and easier than constructing your own `agg_line` layer.
 
 `agg_point` has only 5 options: Data (`data`), aesthetic (`aes`), panel (`panel`), colour for the markers (`colour`) and a size for the points (`pointsize`). As with other layer types, data and aesthetic (including parts of an aesthetic) will be inherited from the parent if omitted.
 
-### Specialised layer types
+## Specialised layer types
 
-#### Step layers
+### Step layers
 
 `agg_step` layers are a special type of line layer that 'step' to each point rather
 than connecting the two with a straight line. What this means is that the line is
@@ -594,7 +592,7 @@ knitr::include_graphics("step.png")
 Otherwise, `agg_step` layers are identical to line layers. They have same arguments
 and attributes (such as colour, line type etc).
 
-#### Waterfall layers
+### Waterfall layers
 
 `agg_waterfall` creates waterfall graphs. These are a specialised bar graph where
 the bars (except for the last one) step from where the previous one ends. These work
@@ -813,7 +811,7 @@ agg_draw(p, filename = "longtitle.png")
 knitr::include_graphics("longtitle.png")
 ```
 
-# Panel titles and subtitles
+## Panel titles and subtitles
 
 You can add titles and subtitles to panels in much the same way as titles and subtitles. Allyou do is specify `panel` as an argument:
 ```{r, results = "hide"}
@@ -1209,15 +1207,19 @@ agg_draw(p, filename = "autolabel_rhs.png")
 knitr::include_graphics("autolabel_rhs.png")
 ```
 
-## Adding horizonal and vertical lines
+## Adding lines (vertical, horizontal, etc)
 
-Horizontal and vertical lines are added using `agg_abline`. Horizontal lines are drawn by specifying the `y` variable _only; vertical the `x` variable only. You can also control the colour and line type. These are optional and default to a solid black line. You must also tell `arphit` which panel to put the line on.
+Horizontal and vertical lines are added using `agg_hline` and `agg_vline` respectively.
+Horizontal lines are drawn by specifying the y co-ordinate to draw the line at `agg_hline(y = 1)`;
+vertical lines are similar, but the `x` variable only. You can also control the
+colour and line type. These are optional and default to a solid black line. You
+must also tell `arphit` which panel to put the line on.
 
 The following example draws a vertical line at 2001 using the default colour and solid line. It also draws a horizontal line at -1 coloured darkred and dashed (`lty = 2`).
 ```{r, results = "hide"}
 p <- arphitgg() + 
-  agg_abline(x = 2001, panel = "1") + 
-  agg_abline(y = -1, colour = "darkred", lty = 2, panel = "1")
+  agg_vline(x = 2001, panel = "1") + 
+  agg_hline(y = -1, colour = "darkred", lty = 2, panel = "1")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "lines.png")
@@ -1226,10 +1228,12 @@ agg_draw(p, filename = "lines.png")
 knitr::include_graphics("lines.png")
 ```
 
-If you need more control over the line, you can specify the coordinates of the line segment instead of using `x` or `y`.  To do so use `x1`, `x2`, `y1` and `y2` instead of `x` and `y`. All other options are the same. For example:
+If you need more control over the line, you can use `agg_abline` to specify the
+coordinates of the line segment instead of using `x` or `y`.  To do so use
+`x1`, `x2`, `y1` and `y2`. All other options are the same. For example:
 ```{r, results = "hide"}
 p <- arphitgg() + 
-  agg_abline(x1 = 2000, y1 = -10, x2 = 2002, y2 = 5, panel = "1")
+  agg_abline(x1 = 2003, y1 = -0.1, x2 = 2005, y2 = 0.5, panel = "1")
 ```
 ```{r, echo = FALSE, results = "hide", warning = FALSE, message = FALSE}
 agg_draw(p, filename = "specificlines.png")
