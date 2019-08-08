@@ -1,7 +1,7 @@
 Package: arphit
 Type: Package
 Title: RBA-style R Plots
-Version: 0.5.0.9000
+Version: 0.5.0
 Author: Angus Moore
 Maintainer: Angus Moore <18376371+angusmoore@users.noreply.github.com>
 Description: Easily create RBA-style graphs using R, using a ggplot-like syntax. Supports a range of common graph types, including multipanel layouts.
