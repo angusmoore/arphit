@@ -9,12 +9,13 @@ agg_draw(gg, filename = NULL)
 \arguments{
 \item{gg}{An arphitgg built graph.}
 
-\item{filename}{(optional) If specified, save image to filename instead of displaying in R. Supports png, pdf, emf, emf+, svg and xlsx extensions.}
+\item{filename}{(optional) If specified, save image to filename instead of
+displaying in R. Supports png, pdf, emf, emf+, svg and xlsx extensions.}
 }
 \description{
 Draw a defined graph
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

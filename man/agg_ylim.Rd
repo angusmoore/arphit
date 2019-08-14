@@ -13,17 +13,20 @@ agg_ylim(min, max, nsteps, panel = NULL)
 
 \item{nsteps}{The number of steps (includes the minimum and maximum)}
 
-\item{panel}{(optional) Which panel to apply the scale to. If left blank, will be applied to all panels. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the scale to multiple panels at once.}
+\item{panel}{(optional) Which panel to apply the scale to. If left blank,
+will be applied to all panels. You can specify a vector of panels (e.g.
+`panel = c("1","3")`) to apply the scale to multiple panels at once.}
 }
 \description{
 Specify the y scale for a graph
 }
 \examples{
 arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5)
-arphitgg(data, layout = "2b2") + agg_ylim(min = -10, max = 10, nsteps = 5, panel = "1")
+arphitgg(data, layout = "2b2") +
+  agg_ylim(min = -10, max = 10, nsteps = 5, panel = "1")
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

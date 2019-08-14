@@ -1,10 +1,9 @@
-context("Animations")
-
 foo <- data.frame(
   series = rep(1:4, each = 10),
   x = rep(seq.Date(from = as.Date("2001-01-01"),
-                      by = "quarter",
-                      length.out = 10)),
+                   by = "quarter",
+                   length.out = 10),
+          4),
   y = c(-0.4, 1.1, 1.4, -0.1, 0.4, 0.7, 1.5, -0.2, 0.1, -0.2,
         -0.5, -0.9, -0.1, -0.2, -0.6, 1.3, 0.9, -0.5, 0.7, -1,
         -1.5, -6, -8.6, -6.6, -5, -12, -18, 17, 13, 5,

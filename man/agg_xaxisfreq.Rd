@@ -9,12 +9,15 @@ agg_xaxisfreq(freq, panel = NULL)
 \arguments{
 \item{freq}{The frequency, either "decade", "year", "quarter", "month"}
 
-\item{panel}{(optional) Which panel to apply the frequency scale to. If left blank, will be applied to all panels. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the frequency to multiple panels at once.}
+\item{panel}{(optional) Which panel to apply the frequency scale to. If left
+blank, will be applied to all panels. You can specify a vector of panels
+(e.g. `panel = c("1","3")`) to apply the frequency to multiple panels at
+once.}
 }
 \description{
 Specify the frequency of the x ticks for time series graphs
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

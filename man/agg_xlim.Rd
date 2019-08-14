@@ -7,11 +7,15 @@
 agg_xlim(min, max, panel = NULL)
 }
 \arguments{
-\item{min}{The minimum for the x-axis (can be NA to have arphit guess, based on your data)}
+\item{min}{The minimum for the x-axis (can be NA to have arphit guess, based
+on your data)}
 
 \item{max}{The maximum (can also be NA, as above)}
 
-\item{panel}{(optional) Which panel to apply the scale to. If left blank, will be applied to all panels. This is recommended. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the limits to multiple panels at once.}
+\item{panel}{(optional) Which panel to apply the scale to. If left blank,
+will be applied to all panels. This is recommended. You can specify a vector
+of panels (e.g. `panel = c("1","3")`) to apply the limits to multiple panels
+at once.}
 }
 \description{
 Specify the x limits for a graph
@@ -22,6 +26,6 @@ arphitgg(data) + agg_xlim(min = -10, max = 10, panel = "1")
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

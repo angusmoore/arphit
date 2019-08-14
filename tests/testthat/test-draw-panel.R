@@ -1,80 +1,78 @@
-context("Draw panel")
-
 ## getlocation ===============
 test_that("getlocation", {
-  expect_that(getlocation("1", "1"), equals(c(1,1)))
-  expect_that(getlocation("2", "1"), equals(c(1,1)))
+  expect_that(getlocation("1", "1"), equals(c(1, 1)))
+  expect_that(getlocation("2", "1"), equals(c(1, 1)))
 
-  expect_that(getlocation("1", "2v"), equals(c(1,1)))
-  expect_that(getlocation("2", "2v"), equals(c(1,2)))
+  expect_that(getlocation("1", "2v"), equals(c(1, 1)))
+  expect_that(getlocation("2", "2v"), equals(c(1, 2)))
 
-  expect_that(getlocation("1", "2h"), equals(c(1,1)))
-  expect_that(getlocation("2", "2h"), equals(c(1,1)))
-  expect_that(getlocation("3", "2h"), equals(c(2,1)))
-  expect_that(getlocation("4", "2h"), equals(c(2,1)))
+  expect_that(getlocation("1", "2h"), equals(c(1, 1)))
+  expect_that(getlocation("2", "2h"), equals(c(1, 1)))
+  expect_that(getlocation("3", "2h"), equals(c(2, 1)))
+  expect_that(getlocation("4", "2h"), equals(c(2, 1)))
 
-  expect_that(getlocation("1", "2b2"), equals(c(1,1)))
-  expect_that(getlocation("2", "2b2"), equals(c(1,2)))
-  expect_that(getlocation("3", "2b2"), equals(c(2,1)))
-  expect_that(getlocation("4", "2b2"), equals(c(2,2)))
+  expect_that(getlocation("1", "2b2"), equals(c(1, 1)))
+  expect_that(getlocation("2", "2b2"), equals(c(1, 2)))
+  expect_that(getlocation("3", "2b2"), equals(c(2, 1)))
+  expect_that(getlocation("4", "2b2"), equals(c(2, 2)))
 
-  expect_equal(getlocation("1", "3v"), c(1,1))
-  expect_equal(getlocation("2", "3v"), c(1,2))
-  expect_equal(getlocation("3", "3v"), c(1,3))
+  expect_equal(getlocation("1", "3v"), c(1, 1))
+  expect_equal(getlocation("2", "3v"), c(1, 2))
+  expect_equal(getlocation("3", "3v"), c(1, 3))
 
-  expect_equal(getlocation("1", "3h"), c(1,1))
-  expect_equal(getlocation("2", "3h"), c(1,1))
-  expect_equal(getlocation("3", "3h"), c(2,1))
-  expect_equal(getlocation("4", "3h"), c(2,1))
-  expect_equal(getlocation("5", "3h"), c(3,1))
-  expect_equal(getlocation("6", "3h"), c(3,1))
+  expect_equal(getlocation("1", "3h"), c(1, 1))
+  expect_equal(getlocation("2", "3h"), c(1, 1))
+  expect_equal(getlocation("3", "3h"), c(2, 1))
+  expect_equal(getlocation("4", "3h"), c(2, 1))
+  expect_equal(getlocation("5", "3h"), c(3, 1))
+  expect_equal(getlocation("6", "3h"), c(3, 1))
 
-  expect_equal(getlocation("1", "3b2"), c(1,1))
-  expect_equal(getlocation("2", "3b2"), c(1,2))
-  expect_equal(getlocation("3", "3b2"), c(2,1))
-  expect_equal(getlocation("4", "3b2"), c(2,2))
-  expect_equal(getlocation("5", "3b2"), c(3,1))
-  expect_equal(getlocation("6", "3b2"), c(3,2))
+  expect_equal(getlocation("1", "3b2"), c(1, 1))
+  expect_equal(getlocation("2", "3b2"), c(1, 2))
+  expect_equal(getlocation("3", "3b2"), c(2, 1))
+  expect_equal(getlocation("4", "3b2"), c(2, 2))
+  expect_equal(getlocation("5", "3b2"), c(3, 1))
+  expect_equal(getlocation("6", "3b2"), c(3, 2))
 
-  expect_equal(getlocation("1", "4h"), c(1,1))
-  expect_equal(getlocation("2", "4h"), c(1,1))
-  expect_equal(getlocation("3", "4h"), c(2,1))
-  expect_equal(getlocation("4", "4h"), c(2,1))
-  expect_equal(getlocation("5", "4h"), c(3,1))
-  expect_equal(getlocation("6", "4h"), c(3,1))
-  expect_equal(getlocation("7", "4h"), c(4,1))
-  expect_equal(getlocation("8", "4h"), c(4,1))
+  expect_equal(getlocation("1", "4h"), c(1, 1))
+  expect_equal(getlocation("2", "4h"), c(1, 1))
+  expect_equal(getlocation("3", "4h"), c(2, 1))
+  expect_equal(getlocation("4", "4h"), c(2, 1))
+  expect_equal(getlocation("5", "4h"), c(3, 1))
+  expect_equal(getlocation("6", "4h"), c(3, 1))
+  expect_equal(getlocation("7", "4h"), c(4, 1))
+  expect_equal(getlocation("8", "4h"), c(4, 1))
 
-  expect_equal(getlocation("1", "4b2"), c(1,1))
-  expect_equal(getlocation("2", "4b2"), c(1,2))
-  expect_equal(getlocation("3", "4b2"), c(2,1))
-  expect_equal(getlocation("4", "4b2"), c(2,2))
-  expect_equal(getlocation("5", "4b2"), c(3,1))
-  expect_equal(getlocation("6", "4b2"), c(3,2))
-  expect_equal(getlocation("7", "4b2"), c(4,1))
-  expect_equal(getlocation("8", "4b2"), c(4,2))
+  expect_equal(getlocation("1", "4b2"), c(1, 1))
+  expect_equal(getlocation("2", "4b2"), c(1, 2))
+  expect_equal(getlocation("3", "4b2"), c(2, 1))
+  expect_equal(getlocation("4", "4b2"), c(2, 2))
+  expect_equal(getlocation("5", "4b2"), c(3, 1))
+  expect_equal(getlocation("6", "4b2"), c(3, 2))
+  expect_equal(getlocation("7", "4b2"), c(4, 1))
+  expect_equal(getlocation("8", "4b2"), c(4, 2))
 
   expect_error(getlocation("1", "foo"))
 })
 
 ## getsides ================
 test_that("getsides", {
-  expect_that(getsides("1", "1"), equals(2))
+  expect_equal(getsides("1", "1"), 2)
   expect_equal(getsides("1", "1h"), 1)
-  expect_that(getsides("1", "2h"), equals(2))
-  expect_that(getsides("1", "2v"), equals(2))
-  expect_that(getsides("1", "2b2"), equals(2))
+  expect_equal(getsides("1", "2h"), 2)
+  expect_equal(getsides("1", "2v"), 2)
+  expect_equal(getsides("1", "2b2"), 2)
   expect_equal(getsides("1", "3v"), 2)
   expect_equal(getsides("1", "3h"), 2)
   expect_equal(getsides("1", "3b2"), 2)
   expect_equal(getsides("1", "4h"), 2)
   expect_equal(getsides("1", "4b2"), 2)
 
-  expect_that(getsides("2", "1"), equals(4))
+  expect_equal(getsides("2", "1"), 4)
   expect_error(getsides("2", "1h"))
-  expect_that(getsides("2", "2h"), equals(4))
-  expect_that(getsides("2", "2v"), equals(4))
-  expect_that(getsides("2", "2b2"), equals(4))
+  expect_equal(getsides("2", "2h"), 4)
+  expect_equal(getsides("2", "2v"), 4)
+  expect_equal(getsides("2", "2b2"), 4)
   expect_equal(getsides("2", "3v"), NA)
   expect_equal(getsides("2", "3h"), 4)
   expect_equal(getsides("2", "3b2"), 4)
@@ -83,9 +81,9 @@ test_that("getsides", {
 
   expect_error(getsides("3", "1"))
   expect_error(getsides("3", "1h"))
-  expect_that(getsides("3", "2h"), equals(2))
+  expect_equal(getsides("3", "2h"), 2)
   expect_error(getsides("3", "2v"))
-  expect_that(getsides("3", "2b2"), equals(2))
+  expect_equal(getsides("3", "2b2"), 2)
   expect_equal(getsides("3", "3v"), 4)
   expect_equal(getsides("3", "3h"), 2)
   expect_equal(getsides("3", "4h"), 2)
@@ -93,9 +91,9 @@ test_that("getsides", {
 
   expect_error(getsides("4", "1"))
   expect_error(getsides("4", "1h"))
-  expect_that(getsides("4", "2h"), equals(4))
+  expect_equal(getsides("4", "2h"), 4)
   expect_error(getsides("4", "2v"))
-  expect_that(getsides("4", "2b2"), equals(4))
+  expect_equal(getsides("4", "2b2"), 4)
   expect_error(getsides("4", "3v"))
   expect_equal(getsides("4", "3h"), 4)
   expect_equal(getsides("4", "4h"), 4)
@@ -154,63 +152,63 @@ test_that("getsides", {
 })
 
 ## Need x labels ==============
-test_that("needxlabels",{
-  expect_that(needxlabels("1", "1"), equals(TRUE))
-  expect_that(needxlabels("2", "1"), equals(FALSE))
+test_that("needxlabels", {
+  expect_true(needxlabels("1", "1"))
+  expect_false(needxlabels("2", "1"))
 
-  expect_that(needxlabels("1", "2v"), equals(TRUE))
-  expect_that(needxlabels("2", "2v"), equals(TRUE))
+  expect_true(needxlabels("1", "2v"))
+  expect_true(needxlabels("2", "2v"))
 
-  expect_that(needxlabels("1", "2h"), equals(FALSE))
-  expect_that(needxlabels("2", "2h"), equals(FALSE))
-  expect_that(needxlabels("3", "2h"), equals(TRUE))
-  expect_that(needxlabels("4", "2h"), equals(FALSE))
+  expect_false(needxlabels("1", "2h"))
+  expect_false(needxlabels("2", "2h"))
+  expect_true(needxlabels("3", "2h"))
+  expect_false(needxlabels("4", "2h"))
 
-  expect_that(needxlabels("1", "2b2"), equals(FALSE))
-  expect_that(needxlabels("2", "2b2"), equals(FALSE))
-  expect_that(needxlabels("3", "2b2"), equals(TRUE))
-  expect_that(needxlabels("4", "2b2"), equals(TRUE))
+  expect_false(needxlabels("1", "2b2"))
+  expect_false(needxlabels("2", "2b2"))
+  expect_true(needxlabels("3", "2b2"))
+  expect_true(needxlabels("4", "2b2"))
   expect_error(needxlabels("3", "foo"))
 })
 
 ## dropbottomlabel ==============
-test_that("dropbottomlabel",{
-  expect_that(dropbottomlabel("1", "1"), equals(FALSE))
-  expect_that(dropbottomlabel("2", "1"), equals(FALSE))
+test_that("dropbottomlabel", {
+  expect_false(dropbottomlabel("1", "1"))
+  expect_false(dropbottomlabel("2", "1"))
 
-  expect_that(dropbottomlabel("1", "2v"), equals(FALSE))
-  expect_that(dropbottomlabel("2", "2v"), equals(FALSE))
+  expect_false(dropbottomlabel("1", "2v"))
+  expect_false(dropbottomlabel("2", "2v"))
 
-  expect_that(dropbottomlabel("1", "2h"), equals(TRUE))
-  expect_that(dropbottomlabel("2", "2h"), equals(TRUE))
-  expect_that(dropbottomlabel("3", "2h"), equals(FALSE))
-  expect_that(dropbottomlabel("4", "2h"), equals(FALSE))
+  expect_true(dropbottomlabel("1", "2h"))
+  expect_true(dropbottomlabel("2", "2h"))
+  expect_false(dropbottomlabel("3", "2h"))
+  expect_false(dropbottomlabel("4", "2h"))
 
-  expect_that(dropbottomlabel("1", "2b2"), equals(TRUE))
-  expect_that(dropbottomlabel("2", "2b2"), equals(TRUE))
-  expect_that(dropbottomlabel("3", "2b2"), equals(FALSE))
-  expect_that(dropbottomlabel("4", "2b2"), equals(FALSE))
+  expect_true(dropbottomlabel("1", "2b2"))
+  expect_true(dropbottomlabel("2", "2b2"))
+  expect_false(dropbottomlabel("3", "2b2"))
+  expect_false(dropbottomlabel("4", "2b2"))
 
   expect_error(dropbottomlabel("4", "foo"))
 })
 
 ## needgrid ==============
 test_that("needgrid", {
-  expect_that(needgrid("1", "1"), equals(TRUE))
-  expect_that(needgrid("2", "1"), equals(FALSE))
+  expect_true(needgrid("1", "1"))
+  expect_false(needgrid("2", "1"))
 
-  expect_that(needgrid("1", "2v"), equals(TRUE))
-  expect_that(needgrid("2", "2v"), equals(TRUE))
+  expect_true(needgrid("1", "2v"))
+  expect_true(needgrid("2", "2v"))
 
-  expect_that(needgrid("1", "2h"), equals(TRUE))
-  expect_that(needgrid("2", "2h"), equals(FALSE))
-  expect_that(needgrid("3", "2h"), equals(TRUE))
-  expect_that(needgrid("4", "2h"), equals(FALSE))
+  expect_true(needgrid("1", "2h"))
+  expect_false(needgrid("2", "2h"))
+  expect_true(needgrid("3", "2h"))
+  expect_false(needgrid("4", "2h"))
 
-  expect_that(needgrid("1", "2b2"), equals(TRUE))
-  expect_that(needgrid("2", "2b2"), equals(TRUE))
-  expect_that(needgrid("3", "2b2"), equals(TRUE))
-  expect_that(needgrid("4", "2b2"), equals(TRUE))
+  expect_true(needgrid("1", "2b2"))
+  expect_true(needgrid("2", "2b2"))
+  expect_true(needgrid("3", "2b2"))
+  expect_true(needgrid("4", "2b2"))
 
   expect_error(needgrid("4", "foo"))
 })
@@ -218,10 +216,13 @@ test_that("needgrid", {
 ## tick adjustment (#100) ==============
 test_that("tickadjustment", {
   expect_equal(tickadjustment("1"), 1)
-  expect_equal(tickadjustment("2v"), 3/2) # seems like a weird bug in R, shouldn't be needed, but shows up better this way...
+  # seems like a weird bug in R, shouldn't be needed, but shows up better this
+  # way...
+  expect_equal(tickadjustment("2v"), 3 / 2)
   expect_equal(tickadjustment("2h"), 2)
   expect_equal(tickadjustment("2b2"), 2)
-  expect_equal(tickadjustment("3v"), 2) # seems like a weird bug in R, shouldn't be needed, but shows up better this way...
+  # seems like a weird bug in R, shouldn't be needed, but shows up better
+  expect_equal(tickadjustment("3v"), 2)
   expect_equal(tickadjustment("3h"), 3)
   expect_equal(tickadjustment("3b2"), 3)
   expect_equal(tickadjustment("4h"), 4)
@@ -231,25 +232,48 @@ test_that("tickadjustment", {
 ## Drop first x label ================
 
 test_that("drop x label", {
-  p <- arphitgg(data.frame(x=1:10,y=1:10), agg_aes(x=x,y=y), layout = "3v", showallxlabels = TRUE, dropxlabel = TRUE) + agg_line(panel = c("1","2","3"))
+  p <- arphitgg(data.frame(x = 1:10, y = 1:10),
+                agg_aes(x = x, y = y),
+                layout = "3v",
+                showallxlabels = TRUE,
+                dropxlabel = TRUE) +
+    agg_line(panel = c("1", "2", "3"))
   expect_true(check_graph(p, "draw-panel-drop-x"))
 
   # Auto drop first label in time series because would overlap
-  foo <- data.frame(date = seq(as.Date("2000-03-01"),length.out=39,by="quarter"),y=1:39)
-  p <- arphitgg(foo, agg_aes(x=date,y=y),layout="2v")+agg_line(panel=c("1","2"))
+  foo <- data.frame(date = seq(as.Date("2000-03-01"),
+                               length.out = 39,
+                               by = "quarter"),
+                    y = 1:39)
+  p <- arphitgg(foo, agg_aes(x = date, y = y), layout = "2v") +
+    agg_line(panel = c("1", "2"))
   expect_true(check_graph(p,  "draw-panel-drop-first-ts-auto"))
 
-  p <- arphitgg(foo, agg_aes(x=date,y=y),layout="2v",dropxlabel = FALSE)+agg_line(panel=c("1","2"))
-  expect_true(check_graph(p,  "draw-panel-drop-first-ts-override"))
+  p <- arphitgg(foo,
+                agg_aes(x = date, y = y),
+                layout = "2v",
+                dropxlabel = FALSE) +
+    agg_line(panel = c("1", "2"))
+  expect_true(check_graph(p, "draw-panel-drop-first-ts-override"))
 
-  foo <- data.frame(date = seq(as.Date("2000-03-01"),length.out=18,by="quarter"),y=1:18)
-  p <- arphitgg(foo, agg_aes(x=date,y=y),layout="2v")+agg_line(panel=c("1","2"))
+  foo <- data.frame(date = seq(as.Date("2000-03-01"),
+                               length.out = 18,
+                               by = "quarter"),
+                    y = 1:18)
+  p <- arphitgg(foo, agg_aes(x = date, y = y),
+                layout = "2v") +
+    agg_line(panel = c("1", "2"))
   expect_true(check_graph(p,  "draw-panel-drop-first-ts-auto-not-required"))
 
   # not respected for scatter graphs (#351)
   set.seed(42)
-  df <- data.frame(x = runif(20), y = runif(20), panel = rep(c("a", "b"), each = 10))
-  p <- arphitgg(df, agg_aes(x = x, y = y, facet = panel), layout = "2v", dropxlabel = TRUE) +
+  df <- data.frame(x = runif(20),
+                   y = runif(20),
+                   panel = rep(c("a", "b"), each = 10))
+  p <- arphitgg(df,
+                agg_aes(x = x, y = y, facet = panel),
+                layout = "2v",
+                dropxlabel = TRUE) +
     agg_point()
   expect_true(check_graph(p, "draw-panel-drop-first-xlabel-scatter"))
 })
@@ -258,10 +282,10 @@ test_that("drop x label", {
 
 test_that("Formatting y labels", {
   #Many decimal points
-  p <- arphitgg()+agg_ylim(0,3e-6,4)
+  p <- arphitgg() + agg_ylim(0, 3e-6, 4)
   expect_true(check_graph(p, "draw-panel-ylabel-format-decimals"))
 
   # Thousands separator #359
-  p <- arphitgg()+agg_ylim(0,30000,4)
+  p <- arphitgg() + agg_ylim(0, 30000, 4)
   expect_true(check_graph(p, "draw-panel-ylabel-format-thousands"))
 })

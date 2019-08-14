@@ -18,7 +18,9 @@ agg_arrow(tail.x, tail.y, head.x, head.y, colour = "black", panel,
 
 \item{colour}{The colour of the arrow}
 
-\item{panel}{Which panel should the arrow be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the arrow to multiple panels at once.}
+\item{panel}{Which panel should the arrow be placed on? You can specify a
+vector of panels (e.g. `panel = c("1","3")`) to apply the arrow to multiple
+panels at once.}
 
 \item{lwd}{(Optional, default 1) The linewidth of the arrow}
 
@@ -34,6 +36,6 @@ arphitgg(data) +
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

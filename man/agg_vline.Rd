@@ -11,7 +11,9 @@ agg_vline(x, colour = "black", panel, lwd = 1, lty = 1)
 
 \item{colour}{The colour of the line (default black)}
 
-\item{panel}{Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.}
+\item{panel}{Which panel should the line be placed on? You can specify a
+vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple
+panels at once.}
 
 \item{lwd}{(Optional, default 1) The line width}
 

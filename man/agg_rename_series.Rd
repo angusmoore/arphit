@@ -7,7 +7,8 @@
 agg_rename_series(mapping = list(), panel = NULL)
 }
 \arguments{
-\item{mapping}{A list with values the existing series names and names the new series names}
+\item{mapping}{A list with values the existing series names and names the new
+series names}
 
 \item{panel}{(optional) Only apply mapping to specific panels}
 }
