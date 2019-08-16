@@ -24,7 +24,11 @@ test_that("Legend series and colours", {
     agg_line(agg_aes(y = b), panel = "1", colour = "green") +
     agg_legend()
   expect_true(check_graph(p, "draw-outer-pch"))
-
+   
+  # With an axis label too
+  p <- p + agg_xaxislabel("Fizz Buzz")
+  expect_true(check_graph(p, "draw-outer-legend-with-axislabel"))
+  
   # tests for duplicate series names
   # same attributes for duplicate
   p <- arphitgg(data, agg_aes(x = x)) +
