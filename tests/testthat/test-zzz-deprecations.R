@@ -67,3 +67,21 @@ test_that("Deprecations for agg_vline and hline", {
     "y to draw a horizontal line is deprecated. Use `agg_hline`"
   )
 })
+
+test_that("Deprecations for agg_qplot argument rename", {
+  expect_warning(
+    agg_qplot(data.frame(x = 1:10, y = 1:10),
+              x = "x",
+              bar.stacked = TRUE,
+              bars = "y"),
+    "`bar.stacked` is deprecated"
+  )
+
+  expect_warning(
+    agg_qplot(data.frame(x = 1:10, y = 1:10),
+              x = "x",
+              legend = TRUE,
+              legend.ncol = 2),
+    "`legend.ncol` is deprecated"
+  )
+})

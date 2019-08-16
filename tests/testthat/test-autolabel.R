@@ -65,6 +65,13 @@ test_that("Simple labels", {
     agg_autolabel(TRUE)
   expect_true(check_graph(p, "autolabel-multipanel"))
 
+  p <- arphitgg(foo, agg_aes(x = year),
+                layout = "4h", showallxlabels = FALSE) +
+    agg_line(agg_aes(y = y), panel = c("1", "3", "5", "7")) +
+    agg_line(agg_aes(y = y2), panel = c("2", "4", "6", "8")) +
+    agg_autolabel()
+  expect_true(check_graph(p, "autolabel-multipanel-4h"))
+
   # Left-right axes
   set.seed(42)
   foo <- tibble::tibble(year = 2000:2020, y = rnorm(21), y2 = rnorm(21))

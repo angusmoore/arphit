@@ -41,6 +41,9 @@ print.arphit.gg <- function(x, ...) {
 #'
 #' @export
 "+.arphit.gg" <- function(gg, element) {
+  if (!is.list(element) || is.null(element$type)) {
+    stop("Unknown element type for arphitgg", call. = FALSE)
+  }
   switch(
     element$type,
     "line" = addseries(gg, element, "line"),

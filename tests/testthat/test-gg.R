@@ -332,6 +332,9 @@ test_that("Error messages", {
               aes = agg_aes(x = x, y = y)),
     "classes character and integer"
   )
+
+  expect_error(arphitgg() + 1, "Unknown element")
+  expect_error(arphitgg() + list(type = "fizzbuzz"), "Unknown element")
 })
 
 ## Ordering ====================

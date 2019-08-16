@@ -128,7 +128,7 @@ agg_qplot <- function(data,
     stacked <- bar.stacked
   }
 
-  if (!missing(legend_ncol)) {
+  if (!missing(legend.ncol)) {
     warning("`legend.ncol` is deprecated; use `legend_ncol` instead")
     legend_ncol <- legend.ncol
   }
