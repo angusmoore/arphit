@@ -388,7 +388,7 @@ xlabels.ts_month <- function(xlim) {
 
   # convert the labels to month letters
   months <- seq(from = 1 + (startmonth-floor(startmonth)) * 12, length.out = length(ticks))
-  labels <- substr(month.abb[1 + (months - 1) %% 12], 1, 1)
+  labels <- substr(month.abb[round(1 + (months - 1) %% 12)], 1, 1)
   at <- ticks + 0.5 * 1/12
 
   # add years

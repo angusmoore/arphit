@@ -39,6 +39,8 @@ treated as dates ([#356](https://github.com/angusmoore/arphit/pull/356))
 * Fixed autolabeller failure when have to identical column series ([#324](https://github.com/angusmoore/arphit/pull/324))
 * Underscores in titles no longer throw errors for unknown width ([#337](https://github.com/angusmoore/arphit/pull/337))
 * Better vertical spacing of footnotes, sources, and axis labels ([#342](https://github.com/angusmoore/arphit/pull/342))
+* Correct month labels with high-resolution (e.g. hourly) data; previously showed one month offset
+([#383](https://github.com/angusmoore/arphit/pull/383))
 
 ## Deprecated or removed
 
