@@ -282,6 +282,21 @@ test_that("Miscellaneous x axis tests", {
   expect_true(check_graph(p, "axes-insufficient-x-steps-145"))
 })
 
+# incorrect rounding for months with hourly data (#381)
+test_that("months with hourly data", {
+  set.seed(42)
+  data <- tibble(
+    date = seq(lubridate::parse_date_time('2014-02-01 00:00', 'Ymd HM'),
+               by = '1 hour',
+               length.out = 1000),
+    value = cumsum(rnorm(1000))
+  )
+  p <- data %>%
+    arphitgg(agg_aes(x=date, y=value)) +
+    agg_line()
+  expect_true(check_graph(p, "axes-month-hourly-data-381"))
+})
+
 ## Unit handling ===============
 test_that("Units", {
   p <- arphitgg() + agg_units("foo")
