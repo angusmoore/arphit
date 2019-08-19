@@ -98,10 +98,10 @@ workflows:
       - linux-build
       - windows-build
       - publish-github:
-        requires:
-          - linux-build
-        filters:
-          branches:
-            ignore: /.*/
-          tags:
-            only: /^v.*$/
+          requires:
+            - linux-build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*$/
