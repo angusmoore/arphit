@@ -19,7 +19,7 @@ jobs:
           command: |
             R -e 'install.packages("remotes")'
             R -e 'remotes::install_github("jimhester/lintr")'
-            R -e 'remotes::install_deps(dependencies = TRUE)'\
+            R -e 'remotes::install_deps(dependencies = TRUE)'
       - run:
           name: Session information and installed package versions
           command: |
@@ -62,6 +62,22 @@ jobs:
           key: cache
           paths:
             - "/usr/local/lib/R/site-library"
+  windows-build:
+    executor:
+      name: win/vs2019
+      shell: bash.exe
+    steps:
+      - checkout
+      - run: ls -lah
+      - run:
+          name: Install R
+          command: choco install r.project
+      - run:
+          name: Install R package dependencies
+          command: |
+            R -e 'install.packages("remotes")'
+            R -e 'remotes::install_github("jimhester/lintr")'
+            R -e 'remotes::install_deps(dependencies = TRUE)'
   publish-github-release:
     requires:
       - build
