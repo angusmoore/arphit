@@ -1,6 +1,7 @@
 version: 2.1
+
 jobs:
-  build:
+  linux-build:
     docker:
       - image: rocker/verse:latest
     steps:
@@ -62,6 +63,7 @@ jobs:
           key: cache
           paths:
             - "/usr/local/lib/R/site-library"
+
   windows-build:
     executor:
       - name: win/vs2019
@@ -77,14 +79,8 @@ jobs:
             R -e 'install.packages("remotes")'
             R -e 'remotes::install_github("jimhester/lintr")'
             R -e 'remotes::install_deps(dependencies = TRUE)'
-  publish-github-release:
-    requires:
-      - build
-    filters:
-      branches:
-        ignore: /.*/
-      tags:
-        only: /^v.*$/
+
+  publish-github:
     docker:
       - image: cibuilds/github
     steps:
@@ -94,3 +90,21 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ./artifacts/${CIRCLE_PROJECT_REPONAME}/*tar.gz
+
+workflows:
+  version: 2.1
+  build-test:
+    jobs:
+      - linux-build
+      - windows-build
+  build-test-deploy:
+    jobs:
+      - linux-build
+      - publish-github:
+        requires:
+          - linux-build
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /^v.*$/
