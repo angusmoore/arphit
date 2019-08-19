@@ -1,5 +1,4 @@
-version: 2.1
-
+version: 2
 jobs:
   linux-build:
     docker:
@@ -66,8 +65,8 @@ jobs:
 
   windows-build:
     executor:
-      - name: win/vs2019
-      - shell: bash.exe
+      name: win/vs2019
+      shell: bash.exe
     steps:
       - checkout
       - run:
