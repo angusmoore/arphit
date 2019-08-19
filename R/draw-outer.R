@@ -1,12 +1,17 @@
 drawtitle <- function(title, subtitle) {
   if (is.null(subtitle)) {
     graphics::par(lheight = 0.8)
-    graphics::title(main = title, outer = TRUE, cex.main = (28/20))
+    graphics::title(main = title, outer = TRUE, cex.main = (28 / 20))
     graphics::par(lheight = 1)
   } else {
     graphics::par(lheight = 0.8)
     slines <- stringr::str_count(subtitle, "\n")
-    graphics::title(main = title, outer = TRUE, line = (2+1.6*slines), cex.main = (28/20))
+    graphics::title(
+      main = title,
+      outer = TRUE,
+      line = (2 + 1.6 * slines),
+      cex.main = (28 / 20)
+    )
     graphics::mtext(subtitle, outer = TRUE, line = 0.2, side = 3)
     graphics::par(lheight = 1)
   }
@@ -17,7 +22,8 @@ col_legend_entry <- function(name, fill, border) {
        fill = fill,
        border = border)
   class(entry) <- "col_legend_entry"
-  return(entry)
+
+  entry
 }
 
 line_legend_entry <- function(name, col, pch, lwd, lty) {
@@ -27,17 +33,24 @@ line_legend_entry <- function(name, col, pch, lwd, lty) {
                 lwd = lwd,
                 lty = lty)
   class(entry) <- "line_legend_entry"
-  return(entry)
+
+  entry
 }
 
 legend_entry <- function(series) {
   if (series$geomtype == "bar") {
-    entry <- col_legend_entry(series$name, series$attributes$col, series$attributes$barcol)
+    entry <- col_legend_entry(series$name,
+                              series$attributes$col,
+                              series$attributes$barcol)
   } else {
-    entry <- line_legend_entry(series$name, series$attributes$col, series$attributes$pch,
-                               series$attributes$lwd, series$attributes$lty)
+    entry <- line_legend_entry(series$name,
+                               series$attributes$col,
+                               series$attributes$pch,
+                               series$attributes$lwd,
+                               series$attributes$lty)
   }
-  return(entry)
+
+  entry
 }
 
 getlegendentries <- function(data) {
@@ -52,21 +65,22 @@ getlegendentries <- function(data) {
       }
     }
   }
-  return(legend)
+
+  legend
 }
 
 extract_item <- function(thelist, item) {
-  if(!is.null(thelist[[item]])) {
-    return(thelist[[item]])
+  if (!is.null(thelist[[item]])) {
+    thelist[[item]]
   } else {
-    return(NA)
+    NA
   }
 }
 
 rowchars <- function(row, names, ncol) {
-  start <- 1 + (row-1)*ncol
-  end <- min(row*ncol, length(names))
-  return(sum(nchar(names[start:end])))
+  start <- 1 + (row - 1) * ncol
+  end <- min(row * ncol, length(names))
+  sum(nchar(names[start:end]))
 }
 
 determinelegendcols <- function(data, ncol) {
@@ -79,7 +93,7 @@ determinelegendcols <- function(data, ncol) {
     ncol <- length(names)
     nrow <- ceiling(length(names) / ncol)
     nc <- max(sapply(1:nrow, FUN = rowchars, names = names, ncol = ncol))
-    while ((nc+6*ncol) > MAXLEGENDCHARS && ncol > 1) {
+    while ((nc + 6 * ncol) > MAXLEGENDCHARS && ncol > 1) {
       ncol <- ncol - 1
       nrow <- ceiling(length(names) / ncol)
       nc <- max(sapply(1:nrow, FUN = rowchars, names = names, ncol = ncol))
@@ -87,10 +101,11 @@ determinelegendcols <- function(data, ncol) {
   }
   # special case when we have picked a number of columns that means the names
   # won't actually fill into the last column
-  if (length(names)/nrow == (ncol - 1)) {
+  if (length(names) / nrow == (ncol - 1)) {
     ncol <- ncol - 1
   }
-  return(list(r = nrow, c = ncol))
+
+  list(r = nrow, c = ncol)
 }
 
 get_legend_entries <- function(data) {
@@ -104,7 +119,15 @@ get_legend_entries <- function(data) {
   border <- sapply(series, FUN = extract_item, item = "border")
   names <- sapply(series, FUN = extract_item, item = "name")
 
-  return(list(pch = pch, lty = lty, lwd = lwd, col = col, fill = fill, border = border, names = names))
+  list(
+    pch = pch,
+    lty = lty,
+    lwd = lwd,
+    col = col,
+    fill = fill,
+    border = border,
+    names = names
+  )
 }
 
 draw_outer_legend <- function(data, ncol, xtickmargin, hasaxislabel) {
@@ -115,9 +138,10 @@ draw_outer_legend <- function(data, ncol, xtickmargin, hasaxislabel) {
   if (hasaxislabel) {
     ylines <- ylines + 1.7
   }
-  y <- -ylines*CSI/ph
+  y <- -ylines * CSI / ph
 
-  graphics::legend(x = 0.5, y = y,
+  graphics::legend(x = 0.5,
+                   y = y,
                    ncol = ncol,
                    xjust = 0.5,
                    yjust = 1,
@@ -131,7 +155,7 @@ draw_outer_legend <- function(data, ncol, xtickmargin, hasaxislabel) {
                    col = entries$col,
                    fill = entries$fill,
                    border = entries$border,
-                   cex = (18/20),
+                   cex = (18 / 20),
                    y.intersp = 1.4)
 }
 
@@ -151,7 +175,7 @@ draw_onpanel_legend <- function(data, ncol, x, y) {
                    col = entries$col,
                    fill = entries$fill,
                    border = entries$border,
-                   cex = (18/20),
+                   cex = (18 / 20),
                    y.intersp = 1.4)
 }
 
@@ -159,44 +183,70 @@ drawnotes <- function(footnotes, sources, notesstart) {
   graphics::par(lheight = 1)
   nf <- length(footnotes)
   cumuloffset <- notesstart
-  if (nf > 0 ) {
+  if (nf > 0) {
     for (i in 1:nf) {
       nlines <- stringr::str_count(footnotes[[i]], "\n")
-      replacedtext <- stringr::str_replace_all(footnotes[[i]], "\n", paste0("\n", strrep(" ", NSPACESNOTES)))
+      replacedtext <- stringr::str_replace_all(
+        footnotes[[i]],
+        "\n",
+        paste0("\n", strrep(" ", NSPACESNOTES))
+      )
       graphics::mtext(strrep("*", i),
                       outer = TRUE,
                       side = 1,
                       adj = 0,
                       padj = 1,
-                      line = (cumuloffset + 1.3*(i-1) - 1), # Minus 1 because padj = 1
-                      cex = (14/20))
+                      # Minus 1 because padj = 1
+                      line = (cumuloffset + 1.3 * (i - 1) - 1),
+                      cex = (14 / 20))
       graphics::mtext(paste(strrep(" ", NSPACESNOTES), replacedtext, sep = ""),
                       outer = TRUE,
                       side = 1,
                       adj = 0,
                       padj = 1,
-                      line = (cumuloffset + 1.3*(i-1) - 1), # Minus 1 because padj = 1
-                      cex = (14/20))
-      cumuloffset <- cumuloffset + 1.1*nlines
+                      # Minus 1 because padj = 1
+                      line = (cumuloffset + 1.3 * (i - 1) - 1),
+                      cex = (14 / 20))
+      cumuloffset <- cumuloffset + 1.1 * nlines
     }
   }
   if (nchar(sources$text) > 0) {
-    sources_line <- (cumuloffset + 1.3*nf - 1) + ifelse(nf > 0, 0.2, 0)
+    sources_line <- (cumuloffset + 1.3 * nf - 1) + ifelse(nf > 0, 0.2, 0)
     if (sources$plural) {
-      graphics::mtext("Sources:", outer = TRUE, side = 1, adj = 0, padj = 1, line = sources_line, cex = (14/20))
+      graphics::mtext(
+        "Sources:",
+        outer = TRUE,
+        side = 1,
+        adj = 0,
+        padj = 1,
+        line = sources_line,
+        cex = (14 / 20)
+      )
     } else {
-      graphics::mtext("Source:", outer = TRUE, side = 1, adj = 0, padj = 1, line = sources_line, cex = (14/20))
+      graphics::mtext(
+        "Source:",
+        outer = TRUE,
+        side = 1,
+        adj = 0,
+        padj = 1,
+        line = sources_line,
+        cex = (14 / 20)
+      )
     }
 
     nlines <- stringr::str_count(sources$text, "\n")
-    replacedtext <- stringr::str_replace_all(sources$text, "\n", paste("\n", strrep(" ", NSPACESSOURCES), sep = ""))
+    replacedtext <- stringr::str_replace_all(
+      sources$text,
+      "\n",
+      paste("\n", strrep(" ", NSPACESSOURCES), sep = "")
+    )
     graphics::mtext(paste0(strrep(" ", NSPACESSOURCES), replacedtext),
                     outer = TRUE,
                     side = 1,
                     adj = 0,
                     padj = 1,
                     line = sources_line,
-                    cex = (14/20))
+                    cex = (14 / 20))
   }
   graphics::par(lheight = 1)
 }

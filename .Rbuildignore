@@ -6,3 +6,4 @@ NEWS.md
 ^docs$
 ^pkgdown$
 ^\.circleci$
+.lintr

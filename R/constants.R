@@ -1,9 +1,18 @@
-DEFAULTCOLOURS <- c(RBA["Aqua8"], RBA["Orange2"], RBA["DarkGreen7"], RBA["Violet1"], RBA["Blue7"], RBA["Red5"], RBA["Brown4"], RBA["Pink2"], RBA["Grey7"])
+#nolint start
+DEFAULTCOLOURS <- c(RBA["Aqua8"],
+                    RBA["Orange2"],
+                    RBA["DarkGreen7"],
+                    RBA["Violet1"],
+                    RBA["Blue7"],
+                    RBA["Red5"],
+                    RBA["Brown4"],
+                    RBA["Pink2"],
+                    RBA["Grey7"])
 CSI <- 0.2
-LANDSCAPESIZE <- c(0.736842 * 7.5,7.5)
+LANDSCAPESIZE <- c(0.736842 * 7.5, 7.5)
 PORTRAITSIZE <- c(10, 7.5)
-PERMITTEDLABELS <- c(1,1.5,2,2.5,3,5)
-PERMITTEDSTEPS <- c(4,5,6,7)
+PERMITTEDLABELS <- c(1, 1.5, 2, 2.5, 3, 5)
+PERMITTEDSTEPS <- c(4, 5, 6, 7)
 DEFAULTSCALEUNITS <- "%"
 NSPACESNOTES <- 8
 WIDTHSPACESNOTES <- 0.4895833
@@ -13,7 +22,7 @@ DEFAULTPCH <- NA
 DEFAULTLTY <- 1
 DEFAULTLWD <- 2
 EMPTYSCALE <- list("min" = -1, "max" = 2, "nsteps" = 4)
-EMPTYXSCALE <- c(2000,2010)
+EMPTYXSCALE <- c(2000, 2010)
 DEFAULTTICKLENGTH <- 0.02
 DEFAULTBARCOL <- NA
 DEFAULTARROWLWD <- 1
@@ -29,3 +38,4 @@ AUTOLABEL_FALLBACK_PADDING <- 0.02
 AUTOLABEL_XSTEPS <- 20
 AUTOLABEL_YSTEPS <- 15
 AUTOLABEL_FALLBACK_STEPS <- 50
+#nolint end

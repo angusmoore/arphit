@@ -1,7 +1,7 @@
 sanity_check_ylim <- function(ylim) {
   if (!is.list(ylim)) stop("ylim should be a list", call. = FALSE)
   if (is.null(ylim$nsteps) || ylim$nsteps < 2) {
-    stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).",
+    stop("The y-limit you supplied has fewer than 2 points (or you forgot to supply nsteps).", #nolint
          call. = FALSE)
   }
   if (is.null(ylim$max)) {
@@ -33,24 +33,26 @@ qplot_get_attribute <- function(att, y) {
   }
 }
 
-#' Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).
+#' Quick plot - for quickly creates a single-panel graph. Supports bar and line
+#' (and combinations of).
 #'
-#' @param data Object containing the series you want to plot. Can be a `data.frame`,
-#' `tibble`, `zoo`, `xts` or `ts`.
+#' @param data Object containing the series you want to plot. Can be a
+#' `data.frame`, `tibble`, `zoo`, `xts` or `ts`.
 #' @param series A vector of series names specifying which subset of series
 #' you want to plot.
 #' @param x The x variable for your plot. Not required for `ts`, `xts` and `zoo`
 #' data because they use the dates in the time series.
 #' @param bars (optional) Vector of string names indicating which series should
-#' be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series
-#' will plot as bars.
+#' be bars, rather than lines. Alternatively, if you set `bars = TRUE` all
+#' series will plot as bars.
 #' @param filename (optional) If specified, save image to filename instead of
 #' displaying in R. Supports svg, pdf, emf, emf+ and png extensions.
 #' @param title (optional) A string indicating the title for the graph. Passing
 #' `NULL` (or omitting the argument) will suppress printing of title.
 #' @param subtitle (optional) A string indicating the subtitle for the graph.
 #' Passing `NULL` (or omitting the argument) will suppress printing of subtitle.
-#' @param footnotes (optional) A vector strings, corresponding to the footnotes, in order.
+#' @param footnotes (optional) A vector strings, corresponding to the footnotes,
+#' in order.
 #' @param sources (optional) A vector of strings, one entry for each source.
 #' @param yunits (optional) A string indicating the units to be used. If not
 #' supplied, a \% sign will be used.
@@ -65,30 +67,75 @@ qplot_get_attribute <- function(att, y) {
 #' Defaults to solid (1).
 #' @param lwd (optional) Line width, relative to default, for each series.
 #' Passed as with `col`.
-#' @param xlim (optional) c(numeric, numeric) Gives the x limits (in years) for the graph.
+#' @param xlim (optional) c(numeric, numeric) Gives the x limits (in years) for
+#' the graph.
 #' @param ylim (optional) A list(min = numeric, max = numeric, nsteps int).
 #' If unsupplied, a suitable default is chosen.
-#' @param legend A logical indicating whether to add a legend to the graph (default FALSE).
-#' @param legend.ncol (optional) How many columns do you want the legend to have (if NA,
-#' which is the default, arphit will guess for you).
-#' @param bar.stacked (optional) Logical indicating whether the bar series should
-#' be stacked (TRUE, default) or side-by-side (FALSE).
+#' @param legend A logical indicating whether to add a legend to the graph
+#' (default FALSE).
+#' @param legend_ncol (optional) How many columns do you want the legend to have
+#' (if NA, which is the default, arphit will guess for you).
+#' @param stacked (optional) Logical indicating whether the bar series
+#' should be stacked (TRUE, default) or side-by-side (FALSE).
+#' @param legend.ncol (DEPRECATED) Alias for legend_ncol
+#' @param bar.stacked (DEPRECATED) Alias for stacked
 #'
-#' @seealso \code{vignette("qplot-options", package = "arphit")} for a detailed description of
-#' all the plotting options and how they affect the output.
+#' @seealso \code{vignette("qplot-options", package = "arphit")} for a detailed
+#' description of all the plotting options and how they affect the output.
 #'
 #' @examples
 #' T <- 24
-#' randomdata <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10),
-#'   x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
-#' agg_qplot(randomdata, title = "A Title", subtitle = "A subtitle",
-#'   footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
+#' randomdata <- ts(data.frame(x1 = rnorm(T),
+#'                             x2 = rnorm(T),
+#'                             x3 = rnorm(T, sd = 10),
+#'                             x4 = rnorm(T, sd = 5)),
+#'                  start = c(2000, 1),
+#'                  frequency = 4)
+#' agg_qplot(
+#'   randomdata,
+#'   title = "A Title",
+#'   subtitle = "A subtitle",
+#'   footnotes = c("a", "B"),
+#'   sources = c("A Source", "Another source"),
+#'   yunits = "index"
+#' )
 #'
 #' @export
-agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NULL, title = NULL, subtitle = NULL, footnotes = c(), sources = c(), yunits = NULL, col = list(), pch = list(), lty = list(), lwd = list(), xlim = NULL, ylim = NULL, legend = FALSE, legend.ncol = NA, bar.stacked = TRUE) {
+agg_qplot <- function(data,
+                      series = NULL,
+                      x = NULL,
+                      bars = FALSE,
+                      filename = NULL,
+                      title = NULL,
+                      subtitle = NULL,
+                      footnotes = c(),
+                      sources = c(),
+                      yunits = NULL,
+                      col = list(),
+                      pch = list(),
+                      lty = list(),
+                      lwd = list(),
+                      xlim = NULL,
+                      ylim = NULL,
+                      legend = FALSE,
+                      legend_ncol = NA,
+                      stacked = TRUE,
+                      bar.stacked, #nolint
+                      legend.ncol) { #nolint
+
+  if (!missing(bar.stacked)) {
+    warning("`bar.stacked` is deprecated; use `stacked` instead")
+    stacked <- bar.stacked
+  }
+
+  if (!missing(legend.ncol)) {
+    warning("`legend.ncol` is deprecated; use `legend_ncol` instead")
+    legend_ncol <- legend.ncol
+  }
 
   if (!is.acceptable.data(data)) {
-    stop(paste0("Data is of unsupported type (you passed in ", class(data),")"),
+    stop(paste0("Data is of unsupported type (you passed in ",
+                class(data), ")"),
          call. = FALSE)
   }
 
@@ -107,7 +154,7 @@ agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NU
   }
 
   if (legend) {
-    p <- p + agg_legend(ncol = legend.ncol)
+    p <- p + agg_legend(ncol = legend_ncol)
   }
 
   # Now add each series as a layer
@@ -127,7 +174,10 @@ agg_qplot <- function(data, series = NULL, x = NULL, bars = FALSE, filename = NU
     y_sym <- rlang::sym(y)
     if (!is.null(x)) {
       x_sym <- rlang::sym(x)
-      aes <- list(type = "aes", x = rlang::enquo(x_sym), y = rlang::enquo(y_sym), order = rlang::enquo(x_sym))
+      aes <- list(type = "aes",
+                  x = rlang::enquo(x_sym),
+                  y = rlang::enquo(y_sym),
+                  order = rlang::enquo(x_sym))
     } else {
       aes <- list(type = "aes", y = rlang::enquo(y_sym))
     }

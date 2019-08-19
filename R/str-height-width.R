@@ -1,7 +1,9 @@
 
 
 inchesasuser_height <- function(x) {
-  x*(graphics::par("usr")[4] - graphics::par("usr")[3])/graphics::par("pin")[2]
+  x *
+    (graphics::par("usr")[4] - graphics::par("usr")[3]) /
+    graphics::par("pin")[2]
 }
 
 getstrheight <- function(text, units = "inches", cex = 1) {
@@ -17,7 +19,9 @@ getstrheight <- function(text, units = "inches", cex = 1) {
 }
 
 inchesasuser_width <- function(x) {
-  x*(graphics::par("usr")[2] - graphics::par("usr")[1])/graphics::par("pin")[1]
+  x *
+    (graphics::par("usr")[2] - graphics::par("usr")[1]) /
+    graphics::par("pin")[1]
 }
 
 charwidth <- function(C) {
@@ -125,27 +129,27 @@ charwidth <- function(C) {
   )
   width <- widths[[C]]
   if (is.null(width)) {
-    warning(paste0("No width for ", C))
-    return(0.291666666666667)
+    warning(paste0("No width for ", C), call. = FALSE)
+    0.291666666666667
   } else {
-    return(width)
+    width
   }
 }
 
 getstrlinewidth <- function(text) {
   if (nchar(text) == 0) return(0)
   text <- strsplit(text, "")[[1]]
-  sum(sapply(text, charwidth, USE.NAMES=FALSE))
+  sum(sapply(text, charwidth, USE.NAMES = FALSE))
 }
 
 getstrwidth <- function(text, units = "inches", cex = 1) {
   if (is.null(text) || text == "") return(0)
-  lines <- stringr::str_split(text,stringr::fixed("\n"))[[1]]
+  lines <- stringr::str_split(text, stringr::fixed("\n"))[[1]]
   widths <- sapply(lines, getstrlinewidth, USE.NAMES = FALSE)
-  inch_width <- max(widths)*cex
+  inch_width <- max(widths) * cex
   if (units == "user") {
-    return(inchesasuser_width(inch_width))
+    inchesasuser_width(inch_width)
   } else if (units == "inches") {
-    return(inch_width)
+    inch_width
   }
 }

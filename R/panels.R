@@ -17,79 +17,99 @@ maxpanels <- function(layout) {
                 ". Options are 1, 1h, 2h, 2v, 2b2, 3v, 3h, 3b2, 4b2."),
          call. = FALSE)
   }
-  return(maxnp)
+
+
+  maxnp
 }
 
 permitted_panels <- function(layout) {
   maxnp <- maxpanels(layout)
   permittedpanels <- as.character(1:maxnp)
-  return(permittedpanels)
+
+  permittedpanels
 }
 
 getlocation <- function(p, layout) {
   if (layout == "1" || layout == "1h") {
-    l <- c(1,1)
+    c(1, 1)
   } else if (layout == "2h") {
-    l <- switch(p,
-                "1" = c(1,1),
-                "2" = c(1,1),
-                "3" = c(2,1),
-                "4" = c(2,1))
+    switch(
+      p,
+      "1" = c(1, 1),
+      "2" = c(1, 1),
+      "3" = c(2, 1),
+      "4" = c(2, 1)
+    )
   } else if (layout == "2v") {
-    l <- switch(p,
-                "1" = c(1,1),
-                "2" = c(1,2))
+    switch(p,
+           "1" = c(1, 1),
+           "2" = c(1, 2))
   } else if (layout == "2b2") {
-    l <- switch(p,
-                "1" = c(1,1),
-                "2" = c(1,2),
-                "3" = c(2,1),
-                "4" = c(2,2))
+    switch(
+      p,
+      "1" = c(1, 1),
+      "2" = c(1, 2),
+      "3" = c(2, 1),
+      "4" = c(2, 2)
+    )
   } else if (layout == "3v") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,2),
-               "3" = c(1,3))
+    switch(p,
+           "1" = c(1, 1),
+           "2" = c(1, 2),
+           "3" = c(1, 3))
   } else if (layout == "3h") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,1),
-               "3" = c(2,1),
-               "4" = c(2,1),
-               "5" = c(3,1),
-               "6" = c(3,1))
+    switch(
+      p,
+      "1" = c(1, 1),
+      "2" = c(1, 1),
+      "3" = c(2, 1),
+      "4" = c(2, 1),
+      "5" = c(3, 1),
+      "6" = c(3, 1)
+    )
   } else if (layout == "3b2") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,2),
-               "3" = c(2,1),
-               "4" = c(2,2),
-               "5" = c(3,1),
-               "6" = c(3,2))
+    switch(
+      p,
+      "1" = c(1, 1),
+      "2" = c(1, 2),
+      "3" = c(2, 1),
+      "4" = c(2, 2),
+      "5" = c(3, 1),
+      "6" = c(3, 2)
+    )
   } else if (layout == "4h") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,1),
-               "3" = c(2,1),
-               "4" = c(2,1),
-               "5" = c(3,1),
-               "6" = c(3,1),
-               "7" = c(4,1),
-               "8" = c(4,1))
+    switch(
+      p,
+      "1" = c(1, 1),
+      "2" = c(1, 1),
+      "3" = c(2, 1),
+      "4" = c(2, 1),
+      "5" = c(3, 1),
+      "6" = c(3, 1),
+      "7" = c(4, 1),
+      "8" = c(4, 1)
+    )
   } else if (layout == "4b2") {
-    l = switch(p,
-               "1" = c(1,1),
-               "2" = c(1,2),
-               "3" = c(2,1),
-               "4" = c(2,2),
-               "5" = c(3,1),
-               "6" = c(3,2),
-               "7" = c(4,1),
-               "8" = c(4,2))
+    switch(
+      p,
+      "1" = c(1, 1),
+      "2" = c(1, 2),
+      "3" = c(2, 1),
+      "4" = c(2, 2),
+      "5" = c(3, 1),
+      "6" = c(3, 2),
+      "7" = c(4, 1),
+      "8" = c(4, 2)
+    )
   } else {
-    stop(paste0("Unknown layout option ", layout,
-                ". Options are 1, 1h, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."),
-         call. = FALSE)
+    stop(
+      paste0(
+        "Unknown layout option ",
+        layout,
+        ". Options are 1, 1h, 2h, 2v, 2b2, 3v, 3h, 3b2, 4h, 4b2."
+      ),
+      call. = FALSE
+    )
   }
 }
 
@@ -147,7 +167,9 @@ getsides <- function(p, layout) {
                 ". Options are 1, 1h, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2."),
          call. = FALSE)
   }
-  return(side)
+
+
+  side
 }
 
 dropfirstxlabel <- function(p, layout, dropxlabel, ts, at, label, xlim) {
@@ -158,9 +180,11 @@ dropfirstxlabel <- function(p, layout, dropxlabel, ts, at, label, xlim) {
       (layout == "4b2" && p == "8")) {
     if (is.na(dropxlabel)) {
       if (ts) {
-        label_left_border <- at - 0.5*getstrwidth(label, units = "user")
+        label_left_border <- at - 0.5 * getstrwidth(label, units = "user")
         overlap <- (label_left_border - xlim[1]) / (xlim[2] - xlim[1])
-        return(overlap < -0.015) # allow labels to overlap up to 1.5 per cent. the last year margin is 3 per cent so they should not overlap
+        # allow labels to overlap up to 1.5 per cent. the last year margin is
+        # 3% so they should not overlap
+        return(overlap < -0.015)
       } else {
         return(FALSE)
       }
@@ -173,22 +197,22 @@ dropfirstxlabel <- function(p, layout, dropxlabel, ts, at, label, xlim) {
 }
 
 needxlabels <- function(p, layout) {
-  if (layout %in% c("1" ,"1h")) {
-    return(p == "1")
+  if (layout %in% c("1", "1h")) {
+    p == "1"
   } else if (layout == "2h") {
-    return(p == "3")
+    p == "3"
   } else if (layout == "2v" || layout == "3v") {
-    return(TRUE)
+    TRUE
   } else if (layout == "2b2") {
-    return(p == "3" || p == "4")
+    p == "3" || p == "4"
   } else if (layout == "3b2") {
-    return(p == "5" || p == "6")
+    p == "5" || p == "6"
   } else if (layout == "3h") {
-    return(p == "5")
+    p == "5"
   } else if (layout == "4h") {
-    return(p == "7")
+    p == "7"
   } else if (layout == "4b2") {
-    return(p == "7" || p == "8")
+    p == "7" || p == "8"
   } else {
     stop(paste("Unknown layout option ", layout,
                ". Options are 1, 1h, 2h, 2v, 2b2, 3h, 3v, 3b2, 4h, 4b2.",
@@ -199,13 +223,13 @@ needxlabels <- function(p, layout) {
 
 dropbottomlabel <- function(p, layout) {
   if (layout %in% c("1", "1h", "2v", "3v")) {
-    return(FALSE)
+    FALSE
   } else if (layout %in% c("2h", "2b2")) {
-    return(p %in% c("1", "2"))
+    p %in% c("1", "2")
   } else if (layout %in% c("3h", "3b2")) {
-    return(p %in% c("1", "2", "3", "4"))
+    p %in% c("1", "2", "3", "4")
   } else if (layout %in% c("4h", "4b2")) {
-    return(p %in% c("1", "2", "3", "4", "5", "6"))
+    p %in% c("1", "2", "3", "4", "5", "6")
   } else {
     stop(paste("Unknown layout option ", layout,
                ". Options are 1, 1h, 2h, 2v, 2b2, 3v, 3h, 3b2, 4b2.",
@@ -216,15 +240,16 @@ dropbottomlabel <- function(p, layout) {
 
 needgrid <- function(p, layout) {
   if (layout == "1" || layout == "1h") {
-    return(p == "1")
+    p == "1"
   } else if (layout == "2h") {
-    return(p == "1" || p == "3")
+    p == "1" || p == "3"
   } else if (layout == "3h") {
-    return(p == "1" || p == "3" || p == "5")
+    p == "1" || p == "3" || p == "5"
   } else if (layout == "4h") {
-    return(p == "1" || p == "3" || p == "5" || p == "7")
-  } else if (layout == "2v" || layout == "2b2" || layout == "3v" || layout == "3b2" || layout == "4b2") {
-    return(TRUE)
+    p == "1" || p == "3" || p == "5" || p == "7"
+  } else if (layout == "2v" || layout == "2b2" || layout == "3v" ||
+             layout == "3b2" || layout == "4b2") {
+    TRUE
   } else {
     stop(paste0("Unknown layout option ", layout,
                 ". Options are 1, 1h, 2h, 2v, 2b2, 3v, 3h, 3b2, 4b2."),
@@ -233,15 +258,15 @@ needgrid <- function(p, layout) {
 }
 
 tickadjustment <- function(layout) {
-  return(switch(layout,
-                "1" = 1,
-                "1h" = 1,
-                "2h" = 2,
-                "2v" = 3/2,
-                "2b2" = 2,
-                "3h" = 3,
-                "3v" = 2,
-                "3b2" = 3,
-                "4h" = 4,
-                "4b2" = 4))
+  switch(layout,
+         "1" = 1,
+         "1h" = 1,
+         "2h" = 2,
+         "2v" = 3 / 2,
+         "2b2" = 2,
+         "3h" = 3,
+         "3v" = 2,
+         "3b2" = 3,
+         "4h" = 4,
+         "4b2" = 4)
 }

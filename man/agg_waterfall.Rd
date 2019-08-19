@@ -8,29 +8,34 @@ agg_waterfall(aes = NULL, data = NULL, colour = NULL,
   barcol = NULL, panel = "1")
 }
 \arguments{
-\item{aes}{The aesthetic that defines the layer. Will inherit (or parts thereof) if omitted.}
+\item{aes}{The aesthetic that defines the layer. Will inherit (or parts
+thereof) if omitted.}
 
 \item{data}{The data to be used. Will inherit from parent if missing.}
 
-\item{colour}{A colour to be applied to all of the series, or (if your aesthetic has a group), a vector of colours that will be cycled through to consecutive group elements.}
+\item{colour}{A colour to be applied to all of the series, or (if your
+aesthetic has a group), a vector of colours that will be cycled through to
+consecutive group elements.}
 
 \item{barcol}{(optional) Outline colours for each bar series}
 
-\item{panel}{(default = "1") Which panel of the graph to place this layer on. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the layer to multiple panels at once.}
+\item{panel}{(default = "1") Which panel of the graph to place this layer on.
+You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the
+layer to multiple panels at once.}
 }
 \description{
-Creates a bar chart, showing how the changes from left-most observation to the
-right-most observation.
+Creates a bar chart, showing how the changes from left-most observation to
+the right-most observation.
 }
 \details{
-You should ensure that your data are ordered so that your first observation is
-the observation you want the waterfall to 'start' from, and your last
+You should ensure that your data are ordered so that your first observation
+is the observation you want the waterfall to 'start' from, and your last
 observation the one you want the waterfall to 'end' at. Do this by specifying
 an `order` in your aesthetic.
 
 Setting groups (and colours) is a good idea: create a group to differentiate
-your start and end observations and your positive and negative observations (
-separately colouring positive and negative makes the graph easier to read).
+your start and end observations and your positive and negative observations
+(separately colouring positive and negative makes the graph easier to read).
 
 This layer type should be considered experimental and may undergo breaking
 changes.
@@ -54,6 +59,6 @@ arphitgg(data) +
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

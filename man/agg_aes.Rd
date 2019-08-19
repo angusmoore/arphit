@@ -13,12 +13,14 @@ agg_aes(x, y, group = NULL, facet = NULL, order = NULL)
 
 \item{group}{If your data are in long form, which variable defines the groups}
 
-\item{facet}{If you data are in long form, which variable defines the facets (facets split data across panels)}
+\item{facet}{If you data are in long form, which variable defines the facets
+(facets split data across panels)}
 
 \item{order}{Which variable to order the x-ticks by}
 }
 \description{
-If specified as part of a layer, fields left blank will be inherited from the parent.
+If specified as part of a layer, fields left blank will be inherited from the
+parent.
 }
 \section{Tidy evaluation}{
 
@@ -32,6 +34,6 @@ using tidy evaluation.
 }
 
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

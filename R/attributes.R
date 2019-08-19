@@ -4,7 +4,7 @@ handleattribute <- function(data, att, default) {
     s <- data$series[[i]]
     if (is.null(s$attributes[[att]])) {
       # Give it a default
-      data$series[[i]]$attributes[[att]]<- default[ct]
+      data$series[[i]]$attributes[[att]] <- default[ct]
       ct <- ct %% length(default) + 1
     }
   }
@@ -16,13 +16,14 @@ handleattributes <- function(data) {
     if (is.null(getOption("arphit.user_colours"))) {
       data[[p]] <- handleattribute(data[[p]], "col", DEFAULTCOLOURS)
     } else {
-      data[[p]] <- handleattribute(data[[p]], "col", getOption("arphit.user_colours"))
+      data[[p]] <-
+        handleattribute(data[[p]], "col", getOption("arphit.user_colours"))
     }
-  	data[[p]] <- handleattribute(data[[p]], "pch", DEFAULTPCH)
-  	data[[p]] <- handleattribute(data[[p]], "lty", DEFAULTLTY)
-  	data[[p]] <- handleattribute(data[[p]], "lwd", DEFAULTLWD)
-  	data[[p]] <- handleattribute(data[[p]], "barcol", DEFAULTBARCOL)
-  	data[[p]] <- handleattribute(data[[p]], "pointsize", 1)
+    data[[p]] <- handleattribute(data[[p]], "pch", DEFAULTPCH)
+    data[[p]] <- handleattribute(data[[p]], "lty", DEFAULTLTY)
+    data[[p]] <- handleattribute(data[[p]], "lwd", DEFAULTLWD)
+    data[[p]] <- handleattribute(data[[p]], "barcol", DEFAULTBARCOL)
+    data[[p]] <- handleattribute(data[[p]], "pointsize", 1)
   }
   return(data)
 }

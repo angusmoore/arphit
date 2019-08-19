@@ -1,10 +1,19 @@
 
 agg_draw_internal <- function(gg, filename) {
 
-  if (any(!names(gg$data) %in% permitted_panels(gg$layout))) {
-    inval_panel <-  names(gg$data)[!names(gg$data) %in% permitted_panels(gg$layout)]
-    stop(paste0("Your chosen layout (", gg$layout,") does not have a panel ", inval_panel, "."),
-         call. = FALSE)
+  inval_panel <- !names(gg$data) %in% permitted_panels(gg$layout)
+  if (any(inval_panel)) {
+    inval_panel <-  names(gg$data)[inval_panel]
+    stop(
+      paste0(
+        "Your chosen layout (",
+        gg$layout,
+        ") does not have a panel ",
+        inval_panel,
+        "."
+      ),
+      call. = FALSE
+    )
   }
 
   data <- convert_ts_to_decimal_date(gg$data)
@@ -31,15 +40,17 @@ agg_draw_internal <- function(gg, filename) {
   yaxislabels <- handleaxislabels(gg$yaxislabels, names(data))
   xaxislabels <- handleaxislabels(gg$xaxislabels, names(data))
 
-  if (length(gg$xlim)==0 && (gg$log_scale == "x" || gg$log_scale == "xy")) {
-    stop("You must manually set x axis limits for log scale plots.", call. = FALSE)
+  if (length(gg$xlim) == 0 && (gg$log_scale == "x" || gg$log_scale == "xy")) {
+    stop("You must manually set x axis limits for log scale plots.",
+         call. = FALSE)
   }
   xlim <- xlimconform(gg$xlim, data, gg$layout)
   xlabels <- handlexlabels(data, xlim, gg$xfreq, gg$layout, gg$showallxlabels)
   xlim <- collapse_in_padding(xlim)
 
-  if (length(gg$ylim)==0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
-    stop("You must manually set y axis limits for log scale plots.", call. = FALSE)
+  if (length(gg$ylim) == 0 && (gg$log_scale == "y" || gg$log_scale == "xy")) {
+    stop("You must manually set y axis limits for log scale plots.",
+         call. = FALSE)
   }
   ylim <- ylimconform(gg$ylim, data, gg$layout, gg$stacked, xlim)
   yticks <- handleticks(data, ylim)
@@ -53,34 +64,67 @@ agg_draw_internal <- function(gg, filename) {
 
   # Get number of legend cols (if needed)
   if (gg$legend) {
-    legend.cr <- determinelegendcols(data, gg$legend.ncol)
-    legend.nrow <- legend.cr$r
-    legend.ncol <- legend.cr$c
+    legend_cr <- determinelegendcols(data, gg$legend_ncol)
+    legend_nrow <- legend_cr$r
+    legend_ncol <- legend_cr$c
   } else {
-    legend.nrow <- 0
+    legend_nrow <- 0
   }
 
   # Format titles, footnotes and sources
   footnotes <- formatfn(gg$footnotes, gg$plotsize[2] - WIDTHSPACESNOTES)
   sources <- formatsrcs(gg$sources, gg$plotsize[2] - WIDTHSPACESSOURCES)
   if (!is.null(gg$title)) {
-    title <- splitoverlines(gg$title, gg$plotsize[2]-MINIMUMSIDEPADDING, 28/20)
+    title <- splitoverlines(gg$title,
+                            gg$plotsize[2] - MINIMUMSIDEPADDING,
+                            28 / 20)
   } else {
     title <- NULL
   }
   if (!is.null(gg$subtitle)) {
-    subtitle <- splitoverlines(gg$subtitle, gg$plotsize[2]-MINIMUMSIDEPADDING, 1)
+    subtitle <- splitoverlines(gg$subtitle,
+                               gg$plotsize[2] - MINIMUMSIDEPADDING,
+                               1)
   } else {
     subtitle <- NULL
   }
 
   # Conform panel titles
-  paneltitles <- conformpaneltitles(names(data), gg$paneltitles, gg$layout, gg$plotsize[2]-MINIMUMSIDEPADDING, 1)
-  panelsubtitles <- conformpaneltitles(names(data), gg$panelsubtitles, gg$layout, gg$plotsize[2]-MINIMUMSIDEPADDING, 18/20)
+  paneltitles <- conformpaneltitles(names(data),
+                                    gg$paneltitles,
+                                    gg$layout,
+                                    gg$plotsize[2] - MINIMUMSIDEPADDING,
+                                    1)
+  panelsubtitles <- conformpaneltitles(names(data),
+                                       gg$panelsubtitles,
+                                       gg$layout,
+                                       gg$plotsize[2] - MINIMUMSIDEPADDING,
+                                       18 / 20)
 
   # Now need to start the canvas
   device <- finddevice(filename)
-  margins <- figuresetup(filename, device, names(data), xlabels, yticks, xunits, yunits, title, subtitle, footnotes, sources, yaxislabels, xaxislabels, gg$legend.onpanel, legend.nrow, gg$plotsize, gg$portrait, gg$layout, gg$srt)
+  margins <-
+    figuresetup(
+      filename,
+      device,
+      names(data),
+      xlabels,
+      yticks,
+      xunits,
+      yunits,
+      title,
+      subtitle,
+      footnotes,
+      sources,
+      yaxislabels,
+      xaxislabels,
+      gg$legend_onpanel,
+      legend_nrow,
+      gg$plotsize,
+      gg$portrait,
+      gg$layout,
+      gg$srt
+    )
   handlelayout(gg$layout)
 
   # Plot each panel
@@ -111,26 +155,30 @@ agg_draw_internal <- function(gg, filename) {
   }
 
   # Draw outer material
-  # For easy alignment of legend, footnotes and sources just draw a unit square over the graph
-  graphics::par(mfrow=c(1,1))
-  graphics::par(mfg = c(1,1))
+  # For easy alignment of legend, footnotes and sources just draw a unit square
+  # over the graph
+  graphics::par(mfrow = c(1, 1))
+  graphics::par(mfg = c(1, 1))
   graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
-                 xlim = c(0,1), ylim = c(0, 1))
+                 xlim = c(0, 1), ylim = c(0, 1))
 
   drawtitle(title, subtitle)
   drawnotes(footnotes, sources, margins$notesstart)
   if (gg$legend) {
-    if (!gg$legend.onpanel) {
-      draw_outer_legend(data, legend.ncol, margins$xtickmargin, length(xaxislabels)>0)
+    if (!gg$legend_onpanel) {
+      draw_outer_legend(data,
+                        legend_ncol,
+                        margins$xtickmargin,
+                        length(xaxislabels) > 0)
     } else {
-      draw_onpanel_legend(data, legend.ncol, gg$legend.x, gg$legend.y)
+      draw_onpanel_legend(data, legend_ncol, gg$legend_x, gg$legend_y)
     }
   }
   handlelayout(gg$layout) # Put the correct layout back
 
   for (p in names(data)) {
     # Fraw all the annotations
-    l <- getlocation(p ,gg$layout)
+    l <- getlocation(p, gg$layout)
     graphics::par(mfg = l)
     graphics::plot(0, lwd = 0, pch = NA, axes = FALSE, xlab = "", ylab = "",
                    xlim = xlim[[p]], ylim = c(ylim[[p]]$min, ylim[[p]]$max))
