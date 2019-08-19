@@ -34,7 +34,7 @@ jobs:
           command: R CMD check *tar.gz
       - run:
           name: Warnings as errors
-          command: | 
+          command: |
             if ! grep -q -R "WARNING" /root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/00check.log
             then
               exit 0
@@ -64,11 +64,10 @@ jobs:
             - "/usr/local/lib/R/site-library"
   windows-build:
     executor:
-      name: win/vs2019
-      shell: bash.exe
+      - name: win/vs2019
+      - shell: bash.exe
     steps:
       - checkout
-      - run: ls -lah
       - run:
           name: Install R
           command: choco install r.project
