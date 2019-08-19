@@ -13,7 +13,9 @@ agg_label(text, x, y, panel, colour = "black", size = 20, color)
 
 \item{y}{The y coordinate of the center of your label}
 
-\item{panel}{Which panel should the label be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the label to multiple panels at once.}
+\item{panel}{Which panel should the label be placed on? You can specify a
+vector of panels (e.g. `panel = c("1","3")`) to apply the label to multiple
+panels at once.}
 
 \item{colour}{The colour of your text}
 
@@ -29,6 +31,6 @@ arphitgg() + agg_label("Here is a label", 2003, 0.2, "1", RBA["Red3"])
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

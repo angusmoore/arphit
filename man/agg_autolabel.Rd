@@ -10,16 +10,16 @@ agg_autolabel(quiet = FALSE, arrow_lines = TRUE, arrow_bars = FALSE,
 \arguments{
 \item{quiet}{(logical, default FALSE) Do not output progress of autolabeller}
 
-\item{arrow_lines}{(logical, default TRUE) Add arrows between labels and line series
-if there isn't line of sight between the label and the series.}
+\item{arrow_lines}{(logical, default TRUE) Add arrows between labels and line
+series if there isn't line of sight between the label and the series.}
 
-\item{arrow_bars}{(logical, default FALSE) Add arrows between labels and bar series
-if there isn't line of sight between the label and the series.}
+\item{arrow_bars}{(logical, default FALSE) Add arrows between labels and bar
+series if there isn't line of sight between the label and the series.}
 
-\item{ignore_existing_labels}{(logical, default FALSE) Add labels to panels with
-already-existing manual labels. Set to TRUE to auto-place labels on such panels
-(note: will add all labels, as the autolabeller doesn't know which series, if any,
-the existing label is for)}
+\item{ignore_existing_labels}{(logical, default FALSE) Add labels to panels
+with already-existing manual labels. Set to TRUE to auto-place labels on such
+panels (note: will add all labels, as the autolabeller doesn't know which
+series, if any, the existing label is for)}
 }
 \description{
 Add automatically placed label
@@ -33,6 +33,6 @@ arphitgg(data,agg_aes(x=x)) +
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

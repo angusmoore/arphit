@@ -32,11 +32,21 @@ drawpaneltitle <- function(paneltitle, panelsubtitle) {
     } else {
       extra_lines <- 0
     }
-    graphics::mtext(panelsubtitle, line = (-(2.2+1.5*extra_lines)), cex = (18/20), padj = 1)
+    graphics::mtext(
+      panelsubtitle,
+      line = - (2.2 + 1.5 * extra_lines),
+      cex = (18 / 20),
+      padj = 1
+    )
   }
 }
 
-drawaxislabels_hlayout <- function(ylabel, xlabel, p, layout, tickmargin, leftmargin) {
+drawaxislabels_hlayout <- function(ylabel,
+                                   xlabel,
+                                   p,
+                                   layout,
+                                   tickmargin,
+                                   leftmargin) {
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
     if (!is.na(side) && side == 1) {
@@ -44,28 +54,47 @@ drawaxislabels_hlayout <- function(ylabel, xlabel, p, layout, tickmargin, leftma
     }
   }
   if (!is.null(xlabel) && needxlabels(p, layout)) {
-    graphics::mtext(text = xlabel, side = xaxisside(layout), line = leftmargin - 1.8, las = 3)
+    graphics::mtext(
+      text = xlabel,
+      side = xaxisside(layout),
+      line = leftmargin - 1.8,
+      las = 3
+    )
   }
 }
 
 drawaxislabels <- function(ylabel, xlabel, p, layout, xtickmargin, leftmargin) {
-  if (layout == "1h") return(drawaxislabels_hlayout(ylabel, xlabel, p, layout, xtickmargin, leftmargin))
+  if (layout == "1h") {
+    return(drawaxislabels_hlayout(ylabel,
+                                  xlabel,
+                                  p,
+                                  layout,
+                                  xtickmargin,
+                                  leftmargin))
+  }
   if (!is.null(ylabel)) {
     side <- getsides(p, layout)
     if (!is.na(side) && side == 2) {
-      graphics::mtext(text = ylabel, side = side, line = leftmargin - 1.8, las = 3)
+      graphics::mtext(
+        text = ylabel,
+        side = side,
+        line = leftmargin - 1.8,
+        las = 3
+      )
     }
   }
   if (!is.null(xlabel) && needxlabels(p, layout)) {
-    graphics::mtext(text = xlabel, side = xaxisside(layout), line = xtickmargin + 0.2)
+    graphics::mtext(text = xlabel,
+                    side = xaxisside(layout),
+                    line = xtickmargin + 0.2)
   }
 }
 
 yticks_to_draw <- function(labels_drop, p, layout) {
   if (dropbottomlabel(p, layout)) {
-    labels_drop[2:(length(labels_drop)-1)]
+    labels_drop[2:(length(labels_drop) - 1)]
   } else {
-    labels_drop[1:(length(labels_drop)-1)]
+    labels_drop[1:(length(labels_drop) - 1)]
   }
 }
 
@@ -91,18 +120,50 @@ drawyaxis <- function(p, layout, yunits, yticks, ylim) {
       mgp <- c(3, 0.7, 0)
       units_shift <- -0.3
     }
-    graphics::axis(side, at = labels_drop, labels = formatted_labels_drop,
-                   tck = 0, cex.lab = 1, mgp = mgp)
+    graphics::axis(
+      side,
+      at = labels_drop,
+      labels = formatted_labels_drop,
+      tck = 0,
+      cex.lab = 1,
+      mgp = mgp
+    )
     # Add units
-    graphics::mtext(text = yunits, side = side, at = ylim[2], line = units_shift, cex = 1, padj = 1)
+    graphics::mtext(
+      text = yunits,
+      side = side,
+      at = ylim[2],
+      line = units_shift,
+      cex = 1,
+      padj = 1
+    )
   }
 }
 
-drawxaxis <- function(p, layout, xunits, xlabels, xlim, ylim, dropxlabel, srt, ts) {
+drawxaxis <- function(p,
+                      layout,
+                      xunits,
+                      xlabels,
+                      xlim,
+                      ylim,
+                      dropxlabel,
+                      srt,
+                      ts) {
   if (needxlabels(p, layout)) {
     # Draw x ticks and labels
-    graphics::axis(xaxisside(layout), xlabels$ticks, tck = tickadjustment(layout)*DEFAULTTICKLENGTH, labels = FALSE)
-    if (dropfirstxlabel(p, layout, dropxlabel, ts, xlabels$at[1], xlabels$labels[1], xlim)) {
+    graphics::axis(
+      xaxisside(layout),
+      xlabels$ticks,
+      tck = tickadjustment(layout) * DEFAULTTICKLENGTH,
+      labels = FALSE
+    )
+    if (dropfirstxlabel(p,
+                        layout,
+                        dropxlabel,
+                        ts,
+                        xlabels$at[1],
+                        xlabels$labels[1],
+                        xlim)) {
       at <- xlabels$at[2:length(xlabels$at)]
       labels <- xlabels$labels[2:length(xlabels$labels)]
     } else {
@@ -112,9 +173,16 @@ drawxaxis <- function(p, layout, xunits, xlabels, xlim, ylim, dropxlabel, srt, t
 
     # Draw x axis unit if required
     if (!is.null(xunits)) {
-      at <- at[1:(length(at)-1)]
-      labels <- labels[1:(length(labels)-1)]
-      graphics::mtext(text = xunits, side = xaxisside(layout), at = xlim[2], line = 0, cex = 1, padj = 1)
+      at <- at[1:(length(at) - 1)]
+      labels <- labels[1:(length(labels) - 1)]
+      graphics::mtext(
+        text = xunits,
+        side = xaxisside(layout),
+        at = xlim[2],
+        line = 0,
+        cex = 1,
+        padj = 1
+      )
     }
 
     # Calculate what one line is in user coordinates
@@ -127,7 +195,7 @@ drawxaxis <- function(p, layout, xunits, xlabels, xlim, ylim, dropxlabel, srt, t
       y <- ylim[1] - oneline
     } else {
       y <- log10(ylim[1]) - oneline
-      y <- 10^(y)
+      y <- 10 ^ y
     }
 
     if (srt == 0) {
@@ -136,9 +204,25 @@ drawxaxis <- function(p, layout, xunits, xlabels, xlim, ylim, dropxlabel, srt, t
       adj <- c(1, 0.5)
     }
     if (layout != "1h") {
-      graphics::text(x = at, y = y, labels = labels, cex = 1, adj = adj, srt = srt, xpd = NA)
+      graphics::text(
+        x = at,
+        y = y,
+        labels = labels,
+        cex = 1,
+        adj = adj,
+        srt = srt,
+        xpd = NA
+      )
     } else {
-      graphics::text(x = y, y = at, labels = labels, cex = 1, adj = rev(adj), srt = srt, xpd = NA)
+      graphics::text(
+        x = y,
+        y = at,
+        labels = labels,
+        cex = 1,
+        adj = rev(adj),
+        srt = srt,
+        xpd = NA
+      )
     }
   }
 }
@@ -155,25 +239,52 @@ drawborder <- function(p, layout, xlim, ylim, horiz) {
 }
 
 drawgrid <- function(p, layout, yticks, xlim) {
-  side <- getsides(p, layout)
-
   ## Draw the grid
   if (needgrid(p, layout)) {
     if (layout == "1h") {
-      lapply(yticks[2:(length(yticks)-1)],
-             function(x) graphics::abline(v = x, col = "lightgray", lty = "solid", lwd = 1))
+      lapply(yticks[2:(length(yticks) - 1)],
+             function(x)
+               graphics::abline(
+                 v = x,
+                 col = "lightgray",
+                 lty = "solid",
+                 lwd = 1
+               ))
     } else {
-      lapply(yticks[2:(length(yticks)-1)],
-             function(x) graphics::abline(h = x, col = "lightgray", lty = "solid", lwd = 1))
+      lapply(yticks[2:(length(yticks) - 1)],
+             function(x)
+               graphics::abline(
+                 h = x,
+                 col = "lightgray",
+                 lty = "solid",
+                 lwd = 1
+               ))
     }
     # Add a solid zero line if needed
     if (0 %in% yticks) {
-      graphics::axis(xaxisside(layout), pos = 0, c(xlim[1], xlim[2]), labels = FALSE, tck = 0, lwd = 1)
+      graphics::axis(
+        xaxisside(layout),
+        pos = 0,
+        c(xlim[1], xlim[2]),
+        labels = FALSE,
+        tck = 0,
+        lwd = 1
+      )
     }
   }
 }
 
-gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, ts) {
+gridsandborders <- function(p,
+                            layout,
+                            yunits,
+                            xunits,
+                            yticks,
+                            xlabels,
+                            ylim,
+                            xlim,
+                            dropxlabel,
+                            srt,
+                            ts) {
   drawyaxis(p, layout, yunits, yticks, ylim)
   drawxaxis(p, layout, xunits, xlabels, xlim, ylim, dropxlabel, srt, ts)
   drawgrid(p, layout, yticks, xlim)
@@ -182,25 +293,38 @@ gridsandborders <- function(p, layout, yunits, xunits, yticks, xlabels, ylim, xl
 
 drawshading <- function(shading, data) {
   for (s in shading) {
-    x_to <- get_x_plot_locations(series_x_values(data, which(series_names(data) == s$to)), data)
-    x_from <- get_x_plot_locations(series_x_values(data, which(series_names(data) == s$from)), data)
+    x_to <- get_x_plot_locations(
+      series_x_values(data,
+                      which(series_names(data) == s$to)),
+      data
+    )
+    x_from <- get_x_plot_locations(
+      series_x_values(data,
+                      which(series_names(data) == s$from)),
+      data
+    )
+
     y_to <- series_values(data, which(series_names(data) == s$to))
     y_from <- series_values(data, which(series_names(data) == s$from))
-    shading_data <- data.frame(x = c(x_to,rev(x_from)),
-                               y = c(y_to,rev(y_from)))
-    shading_data <- shading_data[!is.na(shading_data$x) & !is.na(shading_data$y), ]
-    graphics::polygon(shading_data$x,shading_data$y,col = s$colour, border = NA)
+    shading_data <- data.frame(x = c(x_to, rev(x_from)),
+                               y = c(y_to, rev(y_from)))
+    shading_data <- shading_data[!is.na(shading_data$x) &
+                                   !is.na(shading_data$y), ]
+    graphics::polygon(shading_data$x,
+                      shading_data$y,
+                      col = s$colour,
+                      border = NA)
   }
 }
 
 interleave <- function(a, b) {
   idx <- order(c(seq_along(a), seq_along(b)))
-  c(a,b)[idx]
+  c(a, b)[idx]
 }
 
 drawstep <- function(s, plotx, ploty, xlim, ylim, log_scale, horiz) {
   plotx <- interleave(plotx, plotx[2:length(plotx)])
-  ploty <- interleave(ploty, ploty[1:length(ploty)-1])
+  ploty <- interleave(ploty, ploty[1:length(ploty) - 1])
 
   drawline(s, plotx, ploty, xlim, ylim, log_scale, horiz)
 }
@@ -219,7 +343,8 @@ rotate_log_scale <- function(log_scale) {
 
 drawline <- function(s, plotx, ploty, xlim, ylim, log_scale, horiz) {
   if (horiz) {
-    drawline(s, ploty, plotx, ylim, xlim, rotate_log_scale(log_scale), FALSE) # flip x and y
+    # flip x and y
+    drawline(s, ploty, plotx, ylim, xlim, rotate_log_scale(log_scale), FALSE)
   } else {
     graphics::plot(
       x = plotx,
@@ -252,54 +377,68 @@ drawlines <- function(l, data, xlim, ylim, joined, log_scale, horiz) {
     } else {
       plotx <- x
     }
-    if (s$geomtype == "line") drawline(s, plotx, s$y, xlim, ylim, log_scale, horiz)
-    if (s$geomtype == "step") drawstep(s, plotx, s$y, xlim, ylim, log_scale, horiz)
+    if (s$geomtype == "line") {
+      drawline(s, plotx, s$y, xlim, ylim, log_scale, horiz)
+    }
+    if (s$geomtype == "step") {
+      drawstep(s, plotx, s$y, xlim, ylim, log_scale, horiz)
+    }
     graphics::par(cex = 1)
   }
 }
 
-as.barplot.x <- function(bp.data, x, xlim, bar.stacked, log_scale) {
-  if (ncol(bp.data) > 1) {
-    bp <- graphics::barplot(bp.data, plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
-    if (!bar.stacked) {
-      # We get a matrix, with rows for each data series. Need to collapse to just the centre of the x points
+as_barplot_x <- function(bp_data, x, xlim, stacked, log_scale) {
+  if (ncol(bp_data) > 1) {
+    bp <- graphics::barplot(bp_data,
+                            plot = FALSE,
+                            xaxs = "i",
+                            yaxs = "i",
+                            beside = !stacked)
+    if (!stacked) {
+      # We get a matrix, with rows for each data series. Need to collapse to
+      # just the centre of the x points
       bp <- apply(bp, 2, mean)
     }
 
-    points <- data.frame(as.x = c(bp[1], bp[length(bp)]), time = c(x[1], x[ncol(bp.data)]))
+    points <- data.frame(as.x = c(bp[1], bp[length(bp)]),
+                         time = c(x[1], x[ncol(bp_data)]))
     fit <- stats::lm(as.x ~ time, data = points)
 
     x1 <- stats::predict(fit, data.frame(time = c(xlim[1])))
     x2 <- stats::predict(fit, data.frame(time = c(xlim[2])))
 
-    return(c(x1,x2))
+    c(x1, x2)
   } else {
-    if (length(bp.data) == 1) {
-      return(c(0,1.4))
+    if (length(bp_data) == 1) {
+      c(0, 1.4)
     } else {
-      bp <- graphics::barplot(bp.data, plot = FALSE, xaxs = "i", yaxs = "i", beside = (!bar.stacked))
-      return(c(0,max(bp)+min(bp)))
+      bp <- graphics::barplot(bp_data,
+                              plot = FALSE,
+                              xaxs = "i",
+                              yaxs = "i",
+                              beside = !stacked)
+      c(0, max(bp) + min(bp))
     }
   }
 }
 
 drawwaterfall <- function(l, data, xlim, ylim, log_scale, horiz) {
-  snames <- sapply(data$series, function(s) s$name)
-  data$bars <- NULL # remove the pre-fetched bardata (used for things like setting ylimits)
+  # remove the pre-fetched bardata (used for things like setting ylimits)
+  data$bars <- NULL
   bars <- extract_bar_data(data, "waterfall")$bars
 
   if (ncol(bars$bardata) > 0 && nrow(bars$bardata) > 0) {
     for (i in 1:nrow(bars$bardata)) {
       draw_data <- bars$bardata
-      draw_data[-i,] <- NA
+      draw_data[-i, ] <- NA
 
       if (i > 1 && i < nrow(bars$bardata)) {
-        y_offset <- sum(bars$bardata[1:(i-1),], na.rm = TRUE)
+        y_offset <- sum(bars$bardata[1:(i - 1), ], na.rm = TRUE)
       } else {
         y_offset <- 0
       }
 
-      drawbars_(
+      .drawbars(
         l,
         data,
         draw_data,
@@ -315,8 +454,17 @@ drawwaterfall <- function(l, data, xlim, ylim, log_scale, horiz) {
   }
 }
 
-drawbar <- function(l, bardata, colours, bordercol, xlim, ylim, bar.stacked, log_scale, horiz) {
-  if (any(bardata != 0)) { # otherwise no point - and doing so causes errors with log scale plots
+drawbar <- function(l,
+                    bardata,
+                    colours,
+                    bordercol,
+                    xlim,
+                    ylim,
+                    stacked,
+                    log_scale,
+                    horiz) {
+  if (any(bardata != 0)) {
+    # otherwise no point - and doing so causes errors with log scale plots
     graphics::par(mfg = l)
     graphics::barplot(
       bardata,
@@ -327,7 +475,7 @@ drawbar <- function(l, bardata, colours, bordercol, xlim, ylim, bar.stacked, log
       xlab = "",
       ylab = "",
       axes = FALSE,
-      beside = (!bar.stacked),
+      beside = (!stacked),
       log = log_scale,
       names.arg = NULL,
       horiz = horiz
@@ -335,7 +483,16 @@ drawbar <- function(l, bardata, colours, bordercol, xlim, ylim, bar.stacked, log
   }
 }
 
-drawbars_ <- function(l, data, bardata, colours, bordercol, xlim, ylim, bar.stacked, log_scale, horiz) {
+.drawbars <- function(l,
+                      data,
+                      bardata,
+                      colours,
+                      bordercol,
+                      xlim,
+                      ylim,
+                      stacked,
+                      log_scale,
+                      horiz) {
   if (ncol(bardata) > 0) {
     out <- convert_to_plot_bardata(bardata, data)
     bardata_p <- out$p
@@ -343,28 +500,75 @@ drawbars_ <- function(l, data, bardata, colours, bordercol, xlim, ylim, bar.stac
     bar_x_loc <- out$x
 
     if ((log_scale == "y" || log_scale == "xy") && any(bardata_n != 0)) {
-      stop("y log scale plots cannot have negative data (in one of your bar series)")
+      stop(paste0("y log scale plots cannot have negative data ",
+           "(in one of the bar series)"))
     }
 
-    xlim <- as.barplot.x(bardata_p, bar_x_loc, xlim, bar.stacked)
+    xlim <- as_barplot_x(bardata_p, bar_x_loc, xlim, stacked)
     if (!horiz) {
-      drawbar(l, bardata_p, colours, bordercol, xlim, ylim, bar.stacked, log_scale, horiz)
-      drawbar(l, bardata_n, colours, bordercol, xlim, ylim, bar.stacked, log_scale, horiz)
+      drawbar(l,
+              bardata_p,
+              colours,
+              bordercol,
+              xlim,
+              ylim,
+              stacked,
+              log_scale,
+              horiz)
+      drawbar(l,
+              bardata_n,
+              colours,
+              bordercol,
+              xlim,
+              ylim,
+              stacked,
+              log_scale,
+              horiz)
     }  else {
-      drawbar(l, bardata_p, colours, bordercol, ylim, xlim, bar.stacked, rotate_log_scale(log_scale), horiz)
-      drawbar(l, bardata_n, colours, bordercol, ylim, xlim, bar.stacked, rotate_log_scale(log_scale), horiz)
+      drawbar(
+        l,
+        bardata_p,
+        colours,
+        bordercol,
+        ylim,
+        xlim,
+        stacked,
+        rotate_log_scale(log_scale),
+        horiz
+      )
+      drawbar(
+        l,
+        bardata_n,
+        colours,
+        bordercol,
+        ylim,
+        xlim,
+        stacked,
+        rotate_log_scale(log_scale),
+        horiz
+      )
     }
   }
 }
 
-drawbars <- function(l, data, xlim, ylim, bar.stacked, log_scale, horiz) {
+drawbars <- function(l, data, xlim, ylim, stacked, log_scale, horiz) {
   out <- get_bar_data(data)
-  drawbars_(l, data, out$bardata, out$colours, out$bordercol, xlim, ylim, bar.stacked, log_scale, horiz)
+  .drawbars(l,
+            data,
+            out$bardata,
+            out$colours,
+            out$bordercol,
+            xlim,
+            ylim,
+            stacked,
+            log_scale,
+            horiz)
 }
 
 draw_blankplot <- function(l, xlim, ylim, log_scale, horiz) {
   if (horiz == TRUE) {
-    draw_blankplot(l, ylim, xlim, rotate_log_scale(log_scale), FALSE) # flip the axis limits
+    # flip the axis limits
+    draw_blankplot(l, ylim, xlim, rotate_log_scale(log_scale), FALSE)
   } else {
     graphics::par(mfg = l)
     graphics::plot(
@@ -381,7 +585,27 @@ draw_blankplot <- function(l, xlim, ylim, log_scale, horiz) {
   }
 }
 
-drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xunits, yticks, xlabels, ylim, xlim, paneltitle, panelsubtitle, yaxislabel, xaxislabel, bar.stacked, dropxlabel, joined, srt, log_scale) {
+drawpanel <- function(p,
+                      data,
+                      shading,
+                      bgshadings,
+                      margins,
+                      layout,
+                      yunits,
+                      xunits,
+                      yticks,
+                      xlabels,
+                      ylim,
+                      xlim,
+                      paneltitle,
+                      panelsubtitle,
+                      yaxislabel,
+                      xaxislabel,
+                      stacked,
+                      dropxlabel,
+                      joined,
+                      srt,
+                      log_scale) {
 
   # Basic set up
   graphics::par(mar = c(0, 0, 0, 0))
@@ -397,19 +621,37 @@ drawpanel <- function(p, data, shading, bgshadings, margins, layout, yunits, xun
 
   drawbgshadings(bgshadings, p)
 
-  gridsandborders(p, layout, yunits, xunits, yticks, xlabels, ylim, xlim, dropxlabel, srt, data$ts)
+  gridsandborders(p,
+                  layout,
+                  yunits,
+                  xunits,
+                  yticks,
+                  xlabels,
+                  ylim,
+                  xlim,
+                  dropxlabel,
+                  srt,
+                  data$ts)
 
-  if (!is_empty(data)) drawbars(l, data, xlim, ylim, bar.stacked, log_scale, layout == "1h")
-  if (!is_empty(data)) drawwaterfall(l, data, xlim, ylim, log_scale, layout == "1h")
+  if (!is_empty(data)) {
+    drawbars(l, data, xlim, ylim, stacked, log_scale, layout == "1h")
+    drawwaterfall(l, data, xlim, ylim, log_scale, layout == "1h")
+  }
 
-  # Reset the plot after the bars (which use different axis limits), otherwise lines and shading occur in the wrong spot
+  # Reset the plot after the bars (which use different axis limits), otherwise
+  # lines and shading occur in the wrong spot
   draw_blankplot(l, xlim, ylim, log_scale, layout == "1h")
 
-  if(!is_empty(data)) {
+  if (!is_empty(data)) {
     drawshading(shading, data)
     drawlines(l, data, xlim, ylim, joined, log_scale, layout == "1h")
   }
 
   drawpaneltitle(paneltitle, panelsubtitle)
-  drawaxislabels(yaxislabel, xaxislabel, p, layout, margins$xtickmargin, margins$left)
+  drawaxislabels(yaxislabel,
+                 xaxislabel,
+                 p,
+                 layout,
+                 margins$xtickmargin,
+                 margins$left)
 }

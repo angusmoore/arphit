@@ -2,17 +2,19 @@
 % Please edit documentation in R/qplot.R
 \name{agg_qplot}
 \alias{agg_qplot}
-\title{Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).}
+\title{Quick plot - for quickly creates a single-panel graph. Supports bar and line
+(and combinations of).}
 \usage{
 agg_qplot(data, series = NULL, x = NULL, bars = FALSE,
   filename = NULL, title = NULL, subtitle = NULL, footnotes = c(),
   sources = c(), yunits = NULL, col = list(), pch = list(),
   lty = list(), lwd = list(), xlim = NULL, ylim = NULL,
-  legend = FALSE, legend.ncol = NA, bar.stacked = TRUE)
+  legend = FALSE, legend_ncol = NA, stacked = TRUE, bar.stacked,
+  legend.ncol)
 }
 \arguments{
-\item{data}{Object containing the series you want to plot. Can be a `data.frame`,
-`tibble`, `zoo`, `xts` or `ts`.}
+\item{data}{Object containing the series you want to plot. Can be a
+`data.frame`, `tibble`, `zoo`, `xts` or `ts`.}
 
 \item{series}{A vector of series names specifying which subset of series
 you want to plot.}
@@ -21,8 +23,8 @@ you want to plot.}
 data because they use the dates in the time series.}
 
 \item{bars}{(optional) Vector of string names indicating which series should
-be bars, rather than lines. Alternatively, if you set `bars = TRUE` all series
-will plot as bars.}
+be bars, rather than lines. Alternatively, if you set `bars = TRUE` all
+series will plot as bars.}
 
 \item{filename}{(optional) If specified, save image to filename instead of
 displaying in R. Supports svg, pdf, emf, emf+ and png extensions.}
@@ -33,7 +35,8 @@ displaying in R. Supports svg, pdf, emf, emf+ and png extensions.}
 \item{subtitle}{(optional) A string indicating the subtitle for the graph.
 Passing `NULL` (or omitting the argument) will suppress printing of subtitle.}
 
-\item{footnotes}{(optional) A vector strings, corresponding to the footnotes, in order.}
+\item{footnotes}{(optional) A vector strings, corresponding to the footnotes,
+in order.}
 
 \item{sources}{(optional) A vector of strings, one entry for each source.}
 
@@ -55,31 +58,48 @@ Defaults to solid (1).}
 \item{lwd}{(optional) Line width, relative to default, for each series.
 Passed as with `col`.}
 
-\item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for the graph.}
+\item{xlim}{(optional) c(numeric, numeric) Gives the x limits (in years) for
+the graph.}
 
 \item{ylim}{(optional) A list(min = numeric, max = numeric, nsteps int).
 If unsupplied, a suitable default is chosen.}
 
-\item{legend}{A logical indicating whether to add a legend to the graph (default FALSE).}
+\item{legend}{A logical indicating whether to add a legend to the graph
+(default FALSE).}
 
-\item{legend.ncol}{(optional) How many columns do you want the legend to have (if NA,
-which is the default, arphit will guess for you).}
+\item{legend_ncol}{(optional) How many columns do you want the legend to have
+(if NA, which is the default, arphit will guess for you).}
 
-\item{bar.stacked}{(optional) Logical indicating whether the bar series should
-be stacked (TRUE, default) or side-by-side (FALSE).}
+\item{stacked}{(optional) Logical indicating whether the bar series
+should be stacked (TRUE, default) or side-by-side (FALSE).}
+
+\item{bar.stacked}{(DEPRECATED) Alias for stacked}
+
+\item{legend.ncol}{(DEPRECATED) Alias for legend_ncol}
 }
 \description{
-Quick plot - for quickly creates a single-panel graph. Supports bar and line (and combinations of).
+Quick plot - for quickly creates a single-panel graph. Supports bar and line
+(and combinations of).
 }
 \examples{
 T <- 24
-randomdata <- ts(data.frame(x1 = rnorm(T), x2 = rnorm(T), x3 = rnorm(T, sd = 10),
-  x4 = rnorm(T, sd = 5)), start = c(2000,1), frequency = 4)
-agg_qplot(randomdata, title = "A Title", subtitle = "A subtitle",
-  footnotes = c("a","B"), sources = c("A Source", "Another source"), yunits = "index")
+randomdata <- ts(data.frame(x1 = rnorm(T),
+                            x2 = rnorm(T),
+                            x3 = rnorm(T, sd = 10),
+                            x4 = rnorm(T, sd = 5)),
+                 start = c(2000, 1),
+                 frequency = 4)
+agg_qplot(
+  randomdata,
+  title = "A Title",
+  subtitle = "A subtitle",
+  footnotes = c("a", "B"),
+  sources = c("A Source", "Another source"),
+  yunits = "index"
+)
 
 }
 \seealso{
-\code{vignette("qplot-options", package = "arphit")} for a detailed description of
-all the plotting options and how they affect the output.
+\code{vignette("qplot-options", package = "arphit")} for a detailed
+description of all the plotting options and how they affect the output.
 }

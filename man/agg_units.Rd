@@ -9,7 +9,10 @@ agg_units(units, panel = NULL)
 \arguments{
 \item{units}{A string specifying the units.}
 
-\item{panel}{(optional) Specify a panel identifier to add to a specific panel. If blank, units will be applied to all panels.  You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the units to multiple panels at once.}
+\item{panel}{(optional) Specify a panel identifier to add to a specific
+panel. If blank, units will be applied to all panels.  You can specify a
+vector of panels (e.g. `panel = c("1","3")`) to apply the units to multiple
+panels at once.}
 }
 \description{
 Add units (for the y axis)
@@ -20,6 +23,6 @@ arphitgg(data) + agg_units("ppt", panel = "1")
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

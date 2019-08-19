@@ -8,9 +8,9 @@ agg_abline(x = NULL, y = NULL, x1, y1, x2, y2, colour = "black",
   panel, lwd = 1, lty = 1, color)
 }
 \arguments{
-\item{x}{(Deprecated; use agg_vline instead) Draw a vertical line at x (omit to draw a specific AB line)}
+\item{x}{(Deprecated; use agg_vline instead) Draw a vertical line at x}
 
-\item{y}{(Deprecated; use agg_hline instead) Draw a horizontal at y omit to draw a specific AB line)}
+\item{y}{(Deprecated; use agg_hline instead) Draw a horizontal at y}
 
 \item{x1}{The first x coordinate}
 
@@ -22,13 +22,16 @@ agg_abline(x = NULL, y = NULL, x1, y1, x2, y2, colour = "black",
 
 \item{colour}{The colour of the AB line (default black)}
 
-\item{panel}{Which panel should the line be placed on? You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple panels at once.}
+\item{panel}{Which panel should the line be placed on? You can specify a
+vector of panels (e.g. `panel = c("1","3")`) to apply the line to multiple
+panels at once.}
 
 \item{lwd}{(Optional, default 1) The line width}
 
 \item{lty}{(Optional, default 1) The line type  (uses R line types)}
 
-\item{color}{(Deprecated; use colour instead) The colour of the AB line (default black)}
+\item{color}{(Deprecated; use colour instead) The colour of the AB line
+(default black)}
 }
 \description{
 Add a line between two points on your graph
@@ -43,6 +46,6 @@ arphitgg(data) +
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }
