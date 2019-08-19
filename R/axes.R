@@ -362,7 +362,7 @@ xlabels.ts_quarter <- function(xlim) {
 
   # convert the labels to quarter names
   qtrs <- 1 + 4*(ticks - floor(ticks))
-  labels <- substr(month.abb[qtrs*3], 1, 1)
+  labels <- substr(month.abb[round(qtrs * 3)], 1, 1)
   at <- ticks + 0.5 * 0.25
 
   # add years
@@ -373,7 +373,7 @@ xlabels.ts_quarter <- function(xlim) {
   # Manually adjust the years to adjust for partial first and last years
   year_at <- seq(from = startyear + 0.5, to = endyear + 0.5, by = 1)
   year_at[1] <- (xlim[1] + min(startyear + 1, xlim[2])) / 2
-  year_at[length(year_at)] <- (xlim[2] + min(endyear, xlim[2])) / 2
+  year_at[length(year_at)] <- (xlim[2] + max(endyear, xlim[1])) / 2
   at <- c(at, year_at)
 
   # drop any labels that are outside the x limits
