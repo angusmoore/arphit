@@ -1,4 +1,5 @@
-version: 2
+version: 2.1
+
 jobs:
   linux-build:
     docker:
@@ -96,3 +97,11 @@ workflows:
     jobs:
       - linux-build
       - windows-build
+      - publish-github:
+        requires:
+          - linux-build
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*$/
