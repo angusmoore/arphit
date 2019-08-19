@@ -96,14 +96,3 @@ workflows:
     jobs:
       - linux-build
       - windows-build
-  build-test-deploy:
-    jobs:
-      - linux-build
-      - publish-github:
-        requires:
-          - linux-build
-    filters:
-      branches:
-        ignore: /.*/
-      tags:
-        only: /^v.*$/
