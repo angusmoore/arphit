@@ -46,7 +46,7 @@ jobs:
       - run:
           name: R CMD check logs - failure
           command: |
-            for name in $(find "/root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/tests/" -type f -name "*fail");do echo ">>> Filename: ${name} <<<";cat ${name};done
+            for name in $(find "/root/project/${CIRCLE_PROJECT_REPONAME}.Rcheck/tests/" -type f -name "*fail");do echo ">>> Filename: ${name} \<<<";cat ${name};done
           when: on_fail
       - run:
           name: R CMD check logs - log
