@@ -41,6 +41,8 @@ treated as dates ([#356](https://github.com/angusmoore/arphit/pull/356))
 * Better vertical spacing of footnotes, sources, and axis labels ([#342](https://github.com/angusmoore/arphit/pull/342))
 * Correct month labels with high-resolution (e.g. hourly) data; previously showed one month offset
 ([#383](https://github.com/angusmoore/arphit/pull/383))
+* Correct placement of years on month axes when less than a whole year is shown
+([#382](https://github.com/angusmoore/arphit/pull/382))
 
 ## Deprecated or removed
 

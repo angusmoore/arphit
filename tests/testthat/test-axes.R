@@ -297,6 +297,24 @@ test_that("months with hourly data", {
   expect_true(check_graph(p, "axes-month-hourly-data-381"))
 })
 
+# Incorrect placement of year label with partial years and monthly or quarterly axes
+test_that("Placement of year label", {
+  set.seed(42)
+  data <- tibble(
+    date = seq(lubridate::parse_date_time('2014-02-01 00:00', 'Ymd HM'),
+               by = '1 day',
+               length.out = 100),
+    value = cumsum(rnorm(100))
+  )
+  p <- arphitgg(data, agg_aes(date, value)) +
+    agg_line() + agg_xaxisfreq("month")
+  expect_true(check_graph(p, "axes-year-placement-month"))
+
+  p <- arphitgg(data, agg_aes(date, value)) +
+    agg_line() + agg_xaxisfreq("quarter")
+  expect_true(check_graph(p, "axes-year-placement-quarter"))
+})
+
 ## Unit handling ===============
 test_that("Units", {
   p <- arphitgg() + agg_units("foo")
