@@ -18,6 +18,6 @@ arphitgg(data) + agg_source(c("Source 1", "Source 2"))
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

@@ -11,6 +11,8 @@ reference:
   - '`agg_col`'
   - '`agg_line`'
   - '`agg_point`'
+  - '`agg_step`'
+  - '`agg_waterfall`'
   - '`arphitgg`'
   - '`RBA`'
 - title: Graph operators
@@ -25,12 +27,15 @@ reference:
   - '`agg_arrow`'
   - '`agg_autolabel`'
   - '`agg_bgshading`'
+  - '`agg_hline`'
   - '`agg_label`'
   - '`agg_shading`'
+  - '`agg_vline`'
 - title: Graph annotations and display options
   contents:
   - '`agg_footnote`'
   - '`agg_legend`'
+  - '`agg_rename_series`'
   - '`agg_source`'
   - '`agg_subtitle`'
   - '`agg_title`'

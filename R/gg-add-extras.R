@@ -6,7 +6,8 @@ addtitle <- function(gg, title) {
       gg$paneltitles[[p]] <- title$text
     }
   }
-  return(gg)
+
+  gg
 }
 
 addsubtitle <- function(gg, subtitle) {
@@ -17,7 +18,8 @@ addsubtitle <- function(gg, subtitle) {
       gg$panelsubtitles[[p]] <- subtitle$text
     }
   }
-  return(gg)
+
+  gg
 }
 
 addunits <- function(gg, units) {
@@ -31,7 +33,8 @@ addunits <- function(gg, units) {
       gg$yunits[[p]] <- units$units
     }
   }
-  return(gg)
+
+  gg
 }
 
 addxunits <- function(gg, units) {
@@ -45,28 +48,31 @@ addxunits <- function(gg, units) {
       gg$xunits[[p]] <- units$units
     }
   }
-  return(gg)
+
+  gg
 }
 
 addsource <- function(gg, source) {
   gg$sources <- append(gg$sources, source$source)
-  return(gg)
+
+  gg
 }
 
 addfootnote <- function(gg, footnote) {
   gg$footnotes <- append(gg$footnotes, footnote$footnote)
-  return(gg)
+
+  gg
 }
 
 addannotation <- function(gg, annotation, element) {
-  type <- annotation$type
   annotation$type <- NULL
   for (p in annotation$panel) {
     tmp <- annotation
     tmp$panel <- p
     gg[[element]] <- append(gg[[element]], list(tmp))
   }
-  return(gg)
+
+  gg
 }
 
 addshading <- function(gg, shading) {
@@ -80,7 +86,8 @@ addshading <- function(gg, shading) {
       gg$shading <- append(gg$shading, list(tmp))
     }
   }
-  return(gg)
+
+  gg
 }
 
 addylim <- function(gg, ylim) {
@@ -95,7 +102,8 @@ addylim <- function(gg, ylim) {
       gg$ylim[[p]] <- tmp
     }
   }
-  return(gg)
+
+  gg
 }
 
 addxlim <- function(gg, xlim) {
@@ -108,7 +116,8 @@ addxlim <- function(gg, xlim) {
       gg$xlim[[p]] <- c(xlim$min, xlim$max)
     }
   }
-  return(gg)
+
+  gg
 }
 
 addxfreq <- function(gg, freq, panel) {
@@ -119,7 +128,8 @@ addxfreq <- function(gg, freq, panel) {
       gg$xfreq[[p]] <- freq
     }
   }
-  return(gg)
+
+  gg
 }
 
 addaxislabel <- function(gg, axislabel, axis) {
@@ -131,29 +141,36 @@ addaxislabel <- function(gg, axislabel, axis) {
       gg[[index]][[p]] <- axislabel$axislabel
     }
   }
-  return(gg)
+
+  gg
 }
 
 addlegend <- function(gg, legend) {
   if (!is.null(legend$ncol)) {
-    gg$legend.ncol <- legend$ncol
+    gg$legend_ncol <- legend$ncol
   }
-  gg$legend.onpanel <- legend$onpanel
+  gg$legend_onpanel <- legend$onpanel
   if (legend$onpanel) {
-    gg$legend.x <- legend$x
-    gg$legend.y <- legend$y
+    gg$legend_x <- legend$x
+    gg$legend_y <- legend$y
   }
   gg$legend <- TRUE
-  return(gg)
+
+  gg
 }
 
-enableautolabel <- function(gg, quiet, arrow_lines, arrow_bars, ignore_existing_labels) {
+enableautolabel <- function(gg,
+                            quiet,
+                            arrow_lines,
+                            arrow_bars,
+                            ignore_existing_labels) {
   gg$enable_autolabeller <-  TRUE
   gg$autolabel_quiet <- quiet
   gg$arrow_lines <- arrow_lines
   gg$arrow_bars <- arrow_bars
   gg$ignore_existing_labels <- ignore_existing_labels
-  return(gg)
+
+  gg
 }
 
 sanity_check_rename <- function(gg, mapping, panels) {
@@ -175,9 +192,9 @@ sanity_check_rename <- function(gg, mapping, panels) {
 
 replace_name <- function(name, mapping) {
   if (name %in% mapping) {
-    return(names(mapping)[which(name == mapping)])
+    names(mapping)[which(name == mapping)]
   } else {
-    return(name)
+    name
   }
 }
 
@@ -187,13 +204,14 @@ renameseries <- function(gg, mapping, panel) {
     panel <- panel[panel != "parent"]
   }
 
-  mapping <- lapply(mapping, function(x) { if (is.na(x)) {"<NA>"} else {x}})
+  mapping <- lapply(mapping, function(x) if (is.na(x)) "<NA>" else x)
 
   sanity_check_rename(gg, mapping, panel)
 
   for (p in panel) {
     for (s in seq_along(gg$data[[p]]$series)) {
-      gg$data[[p]]$series[[s]]$name <- replace_name(gg$data[[p]]$series[[s]]$name, mapping)
+      gg$data[[p]]$series[[s]]$name <-
+        replace_name(gg$data[[p]]$series[[s]]$name, mapping)
     }
   }
 

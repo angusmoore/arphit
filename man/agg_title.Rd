@@ -9,7 +9,9 @@ agg_title(text, panel = NULL)
 \arguments{
 \item{text}{A string for the title.}
 
-\item{panel}{(optional) Specify a panel identifier to add a panel title instead of an overall graph title.  You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the title to multiple panels at once.}
+\item{panel}{(optional) Specify a panel identifier to add a panel title
+instead of an overall graph title.  You can specify a vector of panels (e.g.
+`panel = c("1","3")`) to apply the title to multiple panels at once.}
 }
 \description{
 Add a title or panel title
@@ -20,6 +22,6 @@ arphitgg(data) + agg_title("Panel title", panel = "1")
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

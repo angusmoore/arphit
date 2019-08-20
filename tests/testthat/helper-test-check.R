@@ -22,7 +22,10 @@ check_graph <- function(p, filename, max_distortion = 0.99) {
     if (dist >= max_distortion) {
       return(TRUE)
     } else {
-      cat(paste0("\n", filename, " does not match (distortion of ", round(dist,3),")\n"))
+      cat(paste0("\n", filename,
+                 " does not match (distortion of ",
+                 round(dist, 3),
+                 ")\n"))
       return(FALSE)
     }
   } else {
@@ -61,7 +64,10 @@ check_gif <- function(gg_list, filename, max_distortion = 0.99) {
     if (all(dist >= max_distortion)) {
       return(TRUE)
     } else {
-      cat(paste0("\n", filename, " does not match (distortion of [", paste(round(dist,3), collapse = ", "), "])\n"))
+      cat(paste0("\n", filename,
+                 " does not match (distortion of [",
+                 paste(round(dist, 3), collapse = ", "),
+                 "])\n"))
       return(FALSE)
     }
   } else {

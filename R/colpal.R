@@ -1,13 +1,15 @@
 #' RBA colour palette
 #'
-#' A list of RBA-standard colours to use. Use them by using RBA["Red1"] in a colour declaration. For instance:
+#' A list of RBA-standard colours to use. Use them by using RBA["Red1"] in a
+#' colour declaration. For instance:
 #'
-#' arphit.tsgraph(data, col = list("x2" = RBA["Red1"], "x4" = RBA["Green3"]))
+#' arphitgg(data.frame(x = 1:10, y = 1:10), agg_aes(x, y)) +
+#'   agg_line(colour = RBA["Red2"])
 #'
 #' To see a list of all the available colours, type `vignette("rbacolours")`
 #'
 #' @export
-RBA <- c()
+RBA <- c() #nolint
 
 RBA["Red1"] <- rgb(255, 159, 174, maxColorValue = 255)
 RBA["Red2"] <- rgb(255, 131, 139, maxColorValue = 255)
@@ -61,7 +63,7 @@ RBA["DarkGreen4"] <- rgb(0, 121, 79, maxColorValue = 255)
 RBA["DarkGreen5"] <- rgb(0, 120, 54, maxColorValue = 255)
 RBA["DarkGreen6"] <- rgb(0, 104, 61, maxColorValue = 255)
 RBA["DarkGreen7"] <- rgb(0, 102, 83, maxColorValue = 255)
-RBA["DarkGreen8"] <- rgb(0, 87,61, maxColorValue = 255)
+RBA["DarkGreen8"] <- rgb(0, 87, 61, maxColorValue = 255)
 
 RBA["Aqua1"] <- rgb(84, 132, 118, maxColorValue = 255)
 RBA["Aqua2"] <- rgb(65, 218, 197, maxColorValue = 255)

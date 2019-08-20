@@ -1,8 +1,8 @@
 conformpaneltitles <- function(panels, paneltitles, layout, width, cex) {
   if (layout == "2v" || layout == "2b2" || layout == "3b2" || layout == "4b2") {
-    width <- floor(1/2 * width)
+    width <- floor(1 / 2 * width)
   } else if (layout == "3v") {
-    width <- floor(1/3 * width)
+    width <- floor(1 / 3 * width)
   } else {
     width <- width
   }
@@ -33,19 +33,20 @@ formatsrcs <- function(sources, width) {
       srcplural <- FALSE
     }
 
-    return(list(text = splitoverlines(out, width, 14/20), plural = srcplural))
+    list(text = splitoverlines(out, width, 14 / 20), plural = srcplural)
   } else {
-    return(list(text = "", plural = FALSE))
+    list(text = "", plural = FALSE)
   }
 }
 
 formatfn <- function(footnotes, width) {
   if (length(footnotes) > 0) {
     for (i in 1:length(footnotes)) {
-      footnotes[i] <- splitoverlines(footnotes[[i]], width, 14/20)
+      footnotes[i] <- splitoverlines(footnotes[[i]], width, 14 / 20)
     }
   }
-  return(footnotes)
+
+  footnotes
 }
 
 splitoverlines <- function(s, maxsize, cex) {
@@ -62,12 +63,13 @@ splitoverlines <- function(s, maxsize, cex) {
         cumul <- 0
         lastspace <- NULL
       }
-      if (length(breakpoints) > 0 ) {
-        string <- substr(s, max(breakpoints)+1, i)
+      if (length(breakpoints) > 0) {
+        string <- substr(s, max(breakpoints) + 1, i)
       } else {
-        string <- substr(s, i-cumul, i)
+        string <- substr(s, i - cumul, i)
       }
-      if (getstrwidth(string, units = "inches", cex = cex) > maxsize && !is.null(lastspace)) {
+      if (getstrwidth(string, units = "inches", cex = cex) > maxsize &&
+          !is.null(lastspace)) {
         breakpoints <- append(breakpoints, lastspace)
         cumul <- 0
         lastspace <- NULL
@@ -80,5 +82,6 @@ splitoverlines <- function(s, maxsize, cex) {
       substr(s, i, i) <- "\n"
     }
   }
-  return(s)
+
+  s
 }

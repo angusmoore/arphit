@@ -9,10 +9,12 @@
 RBA
 }
 \description{
-A list of RBA-standard colours to use. Use them by using RBA["Red1"] in a colour declaration. For instance:
+A list of RBA-standard colours to use. Use them by using RBA["Red1"] in a
+colour declaration. For instance:
 }
 \details{
-arphit.tsgraph(data, col = list("x2" = RBA["Red1"], "x4" = RBA["Green3"]))
+arphitgg(data.frame(x = 1:10, y = 1:10), agg_aes(x, y)) +
+  agg_line(colour = RBA["Red2"])
 
 To see a list of all the available colours, type `vignette("rbacolours")`
 }

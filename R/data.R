@@ -8,7 +8,8 @@ check_series_has_obs_is_finite <- function(y, name) {
 }
 
 is.acceptable.data <- function(data) {
-  return(is.data.frame(data) || stats::is.ts(data) || zoo::is.zoo(data) || xts::is.xts(data))
+  is.data.frame(data) || stats::is.ts(data) ||
+    zoo::is.zoo(data) || xts::is.xts(data)
 }
 
 new_panel_data <- function(ts = NA, freq = NULL) {
@@ -59,17 +60,31 @@ extract_bar_data <- function(data, geomtype = "bar") {
     if (s$geomtype == geomtype) {
       colours <- append(colours, s$attributes$col)
       bordercol <- append(bordercol, s$attributes$barcol)
-      series_data <- data.frame(agg_xvalues = series_x_values(data, i), y = series_values(data, i), stringsAsFactors = FALSE)
+      series_data <- data.frame(agg_xvalues = series_x_values(data, i),
+                                y = series_values(data, i),
+                                stringsAsFactors = FALSE)
       names(series_data) <- c("agg_xvalues", i)
       if (anyDuplicated(series_data$agg_xvalues)) {
-        stop(paste0("Series ", s$name, " invalid. Bar graphs cannot have duplicate entries for x values."),
-             call. = FALSE)
+        stop(
+          paste0(
+            "Series ",
+            s$name,
+            " invalid. Bar graphs cannot have duplicate entries for x values."
+          ),
+          call. = FALSE
+        )
       }
       bardata <- dplyr::left_join(bardata, series_data, by = "agg_xvalues")
     }
   }
   bardata <- bardata[names(bardata) != "agg_xvalues"]
-  return(append(data, list(bars = list(bardata=bardata, colours=colours, bordercol=bordercol))))
+
+  append(data,
+         list(bars = list(
+           bardata = bardata,
+           colours = colours,
+           bordercol = bordercol
+         )))
 }
 
 get_bar_data <- function(data) {
@@ -77,9 +92,9 @@ get_bar_data <- function(data) {
 }
 
 equal_date_spacing <- function(x, freq) {
-  if (freq == 1/365 || freq == 1 / (365 / 7)) {
-    # special case days and weeks as there isn't a whole number of them / consistently
-    # the same number of them in a year
+  if (freq == 1 / 365 || freq == 1 / (365 / 7)) {
+    # special case days and weeks as there isn't a whole number of them /
+    # consistently the same number of them in a year
     make_decimal_date(
       seq(
         from = min(x),
@@ -100,12 +115,14 @@ equal_date_spacing <- function(x, freq) {
 
 convert_to_plot_bardata <- function(bardata, data) {
   if (data$ts) {
-    # Widen if we are missing x values (otherwise the bars are in the wrong spot (#157))
+    # Widen if we are missing x values (otherwise the bars are in the
+    # wrong spot (#157))
     bardata$x <- data$x # I have to round because of small inaccuracies
     equal_spaced <- equal_date_spacing(data$ts_x, data$freq)
     for (x in equal_spaced) {
       if (!any(abs(bardata$x - x) < 1e-10)) {
-        # Use fuzzy comparison because of inaccuracies in constructing the sequence
+        # Use fuzzy comparison because of inaccuracies in constructing the
+        # sequence
         bardata <- dplyr::add_row(bardata, x = x)
       }
     }
@@ -121,8 +138,8 @@ convert_to_plot_bardata <- function(bardata, data) {
   bardata_p[bardata_n <= 0] <- 0
   bardata_n[bardata_n > 0] <- 0
   if (data$ts) {
-    return(list(p = bardata_p, n = bardata_n, x = equal_spaced))
+    list(p = bardata_p, n = bardata_n, x = equal_spaced)
   } else {
-    return(list(p = bardata_p, n = bardata_n, x = get_x_plot_locations(data$x, data)))
+    list(p = bardata_p, n = bardata_n, x = get_x_plot_locations(data$x, data))
   }
 }

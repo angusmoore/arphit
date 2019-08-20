@@ -9,7 +9,9 @@ agg_subtitle(text, panel = NULL)
 \arguments{
 \item{text}{A string for the subtitle.}
 
-\item{panel}{(optional) Specify a panel identifier to add a panel subtitle instead of an overall graph subtitle. You can specify a vector of panels (e.g. `panel = c("1","3")`) to apply the subtitle to multiple panels at once.}
+\item{panel}{(optional) Specify a panel identifier to add a panel subtitle
+instead of an overall graph subtitle. You can specify a vector of panels
+(e.g. `panel = c("1","3")`) to apply the subtitle to multiple panels at once.}
 }
 \description{
 Add a subtitle or panel subtitle
@@ -20,6 +22,6 @@ arphitgg(data) + agg_subtitle("Panel subtitle", panel = "1")
 
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }

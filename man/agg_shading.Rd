@@ -7,28 +7,34 @@
 agg_shading(from, to, panel = NULL, colour = RBA["Grey2"], color)
 }
 \arguments{
-\item{from}{The series name to shade from (if you have no group aesthetic, it will be the name of the y variable); if you have groups, it will (usually) be the group identifier. This can get more complicated if you have duplicate group names. If so, arphit appends .y to the group names, so try that.)}
+\item{from}{The series name to shade from (if you have no group aesthetic, it
+will be the name of the y variable); if you have groups, it will be the group
+identifier. This can get more complicated if you have duplicate group names.}
 
 \item{to}{The name of the series to shade to}
 
-\item{panel}{(optional) Which panel are the relevant series in? (arphit will try to find them if you don't specify)}
+\item{panel}{(optional) Which panel are the relevant series in? (arphit will
+try to find them if you don't specify)}
 
-\item{colour}{(optional) The colour to shade between the series (default grey)}
+\item{colour}{(optional) The colour to shade between the series (default
+grey)}
 
-\item{color}{(Deprecated; use colour instead) The colour to shade between the series (default grey)}
+\item{color}{(Deprecated; use colour instead) The colour to shade}
 }
 \description{
 Add shading between series
 }
 \examples{
-data <- data.frame(date = seq.Date(from = as.Date("2000-03-10"), length.out = 12, by = "month"),
-                   x1 = rnorm(12), x2 = rnorm(12))
-arphitgg(data, agg_aes(x = date)) + agg_line(agg_aes(y = x1), colour = RBA["Blue2"]) +
-   agg_line(agg_aes(y = x2), colour = RBA["Red4"]) +
-   agg_shading(from = x1, to = x2)
-
+data <- data.frame(date = seq.Date(from = as.Date("2000-03-10"),
+                                   length.out = 12, by = "month"),
+                   x1 = rnorm(12),
+                   x2 = rnorm(12))
+arphitgg(data, agg_aes(x = date)) +
+  agg_line(agg_aes(y = x1), colour = RBA["Blue2"]) +
+  agg_line(agg_aes(y = x2), colour = RBA["Red4"]) +
+  agg_shading(from = x1, to = x2)
 }
 \seealso{
-\code{vignette("plotting-options", package = "arphit")} for a detailed description of
-all the plotting options
+\code{vignette("plotting-options", package = "arphit")} for a
+detailed description of all the plotting options
 }
