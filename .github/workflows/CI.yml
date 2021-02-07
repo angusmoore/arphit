@@ -9,7 +9,7 @@ jobs:
     name: (R ${{ matrix.version }} - ${{ matrix.os }})
     strategy:
       matrix:
-        version: ['oldrelease', 'release', 'devel']
+        version: ['oldrel', 'release', 'devel']
         os: ['ubuntu-latest', 'windows-latest']
     runs-on: ${{ matrix.os }}
     steps:
