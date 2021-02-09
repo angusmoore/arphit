@@ -10,12 +10,7 @@ jobs:
     strategy:
       matrix:
         version: ['oldrel', 'release', 'devel']
-        os: ['ubuntu-latest', 'windows-latest']
-        exclude:
-          - os: 'ubuntu-latest'
-            version: 'release'
-          - os: 'ubuntu-latest'
-            version: 'devel'
+        os: ['windows-latest']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
