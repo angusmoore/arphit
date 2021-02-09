@@ -1,8 +1,8 @@
 # arphit <a href='https://angusmoore.github.io/arphit/'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
-[![CircleCI](https://circleci.com/gh/angusmoore/arphit.svg?style=svg&circle-token=de7d58333f2bbfadd18348db90d289a81956c55d)](https://circleci.com/gh/angusmoore/arphit)
-[![codecov](https://codecov.io/gh/angusmoore/arphit/branch/master/graph/badge.svg?token=bOWzLCyVsu)](https://codecov.io/gh/angusmoore/arphit)
+![CI](https://github.com/angusmoore/arphit/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/angusmoore/arphit/branch/master/graph/badge.svg)](https://codecov.io/gh/angusmoore/arphit)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 <!-- badges: end -->
 
